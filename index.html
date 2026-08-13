@@ -3049,10 +3049,11 @@ function renderOzel(){
         </div>
         <div style="display:flex;gap:5px;">
           ${og.tel?waBtnG(og.tel,og.ad):''}
-          <button class="btn btn-ghost btn-sm" onclick="openOzelOgModal('${og.id}')">Düzenle</button>
+          <button class="btn btn-ghost btn-sm" onclick="openOzelOgModal('${og.id}')">✎ Bilgi Düzenle</button>
           <button class="btn btn-danger btn-sm" onclick="silOzelOg('${og.id}')">Sil</button>
         </div>
       </div>
+      ${paketler.length?'<div style="font-size:11px;color:var(--text3);margin:2px 0 4px;">Paket detayı, saat düşme ve eğitmen ataması için pakete dokun ›</div>':''}
       ${paketHTML}
       <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="openOzelPaketModal('${og.id}')">＋ Yeni Paket</button>
     </div>`;
