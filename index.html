@@ -235,7 +235,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .ozel-paket:active{opacity:.8;}
 .ozel-paket.aktif-paket{border-color:var(--cyan);}
 .ozel-paket.bitti{border-color:var(--border);opacity:.6;}
-.ozel-paket-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.ozel-paket-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px;}
+.ozel-paket-header>div:first-child{min-width:0;flex:1 1 auto;}
+.ozel-paket-header .badge{flex-shrink:0;white-space:nowrap;}
 .ozel-paket-toplam{font-size:13px;font-weight:600;color:var(--text);}
 .ozel-paket-tarih{font-size:11px;color:var(--text3);}
 /* Saat progress bar */
@@ -611,7 +613,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none;">‹</button>
       <div id="topbar-brand" style="min-width:0;">
         <div class="topbar-title">Can & Irina <span>Studio</span></div>
-        <div class="topbar-sub">Yönetim Paneli</div>
+        <div class="topbar-sub" id="topbarSub">Yönetim Paneli</div>
       </div>
       <div id="topbar-page-name" style="display:none;min-width:0;overflow:hidden;">
         <div class="topbar-page-title" id="topbarPageTitle"></div>
@@ -621,6 +623,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button class="notif-btn" id="notif-btn" onclick="bildirimlerAc()" title="Öğrenci notları" style="display:none;">
         🔔<span class="notif-badge" id="notif-badge" style="display:none;"></span>
       </button>
+      <button id="langBtn" onclick="cycleLang()" title="Dil / Language / Язык" style="background:var(--surface2);border:1px solid var(--border2);border-radius:99px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;flex-shrink:0;">TR</button>
       <div class="sync-dot" id="syncDot"></div>
       <span style="font-size:11px;color:var(--text3);white-space:nowrap;" id="syncText">Canlı</span>
     </div>
@@ -629,10 +632,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- ANA SAYFA -->
   <div class="page active" id="pg-anasayfa">
     <div class="stats-row">
-      <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label">Aktif Öğrenci</div><div class="stat-val" id="st-ogrenci">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="st-kayit">0</span> kayıt</div></div>
-      <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label">Sınıf</div><div class="stat-val" id="st-sinif">0</div></div>
-      <div class="stat-card s3" onclick="openGelirGiderSheet()" style="cursor:pointer;"><div class="stat-label">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Net: <span id="st-net">0</span></div></div>
-      <div class="stat-card s4"><div class="stat-label">Paket yenileme</div><div class="stat-val" id="st-yaklasan">0</div></div>
+      <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-aktif-ogrenci">Aktif Öğrenci</div><div class="stat-val" id="st-ogrenci">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span></div></div>
+      <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-sinif">Sınıf</div><div class="stat-val" id="st-sinif">0</div></div>
+      <div class="stat-card s3" onclick="openGelirGiderSheet()" style="cursor:pointer;"><div class="stat-label" id="lbl-bu-ay-gelir">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="lbl-net">Net</span>: <span id="st-net">0</span></div></div>
+      <div class="stat-card s4"><div class="stat-label" id="lbl-paket-yenileme">Paket yenileme</div><div class="stat-val" id="st-yaklasan">0</div></div>
     </div>
     <div id="anasayfa-alerts" style="padding-bottom:8px;"></div>
   </div>
@@ -736,13 +739,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div id="toast-container"></div>
   <div id="toast-container"></div>
   <nav class="bottom-nav">
-    <button class="nav-item active" onclick="goTo('anasayfa',this)"><div class="nav-icon-wrap"><span class="nav-icon">⌂</span></div><span>Ana Sayfa</span></button>
-    <button class="nav-item" onclick="goTo('ogrenciler',this)"><div class="nav-icon-wrap"><span class="nav-icon">♟</span></div><span>Öğrenciler</span></button>
-    <button class="nav-item" onclick="goTo('siniflar',this)"><div class="nav-icon-wrap"><span class="nav-icon">◈</span></div><span>Sınıflar</span></button>
-    <button class="nav-item" onclick="goTo('takvim',this)"><div class="nav-icon-wrap"><span class="nav-icon">▦</span></div><span>Takvim</span></button>
-    <button class="nav-item" onclick="goTo('yoklama',this)"><div class="nav-icon-wrap"><span class="nav-icon">✓</span></div><span>Yoklama</span></button>
-    <button class="nav-item" onclick="goTo('odemeler',this)"><div class="nav-icon-wrap"><span class="nav-icon">◎</span></div><span>Ödemeler</span></button>
-    <button class="nav-item" onclick="openGelirGiderSheet()"><div class="nav-icon-wrap"><span class="nav-icon">₺</span></div><span>Gelir/Gider</span></button>
+    <button class="nav-item active" onclick="goTo('anasayfa',this)"><div class="nav-icon-wrap"><span class="nav-icon">⌂</span></div><span id="navlbl-anasayfa">Ana Sayfa</span></button>
+    <button class="nav-item" onclick="goTo('ogrenciler',this)"><div class="nav-icon-wrap"><span class="nav-icon">♟</span></div><span id="navlbl-ogrenciler">Öğrenciler</span></button>
+    <button class="nav-item" onclick="goTo('siniflar',this)"><div class="nav-icon-wrap"><span class="nav-icon">◈</span></div><span id="navlbl-siniflar">Sınıflar</span></button>
+    <button class="nav-item" onclick="goTo('takvim',this)"><div class="nav-icon-wrap"><span class="nav-icon">▦</span></div><span id="navlbl-takvim">Takvim</span></button>
+    <button class="nav-item" onclick="goTo('yoklama',this)"><div class="nav-icon-wrap"><span class="nav-icon">✓</span></div><span id="navlbl-yoklama">Yoklama</span></button>
+    <button class="nav-item" onclick="goTo('odemeler',this)"><div class="nav-icon-wrap"><span class="nav-icon">◎</span></div><span id="navlbl-odemeler">Ödemeler</span></button>
+    <button class="nav-item" onclick="openGelirGiderSheet()"><div class="nav-icon-wrap"><span class="nav-icon">₺</span></div><span id="navlbl-gelirgider">Gelir/Gider</span></button>
   </nav>
   <button class="fab" id="mainFab" onclick="fabAction()">＋</button>
 </div>
@@ -760,8 +763,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
     <!-- Hızlı Erişim -->
     <div style="padding:10px 16px 6px;">
-      <button class="drawer-btn" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('ozel',null)">✦ Özel Dersler</button>
-      <button class="drawer-btn" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:0;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
+      <button class="drawer-btn" id="drawerBtnOzel" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('ozel',null)">✦ Özel Dersler</button>
+      <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:0;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
     </div>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
 
@@ -1224,6 +1227,56 @@ let CUR_SINIF=null, CUR_KAYIT=null, EDIT_OG=null, EDIT_ODEME=null, EDIT_EGITMEN=
 let CUR_OZEL_OG=null, CUR_OZEL_PAKET=null, EDIT_OZEL_OG=null;
 let CUR_OG_DETAY=null, OG_DETAY_TAB='odemeler';
 let PAGE='anasayfa', PREV_PAGE='anasayfa';
+
+// ── ÇOK DİLLİ DESTEK (i18n) ──────────────────────────
+let LANG=localStorage.getItem('appLang')||'tr';
+const TRANSLATIONS={
+  tr:{
+    topbar_sub:'Yönetim Paneli', sync_live:'Canlı', sync_saving:'Kaydediliyor...',
+    nav_anasayfa:'Ana Sayfa', nav_ogrenciler:'Öğrenciler', nav_siniflar:'Sınıflar',
+    nav_takvim:'Takvim', nav_yoklama:'Yoklama', nav_odemeler:'Ödemeler', nav_gelirgider:'Gelir/Gider',
+    lbl_aktif_ogrenci:'Aktif Öğrenci', lbl_kayit:'kayıt', lbl_sinif:'Sınıf',
+    lbl_bu_ay_gelir:'Bu ay gelir', lbl_net:'Net', lbl_paket_yenileme:'Paket yenileme',
+    drawer_ozel:'✦ Özel Dersler', drawer_videolar:'🎬 Ders Videoları',
+  },
+  en:{
+    topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
+    nav_anasayfa:'Home', nav_ogrenciler:'Students', nav_siniflar:'Classes',
+    nav_takvim:'Calendar', nav_yoklama:'Attendance', nav_odemeler:'Payments', nav_gelirgider:'Income/Expense',
+    lbl_aktif_ogrenci:'Active Students', lbl_kayit:'enrollments', lbl_sinif:'Classes',
+    lbl_bu_ay_gelir:'Income this month', lbl_net:'Net', lbl_paket_yenileme:'Package renewals',
+    drawer_ozel:'✦ Private Lessons', drawer_videolar:'🎬 Lesson Videos',
+  },
+  ru:{
+    topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
+    nav_anasayfa:'Главная', nav_ogrenciler:'Ученики', nav_siniflar:'Группы',
+    nav_takvim:'Календарь', nav_yoklama:'Посещаемость', nav_odemeler:'Платежи', nav_gelirgider:'Доходы/Расходы',
+    lbl_aktif_ogrenci:'Активные ученики', lbl_kayit:'записей', lbl_sinif:'Групп',
+    lbl_bu_ay_gelir:'Доход за месяц', lbl_net:'Чистыми', lbl_paket_yenileme:'Обновление пакетов',
+    drawer_ozel:'✦ Частные уроки', drawer_videolar:'🎬 Видео уроков',
+  },
+};
+function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIONS.tr[key]||key;}
+function applyLang(){
+  const map={
+    'topbarSub':'topbar_sub','navlbl-anasayfa':'nav_anasayfa','navlbl-ogrenciler':'nav_ogrenciler',
+    'navlbl-siniflar':'nav_siniflar','navlbl-takvim':'nav_takvim','navlbl-yoklama':'nav_yoklama',
+    'navlbl-odemeler':'nav_odemeler','navlbl-gelirgider':'nav_gelirgider',
+    'lbl-aktif-ogrenci':'lbl_aktif_ogrenci','lbl-kayit':'lbl_kayit','lbl-sinif':'lbl_sinif',
+    'lbl-bu-ay-gelir':'lbl_bu_ay_gelir','lbl-net':'lbl_net','lbl-paket-yenileme':'lbl_paket_yenileme',
+    'drawerBtnOzel':'drawer_ozel','drawerBtnVideolar':'drawer_videolar',
+  };
+  Object.keys(map).forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t(map[id]);});
+  const syncText=document.getElementById('syncText');
+  if(syncText)syncText.textContent=syncText.textContent==='Kaydediliyor...'||syncText.textContent==='Saving...'||syncText.textContent==='Сохранение...'?t('sync_saving'):t('sync_live');
+  const langBtn=document.getElementById('langBtn');if(langBtn)langBtn.textContent=LANG.toUpperCase();
+  document.documentElement.lang=LANG;
+}
+function cycleLang(){
+  LANG=LANG==='tr'?'en':LANG==='en'?'ru':'tr';
+  localStorage.setItem('appLang',LANG);
+  applyLang();
+}
 let OG_FILTER='aktif', OG_GRUPLU=true, OG_SIRALAMA='ad', ODEME_TAB='odemeler';
 let OD_AYLAR=[], OD_ONCEKI=new Set();
 let ODEME_ACIK=new Set(), GELIR_ACIK=new Set();
@@ -1274,7 +1327,7 @@ function addDays(s,d){const dt=new Date(s+'T00:00:00');dt.setDate(dt.getDate()+d
 function formatDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'short'});}catch(e){return d;}}
 function daysLeft(d){if(!d)return 999;return Math.ceil((new Date(d+'T00:00:00')-new Date())/864e5);}
 function initials(a,b){return((a||'')[0]||'').toUpperCase()+((b||'')[0]||'').toUpperCase();}
-function setSyncing(v){const d=document.getElementById('syncDot'),t=document.getElementById('syncText');if(v){d.classList.add('syncing');t.textContent='Kaydediliyor...';}else{d.classList.remove('syncing');t.textContent='Canlı';}}
+function setSyncing(v){const d=document.getElementById('syncDot'),tx=document.getElementById('syncText');if(v){d.classList.add('syncing');tx.textContent=t('sync_saving');}else{d.classList.remove('syncing');tx.textContent=t('sync_live');}}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function confirm_(title,desc,cb){
   CONFIRM_CB=cb;
@@ -1302,6 +1355,7 @@ function closeModal(id){
 function startListeners(){
   document.getElementById('loading').style.display='flex';
   document.getElementById('app').style.display='none';
+  applyLang();
   const done={og:false,si:false,od:false,oog:false,op:false,yk:false,eg:false,tt:false,vs:false,oz2:false};
 
   const timeout=setTimeout(()=>{
