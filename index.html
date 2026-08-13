@@ -3038,6 +3038,7 @@ function renderOzel(){
         </div>
         <div class="ozel-paket-tarih">${formatDate(p.tarih)} · ${fmtSaat(p.yapilanSaat)}/${fmtSaat(p.toplamSaat)} saat yapıldı</div>
         <div class="saat-bar"><div class="saat-bar-fill${bitti?' bitti-renk':kalan<=1?' az':''}" style="width:${pct}%"></div></div>
+        <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}','${p.id}')">✎ Bu Paketi ve Eğitmenlerini Düzenle</button>
       </div>`;
     }).join(''):`<div style="font-size:13px;color:var(--text3);padding:8px 0;">Henüz paket girilmedi</div>`;
     return `<div class="ozel-og-kart">
