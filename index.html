@@ -1625,8 +1625,12 @@ function applyLang(){
   const langBtn=document.getElementById('langBtn');if(langBtn)langBtn.textContent=LANG.toUpperCase();
   const langBtnPortal=document.getElementById('langBtnPortal');if(langBtnPortal)langBtnPortal.textContent=LANG.toUpperCase();
   document.documentElement.lang=LANG;
-  if(typeof renderOgrenciler==='function'&&document.getElementById('ogrenci-list'))renderOgrenciler();
-  if(typeof renderSiniflar==='function'&&document.getElementById('sinif-list'))renderSiniflar();
+  if(typeof renderAll==='function'&&document.getElementById('app')&&document.getElementById('app').style.display!=='none'){
+    try{renderAll();}catch(e){}
+  }
+  if(PORTAL_OG_ID&&typeof renderPortalIcerik==='function'){
+    try{renderPortalIcerik();}catch(e){}
+  }
 }
 function cycleLang(){
   LANG=LANG==='tr'?'en':LANG==='en'?'ru':'tr';
