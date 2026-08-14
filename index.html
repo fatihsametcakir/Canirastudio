@@ -226,9 +226,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .odeme-gecmis-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;}
 
 /* Özel ders öğrenci kartı */
-.ozel-og-kart{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:14px;margin-bottom:10px;}
-.ozel-og-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.ozel-og-isim{font-size:15px;font-weight:600;}
+.ozel-og-kart{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;}
+.ozel-og-header{display:flex;align-items:center;gap:10px;}
+.ozel-og-isim{font-size:14px;font-weight:600;}
 .ozel-og-tel{font-size:12px;color:var(--text3);}
 /* Özel ders paket kartı */
 .ozel-paket{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s;}
@@ -3053,6 +3053,7 @@ function otOtoDusKontrol(){
         }
         _poll('ozelPaketler');_poll('ozelSeanslar');
         if(PAGE==='ozel-takvim')renderOzelTakvim();
+        if(PAGE==='ozel')renderOzel();
       }catch(e){}
       OT_ISLENEN.delete(s.id);
     })();
@@ -6230,6 +6231,8 @@ if(portalLoginKontrol()){
   startListeners();
   urlYoklamaKontrol();
 }
+// Özel ders saat düşme kontrolünü sayfa görünümünden bağımsız, düzenli aralıklarla da çalıştır
+setInterval(()=>{if(!PORTAL_OG_ID&&!_paused&&typeof S!=='undefined'&&S.ozelSeanslar)otOtoDusKontrol();},20000);
 
 // ── PWA KURULUM ────────────────────────────────────────
 // Android Chrome'da "Ana ekrana ekle" banner'ı yakala
