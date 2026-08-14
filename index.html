@@ -1031,6 +1031,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div id="m-ozel-saat-content"></div>
 </div></div>
 
+<!-- Paket — Yapılan Dersler Listesi -->
+<div class="overlay" id="m-paket-dersler"><div class="sheet" style="max-height:80vh;">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-paket-dersler')">✕</button>
+  <div class="sheet-title" id="m-paket-dersler-title">📋 Dersler</div>
+  <div id="m-paket-dersler-content" style="overflow-y:auto;max-height:calc(80vh - 80px);"></div>
+</div></div>
+
 <!-- Haftalık Takvim — Ders Planla -->
 <div class="overlay" id="m-ders-planla"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ders-planla')">✕</button>
@@ -1363,6 +1370,9 @@ const TRANSLATIONS={
     kontrol_ediliyor:'Kontrol ediliyor...', kamera_baslatiliyor:'Kamera başlatılıyor...', qr_kamera_tutun:'QR kodu kameraya tutun',
     kamera_erisim_yok:'Kamera erişimi sağlanamadı', qr_kod_gecersiz:'Bu kod geçerli değil',
     merhaba:'Merhaba', tel_sifre_zorunlu:'Telefon ve şifre zorunlu.', hata:'Hata',
+    dersi_sil:'Dersi Sil', ders_sil_aciklama:'Bu planlanan ders silinecek.',
+    ders_sil_saat_geri:'Bu ders paketten düşülmüştü — silinince saat pakete geri eklenecek.',
+    dersler:'Dersler', henuz_ders_yok:'Bu pakette henüz ders kaydı yok.', takvimden:'takvimden', saat_dus_ekle:'Saat Düş/Ekle',
   },
   en:{
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
@@ -1493,6 +1503,9 @@ const TRANSLATIONS={
     kontrol_ediliyor:'Checking...', kamera_baslatiliyor:'Starting camera...', qr_kamera_tutun:'Point the camera at the QR code',
     kamera_erisim_yok:'Could not access camera', qr_kod_gecersiz:'This code is not valid',
     merhaba:'Hello', tel_sifre_zorunlu:'Phone and password are required.', hata:'Error',
+    dersi_sil:'Delete Lesson', ders_sil_aciklama:'This planned lesson will be deleted.',
+    ders_sil_saat_geri:'This lesson was already deducted from the package — deleting it will restore that hour to the package.',
+    dersler:'Lessons', henuz_ders_yok:'No lessons recorded for this package yet.', takvimden:'from calendar', saat_dus_ekle:'Deduct/Add Hours',
   },
   ru:{
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
@@ -1623,6 +1636,9 @@ const TRANSLATIONS={
     kontrol_ediliyor:'Проверка...', kamera_baslatiliyor:'Запуск камеры...', qr_kamera_tutun:'Наведите камеру на QR-код',
     kamera_erisim_yok:'Не удалось получить доступ к камере', qr_kod_gecersiz:'Этот код недействителен',
     merhaba:'Здравствуйте', tel_sifre_zorunlu:'Телефон и пароль обязательны.', hata:'Ошибка',
+    dersi_sil:'Удалить занятие', ders_sil_aciklama:'Это запланированное занятие будет удалено.',
+    ders_sil_saat_geri:'Этот час уже был списан с пакета — при удалении он будет возвращён в пакет.',
+    dersler:'Занятия', henuz_ders_yok:'Занятий в этом пакете пока нет.', takvimden:'из календаря', saat_dus_ekle:'Списать/Добавить часы',
   },
 };
 function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIONS.tr[key]||key;}
@@ -2983,8 +2999,24 @@ function otSeansDetay(id){
   openModal('m-seans-detay');
 }
 function otSeansSil(id){
-  confirm_('Dersi Sil','Bu planlanan ders silinecek.',async()=>{
-    setSyncing(true);await db.collection('ozelSeanslar').doc(id).delete();_poll('ozelSeanslar');setSyncing(false);closeModal('m-seans-detay');
+  const s=S.ozelSeanslar.find(x=>x.id===id);
+  const mesaj=s&&s.dusuldu?t('ders_sil_saat_geri'):t('ders_sil_aciklama');
+  confirm_(t('dersi_sil'),mesaj,async()=>{
+    setSyncing(true);
+    try{
+      if(s&&s.dusuldu&&s.paketId){
+        const p=S.ozelPaketler.find(x=>x.id===s.paketId);
+        if(p){
+          const miktar=s.sure||1;
+          const yeni=Math.round(Math.max(0,p.yapilanSaat-miktar)*10)/10;
+          await db.collection('ozelPaketler').doc(p.id).update({yapilanSaat:yeni,aktif:yeni<p.toplamSaat});
+          _poll('ozelPaketler');
+        }
+      }
+      await db.collection('ozelSeanslar').doc(id).delete();
+      _poll('ozelSeanslar');
+    }catch(e){alert('Hata: '+e.message);}
+    setSyncing(false);closeModal('m-seans-detay');
   });
 }
 
@@ -3013,10 +3045,14 @@ function otOtoDusKontrol(){
           const yeni=Math.round(Math.max(0,Math.min(p.toplamSaat,p.yapilanSaat+miktar))*10)/10;
           await db.collection('ozelPaketler').doc(p.id).update({yapilanSaat:yeni,aktif:yeni<p.toplamSaat});
           await db.collection('ozelSeanslar').doc(s.id).update({dusuldu:true,paketId});
+          // Ekranın bir sonraki poll'u beklemeden anında güncellensin diye yerel veriyi de güncelle
+          p.yapilanSaat=yeni;p.aktif=yeni<p.toplamSaat;s.dusuldu=true;s.paketId=paketId;
         } else {
           await db.collection('ozelSeanslar').doc(s.id).update({dusuldu:true});
+          s.dusuldu=true;
         }
         _poll('ozelPaketler');_poll('ozelSeanslar');
+        if(PAGE==='ozel-takvim')renderOzelTakvim();
       }catch(e){}
       OT_ISLENEN.delete(s.id);
     })();
@@ -3475,6 +3511,16 @@ function renderSinifDetay(siId){
 </div><div style="display:flex;gap:8px;margin-bottom:14px;"><button class="btn btn-cyan btn-sm" style="flex:1;" onclick="qrGoster('${si.id}')">📱 ${t('qr_yoklama')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="yoklamaGecmis('${si.id}')">${t('yoklama_gecmisi')}</button></div><div class="card" style="padding:0 16px;">${kHTML}</div>`;
 }
 
+let OG_PAKET_ACIK=new Set();
+function togglePaketAcik(id){
+  if(OG_PAKET_ACIK.has(id))OG_PAKET_ACIK.delete(id);else OG_PAKET_ACIK.add(id);
+  renderOzel();
+}
+let OZEL_OG_ACIK=new Set();
+function toggleOzelOgAcik(id){
+  if(OZEL_OG_ACIK.has(id))OZEL_OG_ACIK.delete(id);else OZEL_OG_ACIK.add(id);
+  renderOzel();
+}
 function renderOzel(){
   const el=document.getElementById('ozel-list');
   if(!S.ozelOgrenciler.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">'+t('ozel_bos')+'<br>'+t('ozel_bos_alt')+'</div></div>';return;}
@@ -3482,34 +3528,93 @@ function renderOzel(){
   el.innerHTML=sirali.map(og=>{
     const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
     const aktifPaket=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
+    const ogAcik=OZEL_OG_ACIK.has(og.id);
+    const ozetMetin=aktifPaket?fmtSaat(Math.round((aktifPaket.toplamSaat-aktifPaket.yapilanSaat)*10)/10)+' '+t('saat_kaldi'):(paketler.length?t('aktif_paket_yok'):t('henuz_paket_yok'));
     const paketHTML=paketler.length?paketler.map(p=>{
       const kalan=Math.round((p.toplamSaat-p.yapilanSaat)*10)/10;const pct=Math.min(100,Math.round((p.yapilanSaat/p.toplamSaat)*100));const bitti=kalan<=0;
-      return `<div class="ozel-paket${p.aktif&&!bitti?' aktif-paket':bitti?' bitti':''}" onclick="openOzelSaatModal('${p.id}')">
+      const acik=OG_PAKET_ACIK.has(p.id);
+      return `<div class="ozel-paket${p.aktif&&!bitti?' aktif-paket':bitti?' bitti':''}" onclick="togglePaketAcik('${p.id}')">
         <div class="ozel-paket-header">
           <div><span class="ozel-paket-toplam">${(p.tutar||0).toLocaleString(LC())} ₺</span><span style="font-size:11px;color:var(--text3);margin-left:8px;">${fmtSaat(p.toplamSaat)} ${t('saatlik_paket')}</span></div>
-          <span class="badge ${bitti?'badge-gray':kalan<=1?'badge-amber':'badge-cyan'}">${bitti?t('tamamlandi'):fmtSaat(kalan)+' '+t('saat_kaldi')}</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span class="badge ${bitti?'badge-gray':kalan<=1?'badge-amber':'badge-cyan'}">${bitti?t('tamamlandi'):fmtSaat(kalan)+' '+t('saat_kaldi')}</span>
+            <span style="font-size:14px;color:var(--text3);transition:transform .15s;display:inline-block;transform:rotate(${acik?90:0}deg);">›</span>
+          </div>
         </div>
+        ${acik?`
         <div class="ozel-paket-tarih">${formatDate(p.tarih)} · ${fmtSaat(p.yapilanSaat)}/${fmtSaat(p.toplamSaat)} ${t('saat_yapildi')}</div>
         <div class="saat-bar"><div class="saat-bar-fill${bitti?' bitti-renk':kalan<=1?' az':''}" style="width:${pct}%"></div></div>
-        <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}','${p.id}')">${t('btn_paket_duzenle')}</button>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+          <button class="btn btn-accent btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openOzelSaatModal('${p.id}')">－ ${t('saat_dus_ekle')}</button>
+          <button class="btn btn-cyan btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}','${p.id}')">${t('btn_paket_duzenle')}</button>
+          <button class="btn btn-ghost btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openPaketDersler('${p.id}')">📋 ${t('dersler')}</button>
+        </div>`:''}
       </div>`;
     }).join(''):`<div style="font-size:13px;color:var(--text3);padding:8px 0;">${t('henuz_paket_yok')}</div>`;
     return `<div class="ozel-og-kart">
-      <div class="ozel-og-header">
+      <div class="ozel-og-header" onclick="toggleOzelOgAcik('${og.id}')" style="cursor:pointer;">
         <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}">${initials(og.ad,og.soyad||'')}</div>
         <div style="flex:1;min-width:0;">
           <div class="ozel-og-isim" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${og.ad} ${og.soyad||''}</div>
+          ${!ogAcik?`<div style="font-size:11px;color:var(--text3);margin-top:2px;">${ozetMetin}</div>`:''}
         </div>
-        <div style="display:flex;gap:5px;flex-shrink:0;">
-          <button class="btn btn-ghost btn-sm" onclick="openOzelOgModal('${og.id}')">${t('btn_bilgi_duzenle')}</button>
-          <button class="btn btn-danger btn-sm" onclick="silOzelOg('${og.id}')">${t('btn_sil')}</button>
-        </div>
+        <span style="font-size:16px;color:var(--text3);transition:transform .15s;display:inline-block;transform:rotate(${ogAcik?90:0}deg);flex-shrink:0;">›</span>
       </div>
-      ${paketler.length?'<div style="font-size:11px;color:var(--text3);margin:2px 0 4px;">'+t('paket_hint')+'</div>':''}
+      ${ogAcik?`
+      <div style="display:flex;gap:5px;margin-top:10px;">
+        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="event.stopPropagation();openOzelOgModal('${og.id}')">${t('btn_bilgi_duzenle')}</button>
+        <button class="btn btn-danger btn-sm" style="flex:1;" onclick="event.stopPropagation();silOzelOg('${og.id}')">${t('btn_sil')}</button>
+      </div>
+      ${paketler.length?'<div style="font-size:11px;color:var(--text3);margin:10px 0 4px;">'+t('paket_hint')+'</div>':'<div style="margin-top:10px;"></div>'}
       ${paketHTML}
-      <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button>
+      <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button>
+      `:''}
     </div>`;
   }).join('');
+}
+function openPaketDersler(paketId){
+  const p=S.ozelPaketler.find(x=>x.id===paketId);if(!p)return;
+  const og=S.ozelOgrenciler.find(o=>o.id===p.ogrenciId);
+  document.getElementById('m-paket-dersler-title').textContent='📋 '+(og?og.ad+' '+(og.soyad||''):t('dersler'));
+  const seanslar=S.ozelSeanslar.filter(s=>s.paketId===paketId).sort((a,b)=>(b.tarih||'').localeCompare(a.tarih||''));
+  const el=document.getElementById('m-paket-dersler-content');
+  if(!seanslar.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--text3);padding:16px 0;text-align:center;">'+t('henuz_ders_yok')+'</div>';
+  }else{
+    el.innerHTML=seanslar.map(s=>{
+      const eg=S.egitmenler.find(e=>e.id===s.egitmenId);
+      return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-size:13px;font-weight:600;">${formatDate(s.tarih)}${s.saat?' · '+s.saat:''}</div>
+          <div style="font-size:11px;color:var(--text3);">${fmtSaat(s.sure||1)} ${t('saat')}${eg?' · '+eg.ad:''}${s.kaynak==='takvim'?' · '+t('takvimden'):''}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="dersKaydiSil('${s.id}')">${t('btn_sil')}</button>
+      </div>`;
+    }).join('');
+  }
+  openModal('m-paket-dersler');
+}
+async function dersKaydiSil(id){
+  const s=S.ozelSeanslar.find(x=>x.id===id);if(!s)return;
+  const dusulduMu=s.kaynak==='paket'||s.dusuldu;
+  confirm_(t('dersi_sil'),dusulduMu?t('ders_sil_saat_geri'):t('ders_sil_aciklama'),async()=>{
+    setSyncing(true);
+    try{
+      if(dusulduMu&&s.paketId){
+        const p=S.ozelPaketler.find(x=>x.id===s.paketId);
+        if(p){
+          const miktar=s.sure||1;
+          const yeni=Math.round(Math.max(0,p.yapilanSaat-miktar)*10)/10;
+          await db.collection('ozelPaketler').doc(p.id).update({yapilanSaat:yeni,aktif:yeni<p.toplamSaat});
+          _poll('ozelPaketler');
+        }
+      }
+      await db.collection('ozelSeanslar').doc(id).delete();
+      _poll('ozelSeanslar');
+    }catch(e){alert('Hata: '+e.message);}
+    setSyncing(false);
+    setTimeout(()=>openPaketDersler(s.paketId),300);
+  });
 }
 
 function renderOdemeler(){
