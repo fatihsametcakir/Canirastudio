@@ -1356,6 +1356,13 @@ const TRANSLATIONS={
     gecti:'Geçti', tatil_gunu_eklenmedi:'Tatil günü eklenmedi', bu_donemde_odeme_yok:'Bu dönemde ödeme yok',
     demo_mod:'Demo Mod', gercek_veri_yok:'Gerçek veri yok', sinif_yok:'Sınıf yok',
     hepsi_odedi:'Hepsi ödedi', bu_gun_ders_yok:'Bu gün ders yok', son_12_ay_grup_ozel:'Son 12 ay · Grup + Özel dersler',
+    once_sinif_ekle:'Önce sınıf veya özel ders öğrencisi ekleyin', odendi:'Ödendi', aktif_paket_yok:'Aktif paket yok', bitti:'Bitti', derse_git:'Derse Git',
+    odeme_duzenle:'Ödeme Düzenle', ogrenci_duzenle:'Öğrenci Düzenle', yeni_ogrenci:'Yeni Öğrenci',
+    sinifi_duzenle:'Sınıfı Düzenle', yeni_sinif:'Yeni Sınıf', sinif_playlist_ekle_baslik:'Sınıf / Playlist Ekle',
+    ozel_ders_ogrencisi:'Özel Ders Öğrencisi', paketi_duzenle:'Paketi Düzenle', yeni_paket:'Yeni Paket',
+    kontrol_ediliyor:'Kontrol ediliyor...', kamera_baslatiliyor:'Kamera başlatılıyor...', qr_kamera_tutun:'QR kodu kameraya tutun',
+    kamera_erisim_yok:'Kamera erişimi sağlanamadı', qr_kod_gecersiz:'Bu kod geçerli değil',
+    merhaba:'Merhaba', tel_sifre_zorunlu:'Telefon ve şifre zorunlu.', hata:'Hata',
   },
   en:{
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
@@ -1479,6 +1486,13 @@ const TRANSLATIONS={
     gecti:'Past', tatil_gunu_eklenmedi:'No holidays added', bu_donemde_odeme_yok:'No payments in this period',
     demo_mod:'Demo Mode', gercek_veri_yok:'No real data', sinif_yok:'No class',
     hepsi_odedi:'Everyone paid', bu_gun_ders_yok:'No lessons today', son_12_ay_grup_ozel:'Last 12 months · Group + Private lessons',
+    once_sinif_ekle:'Add a class or private student first', odendi:'Paid', aktif_paket_yok:'No active package', bitti:'Finished', derse_git:'Go to Lesson',
+    odeme_duzenle:'Edit Payment', ogrenci_duzenle:'Edit Student', yeni_ogrenci:'New Student',
+    sinifi_duzenle:'Edit Class', yeni_sinif:'New Class', sinif_playlist_ekle_baslik:'Add Class / Playlist',
+    ozel_ders_ogrencisi:'Private Lesson Student', paketi_duzenle:'Edit Package', yeni_paket:'New Package',
+    kontrol_ediliyor:'Checking...', kamera_baslatiliyor:'Starting camera...', qr_kamera_tutun:'Point the camera at the QR code',
+    kamera_erisim_yok:'Could not access camera', qr_kod_gecersiz:'This code is not valid',
+    merhaba:'Hello', tel_sifre_zorunlu:'Phone and password are required.', hata:'Error',
   },
   ru:{
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
@@ -1602,6 +1616,13 @@ const TRANSLATIONS={
     gecti:'Прошло', tatil_gunu_eklenmedi:'Праздники не добавлены', bu_donemde_odeme_yok:'Платежей за этот период нет',
     demo_mod:'Демо-режим', gercek_veri_yok:'Нет реальных данных', sinif_yok:'Нет группы',
     hepsi_odedi:'Все оплатили', bu_gun_ders_yok:'Сегодня занятий нет', son_12_ay_grup_ozel:'Последние 12 месяцев · Группы + Частные уроки',
+    once_sinif_ekle:'Сначала добавьте группу или частного ученика', odendi:'Оплачено', aktif_paket_yok:'Нет активного пакета', bitti:'Завершено', derse_git:'Перейти к уроку',
+    odeme_duzenle:'Изменить платёж', ogrenci_duzenle:'Изменить ученика', yeni_ogrenci:'Новый ученик',
+    sinifi_duzenle:'Изменить группу', yeni_sinif:'Новая группа', sinif_playlist_ekle_baslik:'Добавить группу / плейлист',
+    ozel_ders_ogrencisi:'Ученик на частные уроки', paketi_duzenle:'Изменить пакет', yeni_paket:'Новый пакет',
+    kontrol_ediliyor:'Проверка...', kamera_baslatiliyor:'Запуск камеры...', qr_kamera_tutun:'Наведите камеру на QR-код',
+    kamera_erisim_yok:'Не удалось получить доступ к камере', qr_kod_gecersiz:'Этот код недействителен',
+    merhaba:'Здравствуйте', tel_sifre_zorunlu:'Телефон и пароль обязательны.', hata:'Ошибка',
   },
 };
 function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIONS.tr[key]||key;}
@@ -1906,7 +1927,7 @@ function openOgrenciModal(id){
     document.getElementById('og-tel').value=og.tel||'';
     document.getElementById('og-not').value=og.not||'';
     setSeg(og.cinsiyet||'k');
-    document.getElementById('m-ogrenci-title').textContent='Öğrenci Düzenle';
+    document.getElementById('m-ogrenci-title').textContent=t('ogrenci_duzenle');
     // Ödemesi yoksa sil butonu göster
     const odemeVar=S.odemeler.some(o=>o.ogrenciId===id);
     if(silRow)silRow.style.display=odemeVar?'none':'block';
@@ -1916,7 +1937,7 @@ function openOgrenciModal(id){
     SEG_CINSIYET='';
     document.getElementById('seg-k').classList.remove('active');
     document.getElementById('seg-e').classList.remove('active');
-    document.getElementById('m-ogrenci-title').textContent='Yeni Öğrenci';
+    document.getElementById('m-ogrenci-title').textContent=t('yeni_ogrenci');
     if(silRow)silRow.style.display='none';
   }
   openModal('m-ogrenci');
@@ -2004,12 +2025,12 @@ function openSinifModal(id){
     document.getElementById('si-kira').value=si.kira||'';
     document.getElementById('si-asistan-pct').value=si.asistanPct||'';
     egSel.value=si.egitmenId||'';
-    document.getElementById('m-sinif-title').textContent='Sınıfı Düzenle';
+    document.getElementById('m-sinif-title').textContent=t('sinifi_duzenle');
   } else {
     ['si-ad','si-paket','si-tekders','si-kira','si-asistan-pct'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('si-saat').value='19:00';
     egSel.value='';
-    document.getElementById('m-sinif-title').textContent='Yeni Sınıf';
+    document.getElementById('m-sinif-title').textContent=t('yeni_sinif');
   }
   guncelleSinifAlani();
   openModal('m-sinif');
@@ -2042,11 +2063,11 @@ function openVideoSinifModal(id){
     const vs=S.videoSiniflar.find(v=>v.id===id);
     document.getElementById('vs-ad').value=vs?vs.ad:'';
     document.getElementById('vs-playlist').value=vs?vs.playlistId:'';
-    document.getElementById('m-video-sinif-title').textContent='Sınıfı Düzenle';
+    document.getElementById('m-video-sinif-title').textContent=t('sinifi_duzenle');
   } else {
     document.getElementById('vs-ad').value='';
     document.getElementById('vs-playlist').value='';
-    document.getElementById('m-video-sinif-title').textContent='Sınıf / Playlist Ekle';
+    document.getElementById('m-video-sinif-title').textContent=t('sinif_playlist_ekle_baslik');
   }
   openModal('m-video-sinif');
 }
@@ -2444,7 +2465,7 @@ function buildAyGrid(ogId,siId,editId){
   }).join('');
 }
 function toggleAy(el,k){el.classList.toggle('active');if(OD_AYLAR.includes(k))OD_AYLAR=OD_AYLAR.filter(x=>x!==k);else OD_AYLAR.push(k);}
-function openOdemeModal(preOg,preSi,editId){EDIT_ODEME=editId||null;document.getElementById('m-odeme-title').textContent=editId?'Ödeme Düzenle':'Ödeme Ekle';document.getElementById('od-edit-sil-row').style.display=editId?'block':'none';const ss=document.getElementById('od-sinif');ss.innerHTML=S.siniflar.map(s=>`<option value="${s.id}">${s.ad}</option>`).join('');if(editId){const od=S.odemeler.find(o=>o.id===editId);if(od){ss.value=od.sinifId;odSinifChange();document.getElementById('od-ogrenci').value=od.ogrenciId;document.getElementById('od-tutar').value=od.tutar||'';document.getElementById('od-tarih').value=od.tarih||'';document.getElementById('od-yontem').value=od.yontem||'nakit';document.getElementById('od-not').value=od.not||'';buildAyGrid(od.ogrenciId,od.sinifId,editId);}}else{if(preSi)ss.value=preSi;odSinifChange(true);if(preOg)document.getElementById('od-ogrenci').value=preOg;odOgrenciChange();document.getElementById('od-tarih').value=new Date().toISOString().slice(0,10);document.getElementById('od-not').value='';const s=S.siniflar.find(x=>x.id===ss.value);if(s)document.getElementById('od-tutar').value=s.paket||'';}openModal('m-odeme');}
+function openOdemeModal(preOg,preSi,editId){EDIT_ODEME=editId||null;document.getElementById('m-odeme-title').textContent=editId?t('odeme_duzenle'):t('odeme_ekle');document.getElementById('od-edit-sil-row').style.display=editId?'block':'none';const ss=document.getElementById('od-sinif');ss.innerHTML=S.siniflar.map(s=>`<option value="${s.id}">${s.ad}</option>`).join('');if(editId){const od=S.odemeler.find(o=>o.id===editId);if(od){ss.value=od.sinifId;odSinifChange();document.getElementById('od-ogrenci').value=od.ogrenciId;document.getElementById('od-tutar').value=od.tutar||'';document.getElementById('od-tarih').value=od.tarih||'';document.getElementById('od-yontem').value=od.yontem||'nakit';document.getElementById('od-not').value=od.not||'';buildAyGrid(od.ogrenciId,od.sinifId,editId);}}else{if(preSi)ss.value=preSi;odSinifChange(true);if(preOg)document.getElementById('od-ogrenci').value=preOg;odOgrenciChange();document.getElementById('od-tarih').value=new Date().toISOString().slice(0,10);document.getElementById('od-not').value='';const s=S.siniflar.find(x=>x.id===ss.value);if(s)document.getElementById('od-tutar').value=s.paket||'';}openModal('m-odeme');}
 function odSinifChange(skipOgChange){const siId=document.getElementById('od-sinif').value;const s=S.siniflar.find(x=>x.id===siId);const ids=(s?.kayitlar||[]).map(k=>k.ogrenciId);const list=S.ogrenciler.filter(o=>ids.includes(o.id)&&(o.durum||'aktif')==='aktif');document.getElementById('od-ogrenci').innerHTML=list.length?list.map(o=>`<option value="${o.id}">${o.ad} ${o.soyad}</option>`).join(''):'<option value="">Aktif öğrenci yok</option>';if(!EDIT_ODEME&&s)document.getElementById('od-tutar').value=s.paket||'';if(!skipOgChange)odOgrenciChange();}
 function odOgrenciChange(){const siId=document.getElementById('od-sinif').value,ogId=document.getElementById('od-ogrenci').value;if(ogId&&siId)buildAyGrid(ogId,siId,EDIT_ODEME);else document.getElementById('od-ay-grid').innerHTML='';}
 function toggleClear(btnId,val){const b=document.getElementById(btnId);if(b)b.classList.toggle('visible',val.length>0);}
@@ -2571,7 +2592,7 @@ function openOdemeDetay(ogId,siId){const og=S.ogrenciler.find(o=>o.id===ogId);co
 
 // ── ÖZEL DERS ──────────────────────────────────────────
 function setOSeg(v){OSEG=v;document.getElementById('oseg-k').classList.toggle('active',v==='k');document.getElementById('oseg-e').classList.toggle('active',v==='e');}
-function openOzelOgModal(id){EDIT_OZEL_OG=id||null;const araWrap=document.getElementById('oog-ara-wrap');document.getElementById('oog-ara').value='';document.getElementById('oog-ara-sonuc').innerHTML='';araWrap.style.display='block';if(id){const og=S.ozelOgrenciler.find(o=>o.id===id);document.getElementById('oog-ad').value=og.ad;document.getElementById('oog-soyad').value=og.soyad||'';document.getElementById('oog-tel').value=og.tel||'';setOSeg(og.cinsiyet||'k');document.getElementById('m-ozel-og-title').textContent='Öğrenci Düzenle';}else{['oog-ad','oog-soyad','oog-tel'].forEach(i=>document.getElementById(i).value='');setOSeg('k');document.getElementById('m-ozel-og-title').textContent='Özel Ders Öğrencisi';}openModal('m-ozel-og');}
+function openOzelOgModal(id){EDIT_OZEL_OG=id||null;const araWrap=document.getElementById('oog-ara-wrap');document.getElementById('oog-ara').value='';document.getElementById('oog-ara-sonuc').innerHTML='';araWrap.style.display='block';if(id){const og=S.ozelOgrenciler.find(o=>o.id===id);document.getElementById('oog-ad').value=og.ad;document.getElementById('oog-soyad').value=og.soyad||'';document.getElementById('oog-tel').value=og.tel||'';setOSeg(og.cinsiyet||'k');document.getElementById('m-ozel-og-title').textContent=t('ogrenci_duzenle');}else{['oog-ad','oog-soyad','oog-tel'].forEach(i=>document.getElementById(i).value='');setOSeg('k');document.getElementById('m-ozel-og-title').textContent=t('ozel_ders_ogrencisi');}openModal('m-ozel-og');}
 function oogAraInput(){
   const q=document.getElementById('oog-ara').value.trim().toLocaleLowerCase(LC());
   const sonucEl=document.getElementById('oog-ara-sonuc');
@@ -2605,12 +2626,12 @@ function openOzelPaketModal(ogId,paketId){
     document.getElementById('op-yontem').value=p.yontem||'nakit';
     document.getElementById('op-not').value=p.not||'';
     secili=p.egitmenIds||[];
-    document.getElementById('m-ozel-paket-title').textContent='Paketi Düzenle';
+    document.getElementById('m-ozel-paket-title').textContent=t('paketi_duzenle');
   }else{
     ['op-toplam','op-tutar','op-not'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('op-tarih').value=new Date().toISOString().slice(0,10);
     document.getElementById('op-yontem').value='nakit';
-    document.getElementById('m-ozel-paket-title').textContent='Yeni Paket';
+    document.getElementById('m-ozel-paket-title').textContent=t('yeni_paket');
   }
   const egListEl=document.getElementById('op-egitmen-list');
   egListEl.innerHTML=S.egitmenler.length?S.egitmenler.map(e=>`<label class="eg-check-row"><input type="checkbox" class="op-egitmen-cb" value="${e.id}" ${secili.includes(e.id)?'checked':''}/> ${e.ad}${e.basEgitmen?' ⭐':''}</label>`).join(''):'<div style="font-size:12px;color:var(--text3);">Henüz eğitmen eklenmedi.</div>';
@@ -3483,9 +3504,9 @@ function renderOzel(){
 
 function renderOdemeler(){
   const el=document.getElementById('odeme-content');
-  if(!S.siniflar.length&&!S.ozelPaketler.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">Önce sınıf veya özel ders öğrencisi ekleyin</div></div>';return;}
+  if(!S.siniflar.length&&!S.ozelPaketler.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('once_sinif_ekle')+'</div></div>';return;}
   const bk=ayKey(new Date().getFullYear(),new Date().getMonth()+1);
-  let html=`<div style="display:flex;gap:8px;justify-content:flex-end;margin:4px 0 12px;"><button class="btn btn-ghost btn-sm" onclick="openSonOdemelerModal()">🕐 Son Ödemeler</button><button class="btn btn-accent btn-sm" onclick="openOdemeModal()">＋ Ödeme Ekle</button></div>`;
+  let html=`<div style="display:flex;gap:8px;justify-content:flex-end;margin:4px 0 12px;"><button class="btn btn-ghost btn-sm" onclick="openSonOdemelerModal()">🕐 ${t('son_odemeler')}</button><button class="btn btn-accent btn-sm" onclick="openOdemeModal()">＋ ${t('odeme_ekle')}</button></div>`;
   // Grup sınıfları
   S.siniflar.forEach(si=>{
     const kayitlar=(si.kayitlar||[]).filter(k=>{const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);return og&&(og.durum||'aktif')==='aktif';});
@@ -3494,7 +3515,7 @@ function renderOdemeler(){
     const bek=kayitlar.filter(k=>{
       if(k.donduruldu)return false;
       const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);if(!og)return false;
-      const buAyOd=ogSiOd(og.id,si.id).some(o=>{const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===bk;});
+      const buAyOd=ogSiOd(og.id,si.id).some(o=>{const tr=o.tarih;if(!tr)return false;return ayKey(new Date(tr+'T00:00:00').getFullYear(),new Date(tr+'T00:00:00').getMonth()+1)===bk;});
       if(buAyOd)return false;
       const h=hesaplaKayit(og.id,si.id);const gh=h?h.hak:k.hak;
       return gh<=0;
@@ -3511,20 +3532,20 @@ function renderOdemeler(){
       // Aktif ders hakkı varsa (paket bu ay içinde geçerliyse) "Ödendi" göster
       const odendi=bAy||(gh>0);
       const statusBadge=donduruldu
-        ?`<span class="badge badge-amber">🧊 Donduruldu</span>`
-        :`<span class="badge ${odendi?'badge-green':'badge-red'}">${odendi?'Ödendi':'Bekliyor'}</span>`;
+        ?`<span class="badge badge-amber">🧊 ${t('donduruldu')}</span>`
+        :`<span class="badge ${odendi?'badge-green':'badge-red'}">${odendi?t('odendi'):t('bekliyor')}</span>`;
       html+=`<div class="odeme-card" style="${donduruldu?'opacity:.7;':''}">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
           <div style="display:flex;align-items:center;gap:8px;min-width:0;">
             <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div>
             <div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div>
-            <div style="font-size:11px;color:var(--text3);">${donduruldu?'🧊 Donduruldu':k.tip==='paket'?'Paket':'Tek'} · ${gh} ders${k.tip==='paket'&&h?.bitisTarih?' · Bitiş: '+formatDate(h.bitisTarih):''}</div></div>
+            <div style="font-size:11px;color:var(--text3);">${donduruldu?'🧊 '+t('donduruldu'):k.tip==='paket'?t('paket'):t('tek')} · ${gh} ${t('ders')}${k.tip==='paket'&&h?.bitisTarih?' · '+t('bitis')+': '+formatDate(h.bitisTarih):''}</div></div>
           </div>
           <div style="text-align:right;flex-shrink:0;">${statusBadge}<div style="font-size:11px;color:var(--text3);margin-top:2px;">${top.toLocaleString(LC())} ₺</div></div>
         </div>
         <div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;">
-          ${!donduruldu?`<button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOdemeModal('${og.id}','${si.id}')">＋ Ödeme Al</button>`:''}
-          <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openOdemeDetay('${og.id}','${si.id}')">Geçmiş</button>
+          ${!donduruldu?`<button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOdemeModal('${og.id}','${si.id}')">＋ ${t('odeme_al')}</button>`:''}
+          <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openOdemeDetay('${og.id}','${si.id}')">${t('gecmis')}</button>
           ${og.tel?waBtnG(og.tel,og.ad):''}
         </div>
       </div>`;
@@ -3534,12 +3555,12 @@ function renderOdemeler(){
   // Özel dersler grubu
   if(S.ozelOgrenciler.length){
     const acik=ODEME_ACIK.has('_ozel_');
-    html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('_ozel_')"><div><div class="odeme-sinif-adi" style="color:var(--purple);">Özel Dersler</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">${S.ozelOgrenciler.length} öğrenci</div></div><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-_ozel_">›</span></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-_ozel_">`;
+    html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('_ozel_')"><div><div class="odeme-sinif-adi" style="color:var(--purple);">${t('ozel_dersler')}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">${S.ozelOgrenciler.length} ${t('lbl_ogrenci_kucuk')}</div></div><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-_ozel_">›</span></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-_ozel_">`;
     S.ozelOgrenciler.forEach(og=>{
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
       const topOzel=paketler.reduce((s,p)=>s+(p.tutar||0),0);
       const aktif=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
-      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text3);">${aktif?`${aktif.toplamSaat-aktif.yapilanSaat} saat kaldı`:'Aktif paket yok'}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?'Aktif':'Bitti'}</span><div style="font-size:11px;color:var(--text3);margin-top:2px;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">＋ Yeni Paket</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="goTo('ozel',null)">Derse Git</button>${og.tel?waBtnG(og.tel,og.ad):''}</div></div>`;
+      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text3);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text3);margin-top:2px;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">＋ ${t('btn_yeni_paket')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${og.tel?waBtnG(og.tel,og.ad):''}</div></div>`;
     });
     html+=`</div></div>`;
   }
@@ -3867,7 +3888,7 @@ async function loginDene(){
   const btn=document.querySelector('#login-screen .btn-accent');
   if(!girilen)return;
   btn.disabled=true;
-  btn.textContent='Kontrol ediliyor...';
+  btn.textContent=t('kontrol_ediliyor');
 
   if(!window._firebaseReady||!window.db){
     await new Promise(r=>setTimeout(r,2000));
@@ -3887,7 +3908,7 @@ async function loginDene(){
     document.getElementById('login-sifre').focus();
     setTimeout(()=>errEl.style.display='none',3000);
     btn.disabled=false;
-    btn.textContent='Giriş Yap';
+    btn.textContent=t('giris_yap');
   }
 }
 
@@ -4594,7 +4615,7 @@ function acQrOkuyu(){
 async function kameraBaslat(){
   const video=document.getElementById('qr-video');
   const result=document.getElementById('qr-scan-result');
-  result.textContent='Kamera başlatılıyor...';
+  result.textContent=t('kamera_baslatiliyor');
 
   try{
     _kameraStream=await navigator.mediaDevices.getUserMedia({
@@ -4602,10 +4623,10 @@ async function kameraBaslat(){
     });
     video.srcObject=_kameraStream;
     video.play();
-    result.textContent='QR kodu kameraya tutun';
+    result.textContent=t('qr_kamera_tutun');
     _scanInterval=setInterval(qrTara,200);
   }catch(e){
-    result.textContent='Kamera erişimi sağlanamadı: '+e.message;
+    result.textContent=t('kamera_erisim_yok')+': '+e.message;
   }
 }
 
@@ -4635,7 +4656,7 @@ function qrTara(){
         setTimeout(()=>ogrenciQRYoklama(ogrenciId),300);return;
       }
     }catch(e){}
-    document.getElementById('qr-scan-result').textContent='Bu kod geçerli değil';
+    document.getElementById('qr-scan-result').textContent=t('qr_kod_gecersiz');
   }
 }
 
@@ -5629,7 +5650,7 @@ function demoOgrenciSec(ogId){
   const siniflar=S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===og.id));
   document.getElementById('login-screen').style.display='none';
   const ps=document.getElementById('portal-screen');ps.style.display='flex';
-  document.getElementById('portal-ad').textContent='Merhaba, '+og.ad+' '+(og.soyad||'')+' 👋';
+  document.getElementById('portal-ad').textContent=t('merhaba')+', '+og.ad+' '+(og.soyad||'')+' 👋';
   document.getElementById('portal-siniflar').textContent=ogId?siniflar.map(s=>s.ad).join(' · '):'Demo hesabı';
   portalTab('bilgiler');
 }
@@ -5639,10 +5660,10 @@ async function portalLoginDene(){
   const tel=normTel(document.getElementById('login-tel').value);
   const sifre=document.getElementById('login-og-sifre').value.trim();
   const errEl=document.getElementById('login-error');
-  if(!tel||!sifre){errEl.style.display='block';errEl.textContent='Telefon ve şifre zorunlu.';return;}
+  if(!tel||!sifre){errEl.style.display='block';errEl.textContent=t('tel_sifre_zorunlu');return;}
 
   const btn=document.querySelector('#login-ogrenci-fields .btn');
-  btn.disabled=true;btn.textContent='Kontrol ediliyor...';
+  btn.disabled=true;btn.textContent=t('kontrol_ediliyor');
 
   // Firebase hazır olana dek bekle
   if(!window._firebaseReady||!window.db){
@@ -5690,7 +5711,7 @@ async function portalLoginDene(){
     errEl.style.display='block';
     errEl.textContent=e.message||'Giriş başarısız.';
     setTimeout(()=>errEl.style.display='none',4000);
-    btn.disabled=false;btn.textContent='Öğrenci Girişi';
+    btn.disabled=false;btn.textContent=t('ogrenci_girisi');
   }
 }
 
@@ -5698,7 +5719,7 @@ function portalAc(){
   const og=S.ogrenciler.find(o=>o.id===PORTAL_OG_ID);
   if(!og)return;
   const siniflar=S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===og.id));
-  document.getElementById('portal-ad').textContent='Merhaba, '+og.ad+' '+( og.soyad||'')+'!';
+  document.getElementById('portal-ad').textContent=t('merhaba')+', '+og.ad+' '+( og.soyad||'')+'!';
   document.getElementById('portal-siniflar').textContent=siniflar.length?siniflar.map(s=>s.ad).join(' · '):'Henüz sınıf kaydı yok';
   document.getElementById('portal-screen').style.display='flex';
   portalTab('bilgiler');
@@ -6223,12 +6244,12 @@ async function odemeBilgiKaydet(){
   const iban=document.getElementById('ob-iban').value.trim();
   const banka=document.getElementById('ob-banka').value.trim();
   const status=document.getElementById('ob-status');
-  status.style.display='block';status.style.color='var(--text3)';status.textContent='Kaydediliyor...';
+  status.style.display='block';status.style.color='var(--text3)';status.textContent=t('sync_saving');
   try{
     await db.collection('ayarlar').doc('odemeBilgileri').set({adSoyad,iban,banka,qrBase64:OB_QR_BASE64||''});
     status.style.color='var(--green)';status.textContent='✓ Kaydedildi';
     setTimeout(()=>{status.style.display='none';},2500);
-  }catch(e){status.style.color='var(--accent)';status.textContent='Hata: '+e.message;}
+  }catch(e){status.style.color='var(--accent)';status.textContent=t('hata')+': '+e.message;}
 }
 async function tatilEkle(){
   const tarih=document.getElementById('tatil-tarih').value;
