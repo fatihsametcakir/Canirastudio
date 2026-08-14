@@ -1355,6 +1355,7 @@ const TRANSLATIONS={
     ogrenci_ara:'Öğrenci ara...', son_odemeler:'Son Ödemeler', son_1_hafta:'Son 1 Hafta', son_1_ay:'Son 1 Ay', tumu:'Tümü',
     gecti:'Geçti', tatil_gunu_eklenmedi:'Tatil günü eklenmedi', bu_donemde_odeme_yok:'Bu dönemde ödeme yok',
     demo_mod:'Demo Mod', gercek_veri_yok:'Gerçek veri yok', sinif_yok:'Sınıf yok',
+    hepsi_odedi:'Hepsi ödedi', bu_gun_ders_yok:'Bu gün ders yok', son_12_ay_grup_ozel:'Son 12 ay · Grup + Özel dersler',
   },
   en:{
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
@@ -1477,6 +1478,7 @@ const TRANSLATIONS={
     ogrenci_ara:'Search student...', son_odemeler:'Recent Payments', son_1_hafta:'Last Week', son_1_ay:'Last Month', tumu:'All',
     gecti:'Past', tatil_gunu_eklenmedi:'No holidays added', bu_donemde_odeme_yok:'No payments in this period',
     demo_mod:'Demo Mode', gercek_veri_yok:'No real data', sinif_yok:'No class',
+    hepsi_odedi:'Everyone paid', bu_gun_ders_yok:'No lessons today', son_12_ay_grup_ozel:'Last 12 months · Group + Private lessons',
   },
   ru:{
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
@@ -1599,6 +1601,7 @@ const TRANSLATIONS={
     ogrenci_ara:'Поиск ученика...', son_odemeler:'Последние платежи', son_1_hafta:'Последняя неделя', son_1_ay:'Последний месяц', tumu:'Все',
     gecti:'Прошло', tatil_gunu_eklenmedi:'Праздники не добавлены', bu_donemde_odeme_yok:'Платежей за этот период нет',
     demo_mod:'Демо-режим', gercek_veri_yok:'Нет реальных данных', sinif_yok:'Нет группы',
+    hepsi_odedi:'Все оплатили', bu_gun_ders_yok:'Сегодня занятий нет', son_12_ay_grup_ozel:'Последние 12 месяцев · Группы + Частные уроки',
   },
 };
 function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIONS.tr[key]||key;}
@@ -1682,7 +1685,7 @@ let CONFIRM_CB=null;
 
 // helpers
 function ayKey(y,m){return y+'-'+(m<10?'0':'')+m;}
-function ayLabel(k){if(!k)return'';const[y,m]=k.split('-');return AYLAR[parseInt(m)-1]+' '+y;}
+function ayLabel(k){if(!k)return'';const[y,m]=k.split('-');const d=new Date(parseInt(y),parseInt(m)-1,1);return d.toLocaleDateString(LC(),{month:'long'})+' '+y;}
 function addDays(s,d){const dt=new Date(s+'T00:00:00');dt.setDate(dt.getDate()+d);return dt.toISOString().slice(0,10);}
 function formatDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short'});}catch(e){return d;}}
 function daysLeft(d){if(!d)return 999;return Math.ceil((new Date(d+'T00:00:00')-new Date())/864e5);}
@@ -2428,7 +2431,7 @@ function buildAyGrid(ogId,siId,editId){
   ogSiOd(ogId,siId).forEach(o=>{if(o.id===editId)return;(o.aylar||[]).forEach(a=>odenenAylar.add(a));});
   if(editId){const ed=S.odemeler.find(o=>o.id===editId);(ed?.aylar||[]).forEach(a=>{OD_AYLAR.push(a);OD_ONCEKI.add(a);});}
   const aylar=[];
-  for(let i=-3;i<=6;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);aylar.push({yil:d.getFullYear(),ay:d.getMonth()+1,label:AYLAR[d.getMonth()]+"'"+(d.getFullYear()+'').slice(2)});}
+  for(let i=-3;i<=6;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);aylar.push({yil:d.getFullYear(),ay:d.getMonth()+1,label:d.toLocaleDateString(LC(),{month:'short'})+"'"+(d.getFullYear()+'').slice(2)});}
   document.getElementById('od-ay-grid').innerHTML=aylar.map(a=>{
     const k=ayKey(a.yil,a.ay);
     const odendi=odenenAylar.has(k);
@@ -3464,11 +3467,9 @@ function renderOzel(){
       <div class="ozel-og-header">
         <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}">${initials(og.ad,og.soyad||'')}</div>
         <div style="flex:1;min-width:0;">
-          <div class="ozel-og-isim">${og.ad} ${og.soyad||''}</div>
-          <div class="ozel-og-tel">${og.tel||''}</div>
+          <div class="ozel-og-isim" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${og.ad} ${og.soyad||''}</div>
         </div>
-        <div style="display:flex;gap:5px;">
-          ${og.tel?waBtnG(og.tel,og.ad):''}
+        <div style="display:flex;gap:5px;flex-shrink:0;">
           <button class="btn btn-ghost btn-sm" onclick="openOzelOgModal('${og.id}')">${t('btn_bilgi_duzenle')}</button>
           <button class="btn btn-danger btn-sm" onclick="silOzelOg('${og.id}')">${t('btn_sil')}</button>
         </div>
@@ -3499,7 +3500,7 @@ function renderOdemeler(){
       return gh<=0;
     }).length;
     const acik=ODEME_ACIK.has(si.id);
-    html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('${si.id}')"><div><div class="odeme-sinif-adi">${si.ad}</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;"><span class="badge badge-green" style="font-size:10px;">${kayitlar.length} öğrenci</span>${bek>0?`<span class="badge badge-red" style="font-size:10px;">${bek} bekliyor</span>`:'<span class="badge badge-green" style="font-size:10px;">Hepsi ödedi</span>'}</div></div><div style="display:flex;align-items:center;gap:7px;"><button class="btn btn-green btn-sm" onclick="event.stopPropagation();openOdemeModal('','${si.id}')">＋</button><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-${si.id}">›</span></div></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-${si.id}">`;
+    html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('${si.id}')"><div><div class="odeme-sinif-adi">${si.ad}</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;"><span class="badge badge-green" style="font-size:10px;">${kayitlar.length} ${t('lbl_ogrenci_kucuk')}</span>${bek>0?`<span class="badge badge-red" style="font-size:10px;">${bek} ${t('bekliyor')}</span>`:'<span class="badge badge-green" style="font-size:10px;">'+t('hepsi_odedi')+'</span>'}</div></div><div style="display:flex;align-items:center;gap:7px;"><button class="btn btn-green btn-sm" onclick="event.stopPropagation();openOdemeModal('','${si.id}')">＋</button><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-${si.id}">›</span></div></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-${si.id}">`;
     kayitlar.forEach(k=>{
       const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);if(!og)return;
       const donduruldu=!!k.donduruldu;
@@ -4979,7 +4980,7 @@ function renderTakvimGunDetay(){
   let html=`<div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${tarihFmt}</div>`;
 
   if(!dersler.length){
-    html+=`<div style="text-align:center;padding:24px 16px;color:var(--text3);font-size:14px;">Bu gün ders yok</div>`;
+    html+=`<div style="text-align:center;padding:24px 16px;color:var(--text3);font-size:14px;">${t('bu_gun_ders_yok')}</div>`;
     el.innerHTML=html;
     return;
   }
@@ -5000,7 +5001,7 @@ function renderTakvimGunDetay(){
         <div class="takvim-ders-saat">${si.saat}${egitmen?` · ${egitmen.ad}`:''}</div>
         <div class="takvim-ders-ad">${si.ad}</div>
         <div class="takvim-ders-meta">
-          <span class="badge badge-gray" style="font-size:10px;">👥 ${aktifOgList.length} öğrenci</span>
+          <span class="badge badge-gray" style="font-size:10px;">👥 ${aktifOgList.length} ${t('lbl_ogrenci_kucuk')}</span>
           ${gecmis||tarih===bugun?`<span class="badge ${yoklamaYapildi?'badge-green':'badge-gray'}" style="font-size:10px;">${yoklamaYapildi?`✓ ${gelenler.length} katıldı`:'Yoklama alınmadı'}</span>`:''}
         </div>
       </div>
@@ -5580,7 +5581,7 @@ function renderGelirTrend(){
         ${xlabels}
       </svg>
     </div>
-    <div style="font-size:11px;color:var(--text3);margin-top:8px;text-align:center;">Son 12 ay · Grup + Özel dersler</div>`;
+    <div style="font-size:11px;color:var(--text3);margin-top:8px;text-align:center;">${t('son_12_ay_grup_ozel')}</div>`;
 
   el.innerHTML=html;
 }
