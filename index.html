@@ -468,54 +468,54 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 <!-- TUTMA ORANI MODAL -->
 <div class="overlay" id="m-tutma-orani"><div class="sheet" style="max-height:90vh;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-tutma-orani')">✕</button>
-  <div class="sheet-title">📉 Öğrenci Tutma Oranı</div>
-  <div id="retention-content" style="overflow-y:auto;max-height:calc(90vh - 80px);"><div style="font-size:13px;color:var(--text3);padding:8px 0;">Yükleniyor...</div></div>
+  <div class="sheet-title" data-i18n="ogrenci_tutma_orani_ikon">📉 Öğrenci Tutma Oranı</div>
+  <div id="retention-content" style="overflow-y:auto;max-height:calc(90vh - 80px);"><div style="font-size:13px;color:var(--text3);padding:8px 0;" data-i18n="yukleniyor">Yükleniyor...</div></div>
 </div></div>
 
 <!-- AYLIK GELİR MODAL -->
 <div class="overlay" id="m-aylik-gelir"><div class="sheet" style="max-height:90vh;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-aylik-gelir')">✕</button>
-  <div class="sheet-title">📊 Aylık Gelir</div>
+  <div class="sheet-title" data-i18n="aylik_gelir_ikon">📊 Aylık Gelir</div>
   <div id="gelir-content" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
 </div></div>
 
 <!-- GELİR GİDER SHEET -->
 <div class="overlay" id="m-gider-rapor"><div class="sheet" style="max-height:90vh;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-gider-rapor')">✕</button>
-  <div class="sheet-title">💰 Gider Raporu</div>
+  <div class="sheet-title" data-i18n="gider_raporu_ikon">💰 Gider Raporu</div>
   <div id="gider-rapor-content" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
 </div></div>
 
 <div class="overlay" id="m-gelir-trend"><div class="sheet" style="max-height:90vh;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-gelir-trend')">✕</button>
-  <div class="sheet-title">📈 Aylık Gelir Trendi</div>
+  <div class="sheet-title" data-i18n="aylik_gelir_trendi_ikon">📈 Aylık Gelir Trendi</div>
   <div id="gelir-trend-content2" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
 </div></div>
 
 <div class="overlay" id="m-egitmen-panel"><div class="sheet" style="max-height:90vh;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-egitmen-panel')">✕</button>
-  <div class="sheet-title">👨‍🏫 Eğitmenler & Giderler</div>
+  <div class="sheet-title" data-i18n="egitmenler_giderler_ikon">👨‍🏫 Eğitmenler & Giderler</div>
   <div id="egitmen-panel-content2" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
 </div></div>
 
 <div class="overlay" id="m-odeme-bilgi-ayar"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-odeme-bilgi-ayar')">✕</button>
-  <div class="sheet-title">🏦 Ödeme Bilgileri</div>
+  <div class="sheet-title" data-i18n="odeme_bilgileri_ikon">🏦 Ödeme Bilgileri</div>
   <div style="padding:4px 0;">
-    <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Öğrenci portalında gösterilecek ödeme bilgileri.</div>
-    <div class="field"><label>Ad Soyad (Hesap Sahibi)</label><input id="ob-adsoyad" type="text" placeholder="Örn: Can Yılmaz"/></div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:12px;" data-i18n="odeme_bilgi_aciklama">Öğrenci portalında gösterilecek ödeme bilgileri.</div>
+    <div class="field"><label data-i18n="ad_soyad_hesap">Ad Soyad (Hesap Sahibi)</label><input id="ob-adsoyad" type="text" placeholder="Örn: Can Yılmaz"/></div>
     <div class="field"><label>IBAN</label><input id="ob-iban" type="text" placeholder="TR00 0000 0000 0000 0000 0000 00" style="font-family:monospace;"/></div>
-    <div class="field"><label>Banka Adı</label><input id="ob-banka" type="text" placeholder="Örn: Ziraat Bankası"/></div>
+    <div class="field"><label data-i18n="banka_adi">Banka Adı</label><input id="ob-banka" type="text" placeholder="Örn: Ziraat Bankası"/></div>
     <div class="field">
-      <label>QR Kod Görseli</label>
+      <label data-i18n="qr_kod_gorseli">QR Kod Görseli</label>
       <div id="ob-qr-preview" style="display:none;margin-bottom:8px;text-align:center;">
         <img id="ob-qr-img" style="max-width:160px;max-height:160px;border-radius:8px;border:1px solid var(--border2);" src=""/>
       </div>
       <input type="file" id="ob-qr-file" accept="image/*" style="display:none;" onchange="obQrSec(this)"/>
-      <button class="btn" style="width:100%;font-size:13px;" onclick="document.getElementById('ob-qr-file').click()">📷 QR Görsel Seç</button>
-      <button id="ob-qr-sil-btn" class="btn" style="width:100%;font-size:13px;margin-top:6px;display:none;color:var(--accent);border-color:var(--accent);" onclick="obQrSil()">✕ QR Görseli Kaldır</button>
+      <button class="btn" style="width:100%;font-size:13px;" onclick="document.getElementById('ob-qr-file').click()" data-i18n="qr_gorsel_sec">📷 QR Görsel Seç</button>
+      <button id="ob-qr-sil-btn" class="btn" style="width:100%;font-size:13px;margin-top:6px;display:none;color:var(--accent);border-color:var(--accent);" onclick="obQrSil()" data-i18n="qr_gorseli_kaldir">✕ QR Görseli Kaldır</button>
     </div>
-    <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="odemeBilgiKaydet()">Kaydet</button>
+    <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="odemeBilgiKaydet()" data-i18n="btn_kaydet">Kaydet</button>
     <div id="ob-status" style="font-size:12px;text-align:center;margin-top:8px;display:none;"></div>
   </div>
 </div></div>
@@ -524,25 +524,25 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="sheet">
     <div class="sheet-handle"></div>
     <button class="sheet-close" onclick="closeModal('m-gelir-gider')">✕</button>
-    <div class="sheet-title">Gelir & Gider</div>
+    <div class="sheet-title" data-i18n="gelir_gider">Gelir & Gider</div>
     <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:8px;">
       <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-aylik-gelir');renderGelir();">
-        📊 Aylık Gelir
+        📊 <span data-i18n="aylik_gelir">Aylık Gelir</span>
       </button>
       <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-gider-rapor');renderGiderRapor();">
-        💰 Gider Raporu
+        💰 <span data-i18n="gider_raporu">Gider Raporu</span>
       </button>
       <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-gelir-trend');renderGelirTrend();">
-        📈 Aylık Gelir Trendi
+        📈 <span data-i18n="aylik_gelir_trendi">Aylık Gelir Trendi</span>
       </button>
       <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-egitmen-panel');renderEgitmenPanel();">
-        👨‍🏫 Eğitmenler & Giderler
+        👨‍🏫 <span data-i18n="egitmenler_giderler">Eğitmenler & Giderler</span>
       </button>
       <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-odeme-bilgi-ayar');odemeBilgiYukle()">
-        🏦 Ödeme Bilgileri
+        🏦 <span data-i18n="odeme_bilgileri">Ödeme Bilgileri</span>
       </button>
       <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-tutma-orani');renderRetention();">
-        📉 Öğrenci Tutma Oranı
+        📉 <span data-i18n="ogrenci_tutma_orani">Öğrenci Tutma Oranı</span>
       </button>
     </div>
   </div>
@@ -552,20 +552,20 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 <div class="overlay" id="m-birlestir"><div class="sheet">
   <div class="sheet-handle"></div>
   <button class="sheet-close" onclick="closeModal('m-birlestir')">✕</button>
-  <div class="sheet-title">⇄ Sınıf Birleştir</div>
+  <div class="sheet-title" data-i18n="sinif_birlestir">⇄ Sınıf Birleştir</div>
   <div style="font-size:13px;color:var(--text3);margin-bottom:14px;" id="birlestir-aciklama"></div>
   <div class="field">
-    <label>Hedef Sınıf (öğrenciler buraya taşınır)</label>
+    <label data-i18n="hedef_sinif">Hedef Sınıf (öğrenciler buraya taşınır)</label>
     <select id="birlestir-hedef" style="width:100%;"></select>
   </div>
-  <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px;font-size:12px;color:var(--text3);line-height:1.6;">
+  <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px;font-size:12px;color:var(--text3);line-height:1.6;" data-i18n="birlestir_uyari">
     ⚠️ Kaynak sınıftaki tüm aktif öğrenciler hedef sınıfa eklenir.<br>
     Zaten hedef sınıfta olanlar atlanır.<br>
     Kaynak sınıf otomatik pasife alınır.
   </div>
   <div class="form-actions">
-    <button class="btn btn-ghost" onclick="closeModal('m-birlestir')">İptal</button>
-    <button class="btn btn-accent" id="btn-birlestir" onclick="sinifBirlestir()">Birleştir</button>
+    <button class="btn btn-ghost" onclick="closeModal('m-birlestir')" data-i18n="btn_iptal">İptal</button>
+    <button class="btn btn-accent" id="btn-birlestir" onclick="sinifBirlestir()" data-i18n="birlestir">Birleştir</button>
   </div>
 </div></div>
 
@@ -679,12 +679,12 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- TAKVİM -->
   <div class="page" id="pg-takvim">
     <div style="margin-bottom:12px;padding:14px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border2);">
-      <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">🎌 Tatil Günleri</div>
+      <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
       <div style="display:flex;gap:8px;margin-bottom:8px;">
         <input id="tatil-tarih" type="date" style="flex:1;"/>
-        <input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" style="flex:2;"/>
+        <input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad" style="flex:2;"/>
       </div>
-      <button class="btn btn-accent" style="width:100%;margin-bottom:12px;" onclick="tatilEkle()">＋ Tatil Ekle</button>
+      <button class="btn btn-accent" style="width:100%;margin-bottom:12px;" onclick="tatilEkle()" data-i18n="btn_tatil_ekle">＋ Tatil Ekle</button>
       <div id="tatil-liste"></div>
     </div>
     <div id="takvim-content"></div>
@@ -698,8 +698,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- ÖZEL DERSLER -->
   <div class="page" id="pg-ozel">
     <div style="display:flex;gap:8px;margin:4px 0 14px;">
-      <button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOzelOgModal()">＋ Öğrenci Ekle</button>
-      <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openOzelTakvim()">📅 Haftalık Takvim</button>
+      <button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOzelOgModal()" data-i18n="btn_ogrenci_ekle">＋ Öğrenci Ekle</button>
+      <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openOzelTakvim()" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
     </div>
     <div id="ozel-list"></div>
   </div>
@@ -720,7 +720,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- ÖDEMELER -->
   <div class="page" id="pg-odemeler">
     <div class="tab-row">
-      <button class="tab-btn active" id="tab-odemeler" onclick="setOdemeTab('odemeler')">Öğrenciler</button>
+      <button class="tab-btn active" id="tab-odemeler" onclick="setOdemeTab('odemeler')" data-i18n="nav_ogrenciler">Öğrenciler</button>
     </div>
     <div id="odeme-content"></div>
 
@@ -729,7 +729,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- DERS VİDEOLARI -->
   <div class="page" id="pg-videolar">
     <div style="display:flex;gap:8px;margin:4px 0 14px;">
-      <button class="btn btn-accent btn-sm" style="flex:1;" onclick="openVideoSinifModal()">＋ Sınıf / Playlist Ekle</button>
+      <button class="btn btn-accent btn-sm" style="flex:1;" onclick="openVideoSinifModal()" data-i18n="btn_sinif_playlist_ekle">＋ Sınıf / Playlist Ekle</button>
     </div>
     <div id="videolar-list" class="video-grid"></div>
   </div>
@@ -771,7 +771,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <!-- Tema -->
     <div class="acc-item">
       <div class="acc-head" onclick="accToggle('acc-tema')">
-        <div class="acc-title"><span class="acc-icon">🎨</span> Tema</div>
+        <div class="acc-title"><span class="acc-icon">🎨</span> <span data-i18n="acc_tema">Tema</span></div>
         <span class="acc-arrow" id="arr-acc-tema">›</span>
       </div>
       <div class="acc-body" id="acc-tema">
@@ -784,31 +784,31 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <!-- Güvenlik -->
     <div class="acc-item">
       <div class="acc-head" onclick="accToggle('acc-guvenlik')">
-        <div class="acc-title"><span class="acc-icon">🔒</span> Güvenlik</div>
+        <div class="acc-title"><span class="acc-icon">🔒</span> <span data-i18n="acc_guvenlik">Güvenlik</span></div>
         <span class="acc-arrow" id="arr-acc-guvenlik">›</span>
       </div>
       <div class="acc-body" id="acc-guvenlik">
-        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">Şifre tüm cihazlarda geçerli olur. Varsayılan: <code style="background:var(--surface2);padding:1px 5px;border-radius:4px;">dans2024</code></div>
-        <div class="field"><label>Mevcut Şifre</label><input id="sifre-eski" type="password" placeholder="Mevcut şifre"/></div>
-        <div class="field"><label>Yeni Şifre</label><input id="sifre-yeni" type="password" placeholder="En az 6 karakter"/></div>
-        <div class="field"><label>Tekrar</label><input id="sifre-tekrar" type="password" placeholder="Tekrar girin"/></div>
-        <button class="btn btn-accent" style="width:100%;margin-bottom:10px;" onclick="sifreDegistir()">Şifreyi Güncelle</button>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;" data-i18n="sifre_aciklama">Şifre tüm cihazlarda geçerli olur. Varsayılan: <code style="background:var(--surface2);padding:1px 5px;border-radius:4px;">dans2024</code></div>
+        <div class="field"><label data-i18n="mevcut_sifre">Mevcut Şifre</label><input id="sifre-eski" type="password" placeholder="Mevcut şifre" data-i18n-ph="mevcut_sifre_ph"/></div>
+        <div class="field"><label data-i18n="yeni_sifre">Yeni Şifre</label><input id="sifre-yeni" type="password" placeholder="En az 6 karakter" data-i18n-ph="en_az_6"/></div>
+        <div class="field"><label data-i18n="tekrar">Tekrar</label><input id="sifre-tekrar" type="password" placeholder="Tekrar girin" data-i18n-ph="tekrar_girin"/></div>
+        <button class="btn btn-accent" style="width:100%;margin-bottom:10px;" onclick="sifreDegistir()" data-i18n="sifreyi_guncelle">Şifreyi Güncelle</button>
       </div>
     </div>
 
     <!-- WhatsApp Şablonları -->
     <div class="acc-item">
       <div class="acc-head" onclick="accToggle('acc-wa')">
-        <div class="acc-title"><span class="acc-icon">💬</span> WhatsApp Şablonları</div>
+        <div class="acc-title"><span class="acc-icon">💬</span> <span data-i18n="acc_wa">WhatsApp Şablonları</span></div>
         <span class="acc-arrow" id="arr-acc-wa">›</span>
       </div>
       <div class="acc-body" id="acc-wa">
-        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;">Değişkenler: <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{ad}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{sinif}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{gun}</code></div>
-        <div class="field"><label>Süresi Dolmuş</label><textarea id="wa-tpl-doldu" style="height:72px;font-size:13px;"></textarea></div>
-        <div class="field"><label>3 Gün İçinde</label><textarea id="wa-tpl-yakın" style="height:72px;font-size:13px;"></textarea></div>
-        <div class="field"><label>4-7 Gün Hatırlatma</label><textarea id="wa-tpl-hatirla" style="height:72px;font-size:13px;"></textarea></div>
-        <div class="field"><label>Genel Mesaj</label><textarea id="wa-tpl-genel" style="height:60px;font-size:13px;"></textarea></div>
-        <button class="btn btn-accent" style="width:100%;" onclick="waSablonKaydet()">Kaydet</button>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;"><span data-i18n="degiskenler">Değişkenler</span>: <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{ad}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{sinif}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{gun}</code></div>
+        <div class="field"><label data-i18n="suresi_dolmus">Süresi Dolmuş</label><textarea id="wa-tpl-doldu" style="height:72px;font-size:13px;"></textarea></div>
+        <div class="field"><label data-i18n="gun_3_icinde">3 Gün İçinde</label><textarea id="wa-tpl-yakın" style="height:72px;font-size:13px;"></textarea></div>
+        <div class="field"><label data-i18n="gun_4_7_hatirlatma">4-7 Gün Hatırlatma</label><textarea id="wa-tpl-hatirla" style="height:72px;font-size:13px;"></textarea></div>
+        <div class="field"><label data-i18n="genel_mesaj">Genel Mesaj</label><textarea id="wa-tpl-genel" style="height:60px;font-size:13px;"></textarea></div>
+        <button class="btn btn-accent" style="width:100%;" onclick="waSablonKaydet()" data-i18n="btn_kaydet">Kaydet</button>
       </div>
     </div>
 
@@ -819,18 +819,18 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <!-- Yedekleme -->
     <div class="acc-item">
       <div class="acc-head" onclick="accToggle('acc-yedek')">
-        <div class="acc-title"><span class="acc-icon">💾</span> Yedekleme</div>
+        <div class="acc-title"><span class="acc-icon">💾</span> <span data-i18n="acc_yedek">Yedekleme</span></div>
         <span class="acc-arrow" id="arr-acc-yedek">›</span>
       </div>
       <div class="acc-body" id="acc-yedek">
-        <button class="drawer-btn" onclick="yedekal()">↓ JSON Yedek İndir</button>
+        <button class="drawer-btn" onclick="yedekal()" data-i18n="json_yedek_indir">↓ JSON Yedek İndir</button>
         <div class="drawer-sep"></div>
         <input type="file" id="restore-file" accept=".json" style="display:none;" onchange="geriYukle(this)"/>
-        <button class="drawer-btn" onclick="document.getElementById('restore-file').click()">↑ Yedekten Geri Yükle</button>
+        <button class="drawer-btn" onclick="document.getElementById('restore-file').click()" data-i18n="yedekten_geri_yukle">↑ Yedekten Geri Yükle</button>
         <div class="drawer-sep"></div>
-        <button class="drawer-btn" onclick="githubYedekTetikle()" id="gh-backup-btn">☁ GitHub'a Şimdi Yedekle</button>
-        <button class="drawer-btn" onclick="githubTokenSifirla()" style="font-size:12px;opacity:.7;">🔑 GitHub Token Sıfırla</button>
-        <div style="font-size:11px;color:var(--text3);padding:2px 14px 8px;line-height:1.5;">Her gece 04:00'te otomatik çalışır. Manuel tetiklemek için tıklayın.</div>
+        <button class="drawer-btn" onclick="githubYedekTetikle()" id="gh-backup-btn" data-i18n="github_simdi_yedekle">☁ GitHub'a Şimdi Yedekle</button>
+        <button class="drawer-btn" onclick="githubTokenSifirla()" style="font-size:12px;opacity:.7;" data-i18n="github_token_sifirla">🔑 GitHub Token Sıfırla</button>
+        <div style="font-size:11px;color:var(--text3);padding:2px 14px 8px;line-height:1.5;" data-i18n="yedek_otomatik_aciklama">Her gece 04:00'te otomatik çalışır. Manuel tetiklemek için tıklayın.</div>
       </div>
     </div>
 
@@ -844,15 +844,15 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <!-- Excel Dışa Aktarma -->
     <div class="acc-item">
       <div class="acc-head" onclick="accToggle('acc-excel')">
-        <div class="acc-title"><span class="acc-icon">📊</span> Excel'e Aktar</div>
+        <div class="acc-title"><span class="acc-icon">📊</span> <span data-i18n="acc_excel">Excel'e Aktar</span></div>
         <span class="acc-arrow" id="arr-acc-excel">›</span>
       </div>
       <div class="acc-body" id="acc-excel">
-        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;">Tüm sekmeler tek Excel dosyasında indirilir.</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;" data-i18n="excel_aciklama">Tüm sekmeler tek Excel dosyasında indirilir.</div>
         <button class="drawer-btn" onclick="excelIndir()" id="excel-indir-btn">
-          <span>📥</span> Excel İndir (.xlsx)
+          <span>📥</span> <span data-i18n="excel_indir">Excel İndir (.xlsx)</span>
         </button>
-        <div style="font-size:11px;color:var(--text3);margin-top:8px;padding:0 2px;line-height:1.6;">
+        <div style="font-size:11px;color:var(--text3);margin-top:8px;padding:0 2px;line-height:1.6;" data-i18n="excel_icerik">
           İçerik: Öğrenciler · Sınıflar · Ödemeler · Aylık Gelir · Özel Dersler
         </div>
       </div>
@@ -861,16 +861,16 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <!-- Uygulamayı Yükle -->
     <div class="acc-item">
       <div class="acc-head" onclick="accToggle('acc-pwa')">
-        <div class="acc-title"><span class="acc-icon">📱</span> Uygulamayı Yükle</div>
+        <div class="acc-title"><span class="acc-icon">📱</span> <span data-i18n="acc_pwa">Uygulamayı Yükle</span></div>
         <span class="acc-arrow" id="arr-acc-pwa">›</span>
       </div>
       <div class="acc-body" id="acc-pwa">
-        <button id="pwa-install-btn" class="btn btn-accent" style="width:100%;display:none;margin-bottom:10px;" onclick="pwaKur()">↓ Yükle (Android)</button>
+        <button id="pwa-install-btn" class="btn btn-accent" style="width:100%;display:none;margin-bottom:10px;" onclick="pwaKur()" data-i18n="pwa_yukle">↓ Yükle (Android)</button>
         <div style="font-size:12px;color:var(--text3);background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;line-height:1.7;margin-bottom:8px;">
-          <strong style="color:var(--text2);">Android:</strong> ⋮ menü → "Ana ekrana ekle"
+          <strong style="color:var(--text2);">Android:</strong> <span data-i18n="pwa_android">⋮ menü → "Ana ekrana ekle"</span>
         </div>
         <div style="font-size:12px;color:var(--text3);background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;line-height:1.7;">
-          <strong style="color:var(--text2);">iPhone (Safari):</strong> Paylaş ↑ → "Ana Ekrana Ekle"
+          <strong style="color:var(--text2);">iPhone (Safari):</strong> <span data-i18n="pwa_iphone">Paylaş ↑ → "Ana Ekrana Ekle"</span>
         </div>
       </div>
     </div>
@@ -878,54 +878,54 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <!-- Veri Yönetimi -->
     <div class="acc-item">
       <div class="acc-head" onclick="accToggle('acc-veri')">
-        <div class="acc-title"><span class="acc-icon">🗑</span> Veri Yönetimi</div>
+        <div class="acc-title"><span class="acc-icon">🗑</span> <span data-i18n="acc_veri">Veri Yönetimi</span></div>
         <span class="acc-arrow" id="arr-acc-veri">›</span>
       </div>
       <div class="acc-body" id="acc-veri">
-        <button class="drawer-btn danger" onclick="silKategori('odemeler')">Tüm Ödemeleri Sil</button>
-        <button class="drawer-btn danger" onclick="silKategori('ozelPaketler')">Tüm Özel Paketleri Sil</button>
-        <button class="drawer-btn danger" onclick="silKategori('ozelOgrenciler')">Tüm Özel Öğrencileri Sil</button>
-        <button class="drawer-btn danger" onclick="silKategori('siniflar')">Tüm Sınıfları Sil</button>
-        <button class="drawer-btn danger" onclick="silKategori('ogrenciler')">Tüm Öğrencileri Sil</button>
+        <button class="drawer-btn danger" onclick="silKategori('odemeler')" data-i18n="sil_odemeler">Tüm Ödemeleri Sil</button>
+        <button class="drawer-btn danger" onclick="silKategori('ozelPaketler')" data-i18n="sil_ozel_paketler">Tüm Özel Paketleri Sil</button>
+        <button class="drawer-btn danger" onclick="silKategori('ozelOgrenciler')" data-i18n="sil_ozel_ogrenciler">Tüm Özel Öğrencileri Sil</button>
+        <button class="drawer-btn danger" onclick="silKategori('siniflar')" data-i18n="sil_siniflar">Tüm Sınıfları Sil</button>
+        <button class="drawer-btn danger" onclick="silKategori('ogrenciler')" data-i18n="sil_ogrenciler">Tüm Öğrencileri Sil</button>
         <div class="drawer-sep"></div>
-        <button class="btn btn-danger" style="width:100%;font-weight:600;" onclick="tumVerileriSifirla()">⚠ Tüm Verileri Sıfırla</button>
+        <button class="btn btn-danger" style="width:100%;font-weight:600;" onclick="tumVerileriSifirla()" data-i18n="tum_verileri_sifirla">⚠ Tüm Verileri Sıfırla</button>
       </div>
     </div>
 
   </div>
   <div style="padding:12px 16px max(20px,env(safe-area-inset-bottom));border-top:1px solid var(--border);flex-shrink:0;">
-    <button class="btn" style="width:100%;padding:12px;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-weight:600;" onclick="cikisYap()">→ Çıkış Yap</button>
+    <button class="btn" style="width:100%;padding:12px;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-weight:600;" onclick="cikisYap()" data-i18n="cikis_yap">→ Çıkış Yap</button>
   </div>
 </div>
 <div class="overlay" id="m-ogrenci"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ogrenci')">✕</button>
   <div class="sheet-title" id="m-ogrenci-title">Yeni Öğrenci</div>
-  <div class="field"><label>Ad</label><input id="og-ad" placeholder="Ad"/></div>
-  <div class="field"><label>Soyad</label><input id="og-soyad" placeholder="Soyad"/></div>
-  <div class="field"><label>Cinsiyet</label><div class="seg"><div class="seg-btn active" id="seg-k" onclick="setSeg('k')">Kadın</div><div class="seg-btn" id="seg-e" onclick="setSeg('e')">Erkek</div></div></div>
-  <div class="field"><label>Telefon</label><input id="og-tel" placeholder="+90 5xx xxx xx xx" type="tel"/></div>
-  <div class="field"><label>Not (isteğe bağlı)</label><textarea id="og-not" placeholder="Fiziksel özellik, tercih, hatırlatma..." style="resize:none;height:72px;"></textarea></div>
-  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ogrenci')">İptal</button><button class="btn btn-accent" id="btn-save-og" onclick="saveOgrenci()">Kaydet</button></div>
-  <div id="og-sil-row" style="display:none;margin-top:8px;"><button class="btn btn-danger" style="width:100%;" onclick="silOgrenci()">Bu Öğrenciyi Sil</button></div>
+  <div class="field"><label data-i18n="lbl_ad">Ad</label><input id="og-ad" placeholder="Ad"/></div>
+  <div class="field"><label data-i18n="lbl_soyad">Soyad</label><input id="og-soyad" placeholder="Soyad"/></div>
+  <div class="field"><label data-i18n="lbl_cinsiyet">Cinsiyet</label><div class="seg"><div class="seg-btn active" id="seg-k" onclick="setSeg('k')" data-i18n="kadin">Kadın</div><div class="seg-btn" id="seg-e" onclick="setSeg('e')" data-i18n="erkek">Erkek</div></div></div>
+  <div class="field"><label data-i18n="lbl_telefon">Telefon</label><input id="og-tel" placeholder="+90 5xx xxx xx xx" type="tel"/></div>
+  <div class="field"><label data-i18n="not_istege_bagli">Not (isteğe bağlı)</label><textarea id="og-not" placeholder="Fiziksel özellik, tercih, hatırlatma..." style="resize:none;height:72px;"></textarea></div>
+  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ogrenci')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-og" onclick="saveOgrenci()" data-i18n="btn_kaydet">Kaydet</button></div>
+  <div id="og-sil-row" style="display:none;margin-top:8px;"><button class="btn btn-danger" style="width:100%;" onclick="silOgrenci()" data-i18n="bu_ogrenciyi_sil">Bu Öğrenciyi Sil</button></div>
 </div></div>
 
 <!-- Sınıf Modal -->
 <div class="overlay" id="m-sinif"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-sinif')">✕</button>
   <div class="sheet-title" id="m-sinif-title">Yeni Sınıf</div>
-  <div class="field"><label>Sınıf Adı</label><input id="si-ad" placeholder="örn. Salsa Başlangıç"/></div>
-  <div class="field"><label>Eğitmen</label><select id="si-egitmen"><option value="">— Seçin —</option></select></div>
-  <div class="field"><label>Aylık Kira (₺)</label><input id="si-kira" type="number" placeholder="5000"/></div>
+  <div class="field"><label data-i18n="sinif_adi">Sınıf Adı</label><input id="si-ad" placeholder="örn. Salsa Başlangıç"/></div>
+  <div class="field"><label data-i18n="egitmen">Eğitmen</label><select id="si-egitmen"><option value="" data-i18n="secin">— Seçin —</option></select></div>
+  <div class="field"><label data-i18n="aylik_kira">Aylık Kira (₺)</label><input id="si-kira" type="number" placeholder="5000"/></div>
   <div class="field" id="si-asistan-alan" style="display:none;">
-    <label>Asistan Pay Oranı (%)</label>
+    <label data-i18n="asistan_pay_orani">Asistan Pay Oranı (%)</label>
     <input id="si-asistan-pct" type="number" placeholder="40" min="0" max="100"/>
-    <div style="font-size:11px;color:var(--text3);margin-top:4px;">O ayın gelirinin bu yüzdesi asistan eğitmene ödenir.</div>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px;" data-i18n="asistan_pay_aciklama">O ayın gelirinin bu yüzdesi asistan eğitmene ödenir.</div>
   </div>
-  <div class="field"><label>Gün</label><select id="si-gun"><option>Pazartesi</option><option>Salı</option><option>Çarşamba</option><option>Perşembe</option><option>Cuma</option><option>Cumartesi</option><option>Pazar</option></select></div>
-  <div class="field"><label>Saat</label><input id="si-saat" type="time" value="19:00"/></div>
-  <div class="field"><label>4 Haftalık Paket Ücreti (₺)</label><input id="si-paket" type="number" placeholder="800"/></div>
-  <div class="field"><label>Tek Ders Ücreti (₺)</label><input id="si-tekders" type="number" placeholder="250"/></div>
-  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-sinif')">İptal</button><button class="btn btn-accent" id="btn-save-si" onclick="saveSinif()">Kaydet</button></div>
+  <div class="field"><label data-i18n="gun">Gün</label><select id="si-gun"><option value="Pazartesi" data-i18n="pazartesi">Pazartesi</option><option value="Salı" data-i18n="sali">Salı</option><option value="Çarşamba" data-i18n="carsamba">Çarşamba</option><option value="Perşembe" data-i18n="persembe">Perşembe</option><option value="Cuma" data-i18n="cuma">Cuma</option><option value="Cumartesi" data-i18n="cumartesi">Cumartesi</option><option value="Pazar" data-i18n="pazar">Pazar</option></select></div>
+  <div class="field"><label data-i18n="saat">Saat</label><input id="si-saat" type="time" value="19:00"/></div>
+  <div class="field"><label data-i18n="paket_ucreti_4h">4 Haftalık Paket Ücreti (₺)</label><input id="si-paket" type="number" placeholder="800"/></div>
+  <div class="field"><label data-i18n="tek_ders_ucreti">Tek Ders Ücreti (₺)</label><input id="si-tekders" type="number" placeholder="250"/></div>
+  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-sinif')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-si" onclick="saveSinif()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
 
 <!-- Ders Videoları — Sınıf/Playlist -->
@@ -938,7 +938,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <input id="vs-playlist" placeholder="örn. PLxxxxxxxxxxxxxxxxxxxx"/>
     <div style="font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5;">YouTube'da playlist'i açın, adres çubuğundaki <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">list=</code> kısmından sonraki kodu yapıştırın. Playlist ve videolar "Liste Dışı (Unlisted)" olmalı.</div>
   </div>
-  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-video-sinif')">İptal</button><button class="btn btn-accent" id="btn-save-vs" onclick="saveVideoSinif()">Kaydet</button></div>
+  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-video-sinif')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-vs" onclick="saveVideoSinif()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
 
 <!-- Sınıfa Öğrenci -->
@@ -952,39 +952,39 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <div id="so-chips" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
   </div>
 
-  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-sinif-ogrenci')">İptal</button><button class="btn btn-accent" id="btn-save-so" onclick="saveSinifOgrenci()">Ekle</button></div>
+  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-sinif-ogrenci')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-so" onclick="saveSinifOgrenci()">Ekle</button></div>
 </div></div>
 
 <!-- Kayıt İşlem -->
 <div class="overlay" id="m-kayit-islem"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-kayit-islem')">✕</button>
-  <div class="sheet-title" id="m-kayit-islem-title">Kayıt İşlemleri</div>
+  <div class="sheet-title" id="m-kayit-islem-title" data-i18n="kayit_islemleri">Kayıt İşlemleri</div>
   <div id="m-kayit-islem-content"></div>
 </div></div>
 
 <!-- Grup Ödeme Modal -->
 <div class="overlay" id="m-odeme"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-odeme')">✕</button>
-  <div class="sheet-title" id="m-odeme-title">Ödeme Ekle</div>
+  <div class="sheet-title" id="m-odeme-title" data-i18n="odeme_ekle">Ödeme Ekle</div>
   <div class="seg" style="margin-bottom:14px;" id="od-tip-seg">
-    <div class="seg-btn active" id="od-tip-aylik" onclick="setOdTip('aylik')">Aylık Paket</div>
-    <div class="seg-btn" id="od-tip-tekders" onclick="setOdTip('tekders')">Tek Ders</div>
+    <div class="seg-btn active" id="od-tip-aylik" onclick="setOdTip('aylik')" data-i18n="aylik_paket">Aylık Paket</div>
+    <div class="seg-btn" id="od-tip-tekders" onclick="setOdTip('tekders')" data-i18n="tek_ders">Tek Ders</div>
   </div>
-  <div class="field"><label>Sınıf</label><select id="od-sinif" onchange="odSinifChange()"></select></div>
-  <div class="field"><label>Öğrenci</label><select id="od-ogrenci" onchange="odOgrenciChange()"></select></div>
-  <div class="field"><label>Tutar (₺)</label><input id="od-tutar" type="number" placeholder="800"/></div>
-  <div class="field"><label>Ödeme Tarihi</label><input id="od-tarih" type="date"/></div>
-  <div class="field"><label>Yöntem</label><select id="od-yontem"><option value="nakit">Nakit</option><option value="kart">Kart</option><option value="havale">Havale/EFT</option></select></div>
-  <div class="field" id="od-ay-alan"><label>Kapsanan Aylar <span style="color:var(--accent);">*</span></label><div style="font-size:12px;color:var(--text3);margin-bottom:7px;">Bu ödeme hangi ay(lar) için?</div><div class="ay-grid" id="od-ay-grid"></div></div>
-  <div class="field"><label>Not</label><textarea id="od-not" placeholder="Ek not..."></textarea></div>
-  <div id="od-edit-sil-row" style="display:none;margin-top:6px;"><button class="btn btn-danger" style="width:100%;" onclick="silOdeme()">Bu Ödemeyi Sil</button></div>
-  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-odeme')">İptal</button><button class="btn btn-accent" id="btn-save-od" onclick="saveOdeme()">Kaydet</button></div>
+  <div class="field"><label data-i18n="lbl_sinif">Sınıf</label><select id="od-sinif" onchange="odSinifChange()"></select></div>
+  <div class="field"><label data-i18n="lbl_ogrenci">Öğrenci</label><select id="od-ogrenci" onchange="odOgrenciChange()"></select></div>
+  <div class="field"><label data-i18n="lbl_tutar">Tutar (₺)</label><input id="od-tutar" type="number" placeholder="800"/></div>
+  <div class="field"><label data-i18n="odeme_tarihi">Ödeme Tarihi</label><input id="od-tarih" type="date"/></div>
+  <div class="field"><label data-i18n="lbl_yontem">Yöntem</label><select id="od-yontem"><option value="nakit" data-i18n="nakit">Nakit</option><option value="kart" data-i18n="kart">Kart</option><option value="havale" data-i18n="havale">Havale/EFT</option></select></div>
+  <div class="field" id="od-ay-alan"><label><span data-i18n="kapsanan_aylar">Kapsanan Aylar</span> <span style="color:var(--accent);">*</span></label><div style="font-size:12px;color:var(--text3);margin-bottom:7px;" data-i18n="bu_odeme_hangi_ay">Bu ödeme hangi ay(lar) için?</div><div class="ay-grid" id="od-ay-grid"></div></div>
+  <div class="field"><label data-i18n="lbl_not">Not</label><textarea id="od-not" placeholder="Ek not..."></textarea></div>
+  <div id="od-edit-sil-row" style="display:none;margin-top:6px;"><button class="btn btn-danger" style="width:100%;" onclick="silOdeme()" data-i18n="bu_odemeyi_sil">Bu Ödemeyi Sil</button></div>
+  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-odeme')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-od" onclick="saveOdeme()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
 
 <!-- Grup Ödeme Geçmiş -->
 <div class="overlay" id="m-odeme-detay"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-odeme-detay')">✕</button>
-  <div class="sheet-title" id="m-odeme-detay-title">Ödeme Geçmişi</div>
+  <div class="sheet-title" id="m-odeme-detay-title" data-i18n="odeme_gecmisi">Ödeme Geçmişi</div>
   <div id="m-odeme-detay-content"></div>
 </div></div>
 
@@ -997,11 +997,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <input id="oog-ara" placeholder="İsim yazarak ara..." oninput="oogAraInput()"/>
     <div id="oog-ara-sonuc"></div>
   </div>
-  <div class="field"><label>Ad</label><input id="oog-ad" placeholder="Ad"/></div>
-  <div class="field"><label>Soyad</label><input id="oog-soyad" placeholder="Soyad"/></div>
-  <div class="field"><label>Cinsiyet</label><div class="seg"><div class="seg-btn active" id="oseg-k" onclick="setOSeg('k')">Kadın</div><div class="seg-btn" id="oseg-e" onclick="setOSeg('e')">Erkek</div></div></div>
-  <div class="field"><label>Telefon</label><input id="oog-tel" placeholder="+90 5xx xxx xx xx" type="tel"/></div>
-  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ozel-og')">İptal</button><button class="btn btn-accent" id="btn-save-oog" onclick="saveOzelOg()">Kaydet</button></div>
+  <div class="field"><label data-i18n="lbl_ad">Ad</label><input id="oog-ad" placeholder="Ad"/></div>
+  <div class="field"><label data-i18n="lbl_soyad">Soyad</label><input id="oog-soyad" placeholder="Soyad"/></div>
+  <div class="field"><label data-i18n="lbl_cinsiyet">Cinsiyet</label><div class="seg"><div class="seg-btn active" id="oseg-k" onclick="setOSeg('k')" data-i18n="kadin">Kadın</div><div class="seg-btn" id="oseg-e" onclick="setOSeg('e')" data-i18n="erkek">Erkek</div></div></div>
+  <div class="field"><label data-i18n="lbl_telefon">Telefon</label><input id="oog-tel" placeholder="+90 5xx xxx xx xx" type="tel"/></div>
+  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ozel-og')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-oog" onclick="saveOzelOg()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
 
 <!-- Özel Ders Paket Ekle -->
@@ -1011,14 +1011,14 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="field"><label>Toplam Saat</label><input id="op-toplam" type="number" placeholder="10" min="1"/></div>
   <div class="field"><label>Paket Tutarı (₺)</label><input id="op-tutar" type="number" placeholder="2000"/></div>
   <div class="field"><label>Ödeme Tarihi</label><input id="op-tarih" type="date"/></div>
-  <div class="field"><label>Yöntem</label><select id="op-yontem"><option value="nakit">Nakit</option><option value="kart">Kart</option><option value="havale">Havale/EFT</option></select></div>
-  <div class="field"><label>Not</label><textarea id="op-not" placeholder="Ek not..."></textarea></div>
+  <div class="field"><label data-i18n="lbl_yontem">Yöntem</label><select id="op-yontem"><option value="nakit">Nakit</option><option value="kart">Kart</option><option value="havale">Havale/EFT</option></select></div>
+  <div class="field"><label data-i18n="lbl_not">Not</label><textarea id="op-not" placeholder="Ek not..."></textarea></div>
   <div class="field">
     <label>Eğitmen(ler)</label>
     <div id="op-egitmen-list" style="display:flex;flex-direction:column;gap:8px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;"></div>
     <div style="font-size:11px;color:var(--text3);margin-top:4px;">Birden fazla eğitmen seçersen, ders düşerken hangisinin dersi olduğunu soracağız.</div>
   </div>
-  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ozel-paket')">İptal</button><button class="btn btn-accent" id="btn-save-op" onclick="saveOzelPaket()">Kaydet</button></div>
+  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ozel-paket')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-op" onclick="saveOzelPaket()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
 
 <!-- Özel Ders Saat Güncelle -->
@@ -1039,7 +1039,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="field"><label>Süre</label><select id="dp-sure"><option value="0.5">0.5 saat</option><option value="1" selected>1 saat</option><option value="1.5">1.5 saat</option><option value="2">2 saat</option></select></div>
   <div id="dp-paket-uyari" style="display:none;font-size:12px;color:var(--text3);margin-bottom:8px;">Bu öğrencinin aktif paketi yok — ders planlanır ama saat düşülmez.</div>
   <div id="dp-mevcut" style="display:none;margin-bottom:8px;"></div>
-  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ders-planla')">İptal</button><button class="btn btn-accent" id="btn-save-dp" onclick="saveDersPlan()">Kaydet</button></div>
+  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ders-planla')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-dp" onclick="saveDersPlan()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
 
 <!-- Takvim — Ders Detayı -->
@@ -1097,7 +1097,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div style="font-size:17px;font-weight:600;margin-bottom:8px;" id="confirm-title">Emin misiniz?</div>
   <div style="font-size:14px;color:var(--text2);margin-bottom:20px;" id="confirm-desc"></div>
   <div style="display:flex;gap:10px;">
-    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-confirm')">İptal</button>
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-confirm')" data-i18n="btn_iptal">İptal</button>
     <button class="btn btn-accent" style="flex:1;padding:13px;" id="confirm-ok">Onayla</button>
   </div>
 </div></div>
@@ -1247,6 +1247,88 @@ const TRANSLATIONS={
     no_result:'Sonuç bulunamadı', empty_ogrenci_pasif:'Pasif öğrenci yok',
     btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız',
     kayitli:'kayıtlı', badge_aktif:'aktif', tek:'tek', pasif_siniflar:'Pasif Sınıflar',
+    tatil_gunleri:'🎌 Tatil Günleri', ph_tatil_ad:'Açıklama (örn: Kurban Bayramı)', btn_tatil_ekle:'＋ Tatil Ekle',
+    haftalik:'Haftalık', aylik:'Aylık', bu_hafta:'Bu Hafta',
+    btn_ogrenci_ekle:'＋ Öğrenci Ekle', btn_haftalik_takvim:'📅 Haftalık Takvim',
+    btn_sinif_playlist_ekle:'＋ Sınıf / Playlist Ekle',
+    yoklama_once_sinif:'Yoklama tutmak için önce sınıf ekleyin', bugun:'Bugün', qr_tara:'QR Tara',
+    gecmis:'Geçmiş', geldi:'Geldi',
+    ozel_bos:'Henüz özel ders öğrencisi yok.', ozel_bos_alt:'Yukarıdaki butona bas ekle.',
+    saatlik_paket:'saatlik paket', tamamlandi:'Tamamlandı', saat_kaldi:'saat kaldı', saat_yapildi:'saat yapıldı',
+    btn_paket_duzenle:'✎ Bu Paketi ve Eğitmenlerini Düzenle', henuz_paket_yok:'Henüz paket girilmedi',
+    btn_bilgi_duzenle:'✎ Bilgi Düzenle', paket_hint:'Paket detayı, saat düşme ve eğitmen ataması için pakete dokun ›',
+    btn_yeni_paket:'＋ Yeni Paket',
+    video:'video', henuz_video_yok:'Henüz video yok', yukleniyor:'Yükleniyor...',
+    yeniden_eskiye:'Yeniden Eskiye', eskiden_yeniye:'Eskiden Yeniye', playlist_bos:'Bu playlist\'te henüz video yok.',
+    videolar_yukleniyor:'Videolar yükleniyor...', videolar_yuklenemedi:'Videolar yüklenemedi. Playlist ID\'yi ve API anahtarını kontrol edin.',
+    son_ders_geldi:'Son ders geldi', sure_doldu:'Süre doldu', yarin_son_ders:'Yarın son ders', gun_kaldi:'gün kaldı',
+    ders:'ders', odeme_al:'Ödeme Al', sureyegore:'Süreye Göre', acil:'acil', yaklasiyor:'yaklaşıyor', bu_hafta_kucuk:'bu hafta',
+    son_ders_geldi_baslik:'Son Ders Geldi', gun_1_3_kaldi:'1–3 Gün Kaldı', gun_4_7_kaldi:'4–7 Gün Kaldı',
+    yaklasan_yok:'Yaklaşan paket yenilemesi yok', henuz_sinifa_eklenmedi:'Henüz sınıfa eklenmedi', yeni_kayit:'Yeni Kayıt',
+    ilk_odeme:'İlk Ödeme', bekliyor:'Bekliyor', ilk_odeme_bekleniyor:'İlk ödeme bekleniyor', bu_ay_odeme_girilmedi:'Bu ay ödeme girilmedi',
+    bekleyen_odeme:'Bekleyen Ödeme', ilk_odeme_kucuk:'ilk ödeme', bu_ay_bekliyor:'bu ay bekliyor',
+    ilk_odeme_bekleniyor_baslik:'İlk Ödeme Bekleniyor', bu_ay_odeme_bekleniyor:'Bu Ay Ödeme Bekleniyor',
+    her_sey_yolunda:'Her şey yolunda!',
+    odeme_bekleniyor:'Ödeme Bekleniyor', donduruldu:'Donduruldu', paket:'Paket', henuz_odeme_yok:'Henüz ödeme yok',
+    aktife_al:'Aktife Al', pasife_al:'Pasife Al', birlestir:'Birleştir', qr_yoklama:'QR Yoklama', yoklama_gecmisi:'Yoklama Geçmişi',
+    telefon_yok:'Telefon yok', toplam:'toplam', qr_sifre:'QR & Şifre', henuz_odeme_kaydi_yok:'Henüz ödeme kaydı yok',
+    kayitli_siniflar:'Kayıtlı Sınıflar', ders_kaldi:'ders kaldı', bitis:'Bitiş', cikar:'Çıkar', kayitli_sinif_yok:'Kayıtlı sınıf yok',
+    baska_sinifa_ekle:'Başka Sınıfa Ekle', btn_ekle:'Ekle',
+    qr_kod_ozel_1:'Bu QR kod', qr_kod_ozel_2:'\'e özel.', qr_kod_ozel_3:'Öğrenci okutunca kendi yoklamasını işaretleyebilir.',
+    portal_sifresi:'Portal Şifresi', sifre_sifirla_aciklama:'Öğrenci şifresini sıfırladığınızda telefon numarası tekrar şifre olur. Öğrenci bir sonraki girişte yeni şifre belirlemek zorunda kalır.',
+    sifreyi_sifirla:'Şifreyi Sıfırla (Telefon No\'ya Döndür)', qr_olusturulamadi:'QR oluşturulamadı',
+    gelir_gider:'Gelir & Gider', aylik_gelir:'Aylık Gelir', gider_raporu:'Gider Raporu',
+    aylik_gelir_trendi:'Aylık Gelir Trendi', egitmenler_giderler:'Eğitmenler & Giderler',
+    odeme_bilgileri:'Ödeme Bilgileri', ogrenci_tutma_orani:'Öğrenci Tutma Oranı',
+    acc_tema:'Tema', acc_guvenlik:'Güvenlik', acc_wa:'WhatsApp Şablonları', acc_yedek:'Yedekleme',
+    acc_excel:'Excel\'e Aktar', acc_pwa:'Uygulamayı Yükle', acc_veri:'Veri Yönetimi',
+    cikis_yap:'→ Çıkış Yap',
+    lbl_ad:'Ad', lbl_soyad:'Soyad', lbl_telefon:'Telefon', lbl_not:'Not', lbl_yontem:'Yöntem', lbl_cinsiyet:'Cinsiyet',
+    kadin:'Kadın', erkek:'Erkek',
+    sifre_aciklama:'Şifre tüm cihazlarda geçerli olur. Varsayılan: dans2024',
+    mevcut_sifre:'Mevcut Şifre', mevcut_sifre_ph:'Mevcut şifre', yeni_sifre:'Yeni Şifre', en_az_6:'En az 6 karakter',
+    tekrar:'Tekrar', tekrar_girin:'Tekrar girin', sifreyi_guncelle:'Şifreyi Güncelle',
+    degiskenler:'Değişkenler', suresi_dolmus:'Süresi Dolmuş', gun_3_icinde:'3 Gün İçinde',
+    gun_4_7_hatirlatma:'4-7 Gün Hatırlatma', genel_mesaj:'Genel Mesaj',
+    json_yedek_indir:'↓ JSON Yedek İndir', yedekten_geri_yukle:'↑ Yedekten Geri Yükle',
+    github_simdi_yedekle:'☁ GitHub\'a Şimdi Yedekle', github_token_sifirla:'🔑 GitHub Token Sıfırla',
+    yedek_otomatik_aciklama:'Her gece 04:00\'te otomatik çalışır. Manuel tetiklemek için tıklayın.',
+    excel_aciklama:'Tüm sekmeler tek Excel dosyasında indirilir.', excel_indir:'Excel İndir (.xlsx)',
+    excel_icerik:'İçerik: Öğrenciler · Sınıflar · Ödemeler · Aylık Gelir · Özel Dersler',
+    pwa_yukle:'↓ Yükle (Android)', pwa_android:'⋮ menü → "Ana ekrana ekle"', pwa_iphone:'Paylaş ↑ → "Ana Ekrana Ekle"',
+    sil_odemeler:'Tüm Ödemeleri Sil', sil_ozel_paketler:'Tüm Özel Paketleri Sil', sil_ozel_ogrenciler:'Tüm Özel Öğrencileri Sil',
+    sil_siniflar:'Tüm Sınıfları Sil', sil_ogrenciler:'Tüm Öğrencileri Sil', tum_verileri_sifirla:'⚠ Tüm Verileri Sıfırla',
+    sinif_birlestir:'⇄ Sınıf Birleştir', hedef_sinif:'Hedef Sınıf (öğrenciler buraya taşınır)',
+    birlestir_uyari:'⚠️ Kaynak sınıftaki tüm aktif öğrenciler hedef sınıfa eklenir.<br>Zaten hedef sınıfta olanlar atlanır.<br>Kaynak sınıf otomatik pasife alınır.',
+    kayit_islemleri:'Kayıt İşlemleri', odeme_ekle:'Ödeme Ekle', aylik_paket:'Aylık Paket', tek_ders:'Tek Ders',
+    lbl_ogrenci:'Öğrenci', lbl_tutar:'Tutar (₺)', odeme_tarihi:'Ödeme Tarihi',
+    nakit:'Nakit', kart:'Kart', havale:'Havale/EFT', kapsanan_aylar:'Kapsanan Aylar', bu_odeme_hangi_ay:'Bu ödeme hangi ay(lar) için?',
+    bu_odemeyi_sil:'Bu Ödemeyi Sil', odeme_gecmisi:'Ödeme Geçmişi',
+    not_istege_bagli:'Not (isteğe bağlı)', bu_ogrenciyi_sil:'Bu Öğrenciyi Sil',
+    sinif_adi:'Sınıf Adı', egitmen:'Eğitmen', secin:'— Seçin —', aylik_kira:'Aylık Kira (₺)',
+    asistan_pay_orani:'Asistan Pay Oranı (%)', asistan_pay_aciklama:'O ayın gelirinin bu yüzdesi asistan eğitmene ödenir.',
+    gun:'Gün', pazartesi:'Pazartesi', sali:'Salı', carsamba:'Çarşamba', persembe:'Perşembe', cuma:'Cuma', cumartesi:'Cumartesi', pazar:'Pazar',
+    saat:'Saat', paket_ucreti_4h:'4 Haftalık Paket Ücreti (₺)', tek_ders_ucreti:'Tek Ders Ücreti (₺)',
+    ogrenci_tutma_orani_ikon:'📉 Öğrenci Tutma Oranı', aylik_gelir_ikon:'📊 Aylık Gelir', gider_raporu_ikon:'💰 Gider Raporu',
+    aylik_gelir_trendi_ikon:'📈 Aylık Gelir Trendi', egitmenler_giderler_ikon:'👨‍🏫 Eğitmenler & Giderler',
+    odeme_bilgileri_ikon:'🏦 Ödeme Bilgileri', odeme_bilgi_aciklama:'Öğrenci portalında gösterilecek ödeme bilgileri.',
+    ad_soyad_hesap:'Ad Soyad (Hesap Sahibi)', banka_adi:'Banka Adı', qr_kod_gorseli:'QR Kod Görseli',
+    qr_gorsel_sec:'📷 QR Görsel Seç', qr_gorseli_kaldir:'✕ QR Görseli Kaldır',
+    grup:'Grup', odeme:'ödeme', brut:'Brüt',
+    genel_tutma_orani:'Genel Tutma Oranı', birakmis:'bırakmış', sinif_bazinda:'Sınıf Bazında',
+    devam:'devam', donduruldu_kucuk:'dondurulmuş', ayrilmis:'ayrılmış',
+    bu_ay_brut:'Bu ay brüt', bu_ay_net:'Bu ay net', aylik_ort:'Aylık ort.', ay_12_top:'12 ay top.',
+    brut_gelir:'Brüt Gelir', net_gelir:'Net Gelir',
+    egitmenler:'Eğitmenler', bas_egitmen:'Baş Eğitmen', asistan_egitmen:'Asistan Eğitmen', henuz_egitmen_yok:'Henüz eğitmen eklenmedi.',
+    egitmen_ekle:'Eğitmen Ekle', ayarlar_kaydedildi:'Ayarlar kaydedildi', egitmeni_duzenle:'Eğitmeni Düzenle', yeni_egitmen:'Yeni Eğitmen',
+    ad_soyad:'Ad Soyad', ad_zorunlu:'Ad zorunlu.', egitmen_kaydedildi:'Eğitmen kaydedildi',
+    egitmeni_sil:'Eğitmeni Sil', egitmen_silinecek:'silinecek. Sınıflardan bağlantısı kaldırılmaz.',
+    gelir:'Gelir', grup_dersler:'Grup Dersler', ozel_dersler:'Özel Dersler', toplam_gelir:'Toplam Gelir',
+    giderler:'Giderler', toplam_kira:'Toplam Kira', asistan_odemeleri:'Asistan Ödemeleri', toplam_gider:'Toplam Gider',
+    kari:'Kârı', kendi_siniflari:'Kendi sınıfları: Gelir − Kira − Asistan',
+    net_kar:'Net Kâr', toplam_gelir_kira_asistan:'Toplam Gelir − Kira − Asistan',
+    payi:'payı', kira:'Kira', bu_ay_kayit_yok:'Bu ay için kayıt bulunamadı.',
+    egitmen_eklenmemis_uyari:'⚠ Eğitmen eklenmemiş. "Eğitmenler & Giderler" bölümünden eğitmen ekleyin ve sınıflara atayın.',
   },
   en:{
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
@@ -1264,6 +1346,88 @@ const TRANSLATIONS={
     no_result:'No results found', empty_ogrenci_pasif:'No inactive students',
     btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class',
     kayitli:'enrolled', badge_aktif:'active', tek:'drop-in', pasif_siniflar:'Inactive Classes',
+    tatil_gunleri:'🎌 Holidays', ph_tatil_ad:'Description (e.g. Eid Holiday)', btn_tatil_ekle:'＋ Add Holiday',
+    haftalik:'Weekly', aylik:'Monthly', bu_hafta:'This Week',
+    btn_ogrenci_ekle:'＋ Add Student', btn_haftalik_takvim:'📅 Weekly Calendar',
+    btn_sinif_playlist_ekle:'＋ Add Class / Playlist',
+    yoklama_once_sinif:'Add a class first to take attendance', bugun:'Today', qr_tara:'Scan QR',
+    gecmis:'History', geldi:'Present',
+    ozel_bos:'No private lesson students yet.', ozel_bos_alt:'Tap the button above to add one.',
+    saatlik_paket:'hour package', tamamlandi:'Completed', saat_kaldi:'hours left', saat_yapildi:'hours done',
+    btn_paket_duzenle:'✎ Edit This Package and Instructors', henuz_paket_yok:'No package added yet',
+    btn_bilgi_duzenle:'✎ Edit Info', paket_hint:'Tap a package for details, deducting hours and assigning instructors ›',
+    btn_yeni_paket:'＋ New Package',
+    video:'video', henuz_video_yok:'No videos yet', yukleniyor:'Loading...',
+    yeniden_eskiye:'Newest First', eskiden_yeniye:'Oldest First', playlist_bos:'No videos in this playlist yet.',
+    videolar_yukleniyor:'Loading videos...', videolar_yuklenemedi:'Could not load videos. Check the Playlist ID and API key.',
+    son_ders_geldi:'Last lesson reached', sure_doldu:'Expired', yarin_son_ders:'Last lesson tomorrow', gun_kaldi:'days left',
+    ders:'lessons', odeme_al:'Take Payment', sureyegore:'By Time Left', acil:'urgent', yaklasiyor:'soon', bu_hafta_kucuk:'this week',
+    son_ders_geldi_baslik:'Last Lesson Reached', gun_1_3_kaldi:'1–3 Days Left', gun_4_7_kaldi:'4–7 Days Left',
+    yaklasan_yok:'No upcoming renewals', henuz_sinifa_eklenmedi:'Not added to a class yet', yeni_kayit:'New Enrollment',
+    ilk_odeme:'First Payment', bekliyor:'Waiting', ilk_odeme_bekleniyor:'First payment pending', bu_ay_odeme_girilmedi:'No payment this month',
+    bekleyen_odeme:'Pending Payments', ilk_odeme_kucuk:'first payment', bu_ay_bekliyor:'waiting this month',
+    ilk_odeme_bekleniyor_baslik:'First Payment Pending', bu_ay_odeme_bekleniyor:'Payment Pending This Month',
+    her_sey_yolunda:'All good!',
+    odeme_bekleniyor:'Payment Pending', donduruldu:'Frozen', paket:'Package', henuz_odeme_yok:'No payment yet',
+    aktife_al:'Activate', pasife_al:'Deactivate', birlestir:'Merge', qr_yoklama:'QR Attendance', yoklama_gecmisi:'Attendance History',
+    telefon_yok:'No phone', toplam:'total', qr_sifre:'QR & Password', henuz_odeme_kaydi_yok:'No payment records yet',
+    kayitli_siniflar:'Enrolled Classes', ders_kaldi:'lessons left', bitis:'Ends', cikar:'Remove', kayitli_sinif_yok:'No enrolled classes',
+    baska_sinifa_ekle:'Add to Another Class', btn_ekle:'Add',
+    qr_kod_ozel_1:'This QR code is specific to', qr_kod_ozel_2:'.', qr_kod_ozel_3:'The student can scan it to mark their own attendance.',
+    portal_sifresi:'Portal Password', sifre_sifirla_aciklama:'When you reset the student\'s password, their phone number becomes the password again. They must set a new password on next login.',
+    sifreyi_sifirla:'Reset Password (Revert to Phone Number)', qr_olusturulamadi:'Could not generate QR',
+    gelir_gider:'Income & Expense', aylik_gelir:'Monthly Income', gider_raporu:'Expense Report',
+    aylik_gelir_trendi:'Monthly Income Trend', egitmenler_giderler:'Instructors & Expenses',
+    odeme_bilgileri:'Payment Details', ogrenci_tutma_orani:'Student Retention Rate',
+    acc_tema:'Theme', acc_guvenlik:'Security', acc_wa:'WhatsApp Templates', acc_yedek:'Backup',
+    acc_excel:'Export to Excel', acc_pwa:'Install App', acc_veri:'Data Management',
+    cikis_yap:'→ Log Out',
+    lbl_ad:'First Name', lbl_soyad:'Last Name', lbl_telefon:'Phone', lbl_not:'Note', lbl_yontem:'Method', lbl_cinsiyet:'Gender',
+    kadin:'Female', erkek:'Male',
+    sifre_aciklama:'The password applies on all devices. Default: dans2024',
+    mevcut_sifre:'Current Password', mevcut_sifre_ph:'Current password', yeni_sifre:'New Password', en_az_6:'At least 6 characters',
+    tekrar:'Confirm', tekrar_girin:'Re-enter', sifreyi_guncelle:'Update Password',
+    degiskenler:'Variables', suresi_dolmus:'Expired', gun_3_icinde:'Within 3 Days',
+    gun_4_7_hatirlatma:'4-7 Day Reminder', genel_mesaj:'General Message',
+    json_yedek_indir:'↓ Download JSON Backup', yedekten_geri_yukle:'↑ Restore From Backup',
+    github_simdi_yedekle:'☁ Back Up to GitHub Now', github_token_sifirla:'🔑 Reset GitHub Token',
+    yedek_otomatik_aciklama:'Runs automatically every night at 04:00. Tap to trigger manually.',
+    excel_aciklama:'All tabs are downloaded in a single Excel file.', excel_indir:'Download Excel (.xlsx)',
+    excel_icerik:'Contents: Students · Classes · Payments · Monthly Income · Private Lessons',
+    pwa_yukle:'↓ Install (Android)', pwa_android:'⋮ menu → "Add to Home screen"', pwa_iphone:'Share ↑ → "Add to Home Screen"',
+    sil_odemeler:'Delete All Payments', sil_ozel_paketler:'Delete All Private Packages', sil_ozel_ogrenciler:'Delete All Private Students',
+    sil_siniflar:'Delete All Classes', sil_ogrenciler:'Delete All Students', tum_verileri_sifirla:'⚠ Reset All Data',
+    sinif_birlestir:'⇄ Merge Class', hedef_sinif:'Target Class (students move here)',
+    birlestir_uyari:'⚠️ All active students in the source class are added to the target class.<br>Those already in the target class are skipped.<br>The source class is automatically deactivated.',
+    kayit_islemleri:'Enrollment Actions', odeme_ekle:'Add Payment', aylik_paket:'Monthly Package', tek_ders:'Drop-in',
+    lbl_ogrenci:'Student', lbl_tutar:'Amount (₺)', odeme_tarihi:'Payment Date',
+    nakit:'Cash', kart:'Card', havale:'Bank Transfer', kapsanan_aylar:'Covered Months', bu_odeme_hangi_ay:'Which month(s) is this payment for?',
+    bu_odemeyi_sil:'Delete This Payment', odeme_gecmisi:'Payment History',
+    not_istege_bagli:'Note (optional)', bu_ogrenciyi_sil:'Delete This Student',
+    sinif_adi:'Class Name', egitmen:'Instructor', secin:'— Select —', aylik_kira:'Monthly Rent (₺)',
+    asistan_pay_orani:'Assistant Share (%)', asistan_pay_aciklama:'This percentage of that month\'s income is paid to the assistant instructor.',
+    gun:'Day', pazartesi:'Monday', sali:'Tuesday', carsamba:'Wednesday', persembe:'Thursday', cuma:'Friday', cumartesi:'Saturday', pazar:'Sunday',
+    saat:'Time', paket_ucreti_4h:'4-Week Package Fee (₺)', tek_ders_ucreti:'Drop-in Fee (₺)',
+    ogrenci_tutma_orani_ikon:'📉 Student Retention Rate', aylik_gelir_ikon:'📊 Monthly Income', gider_raporu_ikon:'💰 Expense Report',
+    aylik_gelir_trendi_ikon:'📈 Monthly Income Trend', egitmenler_giderler_ikon:'👨‍🏫 Instructors & Expenses',
+    odeme_bilgileri_ikon:'🏦 Payment Details', odeme_bilgi_aciklama:'Payment details shown on the student portal.',
+    ad_soyad_hesap:'Full Name (Account Holder)', banka_adi:'Bank Name', qr_kod_gorseli:'QR Code Image',
+    qr_gorsel_sec:'📷 Choose QR Image', qr_gorseli_kaldir:'✕ Remove QR Image',
+    grup:'Group', odeme:'payment(s)', brut:'Gross',
+    genel_tutma_orani:'Overall Retention Rate', birakmis:'left', sinif_bazinda:'By Class',
+    devam:'continuing', donduruldu_kucuk:'frozen', ayrilmis:'left',
+    bu_ay_brut:'This month gross', bu_ay_net:'This month net', aylik_ort:'Monthly avg.', ay_12_top:'12-month total',
+    brut_gelir:'Gross Income', net_gelir:'Net Income',
+    egitmenler:'Instructors', bas_egitmen:'Head Instructor', asistan_egitmen:'Assistant Instructor', henuz_egitmen_yok:'No instructors added yet.',
+    egitmen_ekle:'Add Instructor', ayarlar_kaydedildi:'Settings saved', egitmeni_duzenle:'Edit Instructor', yeni_egitmen:'New Instructor',
+    ad_soyad:'Full Name', ad_zorunlu:'Name is required.', egitmen_kaydedildi:'Instructor saved',
+    egitmeni_sil:'Delete Instructor', egitmen_silinecek:'will be deleted. Their link to classes will not be removed.',
+    gelir:'Income', grup_dersler:'Group Classes', ozel_dersler:'Private Lessons', toplam_gelir:'Total Income',
+    giderler:'Expenses', toplam_kira:'Total Rent', asistan_odemeleri:'Assistant Payments', toplam_gider:'Total Expense',
+    kari:'Profit', kendi_siniflari:'Own classes: Income − Rent − Assistant',
+    net_kar:'Net Profit', toplam_gelir_kira_asistan:'Total Income − Rent − Assistant',
+    payi:'share', kira:'Rent', bu_ay_kayit_yok:'No records for this month.',
+    egitmen_eklenmemis_uyari:'⚠ No instructors added. Add instructors in "Instructors & Expenses" and assign them to classes.',
   },
   ru:{
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
@@ -1281,9 +1445,92 @@ const TRANSLATIONS={
     no_result:'Результат не найден', empty_ogrenci_pasif:'Нет неактивных учеников',
     btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы',
     kayitli:'записано', badge_aktif:'активно', tek:'разовое', pasif_siniflar:'Неактивные группы',
+    tatil_gunleri:'🎌 Праздничные дни', ph_tatil_ad:'Описание (напр. Ураза-байрам)', btn_tatil_ekle:'＋ Добавить праздник',
+    haftalik:'Неделя', aylik:'Месяц', bu_hafta:'Эта неделя',
+    btn_ogrenci_ekle:'＋ Добавить ученика', btn_haftalik_takvim:'📅 Недельный календарь',
+    btn_sinif_playlist_ekle:'＋ Добавить группу / плейлист',
+    yoklama_once_sinif:'Сначала добавьте группу для отметки посещаемости', bugun:'Сегодня', qr_tara:'Сканировать QR',
+    gecmis:'История', geldi:'Пришёл',
+    ozel_bos:'Учеников на частные уроки пока нет.', ozel_bos_alt:'Нажмите кнопку выше, чтобы добавить.',
+    saatlik_paket:'ч. пакет', tamamlandi:'Завершено', saat_kaldi:'ч. осталось', saat_yapildi:'ч. проведено',
+    btn_paket_duzenle:'✎ Изменить пакет и преподавателей', henuz_paket_yok:'Пакетов пока нет',
+    btn_bilgi_duzenle:'✎ Изменить данные', paket_hint:'Нажмите на пакет для деталей, списания часов и назначения преподавателя ›',
+    btn_yeni_paket:'＋ Новый пакет',
+    video:'видео', henuz_video_yok:'Видео пока нет', yukleniyor:'Загрузка...',
+    yeniden_eskiye:'Сначала новые', eskiden_yeniye:'Сначала старые', playlist_bos:'В этом плейлисте пока нет видео.',
+    videolar_yukleniyor:'Загрузка видео...', videolar_yuklenemedi:'Не удалось загрузить видео. Проверьте Playlist ID и API ключ.',
+    son_ders_geldi:'Последний урок наступил', sure_doldu:'Срок истёк', yarin_son_ders:'Последний урок завтра', gun_kaldi:'дн. осталось',
+    ders:'уроков', odeme_al:'Принять оплату', sureyegore:'По сроку', acil:'срочно', yaklasiyor:'скоро', bu_hafta_kucuk:'на этой неделе',
+    son_ders_geldi_baslik:'Последний урок наступил', gun_1_3_kaldi:'1–3 дня осталось', gun_4_7_kaldi:'4–7 дней осталось',
+    yaklasan_yok:'Нет предстоящих продлений', henuz_sinifa_eklenmedi:'Ещё не добавлен в группу', yeni_kayit:'Новая запись',
+    ilk_odeme:'Первый платёж', bekliyor:'Ожидает', ilk_odeme_bekleniyor:'Ожидается первый платёж', bu_ay_odeme_girilmedi:'Нет платежа за этот месяц',
+    bekleyen_odeme:'Ожидающие платежи', ilk_odeme_kucuk:'первый платёж', bu_ay_bekliyor:'ожидает в этом месяце',
+    ilk_odeme_bekleniyor_baslik:'Ожидается первый платёж', bu_ay_odeme_bekleniyor:'Ожидается платёж в этом месяце',
+    her_sey_yolunda:'Всё в порядке!',
+    odeme_bekleniyor:'Ожидается оплата', donduruldu:'Заморожено', paket:'Пакет', henuz_odeme_yok:'Оплаты пока нет',
+    aktife_al:'Активировать', pasife_al:'Деактивировать', birlestir:'Объединить', qr_yoklama:'QR посещаемость', yoklama_gecmisi:'История посещений',
+    telefon_yok:'Нет телефона', toplam:'всего', qr_sifre:'QR и пароль', henuz_odeme_kaydi_yok:'Платежей пока нет',
+    kayitli_siniflar:'Записанные группы', ders_kaldi:'уроков осталось', bitis:'Окончание', cikar:'Удалить', kayitli_sinif_yok:'Нет записанных групп',
+    baska_sinifa_ekle:'Добавить в другую группу', btn_ekle:'Добавить',
+    qr_kod_ozel_1:'Этот QR-код предназначен для', qr_kod_ozel_2:'.', qr_kod_ozel_3:'Ученик может отсканировать его, чтобы отметить свою посещаемость.',
+    portal_sifresi:'Пароль портала', sifre_sifirla_aciklama:'При сбросе пароля номер телефона снова станет паролем. Ученику нужно будет задать новый пароль при следующем входе.',
+    sifreyi_sifirla:'Сбросить пароль (вернуть к номеру телефона)', qr_olusturulamadi:'Не удалось создать QR',
+    gelir_gider:'Доходы и расходы', aylik_gelir:'Доход за месяц', gider_raporu:'Отчёт о расходах',
+    aylik_gelir_trendi:'Динамика дохода по месяцам', egitmenler_giderler:'Преподаватели и расходы',
+    odeme_bilgileri:'Платёжные реквизиты', ogrenci_tutma_orani:'Удержание учеников',
+    acc_tema:'Тема', acc_guvenlik:'Безопасность', acc_wa:'Шаблоны WhatsApp', acc_yedek:'Резервная копия',
+    acc_excel:'Экспорт в Excel', acc_pwa:'Установить приложение', acc_veri:'Управление данными',
+    cikis_yap:'→ Выйти',
+    lbl_ad:'Имя', lbl_soyad:'Фамилия', lbl_telefon:'Телефон', lbl_not:'Заметка', lbl_yontem:'Способ', lbl_cinsiyet:'Пол',
+    kadin:'Женский', erkek:'Мужской',
+    sifre_aciklama:'Пароль действует на всех устройствах. По умолчанию: dans2024',
+    mevcut_sifre:'Текущий пароль', mevcut_sifre_ph:'Текущий пароль', yeni_sifre:'Новый пароль', en_az_6:'Минимум 6 символов',
+    tekrar:'Повтор', tekrar_girin:'Введите ещё раз', sifreyi_guncelle:'Обновить пароль',
+    degiskenler:'Переменные', suresi_dolmus:'Истёк срок', gun_3_icinde:'В течение 3 дней',
+    gun_4_7_hatirlatma:'Напоминание за 4-7 дней', genel_mesaj:'Общее сообщение',
+    json_yedek_indir:'↓ Скачать резервную копию JSON', yedekten_geri_yukle:'↑ Восстановить из копии',
+    github_simdi_yedekle:'☁ Сохранить в GitHub сейчас', github_token_sifirla:'🔑 Сбросить GitHub токен',
+    yedek_otomatik_aciklama:'Запускается автоматически каждую ночь в 04:00. Нажмите для ручного запуска.',
+    excel_aciklama:'Все вкладки скачиваются в одном файле Excel.', excel_indir:'Скачать Excel (.xlsx)',
+    excel_icerik:'Содержимое: Ученики · Группы · Платежи · Доход по месяцам · Частные уроки',
+    pwa_yukle:'↓ Установить (Android)', pwa_android:'⋮ меню → "Добавить на главный экран"', pwa_iphone:'Поделиться ↑ → "На экран Домой"',
+    sil_odemeler:'Удалить все платежи', sil_ozel_paketler:'Удалить все частные пакеты', sil_ozel_ogrenciler:'Удалить всех частных учеников',
+    sil_siniflar:'Удалить все группы', sil_ogrenciler:'Удалить всех учеников', tum_verileri_sifirla:'⚠ Сбросить все данные',
+    sinif_birlestir:'⇄ Объединить группу', hedef_sinif:'Целевая группа (ученики переносятся сюда)',
+    birlestir_uyari:'⚠️ Все активные ученики исходной группы добавляются в целевую.<br>Те, кто уже в целевой группе, пропускаются.<br>Исходная группа автоматически деактивируется.',
+    kayit_islemleri:'Действия с записью', odeme_ekle:'Добавить платёж', aylik_paket:'Месячный пакет', tek_ders:'Разовое занятие',
+    lbl_ogrenci:'Ученик', lbl_tutar:'Сумма (₺)', odeme_tarihi:'Дата платежа',
+    nakit:'Наличные', kart:'Карта', havale:'Банковский перевод', kapsanan_aylar:'Оплаченные месяцы', bu_odeme_hangi_ay:'За какой месяц(ы) этот платёж?',
+    bu_odemeyi_sil:'Удалить этот платёж', odeme_gecmisi:'История платежей',
+    not_istege_bagli:'Заметка (необязательно)', bu_ogrenciyi_sil:'Удалить этого ученика',
+    sinif_adi:'Название группы', egitmen:'Преподаватель', secin:'— Выбрать —', aylik_kira:'Аренда в месяц (₺)',
+    asistan_pay_orani:'Доля ассистента (%)', asistan_pay_aciklama:'Этот процент от дохода за месяц выплачивается ассистенту-преподавателю.',
+    gun:'День', pazartesi:'Понедельник', sali:'Вторник', carsamba:'Среда', persembe:'Четверг', cuma:'Пятница', cumartesi:'Суббота', pazar:'Воскресенье',
+    saat:'Время', paket_ucreti_4h:'Стоимость пакета на 4 недели (₺)', tek_ders_ucreti:'Стоимость разового занятия (₺)',
+    ogrenci_tutma_orani_ikon:'📉 Удержание учеников', aylik_gelir_ikon:'📊 Доход за месяц', gider_raporu_ikon:'💰 Отчёт о расходах',
+    aylik_gelir_trendi_ikon:'📈 Динамика дохода по месяцам', egitmenler_giderler_ikon:'👨‍🏫 Преподаватели и расходы',
+    odeme_bilgileri_ikon:'🏦 Платёжные реквизиты', odeme_bilgi_aciklama:'Платёжные реквизиты, отображаемые в портале ученика.',
+    ad_soyad_hesap:'ФИО (владелец счёта)', banka_adi:'Название банка', qr_kod_gorseli:'Изображение QR-кода',
+    qr_gorsel_sec:'📷 Выбрать QR-изображение', qr_gorseli_kaldir:'✕ Удалить QR-изображение',
+    grup:'Группа', odeme:'платеж(ей)', brut:'Валовый',
+    genel_tutma_orani:'Общий уровень удержания', birakmis:'ушли', sinif_bazinda:'По группам',
+    devam:'продолжают', donduruldu_kucuk:'заморожено', ayrilmis:'ушли',
+    bu_ay_brut:'Валовый за месяц', bu_ay_net:'Чистый за месяц', aylik_ort:'Средн. в месяц', ay_12_top:'Итого за 12 мес.',
+    brut_gelir:'Валовый доход', net_gelir:'Чистый доход',
+    egitmenler:'Преподаватели', bas_egitmen:'Главный преподаватель', asistan_egitmen:'Ассистент-преподаватель', henuz_egitmen_yok:'Преподавателей пока нет.',
+    egitmen_ekle:'Добавить преподавателя', ayarlar_kaydedildi:'Настройки сохранены', egitmeni_duzenle:'Изменить преподавателя', yeni_egitmen:'Новый преподаватель',
+    ad_soyad:'ФИО', ad_zorunlu:'Имя обязательно.', egitmen_kaydedildi:'Преподаватель сохранён',
+    egitmeni_sil:'Удалить преподавателя', egitmen_silinecek:'будет удалён. Связь с группами не удаляется.',
+    gelir:'Доход', grup_dersler:'Групповые занятия', ozel_dersler:'Частные уроки', toplam_gelir:'Общий доход',
+    giderler:'Расходы', toplam_kira:'Общая аренда', asistan_odemeleri:'Выплаты ассистентам', toplam_gider:'Общий расход',
+    kari:'Прибыль', kendi_siniflari:'Свои группы: Доход − Аренда − Ассистент',
+    net_kar:'Чистая прибыль', toplam_gelir_kira_asistan:'Общий доход − Аренда − Ассистент',
+    payi:'доля', kira:'Аренда', bu_ay_kayit_yok:'Записей за этот месяц нет.',
+    egitmen_eklenmemis_uyari:'⚠ Преподаватели не добавлены. Добавьте их в разделе "Преподаватели и расходы" и назначьте на группы.',
   },
 };
 function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIONS.tr[key]||key;}
+function LC(){return LANG==='en'?'en-US':LANG==='ru'?'ru-RU':'tr-TR';}
 function applyLang(){
   const map={
     'topbarSub':'topbar_sub','navlbl-anasayfa':'nav_anasayfa','navlbl-ogrenciler':'nav_ogrenciler',
@@ -1297,6 +1544,8 @@ function applyLang(){
     'lbl-sonEklenen':'sonEklenen','lbl-ilkEklenen':'ilkEklenen',
   };
   Object.keys(map).forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t(map[id]);});
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=t(el.getAttribute('data-i18n'));});
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.getAttribute('data-i18n-ph'));});
   const ph={'og-arama':'ph_og_arama','si-arama':'ph_si_arama'};
   Object.keys(ph).forEach(id=>{const el=document.getElementById(id);if(el)el.placeholder=t(ph[id]);});
   const syncText=document.getElementById('syncText');
@@ -1358,7 +1607,7 @@ let CONFIRM_CB=null;
 function ayKey(y,m){return y+'-'+(m<10?'0':'')+m;}
 function ayLabel(k){if(!k)return'';const[y,m]=k.split('-');return AYLAR[parseInt(m)-1]+' '+y;}
 function addDays(s,d){const dt=new Date(s+'T00:00:00');dt.setDate(dt.getDate()+d);return dt.toISOString().slice(0,10);}
-function formatDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'short'});}catch(e){return d;}}
+function formatDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short'});}catch(e){return d;}}
 function daysLeft(d){if(!d)return 999;return Math.ceil((new Date(d+'T00:00:00')-new Date())/864e5);}
 function initials(a,b){return((a||'')[0]||'').toUpperCase()+((b||'')[0]||'').toUpperCase();}
 function setSyncing(v){const d=document.getElementById('syncDot'),tx=document.getElementById('syncText');if(v){d.classList.add('syncing');tx.textContent=t('sync_saving');}else{d.classList.remove('syncing');tx.textContent=t('sync_live');}}
@@ -1770,7 +2019,7 @@ function parseTitleDate(title){
   const m=title.match(/(\d{1,2})\s+(Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık)\s+(\d{4})/i);
   if(!m)return null;
   const gun=parseInt(m[1]);
-  const ayIdx=AYLAR.findIndex(a=>a.toLocaleLowerCase('tr-TR')===m[2].toLocaleLowerCase('tr-TR'));
+  const ayIdx=AYLAR.findIndex(a=>a.toLocaleLowerCase(LC())===m[2].toLocaleLowerCase(LC()));
   const yil=parseInt(m[3]);
   if(ayIdx<0||isNaN(gun)||isNaN(yil))return null;
   return new Date(yil,ayIdx,gun).getTime();
@@ -1784,13 +2033,13 @@ async function loadPlaylistInto(playlistId,id){
     renderCardVideos(id,playlistId);
     return;
   }
-  el.innerHTML='<div style="padding:14px 0;font-size:13px;color:var(--text3);">Videolar yükleniyor...</div>';
+  el.innerHTML='<div style="padding:14px 0;font-size:13px;color:var(--text3);">'+t('videolar_yukleniyor')+'</div>';
   try{
     const items=await fetchPlaylistVideos(playlistId);
     VIDEO_CACHE[playlistId]={items,ts:Date.now()};
     renderCardVideos(id,playlistId);
   }catch(e){
-    el.innerHTML='<div style="padding:14px 0;font-size:13px;color:var(--text3);">Videolar yüklenemedi. Playlist ID\'yi ve API anahtarını kontrol edin.<br><span style="opacity:.7;">'+(e.message||'')+'</span></div>';
+    el.innerHTML='<div style="padding:14px 0;font-size:13px;color:var(--text3);">'+t('videolar_yuklenemedi')+'<br><span style="opacity:.7;">'+(e.message||'')+'</span></div>';
   }
 }
 function renderCardVideos(id,playlistId){
@@ -1801,8 +2050,8 @@ function renderCardVideos(id,playlistId){
   const order=VS_SORT[id]||'desc';
   const sorted=[...items].sort((a,b)=>order==='asc'?a.parsedTs-b.parsedTs:b.parsedTs-a.parsedTs);
   const sortRow=items.length?`<div style="display:flex;gap:8px;margin-bottom:10px;">
-    <button class="btn ${order==='desc'?'btn-accent':'btn-ghost'} btn-sm" style="flex:1;" onclick="event.stopPropagation();setVideoSort('${id}','${playlistId.replace(/'/g,"\\'")}','desc')">↓ Yeniden Eskiye</button>
-    <button class="btn ${order==='asc'?'btn-accent':'btn-ghost'} btn-sm" style="flex:1;" onclick="event.stopPropagation();setVideoSort('${id}','${playlistId.replace(/'/g,"\\'")}','asc')">↑ Eskiden Yeniye</button>
+    <button class="btn ${order==='desc'?'btn-accent':'btn-ghost'} btn-sm" style="flex:1;" onclick="event.stopPropagation();setVideoSort('${id}','${playlistId.replace(/'/g,"\\'")}','desc')">↓ ${t('yeniden_eskiye')}</button>
+    <button class="btn ${order==='asc'?'btn-accent':'btn-ghost'} btn-sm" style="flex:1;" onclick="event.stopPropagation();setVideoSort('${id}','${playlistId.replace(/'/g,"\\'")}','asc')">↑ ${t('eskiden_yeniye')}</button>
   </div>`:'';
   el.innerHTML=sortRow+renderVideoListHtml(sorted);
 }
@@ -1829,7 +2078,7 @@ function updateCardBadge(id){
   if(!vs)return;
   const cached=VIDEO_CACHE[vs.playlistId];
   const badgeEl=document.getElementById('vs-badge-'+id);
-  if(badgeEl&&cached)badgeEl.textContent=cached.items.length?cached.items.length+' video':'Henüz video yok';
+  if(badgeEl&&cached)badgeEl.textContent=cached.items.length?cached.items.length+' '+t('video'):t('henuz_video_yok');
 }
 async function ensureVideoCount(id,playlistId){
   const cached=VIDEO_CACHE[playlistId];
@@ -1845,7 +2094,7 @@ async function ensureVideoCount(id,playlistId){
   }
 }
 function renderVideoListHtml(items){
-  if(!items.length)return '<div style="padding:14px 0;font-size:13px;color:var(--text3);">Bu playlist\'te henüz video yok.</div>';
+  if(!items.length)return '<div style="padding:14px 0;font-size:13px;color:var(--text3);">'+t('playlist_bos')+'</div>';
   return '<div style="display:flex;flex-direction:column;gap:8px;">'+items.map(v=>`
     <a href="https://www.youtube.com/watch?v=${v.videoId}" target="_blank" rel="noopener" onclick="event.stopPropagation();" style="display:flex;gap:10px;text-decoration:none;color:inherit;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px;">
       <img src="${v.thumb}" style="width:88px;height:50px;object-fit:cover;border-radius:6px;flex-shrink:0;background:var(--border);" loading="lazy"/>
@@ -1861,7 +2110,7 @@ function renderVideolar(){
   const liste=[...S.videoSiniflar].sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
   if(!liste.length){
     el.className='';
-    el.innerHTML='<div class="empty"><div class="empty-icon">🎬</div><div class="empty-text">Henüz sınıf eklenmedi.</div></div>';
+    el.innerHTML='<div class="empty"><div class="empty-icon">🎬</div><div class="empty-text">'+t('empty_sinif')+'</div></div>';
     return;
   }
   el.className='video-grid';
@@ -1869,16 +2118,16 @@ function renderVideolar(){
     const acik=VS_ACIK.has(vs.id);
     const renk=RENK_BAR[i%RENK_BAR.length];
     const cached=VIDEO_CACHE[vs.playlistId];
-    const badgeMetin=cached?(cached.items.length?cached.items.length+' video':'Henüz video yok'):'Yükleniyor...';
+    const badgeMetin=cached?(cached.items.length?cached.items.length+' '+t('video'):t('henuz_video_yok')):t('yukleniyor');
     return `<div class="video-kart${acik?' expanded':''}" id="vs-card-${vs.id}" onclick="toggleVideoSinif('${vs.id}')">
       <div class="vk-renk-bar" style="background:${renk};"></div>
       <span class="vk-chevron">⌄</span>
       <span class="vk-dots" onclick="event.stopPropagation();toggleVideoMenu('${vs.id}')">⋯</span>
       ${VS_MENU_OPEN===vs.id?`
         <div class="vk-menu" onclick="event.stopPropagation();">
-          <button onclick="toggleVideoMenu(null);openVideoSinifModal('${vs.id}')">✎ Düzenle</button>
+          <button onclick="toggleVideoMenu(null);openVideoSinifModal('${vs.id}')">${t('btn_duzenle')}</button>
           <div class="vk-menu-divider"></div>
-          <button class="danger" onclick="toggleVideoMenu(null);silVideoSinif('${vs.id}')">🗑 Sil</button>
+          <button class="danger" onclick="toggleVideoMenu(null);silVideoSinif('${vs.id}')">🗑 ${t('btn_sil')}</button>
         </div>
       `:''}
       <div class="vk-ikon">🎬</div>
@@ -1913,7 +2162,7 @@ async function sinifDurumToggle(id){
   });
 }
 function setSOSeg(v){SEG_TIP=v;document.getElementById('so-seg-paket').classList.toggle('active',v==='paket');document.getElementById('so-seg-tekders').classList.toggle('active',v==='tekders');updateSOInfo();}
-function updateSOInfo(){const s=S.siniflar.find(x=>x.id===CUR_SINIF);if(!s)return;const el=document.getElementById('so-paket-info');if(SEG_TIP==='paket')el.innerHTML=`<span style="color:var(--green);font-weight:600;">4 ders hakkı</span> · <span style="color:var(--accent);font-weight:600;">${(s.paket||0).toLocaleString('tr-TR')} ₺</span> · 28 gün`;else el.innerHTML=`<span style="color:var(--cyan);font-weight:600;">1 ders hakkı</span> · <span style="color:var(--accent);font-weight:600;">${(s.tekders||0).toLocaleString('tr-TR')} ₺</span> · 7 gün`;}
+function updateSOInfo(){const s=S.siniflar.find(x=>x.id===CUR_SINIF);if(!s)return;const el=document.getElementById('so-paket-info');if(SEG_TIP==='paket')el.innerHTML=`<span style="color:var(--green);font-weight:600;">4 ders hakkı</span> · <span style="color:var(--accent);font-weight:600;">${(s.paket||0).toLocaleString(LC())} ₺</span> · 28 gün`;else el.innerHTML=`<span style="color:var(--cyan);font-weight:600;">1 ders hakkı</span> · <span style="color:var(--accent);font-weight:600;">${(s.tekders||0).toLocaleString(LC())} ₺</span> · 7 gün`;}
 function openSinifOgrenci(id){
   CUR_SINIF=id;SEG_TIP='paket';
   const si=S.siniflar.find(s=>s.id===id);
@@ -2238,16 +2487,16 @@ async function saveOdeme(){
   btn.disabled=false;setSyncing(false);
 }
 async function silOdeme(){if(!EDIT_ODEME)return;confirm_('Ödemeyi Sil','Bu ödeme kaydı kalıcı olarak silinecek.',async()=>{setSyncing(true);await db.collection('odemeler').doc(EDIT_ODEME).delete();_poll('odemeler');setSyncing(false);closeModal('m-odeme');});}
-function openOdemeDetay(ogId,siId){const og=S.ogrenciler.find(o=>o.id===ogId);const si=S.siniflar.find(s=>s.id===siId);const list=ogSiOd(ogId,siId).sort((a,b)=>b.olusturma-a.olusturma);document.getElementById('m-odeme-detay-title').textContent=(og?og.ad+' '+og.soyad:'')+(si?' · '+si.ad:'');const el=document.getElementById('m-odeme-detay-content');if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">Henüz ödeme kaydı yok</div></div>';openModal('m-odeme-detay');return;}el.innerHTML=list.map(od=>`<div class="odeme-gecmis-item"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--green);font-size:15px;font-weight:600;">${(od.tutar||0).toLocaleString('tr-TR')} ₺</span><div style="display:flex;gap:6px;align-items:center;"><span class="badge badge-amber">${od.yontem||'—'}</span><button class="btn btn-ghost btn-sm" onclick="closeModal('m-odeme-detay');openOdemeModal('${ogId}','${siId}','${od.id}')">Düzenle</button></div></div><div style="font-size:12px;color:var(--text3);">${formatDate(od.tarih)}${od.aylar&&od.aylar.length?' · '+od.aylar.map(a=>ayLabel(a)).join(', '):''}</div>${od.not?`<div style="font-size:12px;color:var(--text3);margin-top:3px;">${od.not}</div>`:''}</div>`).join('');openModal('m-odeme-detay');}
+function openOdemeDetay(ogId,siId){const og=S.ogrenciler.find(o=>o.id===ogId);const si=S.siniflar.find(s=>s.id===siId);const list=ogSiOd(ogId,siId).sort((a,b)=>b.olusturma-a.olusturma);document.getElementById('m-odeme-detay-title').textContent=(og?og.ad+' '+og.soyad:'')+(si?' · '+si.ad:'');const el=document.getElementById('m-odeme-detay-content');if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">Henüz ödeme kaydı yok</div></div>';openModal('m-odeme-detay');return;}el.innerHTML=list.map(od=>`<div class="odeme-gecmis-item"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--green);font-size:15px;font-weight:600;">${(od.tutar||0).toLocaleString(LC())} ₺</span><div style="display:flex;gap:6px;align-items:center;"><span class="badge badge-amber">${od.yontem||'—'}</span><button class="btn btn-ghost btn-sm" onclick="closeModal('m-odeme-detay');openOdemeModal('${ogId}','${siId}','${od.id}')">Düzenle</button></div></div><div style="font-size:12px;color:var(--text3);">${formatDate(od.tarih)}${od.aylar&&od.aylar.length?' · '+od.aylar.map(a=>ayLabel(a)).join(', '):''}</div>${od.not?`<div style="font-size:12px;color:var(--text3);margin-top:3px;">${od.not}</div>`:''}</div>`).join('');openModal('m-odeme-detay');}
 
 // ── ÖZEL DERS ──────────────────────────────────────────
 function setOSeg(v){OSEG=v;document.getElementById('oseg-k').classList.toggle('active',v==='k');document.getElementById('oseg-e').classList.toggle('active',v==='e');}
 function openOzelOgModal(id){EDIT_OZEL_OG=id||null;const araWrap=document.getElementById('oog-ara-wrap');document.getElementById('oog-ara').value='';document.getElementById('oog-ara-sonuc').innerHTML='';araWrap.style.display='block';if(id){const og=S.ozelOgrenciler.find(o=>o.id===id);document.getElementById('oog-ad').value=og.ad;document.getElementById('oog-soyad').value=og.soyad||'';document.getElementById('oog-tel').value=og.tel||'';setOSeg(og.cinsiyet||'k');document.getElementById('m-ozel-og-title').textContent='Öğrenci Düzenle';}else{['oog-ad','oog-soyad','oog-tel'].forEach(i=>document.getElementById(i).value='');setOSeg('k');document.getElementById('m-ozel-og-title').textContent='Özel Ders Öğrencisi';}openModal('m-ozel-og');}
 function oogAraInput(){
-  const q=document.getElementById('oog-ara').value.trim().toLocaleLowerCase('tr-TR');
+  const q=document.getElementById('oog-ara').value.trim().toLocaleLowerCase(LC());
   const sonucEl=document.getElementById('oog-ara-sonuc');
   if(q.length<2){sonucEl.innerHTML='';return;}
-  const eslesen=S.ogrenciler.filter(o=>((o.ad||'')+' '+(o.soyad||'')).toLocaleLowerCase('tr-TR').includes(q)).slice(0,6);
+  const eslesen=S.ogrenciler.filter(o=>((o.ad||'')+' '+(o.soyad||'')).toLocaleLowerCase(LC()).includes(q)).slice(0,6);
   sonucEl.innerHTML=eslesen.length?eslesen.map(o=>`<div class="oog-ara-item" onclick="oogAraSec('${o.id}')"><span>${o.ad} ${o.soyad||''}</span><span class="oai-not">seç ›</span></div>`).join(''):
     '<div style="font-size:12px;color:var(--text3);padding:6px 2px;">Eşleşme bulunamadı — yeni öğrenci olarak devam edebilirsin.</div>';
 }
@@ -2317,7 +2566,7 @@ function openOzelSaatModal(paketId){CUR_OZEL_PAKET=paketId;const p=S.ozelPaketle
 CUR_PAKET_EGITMENLER=(p.egitmenIds||[]).map(id=>S.egitmenler.find(e=>e.id===id)).filter(Boolean);
 document.getElementById('m-ozel-saat-content').innerHTML=`
   <div class="grad-card gc-cyan" style="margin-bottom:14px;">
-    <div style="font-size:13px;color:var(--text2);">${formatDate(p.tarih)} · ${(p.tutar||0).toLocaleString('tr-TR')} ₺</div>
+    <div style="font-size:13px;color:var(--text2);">${formatDate(p.tarih)} · ${(p.tutar||0).toLocaleString(LC())} ₺</div>
     <div style="font-size:22px;font-family:Fraunces,serif;font-weight:600;margin:5px 0;"><span style="color:var(--cyan)">${fmtSaat(kalan)}</span><span style="font-size:13px;color:var(--text2);"> saat kaldı</span></div>
     <div style="font-size:12px;color:var(--text3);">${fmtSaat(p.yapilanSaat)}/${fmtSaat(p.toplamSaat)} saat yapıldı · %${pct}</div>
     <div class="saat-bar" style="margin-top:8px;"><div class="saat-bar-fill${kalan===0?' bitti-renk':kalan<=1?' az':''}" style="width:${pct}%"></div></div>
@@ -2431,7 +2680,12 @@ function ogrenciBasHarf(og){
   if(!og)return '?';
   return ((og.ad||'').charAt(0)+(og.soyad||'').charAt(0)).toUpperCase()||'?';
 }
-const OT_GUN_ADLARI=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
+const OT_GUN_ADLARI_MAP={
+  tr:['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'],
+  en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+  ru:['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+};
+function OT_GUN_ADLARI_F(){return OT_GUN_ADLARI_MAP[LANG]||OT_GUN_ADLARI_MAP.tr;}
 const OT_BASLANGIC=10, OT_BITIS=22; // 10:00 - 22:00
 const OT_TOPLAM_SLOT=(OT_BITIS-OT_BASLANGIC)*2; // yarım saatlik slot sayısı
 
@@ -2450,7 +2704,7 @@ function renderOzelTakvim(){
   const legendEl=document.getElementById('ot-legend');
   const gunler=Array.from({length:7},(_,i)=>new Date(OT_WEEK_START.getTime()+i*86400000));
   const ilkGun=gunler[0],sonGun=gunler[6];
-  const ayKisa=(d)=>d.toLocaleDateString('tr-TR',{month:'short'});
+  const ayKisa=(d)=>d.toLocaleDateString(LC(),{month:'short'});
   labelEl.textContent=`${ilkGun.getDate()} ${ayKisa(ilkGun)} – ${sonGun.getDate()} ${ayKisa(sonGun)}`;
 
   const kullanilanEgitmenIds=[...new Set(S.ozelOgrenciler.map(o=>o.egitmenId).filter(Boolean))];
@@ -2464,7 +2718,7 @@ function renderOzelTakvim(){
   let html=`<div style="grid-column:1;grid-row:1;"></div>`;
   gunler.forEach((d,i)=>{
     const bugun=otTarihStr(d)===otTarihStr(new Date());
-    html+=`<div class="ot-gun-header" style="grid-column:${i+2};grid-row:1;">${OT_GUN_ADLARI[d.getDay()]}<div class="ot-gun-num" style="${bugun?'color:var(--accent);':''}">${d.getDate()}</div></div>`;
+    html+=`<div class="ot-gun-header" style="grid-column:${i+2};grid-row:1;">${OT_GUN_ADLARI_F()[d.getDay()]}<div class="ot-gun-num" style="${bugun?'color:var(--accent);':''}">${d.getDate()}</div></div>`;
   });
 
   // Saat etiketleri (her tam saatte, 2 slot yüksekliğinde)
@@ -2529,7 +2783,7 @@ function otHucreTikla(tarih,saat){
   document.getElementById('dp-saat').value=saat;
   document.getElementById('dp-sure').value='1';
   const dObj=new Date(tarih+'T00:00:00');
-  document.getElementById('m-ders-planla-title').textContent=`Ders Planla — ${OT_GUN_ADLARI[dObj.getDay()]} ${dObj.getDate()} ${dObj.toLocaleDateString('tr-TR',{month:'short'})}`;
+  document.getElementById('m-ders-planla-title').textContent=`Ders Planla — ${OT_GUN_ADLARI_F()[dObj.getDay()]} ${dObj.getDate()} ${dObj.toLocaleDateString(LC(),{month:'short'})}`;
   openModal('m-ders-planla');
 }
 function dpAktifPaket(ogId){
@@ -2602,7 +2856,7 @@ function otSeansDuzenle(id){
   const multiSel=document.getElementById('dp-egitmen-select');
   if(multiSel&&s.egitmenId&&[...multiSel.options].some(o=>o.value===s.egitmenId))multiSel.value=s.egitmenId;
   const dObj=new Date(s.tarih+'T00:00:00');
-  document.getElementById('m-ders-planla-title').textContent=`Dersi Düzenle — ${OT_GUN_ADLARI[dObj.getDay()]} ${dObj.getDate()} ${dObj.toLocaleDateString('tr-TR',{month:'short'})}`;
+  document.getElementById('m-ders-planla-title').textContent=`Dersi Düzenle — ${OT_GUN_ADLARI_F()[dObj.getDay()]} ${dObj.getDate()} ${dObj.toLocaleDateString(LC(),{month:'short'})}`;
   closeModal('m-seans-detay');
   openModal('m-ders-planla');
 }
@@ -2698,17 +2952,17 @@ function renderAnasayfa(){
       const cls=dl<=0?'urgent':dl<=3?'soon':'ok';
       const dc=dl<=0&&gh===0?'gd-red':dl<=0&&gh>0?'gd-amber':dl<=3?'gd-amber':'gd-cyan';
       const bc=dl<=0&&gh===0?'badge-red':dl<=0&&gh>0?'badge-amber':dl<=3?'badge-amber':'badge-cyan';
-      const dt=dl<=0&&gh===0?'Son ders geldi':dl<=0&&gh>0?'Süre doldu':dl===1?'Yarın son ders':dl+' gün kaldı';
+      const dt=dl<=0&&gh===0?t('son_ders_geldi'):dl<=0&&gh>0?t('sure_doldu'):dl===1?t('yarin_son_ders'):dl+' '+t('gun_kaldi');
       return `<div class="pay-alert ${cls}" style="margin-bottom:6px;padding:8px 10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:5px;">
           <div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;">
             <div class="glow-dot ${dc}" style="flex-shrink:0;"></div>
             <div style="min-width:0;"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${og.ad} ${og.soyad||''}</div>
-            <div style="font-size:11px;color:var(--text3);">${sinif.ad} · ${gh} ders · ${formatDate(gb)}</div></div>
+            <div style="font-size:11px;color:var(--text3);">${sinif.ad} · ${gh} ${t('ders')} · ${formatDate(gb)}</div></div>
           </div>
           <span class="badge ${bc}" style="flex-shrink:0;white-space:nowrap;font-size:10px;">${dt}</span>
         </div>
-        <div style="display:flex;gap:6px;">${og.tel?waBtnAlert(og.tel,og.ad,sinif.ad,dl):''}<button class="btn btn-green btn-sm" onclick="openOdemeModal('${og.id}','${sinif.id}')">＋ Ödeme Al</button></div>
+        <div style="display:flex;gap:6px;">${og.tel?waBtnAlert(og.tel,og.ad,sinif.ad,dl):''}<button class="btn btn-green btn-sm" onclick="openOdemeModal('${og.id}','${sinif.id}')">＋ ${t('odeme_al')}</button></div>
       </div>`;
     }).join('');
     return `<div class="odeme-sinif-grup" style="margin-bottom:8px;overflow:hidden;">
@@ -2728,10 +2982,10 @@ function renderAnasayfa(){
 
   if(yaklasanlar.length){
     html+=`<div class="sec-header">
-      <span class="sec-title">Paket Yenileme <span style="color:var(--accent);font-family:'Fraunces',serif;">(${yaklasanlar.length})</span></span>
+      <span class="sec-title">${t('lbl_paket_yenileme')} <span style="color:var(--accent);font-family:'Fraunces',serif;">(${yaklasanlar.length})</span></span>
       <div class="grp-seg">
-        <button class="grp-seg-btn${YEN_GRUPLAMA==='sinif'?' active':''}" onclick="setYenGruplama('sinif')">Sınıfa Göre</button>
-        <button class="grp-seg-btn${YEN_GRUPLAMA==='sure'?' active':''}" onclick="setYenGruplama('sure')">Süreye Göre</button>
+        <button class="grp-seg-btn${YEN_GRUPLAMA==='sinif'?' active':''}" onclick="setYenGruplama('sinif')">${t('siniftagore')}</button>
+        <button class="grp-seg-btn${YEN_GRUPLAMA==='sure'?' active':''}" onclick="setYenGruplama('sure')">${t('sureyegore')}</button>
       </div>
     </div>`;
 
@@ -2749,19 +3003,19 @@ function renderAnasayfa(){
         const urgentSay=items.filter(x=>x.dl<=0).length;
         const soonSay=items.filter(x=>x.dl>0&&x.dl<=3).length;
         let badge=`<div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;">`;
-        if(urgentSay)badge+=`<span class="badge badge-red" style="font-size:10px;">${urgentSay} acil</span>`;
-        if(soonSay)badge+=`<span class="badge badge-amber" style="font-size:10px;">${soonSay} yaklaşıyor</span>`;
+        if(urgentSay)badge+=`<span class="badge badge-red" style="font-size:10px;">${urgentSay} ${t('acil')}</span>`;
+        if(soonSay)badge+=`<span class="badge badge-amber" style="font-size:10px;">${soonSay} ${t('yaklasiyor')}</span>`;
         const normalSay=items.length-urgentSay-soonSay;
-        if(normalSay)badge+=`<span class="badge badge-cyan" style="font-size:10px;">${normalSay} bu hafta</span>`;
+        if(normalSay)badge+=`<span class="badge badge-cyan" style="font-size:10px;">${normalSay} ${t('bu_hafta_kucuk')}</span>`;
         badge+='</div>';
         html+=yenAccordion('yen_sinif_'+si.id,siAd,items,badge,renk);
       });
     } else {
       // Süre bazlı
       const gruplar=[
-        {id:'yen_gecmis',baslik:'Son Ders Geldi',items:[],renk:'var(--accent)'},
-        {id:'yen_1_3',baslik:'1–3 Gün Kaldı',items:[],renk:'var(--amber)'},
-        {id:'yen_4_7',baslik:'4–7 Gün Kaldı',items:[],renk:'var(--cyan)'},
+        {id:'yen_gecmis',baslik:t('son_ders_geldi_baslik'),items:[],renk:'var(--accent)'},
+        {id:'yen_1_3',baslik:t('gun_1_3_kaldi'),items:[],renk:'var(--amber)'},
+        {id:'yen_4_7',baslik:t('gun_4_7_kaldi'),items:[],renk:'var(--cyan)'},
       ];
       yaklasanlar.forEach(item=>{
         if(item.dl<=0)gruplar[0].items.push(item);
@@ -2770,12 +3024,12 @@ function renderAnasayfa(){
       });
       gruplar.forEach(g=>{
         if(!g.items.length)return;
-        const badge=`<div style="margin-top:3px;"><span class="badge badge-${g.id==='yen_gecmis'?'red':g.id==='yen_1_3'?'amber':'cyan'}" style="font-size:10px;">${g.items.length} öğrenci</span></div>`;
+        const badge=`<div style="margin-top:3px;"><span class="badge badge-${g.id==='yen_gecmis'?'red':g.id==='yen_1_3'?'amber':'cyan'}" style="font-size:10px;">${g.items.length} ${t('lbl_ogrenci_kucuk')}</span></div>`;
         html+=yenAccordion(g.id,g.baslik,g.items,badge,g.renk);
       });
     }
   } else {
-    html+='<div class="empty" style="padding:20px 0;"><div class="empty-icon" style="font-size:30px;">✓</div><div class="empty-text">Yaklaşan paket yenilemesi yok</div></div>';
+    html+='<div class="empty" style="padding:20px 0;"><div class="empty-icon" style="font-size:30px;">✓</div><div class="empty-text">'+t('yaklasan_yok')+'</div></div>';
   }
 
   // Bekleyen Ödeme — sınıfa eklenmiş ama bu ay hiç ödemesi olmayan aktif paket öğrencileri
@@ -2820,9 +3074,9 @@ function renderAnasayfa(){
           <div style="display:flex;align-items:center;gap:8px;min-width:0;">
             <div class="glow-dot gd-amber"></div>
             <div><div style="font-size:14px;font-weight:600;">${og.ad} ${og.soyad||''}</div>
-            <div style="font-size:12px;color:var(--text3);">Henüz sınıfa eklenmedi</div></div>
+            <div style="font-size:12px;color:var(--text3);">${t('henuz_sinifa_eklenmedi')}</div></div>
           </div>
-          <span class="badge badge-amber">Yeni Kayıt</span>
+          <span class="badge badge-amber">${t('yeni_kayit')}</span>
         </div>
         <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">${og.tel?waBtnG(og.tel,og.ad):''}</div>
       </div>`;
@@ -2830,8 +3084,8 @@ function renderAnasayfa(){
     const alertCls=hicOdeme?'soon':'ok';
     const dotCls=hicOdeme?'gd-amber':'gd-cyan';
     const badgeCls=hicOdeme?'badge-amber':'badge-cyan';
-    const badgeTxt=hicOdeme?'İlk Ödeme':'Bekliyor';
-    const altTxt=hicOdeme?`${siAd} · İlk ödeme bekleniyor`:`${siAd} · Bu ay ödeme girilmedi`;
+    const badgeTxt=hicOdeme?t('ilk_odeme'):t('bekliyor');
+    const altTxt=hicOdeme?`${siAd} · ${t('ilk_odeme_bekleniyor')}`:`${siAd} · ${t('bu_ay_odeme_girilmedi')}`;
     return `<div class="pay-alert ${alertCls}" style="margin-bottom:8px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
         <div style="display:flex;align-items:center;gap:8px;min-width:0;">
@@ -2843,7 +3097,7 @@ function renderAnasayfa(){
       </div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">
         ${og.tel?waBtnG(og.tel,og.ad):''}
-        <button class="btn btn-accent btn-sm" onclick="openOdemeModal('${og.id}','${si.id}')">＋ Ödeme Al</button>
+        <button class="btn btn-accent btn-sm" onclick="openOdemeModal('${og.id}','${si.id}')">＋ ${t('odeme_al')}</button>
       </div>
     </div>`;
   }
@@ -2867,10 +3121,10 @@ function renderAnasayfa(){
 
   if(herhangiVar){
     html+=`<div class="sec-header" style="margin-top:16px;">
-      <span class="sec-title">Bekleyen Ödeme <span style="color:var(--accent);font-family:'Fraunces',serif;">(${tumBekleyenler.length})</span></span>
+      <span class="sec-title">${t('bekleyen_odeme')} <span style="color:var(--accent);font-family:'Fraunces',serif;">(${tumBekleyenler.length})</span></span>
       <div class="grp-seg">
-        <button class="grp-seg-btn${BEK_GRUPLAMA==='sinif'?' active':''}" onclick="setBekGruplama('sinif')">Sınıfa Göre</button>
-        <button class="grp-seg-btn${BEK_GRUPLAMA==='sure'?' active':''}" onclick="setBekGruplama('sure')">Süreye Göre</button>
+        <button class="grp-seg-btn${BEK_GRUPLAMA==='sinif'?' active':''}" onclick="setBekGruplama('sinif')">${t('siniftagore')}</button>
+        <button class="grp-seg-btn${BEK_GRUPLAMA==='sure'?' active':''}" onclick="setBekGruplama('sure')">${t('sureyegore')}</button>
       </div>
     </div>`;
 
@@ -2878,8 +3132,8 @@ function renderAnasayfa(){
       // Yeni kayıt grubu
       if(bekYeniKayit.length){
         const items=bekYeniKayit.map(og=>({og,si:null,yeniKayit:true,hicOdeme:true}));
-        const badge=`<div style="margin-top:3px;"><span class="badge badge-amber" style="font-size:10px;">${bekYeniKayit.length} öğrenci</span></div>`;
-        html+=accordionGrup('__yeni__','Yeni Kayıt',items,badge,'var(--amber)');
+        const badge=`<div style="margin-top:3px;"><span class="badge badge-amber" style="font-size:10px;">${bekYeniKayit.length} ${t('lbl_ogrenci_kucuk')}</span></div>`;
+        html+=accordionGrup('__yeni__',t('yeni_kayit'),items,badge,'var(--amber)');
       }
       // Sınıf grupları — sınıf renk çubuğuyla
       bekGrupSirali.forEach((siAd,i)=>{
@@ -2888,8 +3142,8 @@ function renderAnasayfa(){
         const ilkOdemeBek=ogList.filter(og=>!S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===si.id)).length;
         const buAyBek=ogList.length-ilkOdemeBek;
         let badgeHtml=`<div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;">`;
-        if(ilkOdemeBek)badgeHtml+=`<span class="badge badge-amber" style="font-size:10px;">${ilkOdemeBek} ilk ödeme</span>`;
-        if(buAyBek)badgeHtml+=`<span class="badge badge-cyan" style="font-size:10px;">${buAyBek} bu ay bekliyor</span>`;
+        if(ilkOdemeBek)badgeHtml+=`<span class="badge badge-amber" style="font-size:10px;">${ilkOdemeBek} ${t('ilk_odeme_kucuk')}</span>`;
+        if(buAyBek)badgeHtml+=`<span class="badge badge-cyan" style="font-size:10px;">${buAyBek} ${t('bu_ay_bekliyor')}</span>`;
         badgeHtml+='</div>';
         const items=ogList.map(og=>{
           const hicOdemeYok=!S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===si.id);
@@ -2901,12 +3155,12 @@ function renderAnasayfa(){
     } else {
       // Süre bazlı gruplama
       const gruplama=[
-        {id:'sure_gecmis',baslik:'Son Ders Geldi',items:[],badge:'badge-red',renk:'var(--accent)'},
-        {id:'sure_doldu',baslik:'Süre Doldu',items:[],badge:'badge-amber',renk:'var(--amber)'},
-        {id:'sure_1_3',baslik:'1–3 Gün Kaldı',items:[],badge:'badge-amber',renk:'var(--amber)'},
-        {id:'sure_4_7',baslik:'4–7 Gün Kaldı',items:[],badge:'badge-cyan',renk:'var(--cyan)'},
-        {id:'sure_ilk',baslik:'İlk Ödeme Bekleniyor',items:[],badge:'badge-amber',renk:'var(--amber)'},
-        {id:'sure_ay',baslik:'Bu Ay Ödeme Bekleniyor',items:[],badge:'badge-gray',renk:'var(--text3)'},
+        {id:'sure_gecmis',baslik:t('son_ders_geldi_baslik'),items:[],badge:'badge-red',renk:'var(--accent)'},
+        {id:'sure_doldu',baslik:t('sure_doldu'),items:[],badge:'badge-amber',renk:'var(--amber)'},
+        {id:'sure_1_3',baslik:t('gun_1_3_kaldi'),items:[],badge:'badge-amber',renk:'var(--amber)'},
+        {id:'sure_4_7',baslik:t('gun_4_7_kaldi'),items:[],badge:'badge-cyan',renk:'var(--cyan)'},
+        {id:'sure_ilk',baslik:t('ilk_odeme_bekleniyor_baslik'),items:[],badge:'badge-amber',renk:'var(--amber)'},
+        {id:'sure_ay',baslik:t('bu_ay_odeme_bekleniyor'),items:[],badge:'badge-gray',renk:'var(--text3)'},
       ];
       tumBekleyenler.forEach(item=>{
         if(item.yeniKayit){gruplama[4].items.push(item);return;}
@@ -2924,13 +3178,13 @@ function renderAnasayfa(){
       });
       gruplama.forEach(g=>{
         if(!g.items.length)return;
-        const badge=`<div style="margin-top:3px;"><span class="badge ${g.badge}" style="font-size:10px;">${g.items.length} öğrenci</span></div>`;
+        const badge=`<div style="margin-top:3px;"><span class="badge ${g.badge}" style="font-size:10px;">${g.items.length} ${t('lbl_ogrenci_kucuk')}</span></div>`;
         html+=accordionGrup(g.id,g.baslik,g.items,badge,g.renk);
       });
     }
   }
 
-  el.innerHTML=html||'<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">Her şey yolunda!</div></div>';
+  el.innerHTML=html||'<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">'+t('her_sey_yolunda')+'</div></div>';
 }
 
 function renderOgrenciler(){
@@ -3049,7 +3303,7 @@ function renderSiniflar(){
         </div>
         <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">
           <span class="badge ${pasif?'badge-gray':aktifSayi>0?'badge-green':'badge-gray'}" style="font-size:10px;">${aktifSayi} ${t('badge_aktif')}${cinsBadge}${kayitBadge}</span>
-          ${!pasif?'<span class="badge badge-amber" style="font-size:10px;">'+((si.paket||0).toLocaleString('tr-TR'))+' ₺</span><span class="badge badge-cyan" style="font-size:10px;">'+((si.tekders||0).toLocaleString('tr-TR'))+' ₺ '+t('tek')+'</span>':''}
+          ${!pasif?'<span class="badge badge-amber" style="font-size:10px;">'+((si.paket||0).toLocaleString(LC()))+' ₺</span><span class="badge badge-cyan" style="font-size:10px;">'+((si.tekders||0).toLocaleString(LC()))+' ₺ '+t('tek')+'</span>':''}
         </div>
       </div>
     </div>`;
@@ -3084,12 +3338,12 @@ function renderSinifDetay(siId){
     const odendi=buAyOdendi||(gh>0);
     const dc=donduruldu?'gd-amber':hicOdemeYok?'gd-red':!odendi?'gd-red':dl<=0&&gh===0?'gd-red':dl<=0&&gh>0?'gd-amber':dl<=3?'gd-amber':dl<=7?'gd-cyan':'gd-green';
     const bc=donduruldu?'badge-amber':hicOdemeYok?'badge-red':!odendi?'badge-red':dl<=0&&gh===0?'badge-red':dl<=0&&gh>0?'badge-amber':dl<=3?'badge-amber':dl<=7?'badge-cyan':'badge-green';
-    const badgeText=donduruldu?'⏸':hicOdemeYok?'Ödeme Bekleniyor':gh+' ders';
+    const badgeText=donduruldu?'⏸':hicOdemeYok?t('odeme_bekleniyor'):gh+' '+t('ders');
     return `<div class="cs-item" style="${donduruldu?'opacity:.65;':''}">
       <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:32px;height:32px;font-size:11px;">${initials(og.ad,og.soyad||'')}</div>
       <div style="flex:1;min-width:0;">
         <div style="font-size:13px;font-weight:500;">${donduruldu?'🧊 ':''}${og.ad} ${og.soyad||''}</div>
-        <div style="font-size:11px;color:var(--text3);">${donduruldu?'Donduruldu':k.tip==='paket'?'Paket':'Tek'} · ${hicOdemeYok?'Henüz ödeme yok':formatDate(gb)}</div>
+        <div style="font-size:11px;color:var(--text3);">${donduruldu?t('donduruldu'):k.tip==='paket'?t('paket'):t('tek')} · ${hicOdemeYok?t('henuz_odeme_yok'):formatDate(gb)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:5px;">
         ${yoklamaBtnHTML(siId,og.id)}
@@ -3098,21 +3352,21 @@ function renderSinifDetay(siId){
         <button class="btn btn-ghost btn-sm" onclick="openKayitIslem('${si.id}','${k.id}')">⋯</button>
       </div>
     </div>`;
-  }).join(''):'<div style="font-size:13px;color:var(--text3);padding:14px 0;text-align:center;">Henüz öğrenci eklenmedi</div>';
-  document.getElementById('sinif-detay-content').innerHTML=`<div class="grad-card ${gc} sinif-detay-header"><div class="sinif-detay-adi">${si.ad}</div><div class="sinif-detay-alt"><span>${si.gun} · ${si.saat}</span><span>${(si.paket||0).toLocaleString('tr-TR')} ₺ paket</span><span>${(si.tekders||0).toLocaleString('tr-TR')} ₺ tek</span></div></div><div style="display:flex;gap:8px;margin-bottom:10px;">
-  <button class="btn btn-accent btn-sm" style="flex:1;" onclick="openSinifOgrenci('${si.id}')">＋ Öğrenci Ekle</button>
-  <button class="btn btn-ghost btn-sm" onclick="openSinifModal('${si.id}')">✎ Düzenle</button>
+  }).join(''):'<div style="font-size:13px;color:var(--text3);padding:14px 0;text-align:center;">'+t('empty_ogrenci')+'</div>';
+  document.getElementById('sinif-detay-content').innerHTML=`<div class="grad-card ${gc} sinif-detay-header"><div class="sinif-detay-adi">${si.ad}</div><div class="sinif-detay-alt"><span>${si.gun} · ${si.saat}</span><span>${(si.paket||0).toLocaleString(LC())} ₺ ${t('paket')}</span><span>${(si.tekders||0).toLocaleString(LC())} ₺ ${t('tek')}</span></div></div><div style="display:flex;gap:8px;margin-bottom:10px;">
+  <button class="btn btn-accent btn-sm" style="flex:1;" onclick="openSinifOgrenci('${si.id}')">${t('btn_ogrenci_ekle')}</button>
+  <button class="btn btn-ghost btn-sm" onclick="openSinifModal('${si.id}')">${t('btn_duzenle')}</button>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:10px;">
-  <button class="btn ${si.durum==='pasif'?'btn-green':'btn-amber'} btn-sm" style="flex:1;" onclick="sinifDurumToggle('${si.id}')">${si.durum==='pasif'?'✓ Aktife Al':'⏸ Pasife Al'}</button>
-  <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openBirlestirModal('${si.id}')">⇄ Birleştir</button>
-  <button class="btn" style="flex:1;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b40;" onclick="silSinif('${si.id}')">🗑 Sil</button>
-</div><div style="display:flex;gap:8px;margin-bottom:14px;"><button class="btn btn-cyan btn-sm" style="flex:1;" onclick="qrGoster('${si.id}')">📱 QR Yoklama</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="yoklamaGecmis('${si.id}')">Yoklama Geçmişi</button></div><div class="card" style="padding:0 16px;">${kHTML}</div>`;
+  <button class="btn ${si.durum==='pasif'?'btn-green':'btn-amber'} btn-sm" style="flex:1;" onclick="sinifDurumToggle('${si.id}')">${si.durum==='pasif'?'✓ '+t('aktife_al'):'⏸ '+t('pasife_al')}</button>
+  <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openBirlestirModal('${si.id}')">⇄ ${t('birlestir')}</button>
+  <button class="btn" style="flex:1;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b40;" onclick="silSinif('${si.id}')">🗑 ${t('btn_sil')}</button>
+</div><div style="display:flex;gap:8px;margin-bottom:14px;"><button class="btn btn-cyan btn-sm" style="flex:1;" onclick="qrGoster('${si.id}')">📱 ${t('qr_yoklama')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="yoklamaGecmis('${si.id}')">${t('yoklama_gecmisi')}</button></div><div class="card" style="padding:0 16px;">${kHTML}</div>`;
 }
 
 function renderOzel(){
   const el=document.getElementById('ozel-list');
-  if(!S.ozelOgrenciler.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">Henüz özel ders öğrencisi yok.<br>Yukarıdaki butona bas ekle.</div></div>';return;}
+  if(!S.ozelOgrenciler.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">'+t('ozel_bos')+'<br>'+t('ozel_bos_alt')+'</div></div>';return;}
   const sirali=[...S.ozelOgrenciler].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   el.innerHTML=sirali.map(og=>{
     const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
@@ -3121,14 +3375,14 @@ function renderOzel(){
       const kalan=Math.round((p.toplamSaat-p.yapilanSaat)*10)/10;const pct=Math.min(100,Math.round((p.yapilanSaat/p.toplamSaat)*100));const bitti=kalan<=0;
       return `<div class="ozel-paket${p.aktif&&!bitti?' aktif-paket':bitti?' bitti':''}" onclick="openOzelSaatModal('${p.id}')">
         <div class="ozel-paket-header">
-          <div><span class="ozel-paket-toplam">${(p.tutar||0).toLocaleString('tr-TR')} ₺</span><span style="font-size:11px;color:var(--text3);margin-left:8px;">${fmtSaat(p.toplamSaat)} saatlik paket</span></div>
-          <span class="badge ${bitti?'badge-gray':kalan<=1?'badge-amber':'badge-cyan'}">${bitti?'Tamamlandı':fmtSaat(kalan)+' saat kaldı'}</span>
+          <div><span class="ozel-paket-toplam">${(p.tutar||0).toLocaleString(LC())} ₺</span><span style="font-size:11px;color:var(--text3);margin-left:8px;">${fmtSaat(p.toplamSaat)} ${t('saatlik_paket')}</span></div>
+          <span class="badge ${bitti?'badge-gray':kalan<=1?'badge-amber':'badge-cyan'}">${bitti?t('tamamlandi'):fmtSaat(kalan)+' '+t('saat_kaldi')}</span>
         </div>
-        <div class="ozel-paket-tarih">${formatDate(p.tarih)} · ${fmtSaat(p.yapilanSaat)}/${fmtSaat(p.toplamSaat)} saat yapıldı</div>
+        <div class="ozel-paket-tarih">${formatDate(p.tarih)} · ${fmtSaat(p.yapilanSaat)}/${fmtSaat(p.toplamSaat)} ${t('saat_yapildi')}</div>
         <div class="saat-bar"><div class="saat-bar-fill${bitti?' bitti-renk':kalan<=1?' az':''}" style="width:${pct}%"></div></div>
-        <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}','${p.id}')">✎ Bu Paketi ve Eğitmenlerini Düzenle</button>
+        <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}','${p.id}')">${t('btn_paket_duzenle')}</button>
       </div>`;
-    }).join(''):`<div style="font-size:13px;color:var(--text3);padding:8px 0;">Henüz paket girilmedi</div>`;
+    }).join(''):`<div style="font-size:13px;color:var(--text3);padding:8px 0;">${t('henuz_paket_yok')}</div>`;
     return `<div class="ozel-og-kart">
       <div class="ozel-og-header">
         <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}">${initials(og.ad,og.soyad||'')}</div>
@@ -3138,13 +3392,13 @@ function renderOzel(){
         </div>
         <div style="display:flex;gap:5px;">
           ${og.tel?waBtnG(og.tel,og.ad):''}
-          <button class="btn btn-ghost btn-sm" onclick="openOzelOgModal('${og.id}')">✎ Bilgi Düzenle</button>
-          <button class="btn btn-danger btn-sm" onclick="silOzelOg('${og.id}')">Sil</button>
+          <button class="btn btn-ghost btn-sm" onclick="openOzelOgModal('${og.id}')">${t('btn_bilgi_duzenle')}</button>
+          <button class="btn btn-danger btn-sm" onclick="silOzelOg('${og.id}')">${t('btn_sil')}</button>
         </div>
       </div>
-      ${paketler.length?'<div style="font-size:11px;color:var(--text3);margin:2px 0 4px;">Paket detayı, saat düşme ve eğitmen ataması için pakete dokun ›</div>':''}
+      ${paketler.length?'<div style="font-size:11px;color:var(--text3);margin:2px 0 4px;">'+t('paket_hint')+'</div>':''}
       ${paketHTML}
-      <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="openOzelPaketModal('${og.id}')">＋ Yeni Paket</button>
+      <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button>
     </div>`;
   }).join('');
 }
@@ -3188,7 +3442,7 @@ function renderOdemeler(){
             <div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div>
             <div style="font-size:11px;color:var(--text3);">${donduruldu?'🧊 Donduruldu':k.tip==='paket'?'Paket':'Tek'} · ${gh} ders${k.tip==='paket'&&h?.bitisTarih?' · Bitiş: '+formatDate(h.bitisTarih):''}</div></div>
           </div>
-          <div style="text-align:right;flex-shrink:0;">${statusBadge}<div style="font-size:11px;color:var(--text3);margin-top:2px;">${top.toLocaleString('tr-TR')} ₺</div></div>
+          <div style="text-align:right;flex-shrink:0;">${statusBadge}<div style="font-size:11px;color:var(--text3);margin-top:2px;">${top.toLocaleString(LC())} ₺</div></div>
         </div>
         <div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;">
           ${!donduruldu?`<button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOdemeModal('${og.id}','${si.id}')">＋ Ödeme Al</button>`:''}
@@ -3207,7 +3461,7 @@ function renderOdemeler(){
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
       const topOzel=paketler.reduce((s,p)=>s+(p.tutar||0),0);
       const aktif=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
-      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text3);">${aktif?`${aktif.toplamSaat-aktif.yapilanSaat} saat kaldı`:'Aktif paket yok'}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?'Aktif':'Bitti'}</span><div style="font-size:11px;color:var(--text3);margin-top:2px;">${topOzel.toLocaleString('tr-TR')} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">＋ Yeni Paket</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="goTo('ozel',null)">Derse Git</button>${og.tel?waBtnG(og.tel,og.ad):''}</div></div>`;
+      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text3);">${aktif?`${aktif.toplamSaat-aktif.yapilanSaat} saat kaldı`:'Aktif paket yok'}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?'Aktif':'Bitti'}</span><div style="font-size:11px;color:var(--text3);margin-top:2px;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">＋ Yeni Paket</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="goTo('ozel',null)">Derse Git</button>${og.tel?waBtnG(og.tel,og.ad):''}</div></div>`;
     });
     html+=`</div></div>`;
   }
@@ -3220,7 +3474,7 @@ function renderGelir(){
   const ayMap={};
   S.odemeler.forEach(od=>{
     const si=S.siniflar.find(s=>s.id===od.sinifId);
-    const siAd=si?si.ad:'Grup';
+    const siAd=si?si.ad:t('grup');
     // Gelir ödemenin yapıldığı aya yazılır (çok aylık ödeme dağıtılmaz)
     const odTarih=od.tarih||null;
     const odKey=odTarih?ayKey(new Date(odTarih+'T00:00:00').getFullYear(),new Date(odTarih+'T00:00:00').getMonth()+1):null;
@@ -3241,7 +3495,7 @@ function renderGelir(){
     ayMap[k].toplam+=p.tutar||0;ayMap[k].adet++;
     ayMap[k].ozel.push({ad:og?og.ad+' '+(og.soyad||''):'?',tutar:p.tutar||0});
   });
-  if(!Object.keys(ayMap).length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">Henüz ödeme kaydı yok</div></div>';return;}
+  if(!Object.keys(ayMap).length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('henuz_odeme_kaydi_yok')+'</div></div>';return;}
   const sirali=Object.entries(ayMap).sort((a,b)=>b[0].localeCompare(a[0]));
   const toplamToplam=sirali.reduce((s,[,v])=>s+v.toplam,0);
   // Net gelir hesapla: kira + asistan eğitmen payı
@@ -3278,11 +3532,11 @@ function renderGelir(){
       <div class="gelir-row-header" onclick="toggleGelirAy('${key}')">
         <div>
           <div class="gelir-ay">${ayLabel(key)}</div>
-          <div class="gelir-adet">${v.adet} ödeme</div>
+          <div class="gelir-adet">${v.adet} ${t('odeme')}</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
-          <div style="font-size:13px;font-weight:600;color:var(--green);">Brüt: ${v.toplam.toLocaleString('tr-TR')} ₺</div>
-          <div style="font-size:12px;color:var(--cyan);">Net: ${ayNet.toLocaleString('tr-TR')} ₺</div>
+          <div style="font-size:13px;font-weight:600;color:var(--green);">${t('brut')}: ${v.toplam.toLocaleString(LC())} ₺</div>
+          <div style="font-size:12px;color:var(--cyan);">${t('lbl_net')}: ${ayNet.toLocaleString(LC())} ₺</div>
           <span style="font-size:16px;color:var(--text3);transition:transform .2s;${acik?'transform:rotate(90deg)':''}">›</span>
         </div>
       </div>
@@ -3300,7 +3554,7 @@ function renderGelir(){
             '<div style="display:flex;justify-content:space-between;align-items:center;">'+
               '<span>'+siAd+'</span>'+
               '<div style="display:flex;align-items:center;gap:6px;">'+
-                '<span style="color:var(--green);font-weight:600;">'+siToplam.toLocaleString('tr-TR')+' ₺</span>'+
+                '<span style="color:var(--green);font-weight:600;">'+siToplam.toLocaleString(LC())+' ₺</span>'+
                 '<span style="font-size:12px;color:var(--text3);">'+(siAcik?'▾':'▸')+'</span>'+
               '</div>'+
             '</div>'+
@@ -3318,7 +3572,7 @@ function renderGelir(){
                       '<div style="font-size:11px;color:var(--text3);">'+(od.yontem||'—')+'</div>'+
                     '</div>'+
                     '<div style="display:flex;align-items:center;gap:6px;">'+
-                      '<span style="color:var(--green);font-size:13px;font-weight:600;">'+((od.tutar||0).toLocaleString('tr-TR'))+' ₺</span>'+
+                      '<span style="color:var(--green);font-size:13px;font-weight:600;">'+((od.tutar||0).toLocaleString(LC()))+' ₺</span>'+
                       '<span style="font-size:11px;color:var(--text3);">✎</span>'+
                     '</div>';
                   return odEl.outerHTML;
@@ -3360,30 +3614,30 @@ function renderOgDetay(){
         <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}">${initials(og.ad,og.soyad||'')}</div>
         <div>
           <div style="font-size:15px;font-weight:600;">${og.ad} ${og.soyad||''}</div>
-          <div style="font-size:12px;color:var(--text3);">${og.tel||'Telefon yok'}</div>
+          <div style="font-size:12px;color:var(--text3);">${og.tel||t('telefon_yok')}</div>
         </div>
       </div>
       ${og.not?`<div style="font-size:13px;color:var(--amber);background:var(--amberbg);border-radius:6px;padding:8px 10px;border:1px solid #fbbf2430;">📝 ${og.not}</div>`:''}
     </div>
     <div style="display:flex;gap:6px;margin-bottom:4px;">
-      <span class="badge badge-green">${siniflar.map(s=>s.ad).join(', ')||'Sınıfsız'}</span>
-      <span class="badge badge-cyan">${toplamOdeme.toLocaleString('tr-TR')} ₺ toplam</span>
+      <span class="badge badge-green">${siniflar.map(s=>s.ad).join(', ')||t('sinifsiz')}</span>
+      <span class="badge badge-cyan">${toplamOdeme.toLocaleString(LC())} ₺ ${t('toplam')}</span>
     </div>
     <div class="detay-tab-row" style="margin-top:14px;">
-      <div class="detay-tab${OG_DETAY_TAB==='odemeler'?' active':''}" onclick="ogDetayTab('odemeler')">Ödemeler</div>
-      <div class="detay-tab${OG_DETAY_TAB==='siniflar'?' active':''}" onclick="ogDetayTab('siniflar')">Sınıflar</div>
-      <div class="detay-tab${OG_DETAY_TAB==='qr'?' active':''}" onclick="ogDetayTab('qr')">📱 QR & Şifre</div>
+      <div class="detay-tab${OG_DETAY_TAB==='odemeler'?' active':''}" onclick="ogDetayTab('odemeler')">${t('nav_odemeler')}</div>
+      <div class="detay-tab${OG_DETAY_TAB==='siniflar'?' active':''}" onclick="ogDetayTab('siniflar')">${t('nav_siniflar')}</div>
+      <div class="detay-tab${OG_DETAY_TAB==='qr'?' active':''}" onclick="ogDetayTab('qr')">📱 ${t('qr_sifre')}</div>
     </div>`;
 
   if(OG_DETAY_TAB==='odemeler'){
     const odemeler=S.odemeler.filter(o=>o.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
-    if(!odemeler.length){html+='<div class="empty" style="padding:24px 0;"><div class="empty-text">Henüz ödeme kaydı yok</div></div>';}
+    if(!odemeler.length){html+='<div class="empty" style="padding:24px 0;"><div class="empty-text">'+t('henuz_odeme_kaydi_yok')+'</div></div>';}
     else{
       html+=odemeler.map(od=>{
         const si=S.siniflar.find(s=>s.id===od.sinifId);
         return `<div class="odeme-gecmis-item" style="cursor:pointer;" onclick="closeModal('m-og-detay');openOdemeModal('${og.id}','${od.sinifId}','${od.id}')">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-            <span style="color:var(--green);font-size:15px;font-weight:600;">${(od.tutar||0).toLocaleString('tr-TR')} ₺</span>
+            <span style="color:var(--green);font-size:15px;font-weight:600;">${(od.tutar||0).toLocaleString(LC())} ₺</span>
             <div style="display:flex;gap:5px;align-items:center;">
               ${si?`<span class="badge badge-purple" style="font-size:10px;">${si.ad}</span>`:''}
               <span class="badge badge-amber">${od.yontem||'—'}</span>
@@ -3402,7 +3656,7 @@ function renderOgDetay(){
 
     // Kayıtlı sınıflar
     if(kayitliSiniflar.length){
-      html+='<div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 8px;">Kayıtlı Sınıflar</div>';
+      html+='<div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 8px;">'+t('kayitli_siniflar')+'</div>';
       html+=kayitliSiniflar.map(si=>{
         const k=(si.kayitlar||[]).find(x=>x.ogrenciId===og.id);
         const h=hesaplaKayit(og.id,si.id);
@@ -3411,24 +3665,24 @@ function renderOgDetay(){
         return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:6px;border:1px solid var(--border2);">
           <div style="flex:1;min-width:0;">
             <div style="font-size:14px;font-weight:600;">${si.ad}</div>
-            <div style="font-size:12px;color:var(--text3);">${si.gun} · ${si.saat} · ${gh} ders kaldı · Bitiş: ${formatDate(gb)}</div>
+            <div style="font-size:12px;color:var(--text3);">${si.gun} · ${si.saat} · ${gh} ${t('ders_kaldi')} · ${t('bitis')}: ${formatDate(gb)}</div>
           </div>
-          <button onclick="ogDetaySinifSil('${si.id}','${k?.id||''}')" class="btn btn-danger btn-sm" style="flex-shrink:0;">Çıkar</button>
+          <button onclick="ogDetaySinifSil('${si.id}','${k?.id||''}')" class="btn btn-danger btn-sm" style="flex-shrink:0;">${t('cikar')}</button>
         </div>`;
       }).join('');
     } else {
-      html+='<div style="font-size:13px;color:var(--text3);padding:12px 0;">Kayıtlı sınıf yok</div>';
+      html+='<div style="font-size:13px;color:var(--text3);padding:12px 0;">'+t('kayitli_sinif_yok')+'</div>';
     }
 
     // Eklenebilecek sınıflar
     if(diger.length){
-      html+='<div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:16px 0 8px;">Başka Sınıfa Ekle</div>';
+      html+='<div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:16px 0 8px;">'+t('baska_sinifa_ekle')+'</div>';
       html+=diger.map(si=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:6px;border:1px solid var(--border2);">
         <div style="flex:1;min-width:0;">
           <div style="font-size:14px;font-weight:600;">${si.ad}</div>
           <div style="font-size:12px;color:var(--text3);">${si.gun} · ${si.saat}</div>
         </div>
-        <button onclick="ogDetaySinifEkle('${si.id}')" class="btn btn-accent btn-sm" style="flex-shrink:0;">Ekle</button>
+        <button onclick="ogDetaySinifEkle('${si.id}')" class="btn btn-accent btn-sm" style="flex-shrink:0;">${t('btn_ekle')}</button>
       </div>`).join('');
     }
 
@@ -3436,17 +3690,17 @@ function renderOgDetay(){
     const qrUrl=location.href.split('?')[0]+'?ogQR='+og.id;
     html+=`<div style="text-align:center;padding:16px 0 10px;">
       <div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5;">
-        Bu QR kod <strong style="color:var(--text);">${og.ad}</strong>'e özel.<br>
-        Öğrenci okutunca kendi yoklamasını işaretleyebilir.
+        ${t('qr_kod_ozel_1')} <strong style="color:var(--text);">${og.ad}</strong>${t('qr_kod_ozel_2')}<br>
+        ${t('qr_kod_ozel_3')}
       </div>
       <div id="og-qr-wrap" style="background:#fff;border-radius:12px;padding:12px;display:inline-block;margin-bottom:14px;"></div>
       <div style="font-size:11px;color:var(--text3);word-break:break-all;background:var(--surface2);border-radius:8px;padding:8px 10px;">${qrUrl}</div>
     </div>
     <div style="height:1px;background:var(--border);margin:16px 0;"></div>
     <div style="margin-bottom:6px;">
-      <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Portal Şifresi</div>
-      <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">Öğrenci şifresini sıfırladığınızda telefon numarası tekrar şifre olur. Öğrenci bir sonraki girişte yeni şifre belirlemek zorunda kalır.</div>
-      <button class="btn" style="width:100%;padding:12px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2440;" onclick="adminSifreSifirla('${og.id}','${og.ad} ${og.soyad||''}')">🔑 Şifreyi Sıfırla (Telefon No'ya Döndür)</button>
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px;">${t('portal_sifresi')}</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">${t('sifre_sifirla_aciklama')}</div>
+      <button class="btn" style="width:100%;padding:12px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2440;" onclick="adminSifreSifirla('${og.id}','${og.ad} ${og.soyad||''}')">🔑 ${t('sifreyi_sifirla')}</button>
     </div>`;
   }
   el.innerHTML=html;
@@ -3462,7 +3716,7 @@ function renderOgDetay(){
           colorDark:'#000000',colorLight:'#ffffff',
           correctLevel:QRCode.CorrectLevel.M
         });
-      }catch(e){wrap.innerHTML='<span style="font-size:12px;color:red;">QR oluşturulamadı</span>';}
+      }catch(e){wrap.innerHTML='<span style="font-size:12px;color:red;">'+t('qr_olusturulamadi')+'</span>';}
     }
   }
 }
@@ -3770,7 +4024,7 @@ function excelIndir(){
 
   try{
     const wb=XLSX.utils.book_new();
-    const tarihStr=new Date().toLocaleDateString('tr-TR').replace(/\./g,'-');
+    const tarihStr=new Date().toLocaleDateString(LC()).replace(/\./g,'-');
 
     // ── 1. Öğrenciler ──────────────────────────────────
     const ogRows=S.ogrenciler.map(og=>{
@@ -3860,7 +4114,7 @@ function excelIndir(){
       'Ay':ayLabel(k),
       'Toplam Gelir (₺)':v.toplam,
       'Ödeme Adedi':v.adet,
-      'Detay':Object.entries(v.siniflar).map(([s,t])=>s+': '+t.toLocaleString('tr-TR')+' ₺').join(' | ')
+      'Detay':Object.entries(v.siniflar).map(([s,t])=>s+': '+t.toLocaleString(LC())+' ₺').join(' | ')
     }));
     const wsGelir=XLSX.utils.json_to_sheet(gelirRows);
     wsGelir['!cols']=[{wch:14},{wch:16},{wch:14},{wch:60}];
@@ -4042,19 +4296,19 @@ function toggleYokSinif(id){
 function renderYoklama(){
   const el=document.getElementById('yoklama-content');
   if(!el)return;
-  const bugunFmt=new Date().toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
+  const bugunFmt=new Date().toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'});
 
   if(!S.siniflar.length){
-    el.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">Yoklama tutmak için önce sınıf ekleyin</div></div>';
+    el.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">'+t('yoklama_once_sinif')+'</div></div>';
     return;
   }
 
   let html=`<div class="grad-card gc-cyan" style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
     <div>
-      <div style="font-size:11px;color:var(--text2);margin-bottom:2px;text-transform:uppercase;letter-spacing:.08em;">Bugün</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:2px;text-transform:uppercase;letter-spacing:.08em;">${t('bugun')}</div>
       <div style="font-family:Fraunces,serif;font-size:18px;font-weight:600;">${bugunFmt}</div>
     </div>
-    <button class="btn btn-cyan btn-sm" onclick="acQrOkuyu()">📷 QR Tara</button>
+    <button class="btn btn-cyan btn-sm" onclick="acQrOkuyu()">📷 ${t('qr_tara')}</button>
   </div>`;
 
   S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').forEach((si,idx)=>{
@@ -4079,7 +4333,7 @@ function renderYoklama(){
         </div>
         <div style="display:flex;align-items:center;gap:7px;flex-shrink:0;">
           <span class="badge ${hepsiGeldi&&aktifOgList.length>0?'badge-green':gelenler.length>0?'badge-amber':'badge-gray'}">${gelenler.length}/${aktifOgList.length}</span>
-          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();yoklamaGecmis('${si.id}')">Geçmiş</button>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();yoklamaGecmis('${si.id}')">${t('gecmis')}</button>
           <span style="font-size:18px;color:var(--text3);transition:transform .2s;display:inline-block;${acik?'transform:rotate(90deg)':''}" id="yok-chev-${si.id}">›</span>
         </div>
       </div>
@@ -4092,8 +4346,8 @@ function renderYoklama(){
               <div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div>
             </div>
             ${geldi
-              ?`<button class="yoklama-btn yapildi" onclick="yoklamaSil('${geldi.id}')">✓ Geldi</button>`
-              :`<button class="yoklama-btn" onclick="yoklamaKaydet('${si.id}','${og.id}')">+ Geldi</button>`
+              ?`<button class="yoklama-btn yapildi" onclick="yoklamaSil('${geldi.id}')">✓ ${t('geldi')}</button>`
+              :`<button class="yoklama-btn" onclick="yoklamaKaydet('${si.id}','${og.id}')">+ ${t('geldi')}</button>`
             }
           </div>`;
         }).join('')}
@@ -4187,15 +4441,15 @@ function yoklamaGecmis(sinifId){
     const haftaBitis=new Date(haftaBasl+'T00:00:00');
     haftaBitis.setDate(haftaBitis.getDate()+6);
     const haftaLabel=
-      new Date(haftaBasl+'T00:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'short'})+
+      new Date(haftaBasl+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short'})+
       ' – '+
-      haftaBitis.toLocaleDateString('tr-TR',{day:'numeric',month:'short'});
+      haftaBitis.toLocaleDateString(LC(),{day:'numeric',month:'short'});
 
     html+=`<div class="card" style="padding:12px 14px;margin-bottom:8px;">
       <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px;">📅 ${haftaLabel}</div>`;
 
     gunler.sort((a,b)=>b.localeCompare(a)).forEach(tarih=>{
-      const tarihFmt=new Date(tarih+'T00:00:00').toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
+      const tarihFmt=new Date(tarih+'T00:00:00').toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'});
       const gelenler=aktifOgList.filter(o=>gunMap[tarih]&&gunMap[tarih].has(o.id));
       const gelmeyenler=aktifOgList.filter(o=>!gunMap[tarih]||!gunMap[tarih].has(o.id));
 
@@ -4322,7 +4576,7 @@ function yoklamaOgrenciModal(sinifId){
   if(!si)return;
   document.getElementById('m-yok-og-title').textContent=si.ad;
   document.getElementById('m-yok-og-sinif').textContent=
-    si.gun+' · '+si.saat+' — '+new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long'});
+    si.gun+' · '+si.saat+' — '+new Date().toLocaleDateString(LC(),{day:'numeric',month:'long'});
 
   const kayitlar=(si.kayitlar||[]);
   const aktifOgList=kayitlar
@@ -4454,7 +4708,12 @@ const GUN_MAP={
   'Cuma':5,'Cumartesi':6,'Pazar':0
 };
 const GUN_KISA=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
-const GUN_KISA_PAZ_BASI=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+const GUN_KISA_MAP={
+  tr:['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'],
+  en:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+  ru:['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+};
+function GUN_KISA_PAZ_BASI_F(){return GUN_KISA_MAP[LANG]||GUN_KISA_MAP.tr;}
 
 let TAK_MOD='hafta';          // 'hafta' | 'ay'
 let TAK_SEL_GUN=null;         // seçili gün ISO string (YYYY-MM-DD)
@@ -4491,8 +4750,8 @@ function renderTakvim(){
   if(!TAK_SEL_GUN) TAK_SEL_GUN=new Date().toISOString().slice(0,10);
 
   let html=`<div class="takvim-mod-row">
-    <button class="takvim-mod-btn${TAK_MOD==='hafta'?' active':''}" onclick="takMod('hafta')">Haftalık</button>
-    <button class="takvim-mod-btn${TAK_MOD==='ay'?' active':''}" onclick="takMod('ay')">Aylık</button>
+    <button class="takvim-mod-btn${TAK_MOD==='hafta'?' active':''}" onclick="takMod('hafta')">${t('haftalik')}</button>
+    <button class="takvim-mod-btn${TAK_MOD==='ay'?' active':''}" onclick="takMod('ay')">${t('aylik')}</button>
   </div>`;
 
   if(TAK_MOD==='hafta'){
@@ -4517,12 +4776,12 @@ function renderTakvimHafta(){
   // Hafta label
   const bas=new Date(gunler[0]+'T00:00:00');
   const bit=new Date(gunler[6]+'T00:00:00');
-  const haftaLabel=bas.toLocaleDateString('tr-TR',{day:'numeric',month:'short'})+
-    ' – '+bit.toLocaleDateString('tr-TR',{day:'numeric',month:'short',year:'numeric'});
+  const haftaLabel=bas.toLocaleDateString(LC(),{day:'numeric',month:'short'})+
+    ' – '+bit.toLocaleDateString(LC(),{day:'numeric',month:'short',year:'numeric'});
 
   let html=`<div class="hafta-nav">
     <button class="btn btn-ghost btn-sm" onclick="takHaftaDegis(-1)">‹</button>
-    <div style="font-size:13px;font-weight:600;cursor:pointer;" onclick="takHaftaDegis(0)">${TAK_HAFTA_OFFSET===0?'Bu Hafta':haftaLabel}</div>
+    <div style="font-size:13px;font-weight:600;cursor:pointer;" onclick="takHaftaDegis(0)">${TAK_HAFTA_OFFSET===0?t('bu_hafta'):haftaLabel}</div>
     <button class="btn btn-ghost btn-sm" onclick="takHaftaDegis(1)">›</button>
   </div>
   <div class="hafta-gunler">`;
@@ -4537,7 +4796,7 @@ function renderTakvimHafta(){
     if(isBugun)cls+=' bugun';
     if(isSecili)cls+=' secili';
     html+=`<button class="${cls}" onclick="takGunSec('${tarih}')">
-      <div class="hafta-gun-ad">${GUN_KISA_PAZ_BASI[i]}</div>
+      <div class="hafta-gun-ad">${GUN_KISA_PAZ_BASI_F()[i]}</div>
       <div class="hafta-gun-sayi">${sayi}</div>
       ${dersVar?'<div class="hafta-gun-nokta"></div>':'<div style="width:5px;height:5px;"></div>'}
     </button>`;
@@ -4554,7 +4813,7 @@ function renderTakvimAy(){
   const ay=hedefAy.getMonth();
   const bugunStr=bugun.toISOString().slice(0,10);
 
-  const ayLabel=hedefAy.toLocaleDateString('tr-TR',{month:'long',year:'numeric'});
+  const ayLabel=hedefAy.toLocaleDateString(LC(),{month:'long',year:'numeric'});
 
   // Ayın ilk günü hangi gün (Pazartesi bazlı)
   const ilkGun=new Date(yil,ay,1).getDay(); // 0=Paz
@@ -4569,7 +4828,7 @@ function renderTakvimAy(){
   <div class="ay-grid-wrap">
     <div class="ay-grid-baslik">`;
 
-  GUN_KISA_PAZ_BASI.forEach(g=>{html+=`<div class="ay-grid-gun-baslik">${g}</div>`;});
+  GUN_KISA_PAZ_BASI_F().forEach(g=>{html+=`<div class="ay-grid-gun-baslik">${g}</div>`;});
   html+='</div><div class="ay-grid-body">';
 
   // Önceki aydan dolgu
@@ -4634,7 +4893,7 @@ function renderTakvimGunDetay(){
   if(!tarih)return;
 
   const d=new Date(tarih+'T00:00:00');
-  const tarihFmt=d.toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
+  const tarihFmt=d.toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'});
   const bugun=new Date().toISOString().slice(0,10);
   const gecmis=tarih<bugun;
 
@@ -4712,14 +4971,14 @@ function renderPortalTakvim(el,og){
     const basTarih=new Date(gunler[0].tarih+'T00:00:00');
     const bitTarih=new Date(gunler[gunler.length-1].tarih+'T00:00:00');
     const haftaLabel=hi===0?'Bu Hafta':
-      basTarih.toLocaleDateString('tr-TR',{day:'numeric',month:'short'})+
-      ' – '+bitTarih.toLocaleDateString('tr-TR',{day:'numeric',month:'short'});
+      basTarih.toLocaleDateString(LC(),{day:'numeric',month:'short'})+
+      ' – '+bitTarih.toLocaleDateString(LC(),{day:'numeric',month:'short'});
 
     html+=`<div class="portal-card" style="margin-bottom:10px;">
       <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${haftaLabel}</div>`;
 
     gunler.forEach(({tarih,d,dersler})=>{
-      const tarihFmt=d.toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
+      const tarihFmt=d.toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'});
       const gecmis=tarih<new Date().toISOString().slice(0,10);
       const isBugun=tarih===new Date().toISOString().slice(0,10);
 
@@ -4766,21 +5025,21 @@ async function renderEgitmenPanel(){
   const ayarlar=await giderAyarlariniYukle();
 
   let html=`
-    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Eğitmenler</div>
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('egitmenler')}</div>
     ${S.egitmenler.map(e=>`
       <div class="egitmen-pay-kart" style="display:flex;align-items:center;gap:10px;background:${e.basEgitmen?'var(--purplebg)':'var(--surface2)'};border-color:${e.basEgitmen?'#a78bfa40':'var(--border2)'};">
         <div style="font-size:22px;">${e.basEgitmen?'⭐':'👤'}</div>
         <div style="flex:1;min-width:0;">
           <div style="font-size:14px;font-weight:600;">${e.ad}</div>
-          <div style="font-size:11px;color:var(--text3);">${e.basEgitmen?'Baş Eğitmen':'Asistan Eğitmen'}</div>
+          <div style="font-size:11px;color:var(--text3);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}</div>
         </div>
         <div style="display:flex;gap:6px;">
-          <button class="btn btn-ghost btn-sm" onclick="egitmenDuzenle('${e.id}')">Düzenle</button>
-          <button class="btn btn-danger btn-sm" onclick="egitmenSil('${e.id}')">Sil</button>
+          <button class="btn btn-ghost btn-sm" onclick="egitmenDuzenle('${e.id}')">${t('btn_duzenle_kisa')}</button>
+          <button class="btn btn-danger btn-sm" onclick="egitmenSil('${e.id}')">${t('btn_sil')}</button>
         </div>
       </div>`).join('')}
-    ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text3);padding:8px 0 4px;">Henüz eğitmen eklenmedi.</div>':''}
-    <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="egitmenEkleModal()">＋ Eğitmen Ekle</button>`;
+    ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text3);padding:8px 0 4px;">'+t('henuz_egitmen_yok')+'</div>':''}
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>`;
 
   el.innerHTML=html;
 }
@@ -4790,7 +5049,7 @@ async function egitmenAyarKaydet(){
   setSyncing(true);
   try{
     await giderAyarlariniKaydet(0,pct);
-    toastGoster('✓ Ayarlar kaydedildi');
+    toastGoster('✓ '+t('ayarlar_kaydedildi'));
   }catch(e){alert('Hata: '+e.message);}
   setSyncing(false);
 }
@@ -4798,18 +5057,18 @@ async function egitmenAyarKaydet(){
 function egitmenEkleModal(id){
   EDIT_EGITMEN=id||null;
   const e=id?S.egitmenler.find(x=>x.id===id):null;
-  document.getElementById('m-kayit-islem-title').textContent=id?'Eğitmeni Düzenle':'Yeni Eğitmen';
+  document.getElementById('m-kayit-islem-title').textContent=id?t('egitmeni_duzenle'):t('yeni_egitmen');
   document.getElementById('m-kayit-islem-content').innerHTML=`
-    <div class="field"><label>Ad Soyad</label>
-      <input id="eg-ad" value="${e?e.ad:''}" placeholder="Ad Soyad" style="background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:DM Sans,sans-serif;font-size:14px;outline:none;width:100%;"/>
+    <div class="field"><label>${t('ad_soyad')}</label>
+      <input id="eg-ad" value="${e?e.ad:''}" placeholder="${t('ad_soyad')}" style="background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:DM Sans,sans-serif;font-size:14px;outline:none;width:100%;"/>
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <input type="checkbox" id="eg-bas" ${e?.basEgitmen?'checked':''} style="width:18px;height:18px;accent-color:var(--purple);cursor:pointer;"/>
-      <label for="eg-bas" style="font-size:14px;cursor:pointer;">Baş Eğitmen ⭐</label>
+      <label for="eg-bas" style="font-size:14px;cursor:pointer;">${t('bas_egitmen')} ⭐</label>
     </div>
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-ghost" style="flex:1;" onclick="closeModal('m-kayit-islem')">İptal</button>
-      <button class="btn btn-accent" style="flex:1;" onclick="egitmenKaydet()">Kaydet</button>
+      <button class="btn btn-ghost" style="flex:1;" onclick="closeModal('m-kayit-islem')" data-i18n="btn_iptal">İptal</button>
+      <button class="btn btn-accent" style="flex:1;" onclick="egitmenKaydet()" data-i18n="btn_kaydet">Kaydet</button>
     </div>`;
   openModal('m-kayit-islem');
   setTimeout(()=>document.getElementById('eg-ad')?.focus(),300);
@@ -4820,7 +5079,7 @@ function egitmenDuzenle(id){egitmenEkleModal(id);}
 async function egitmenKaydet(){
   const ad=document.getElementById('eg-ad')?.value.trim();
   const basEgitmen=document.getElementById('eg-bas')?.checked||false;
-  if(!ad){alert('Ad zorunlu.');return;}
+  if(!ad){alert(t('ad_zorunlu'));return;}
   setSyncing(true);
   try{
     if(EDIT_EGITMEN){
@@ -4829,7 +5088,7 @@ async function egitmenKaydet(){
       await db.collection('egitmenler').add({ad,basEgitmen,olusturma:Date.now()});
     }
     closeModal('m-kayit-islem');_poll('egitmenler');
-    toastGoster('✓ Eğitmen kaydedildi');
+    toastGoster('✓ '+t('egitmen_kaydedildi'));
     setTimeout(()=>renderEgitmenPanel(),400);
   }catch(e){alert('Hata: '+e.message);}
   setSyncing(false);
@@ -4838,7 +5097,7 @@ async function egitmenKaydet(){
 async function egitmenSil(id){
   const e=S.egitmenler.find(x=>x.id===id);
   if(!e)return;
-  confirm_('Eğitmeni Sil',e.ad+' silinecek. Sınıflardan bağlantısı kaldırılmaz.',async()=>{
+  confirm_(t('egitmeni_sil'),e.ad+' '+t('egitmen_silinecek'),async()=>{
     setSyncing(true);
     await db.collection('egitmenler').doc(id).delete();
     _poll('egitmenler');setSyncing(false);
@@ -4855,7 +5114,7 @@ async function renderGiderRapor(){
   if(!GIDER_AY) GIDER_AY=`${simdi.getFullYear()}-${String(simdi.getMonth()+1).padStart(2,'0')}`;
 
   const [yil,ay]=GIDER_AY.split('-').map(Number);
-  const ayLabel_=new Date(yil,ay-1,1).toLocaleDateString('tr-TR',{month:'long',year:'numeric'});
+  const ayLabel_=new Date(yil,ay-1,1).toLocaleDateString(LC(),{month:'long',year:'numeric'});
   const oncekiAy=`${ay===1?yil-1:yil}-${String(ay===1?12:ay-1).padStart(2,'0')}`;
   const sonrakiAy=`${ay===12?yil+1:yil}-${String(ay===12?1:ay+1).padStart(2,'0')}`;
   const buAyKey=ayKey(yil,ay);
@@ -4945,22 +5204,22 @@ async function renderGiderRapor(){
     </div>
 
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--greenbg),transparent);border:1px solid #34d39930;margin-bottom:10px;">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">Gelir</div>
-      <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">Grup Dersler</span><span style="font-weight:600;color:var(--green);">${grupGelir.toLocaleString('tr-TR')} ₺</span></div>
-      <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">Özel Dersler</span><span style="font-weight:600;color:var(--green);">${ozelGelir.toLocaleString('tr-TR')} ₺</span></div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('gelir')}</div>
+      <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('grup_dersler')}</span><span style="font-weight:600;color:var(--green);">${grupGelir.toLocaleString(LC())} ₺</span></div>
+      <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('ozel_dersler')}</span><span style="font-weight:600;color:var(--green);">${ozelGelir.toLocaleString(LC())} ₺</span></div>
       <div class="gider-satir" style="border-top:1px solid #34d39940;margin-top:4px;padding-top:8px;">
-        <span style="font-weight:700;">Toplam Gelir</span>
-        <span style="font-size:16px;font-weight:700;color:var(--green);">${toplamGelir.toLocaleString('tr-TR')} ₺</span>
+        <span style="font-weight:700;">${t('toplam_gelir')}</span>
+        <span style="font-size:16px;font-weight:700;color:var(--green);">${toplamGelir.toLocaleString(LC())} ₺</span>
       </div>
     </div>
 
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--accentbg),transparent);border:1px solid #ff6b6b30;margin-bottom:10px;">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">Giderler</div>
-      <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">Toplam Kira</span><span style="font-weight:600;color:var(--accent);">−${toplamKira.toLocaleString('tr-TR')} ₺</span></div>
-      ${toplamAsistanOdeme>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">Asistan Ödemeleri</span><span style="font-weight:600;color:var(--accent);">−${toplamAsistanOdeme.toLocaleString('tr-TR')} ₺</span></div>`:''}
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('giderler')}</div>
+      <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('toplam_kira')}</span><span style="font-weight:600;color:var(--accent);">−${toplamKira.toLocaleString(LC())} ₺</span></div>
+      ${toplamAsistanOdeme>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('asistan_odemeleri')}</span><span style="font-weight:600;color:var(--accent);">−${toplamAsistanOdeme.toLocaleString(LC())} ₺</span></div>`:''}
       <div class="gider-satir" style="border-top:1px solid #ff6b6b40;margin-top:4px;padding-top:8px;">
-        <span style="font-weight:700;">Toplam Gider</span>
-        <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamAsistanOdeme>0?(toplamKira+toplamAsistanOdeme).toLocaleString('tr-TR')+' ₺':'0 ₺'}</span>
+        <span style="font-weight:700;">${t('toplam_gider')}</span>
+        <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamAsistanOdeme>0?(toplamKira+toplamAsistanOdeme).toLocaleString(LC())+' ₺':'0 ₺'}</span>
       </div>
     </div>
 
@@ -4968,10 +5227,10 @@ async function renderGiderRapor(){
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--purplebg),transparent);border:1px solid #a78bfa30;margin-bottom:10px;">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div>
-          <div style="font-size:13px;font-weight:600;">⭐ ${be.ad} Kârı</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Kendi sınıfları: Gelir − Kira − Asistan</div>
+          <div style="font-size:13px;font-weight:600;">⭐ ${be.ad} ${t('kari')}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">${t('kendi_siniflari')}</div>
         </div>
-        <div style="font-size:18px;font-weight:700;color:var(--purple);">${beKar.toLocaleString('tr-TR')} ₺</div>
+        <div style="font-size:18px;font-weight:700;color:var(--purple);">${beKar.toLocaleString(LC())} ₺</div>
       </div>
     </div>`;}).join(''):''}
 
@@ -4979,15 +5238,15 @@ async function renderGiderRapor(){
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,${netKar>=0?'var(--cyanbg)':'var(--accentbg)'},transparent);border:1px solid ${netKar>=0?'#22d3ee40':'#ff6b6b40'};margin-bottom:14px;">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div>
-          <div style="font-size:15px;font-weight:700;">Net Kâr</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Toplam Gelir − Kira − Asistan</div>
+          <div style="font-size:15px;font-weight:700;">${t('net_kar')}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">${t('toplam_gelir_kira_asistan')}</div>
         </div>
-        <div style="font-size:22px;font-weight:700;color:${netKar>=0?'var(--cyan)':'var(--accent)'};">${netKar>=0?'+':''}${netKar.toLocaleString('tr-TR')} ₺</div>
+        <div style="font-size:22px;font-weight:700;color:${netKar>=0?'var(--cyan)':'var(--accent)'};">${netKar>=0?'+':''}${netKar.toLocaleString(LC())} ₺</div>
       </div>
     </div>`;
 
   if(sinifDetaylar.length){
-    html+=`<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Sınıf Bazında</div>`;
+    html+=`<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>`;
     sinifDetaylar.forEach(d=>{
       const renk=RENK_BAR[d.idx%RENK_BAR.length];
       const karRenk=d.basEgitmenKar>=0?'var(--purple)':'var(--accent)';
@@ -4999,33 +5258,33 @@ async function renderGiderRapor(){
             <div style="font-size:14px;font-weight:600;">${d.si.ad}</div>
             ${d.egitmen?`<div style="font-size:11px;color:var(--text3);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}</div>`:''}
           </div>
-          <span style="font-size:14px;font-weight:700;color:var(--green);">${d.sinifGelir.toLocaleString('tr-TR')} ₺</span>
+          <span style="font-size:14px;font-weight:700;color:var(--green);">${d.sinifGelir.toLocaleString(LC())} ₺</span>
         </div>
 
         ${isAsistan?`
         <div class="gider-satir" style="font-size:12px;">
-          <span style="color:var(--text3);">👤 ${d.asistanAd} payı (%${d.asistanPct})</span>
-          <span style="color:var(--accent);font-weight:600;">−${d.asistanOdeme.toLocaleString('tr-TR')} ₺</span>
+          <span style="color:var(--text3);">👤 ${d.asistanAd} ${t('payi')} (%${d.asistanPct})</span>
+          <span style="color:var(--accent);font-weight:600;">−${d.asistanOdeme.toLocaleString(LC())} ₺</span>
         </div>`:''}
 
         <div class="gider-satir" style="font-size:12px;">
-          <span style="color:var(--text3);">Kira</span>
-          <span style="color:var(--accent);font-weight:600;">−${d.kira.toLocaleString('tr-TR')} ₺</span>
+          <span style="color:var(--text3);">${t('kira')}</span>
+          <span style="color:var(--accent);font-weight:600;">−${d.kira.toLocaleString(LC())} ₺</span>
         </div>
 
         <div class="gider-satir" style="font-size:13px;font-weight:700;border-top:1px solid var(--border2);margin-top:4px;padding-top:8px;">
-          <span style="color:var(--text2);">⭐ ${isAsistan?(basEgitmen?.ad||'Baş Eğitmen'):(d.egitmen?.ad||basEgitmen?.ad||'Baş Eğitmen')} kârı</span>
-          <span style="color:${karRenk};">${d.basEgitmenKar.toLocaleString('tr-TR')} ₺</span>
+          <span style="color:var(--text2);">⭐ ${isAsistan?(basEgitmen?.ad||t('bas_egitmen')):(d.egitmen?.ad||basEgitmen?.ad||t('bas_egitmen'))} ${t('kari')}</span>
+          <span style="color:${karRenk};">${d.basEgitmenKar.toLocaleString(LC())} ₺</span>
         </div>
       </div>`;
     });
   }
 
   if(!sinifDetaylar.length&&!ozelGelir){
-    html+=`<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px 0;">Bu ay için kayıt bulunamadı.</div>`;
+    html+=`<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px 0;">${t('bu_ay_kayit_yok')}</div>`;
   }
   if(S.egitmenler.length===0){
-    html+=`<div style="font-size:12px;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:10px 12px;margin-top:8px;">⚠ Eğitmen eklenmemiş. "Eğitmenler & Giderler" bölümünden eğitmen ekleyin ve sınıflara atayın.</div>`;
+    html+=`<div style="font-size:12px;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:10px 12px;margin-top:8px;">${t('egitmen_eklenmemis_uyari')}</div>`;
   }
 
   el.innerHTML=html;
@@ -5039,7 +5298,7 @@ function giderAyDegis(ay){
 function renderRetention(){
   const el=document.getElementById('retention-content');
   if(!el)return;
-  if(!S.siniflar.length){el.innerHTML='<div style="font-size:13px;color:var(--text3);padding:8px 0;">Henüz sınıf yok.</div>';return;}
+  if(!S.siniflar.length){el.innerHTML='<div style="font-size:13px;color:var(--text3);padding:8px 0;">'+t('empty_sinif')+'</div>';return;}
 
   // Tüm öğrencileri akif/pasif olarak değerlendir
   // "Bırakmış" = durum==='pasif' veya sınıftan silinmiş
@@ -5053,18 +5312,18 @@ function renderRetention(){
   let html=`
     <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <div style="font-size:13px;font-weight:600;">Genel Tutma Oranı</div>
+        <div style="font-size:13px;font-weight:600;">${t('genel_tutma_orani')}</div>
         <div style="font-size:16px;font-weight:700;color:${genelRenk};">${genelPct}%</div>
       </div>
       <div class="reten-bar-wrap">
         <div class="reten-bar-fill" style="width:${genelPct}%;background:${genelRenk};"></div>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:2px;">
-        <span>✓ ${toplamAktif} aktif</span>
-        <span>✗ ${toplamPasif} bırakmış</span>
+        <span>✓ ${toplamAktif} ${t('badge_aktif')}</span>
+        <span>✗ ${toplamPasif} ${t('birakmis')}</span>
       </div>
     </div>
-    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Sınıf Bazında</div>`;
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('sinif_bazinda')}</div>`;
 
   S.siniflar.forEach((si,idx)=>{
     const kayitlar=si.kayitlar||[];
@@ -5100,9 +5359,9 @@ function renderRetention(){
         <div class="reten-bar-fill" style="width:${pct}%;background:${barRenk};"></div>
       </div>
       <div style="display:flex;gap:10px;font-size:11px;color:var(--text3);margin-top:4px;flex-wrap:wrap;">
-        <span style="color:var(--green);">✓ ${aktifSay} devam</span>
-        ${dondurulmus.length?`<span style="color:var(--amber);">❄ ${dondurulmus.length} dondurulmuş</span>`:''}
-        ${ayrilanlar.length?`<span style="color:var(--accent);">✗ ${ayrilanlar.length} ayrılmış</span>`:''}
+        <span style="color:var(--green);">✓ ${aktifSay} ${t('devam')}</span>
+        ${dondurulmus.length?`<span style="color:var(--amber);">❄ ${dondurulmus.length} ${t('donduruldu_kucuk')}</span>`:''}
+        ${ayrilanlar.length?`<span style="color:var(--accent);">✗ ${ayrilanlar.length} ${t('ayrilmis')}</span>`:''}
       </div>
     </div>`;
   });
@@ -5120,7 +5379,7 @@ function renderGelirTrend(){
   for(let i=11;i>=0;i--){
     const d=new Date(simdi.getFullYear(),simdi.getMonth()-i,1);
     const key=ayKey(d.getFullYear(),d.getMonth()+1);
-    const label=d.toLocaleDateString('tr-TR',{month:'short',year:'2-digit'});
+    const label=d.toLocaleDateString(LC(),{month:'short',year:'2-digit'});
     // Grup dersleri
     const grup=S.odemeler.filter(o=>{
       const t=o.tarih;if(!t)return false;
@@ -5201,25 +5460,25 @@ function renderGelirTrend(){
   let html=`
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
       <div style="flex:1;min-width:90px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">Bu ay brüt</div>
-        <div style="font-size:15px;font-weight:700;color:var(--purple);">${(buAy?.toplam||0).toLocaleString('tr-TR')} ₺</div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">${t('bu_ay_brut')}</div>
+        <div style="font-size:15px;font-weight:700;color:var(--purple);">${(buAy?.toplam||0).toLocaleString(LC())} ₺</div>
       </div>
       <div style="flex:1;min-width:90px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">Bu ay net</div>
-        <div style="font-size:15px;font-weight:700;color:var(--cyan);">${(buAy?.net||0).toLocaleString('tr-TR')} ₺</div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">${t('bu_ay_net')}</div>
+        <div style="font-size:15px;font-weight:700;color:var(--cyan);">${(buAy?.net||0).toLocaleString(LC())} ₺</div>
       </div>
       <div style="flex:1;min-width:90px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">Aylık ort.</div>
-        <div style="font-size:15px;font-weight:700;color:var(--purple);">${aylikOrtalama.toLocaleString('tr-TR')} ₺</div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">${t('aylik_ort')}</div>
+        <div style="font-size:15px;font-weight:700;color:var(--purple);">${aylikOrtalama.toLocaleString(LC())} ₺</div>
       </div>
       <div style="flex:1;min-width:90px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">12 ay top.</div>
-        <div style="font-size:15px;font-weight:700;color:var(--green);">${toplamToplam.toLocaleString('tr-TR')} ₺</div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">${t('ay_12_top')}</div>
+        <div style="font-size:15px;font-weight:700;color:var(--green);">${toplamToplam.toLocaleString(LC())} ₺</div>
       </div>
     </div>
     <div style="display:flex;gap:12px;margin-bottom:8px;font-size:11px;">
-      <span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--purple);border-radius:1px;"></span>Brüt Gelir</span>
-      <span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--cyan);border-radius:1px;"></span>Net Gelir</span>
+      <span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--purple);border-radius:1px;"></span>${t('brut_gelir')}</span>
+      <span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--cyan);border-radius:1px;"></span>${t('net_gelir')}</span>
     </div>
     <div class="gelir-chart-wrap">
       <svg class="gelir-chart-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
@@ -5538,7 +5797,7 @@ async function renderPortalOdemeler(el,og){
   }catch(e){}
   let html=`${obHtml}<div class="portal-card" style="background:linear-gradient(135deg,#a78bfa18,#a78bfa08);border-color:#a78bfa30;margin-bottom:14px;">
     <div style="font-size:11px;color:var(--text3);margin-bottom:2px;text-transform:uppercase;letter-spacing:.08em;">Toplam Ödeme</div>
-    <div style="font-family:Fraunces,serif;font-size:26px;font-weight:600;color:var(--purple);">${toplam.toLocaleString('tr-TR')} ₺</div>
+    <div style="font-family:Fraunces,serif;font-size:26px;font-weight:600;color:var(--purple);">${toplam.toLocaleString(LC())} ₺</div>
     <div style="font-size:12px;color:var(--text3);margin-top:2px;">${odemeler.length} kayıt</div>
   </div>`;
 
@@ -5549,7 +5808,7 @@ async function renderPortalOdemeler(el,og){
       const si=S.siniflar.find(s=>s.id===od.sinifId);
       return `<div class="portal-card">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <span style="font-family:Fraunces,serif;font-size:19px;font-weight:600;color:var(--green);">${(od.tutar||0).toLocaleString('tr-TR')} ₺</span>
+          <span style="font-family:Fraunces,serif;font-size:19px;font-weight:600;color:var(--green);">${(od.tutar||0).toLocaleString(LC())} ₺</span>
           <span class="badge badge-amber" style="font-size:11px;">${od.yontem||'—'}</span>
         </div>
         <div style="font-size:12px;color:var(--text3);">${formatDate(od.tarih)}${od.aylar&&od.aylar.length?' · '+od.aylar.map(a=>ayLabel(a)).join(', '):''}</div>
@@ -5600,7 +5859,7 @@ function renderPortalYoklama(el,og){
         <div style="display:flex;flex-wrap:wrap;gap:5px;">
           ${tarihler.slice(0,10).map(t=>{
             const d=new Date(t+'T00:00:00');
-            return `<span class="badge badge-purple" style="font-size:10px;">${d.toLocaleDateString('tr-TR',{day:'numeric',month:'short'})}</span>`;
+            return `<span class="badge badge-purple" style="font-size:10px;">${d.toLocaleDateString(LC(),{day:'numeric',month:'short'})}</span>`;
           }).join('')}
           ${tarihler.length>10?`<span class="badge badge-gray" style="font-size:10px;">+${tarihler.length-10}</span>`:''}
         </div>
@@ -5669,8 +5928,8 @@ function portalSifreDegistirModal(ilkGiris=false){
     <div class="field"><label>Yeni Şifre</label><input id="ps-yeni" type="password" placeholder="En az 6 karakter" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:15px;outline:none;"/></div>
     <div class="field"><label>Tekrar</label><input id="ps-tekrar" type="password" placeholder="Tekrar girin" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:15px;outline:none;"/></div>
     <div style="display:flex;gap:8px;margin-top:16px;">
-      ${!ilkGiris?`<button class="btn btn-ghost" style="flex:1;" onclick="closeModal('m-kayit-islem')">İptal</button>`:''}
-      <button class="btn" style="flex:1;padding:13px;background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa40;" onclick="portalSifreKaydet(${ilkGiris})">Kaydet</button>
+      ${!ilkGiris?`<button class="btn btn-ghost" style="flex:1;" onclick="closeModal('m-kayit-islem')" data-i18n="btn_iptal">İptal</button>`:''}
+      <button class="btn" style="flex:1;padding:13px;background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa40;" onclick="portalSifreKaydet(${ilkGiris})" data-i18n="btn_kaydet">Kaydet</button>
     </div>`;
 
   document.getElementById('m-kayit-islem-title').textContent=ilkGiris?'Şifre Belirle':'Şifre Değiştir';
@@ -5914,7 +6173,7 @@ function renderTatilListe(){
   if(!sirali.length){el.innerHTML='<div style="font-size:13px;color:var(--text3);text-align:center;padding:8px;">Tatil günü eklenmedi</div>';return;}
   el.innerHTML=sirali.map(t=>{
     const d=new Date(t.tarih+'T00:00:00');
-    const fmt=d.toLocaleDateString('tr-TR',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+    const fmt=d.toLocaleDateString(LC(),{weekday:'short',day:'numeric',month:'long',year:'numeric'});
     const gecti=d<new Date();
     return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);">
       <div style="flex:1;">
@@ -5958,12 +6217,12 @@ function sonOdemelerFiltre(tip){
   el.innerHTML=liste.map(od=>{
     const og=S.ogrenciler.find(o=>o.id===od.ogrenciId);
     const si=S.siniflar.find(s=>s.id===od.sinifId);
-    const tarihFmt=new Date(od.olusturma).toLocaleDateString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    const tarihFmt=new Date(od.olusturma).toLocaleDateString(LC(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
     const ayFmt=(od.aylar||[]).map(a=>ayLabel(a)).join(', ');
     return `<div class="odeme-gecmis-item" style="cursor:pointer;" onclick="closeModal('m-son-odemeler');openOdemeModal('${od.ogrenciId}','${od.sinifId}','${od.id}')">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
         <div style="font-size:14px;font-weight:600;">${og?og.ad+' '+(og.soyad||''):'—'}</div>
-        <span style="color:var(--green);font-size:15px;font-weight:700;">${(od.tutar||0).toLocaleString('tr-TR')} ₺</span>
+        <span style="color:var(--green);font-size:15px;font-weight:700;">${(od.tutar||0).toLocaleString(LC())} ₺</span>
       </div>
       <div style="font-size:12px;color:var(--text3);">${si?si.ad:'—'}${ayFmt?' · '+ayFmt:''}</div>
       <div style="font-size:11px;color:var(--text3);margin-top:2px;">${tarihFmt} · ${od.yontem||'—'}</div>
