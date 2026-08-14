@@ -2801,6 +2801,7 @@ function otSureSlot(sure){return Math.max(1,Math.round((sure||1)/0.5));}
 function renderOzelTakvim(){
   const gridEl=document.getElementById('ot-grid');
   if(!gridEl)return;
+  if(!PORTAL_OG_ID)otOtoDusKontrol();
   const labelEl=document.getElementById('ot-hafta-label');
   const legendEl=document.getElementById('ot-legend');
   const gunler=Array.from({length:7},(_,i)=>new Date(OT_WEEK_START.getTime()+i*86400000));
@@ -2992,20 +2993,29 @@ let OT_ISLENEN=new Set();
 function otOtoDusKontrol(){
   const simdi=Date.now();
   S.ozelSeanslar.forEach(s=>{
-    if(s.kaynak!=='takvim'||s.dusuldu||!s.paketId||!s.tarih||!s.saat)return;
+    if(s.kaynak!=='takvim'||s.dusuldu||!s.tarih||!s.saat)return;
     if(OT_ISLENEN.has(s.id))return;
     const dt=new Date(s.tarih+'T'+s.saat+':00');
     if(isNaN(dt.getTime())||dt.getTime()>simdi)return;
+    // paketId kayıtlı değilse (o an aktif paket yoktu ya da değişti), o öğrencinin şu anki aktif paketini bul
+    let paketId=s.paketId;
+    if(!paketId){
+      const aktifPaket=dpAktifPaket(s.ogrenciId);
+      if(!aktifPaket)return; // hâlâ aktif paket yoksa bekletmeye devam et, sonraki kontrolde tekrar denenir
+      paketId=aktifPaket.id;
+    }
     OT_ISLENEN.add(s.id);
     (async()=>{
       try{
-        const p=S.ozelPaketler.find(x=>x.id===s.paketId);
+        const p=S.ozelPaketler.find(x=>x.id===paketId);
         if(p){
           const miktar=s.sure||1;
           const yeni=Math.round(Math.max(0,Math.min(p.toplamSaat,p.yapilanSaat+miktar))*10)/10;
           await db.collection('ozelPaketler').doc(p.id).update({yapilanSaat:yeni,aktif:yeni<p.toplamSaat});
+          await db.collection('ozelSeanslar').doc(s.id).update({dusuldu:true,paketId});
+        } else {
+          await db.collection('ozelSeanslar').doc(s.id).update({dusuldu:true});
         }
-        await db.collection('ozelSeanslar').doc(s.id).update({dusuldu:true});
         _poll('ozelPaketler');_poll('ozelSeanslar');
       }catch(e){}
       OT_ISLENEN.delete(s.id);
