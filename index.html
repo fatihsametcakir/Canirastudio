@@ -700,15 +700,19 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
   <!-- ÖZEL DERSLER -->
   <div class="page" id="pg-ozel">
-    <div style="display:flex;gap:8px;margin:4px 0 14px;">
-      <button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOzelOgModal()" data-i18n="btn_ogrenci_ekle">＋ Öğrenci Ekle</button>
-      <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openOzelTakvim()" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
+    <div class="tab-row">
+      <button class="tab-btn active" data-i18n="nav_ogrenciler">Öğrenciler</button>
+      <button class="tab-btn" onclick="openOzelTakvim()" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
     </div>
     <div id="ozel-list"></div>
   </div>
 
   <!-- ÖZEL DERS HAFTALIK TAKVİM -->
   <div class="page" id="pg-ozel-takvim">
+    <div class="tab-row">
+      <button class="tab-btn" onclick="goBack()" data-i18n="nav_ogrenciler">Öğrenciler</button>
+      <button class="tab-btn active" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
+    </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 14px;gap:8px;">
       <button class="btn btn-ghost btn-sm" style="width:40px;padding:0;" onclick="otHaftaDegistir(-1)">‹</button>
       <div style="flex:1;text-align:center;font-size:14px;font-weight:600;" id="ot-hafta-label"></div>
@@ -2797,7 +2801,7 @@ let OT_WEEK_START=otGetMonday(new Date());
 function otTarihStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function otHaftaDegistir(dir){OT_WEEK_START=new Date(OT_WEEK_START.getTime()+dir*7*86400000);renderOzelTakvim();}
 function openOzelTakvim(){
-  PREV_PAGE=PAGE;PAGE='ozel-takvim';showPage('ozel-takvim');setTopbar(true,'Haftalık Takvim');
+  PREV_PAGE=PAGE;PAGE='ozel-takvim';showPage('ozel-takvim');setTopbar(true,t('btn_haftalik_takvim').replace('📅 ',''));
   const fab=document.getElementById('mainFab');if(fab)fab.style.display='none';
   renderOzelTakvim();
 }
