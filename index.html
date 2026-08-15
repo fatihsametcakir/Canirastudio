@@ -214,6 +214,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .empty-icon{font-size:40px;margin-bottom:12px;opacity:.5;}
 .empty-text{font-size:14px;line-height:1.6;}
 .wa-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;background:#25D36618;border:1px solid #25D36635;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:500;color:#25D366;font-family:'DM Sans',sans-serif;}
+.wa-btn-devre-disi{background:var(--surface2);border-color:var(--border2);color:var(--text3);}
 .wa-btn:active{opacity:.7;}
 .confirm-sheet{background:var(--surface);border-radius:26px 26px 0 0;border-top:1px solid var(--border2);padding:26px 20px 34px;width:100%;max-width:480px;position:relative;}
 .ay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
@@ -1379,6 +1380,8 @@ const TRANSLATIONS={
     dersler:'Dersler', henuz_ders_yok:'Bu pakette henüz ders kaydı yok.', takvimden:'takvimden', saat_dus_ekle:'Saat Düş/Ekle',
     paket_bitti_uyari:'Bu paket bitti — düşülecek saat kalmadı. Devam etmek için yeni saat ekleyin ya da yeni paket açın.',
     ekle:'Ekle', dus:'Düş', aktif_paket_olmadan_ders_engel:'Bu öğrencinin aktif paketi yok — ders planlanamaz. Önce paket ekleyin.',
+    wa_numara_yok:'Bu öğrencinin kayıtlı telefon numarası yok, bu yüzden WhatsApp\'a yönlendirilemiyor. Öğrenci bilgilerinden telefon numarası ekleyin.',
+    wa_format_gecersiz:'Kayıtlı telefon numarasının formatı WhatsApp için uygun değil, bu yüzden yönlendirilemiyor. Numarayı kontrol edip düzeltin:',
   },
   en:{
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
@@ -1514,6 +1517,8 @@ const TRANSLATIONS={
     dersler:'Lessons', henuz_ders_yok:'No lessons recorded for this package yet.', takvimden:'from calendar', saat_dus_ekle:'Deduct/Add Hours',
     paket_bitti_uyari:'This package is finished — no hours left to deduct. Add more hours or open a new package to continue.',
     ekle:'Add', dus:'Deduct', aktif_paket_olmadan_ders_engel:'This student has no active package — a lesson cannot be scheduled. Add a package first.',
+    wa_numara_yok:'This student has no phone number on file, so WhatsApp can\'t be opened. Add a phone number in the student\'s info.',
+    wa_format_gecersiz:'The phone number on file isn\'t in a format WhatsApp can use, so it can\'t be opened. Please check and fix the number:',
   },
   ru:{
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
@@ -1649,6 +1654,8 @@ const TRANSLATIONS={
     dersler:'Занятия', henuz_ders_yok:'Занятий в этом пакете пока нет.', takvimden:'из календаря', saat_dus_ekle:'Списать/Добавить часы',
     paket_bitti_uyari:'Этот пакет исчерпан — часов для списания не осталось. Добавьте часы или откройте новый пакет, чтобы продолжить.',
     ekle:'Добавить', dus:'Списать', aktif_paket_olmadan_ders_engel:'У этого ученика нет активного пакета — занятие нельзя запланировать. Сначала добавьте пакет.',
+    wa_numara_yok:'У этого ученика не указан номер телефона, поэтому WhatsApp открыть нельзя. Добавьте номер в данных ученика.',
+    wa_format_gecersiz:'Указанный номер телефона имеет формат, непригодный для WhatsApp, поэтому открыть нельзя. Проверьте и исправьте номер:',
   },
 };
 function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIONS.tr[key]||key;}
@@ -1910,14 +1917,27 @@ function waReplaceVars(tpl,ad,sinif,gun){
 }
 
 // WhatsApp
+function telGecerliMi(tel){
+  if(!tel)return false;
+  const c=String(tel).replace(/\D/g,'');
+  return c.length>=10&&c.length<=13;
+}
 function waLink(tel,msg){const c=tel.replace(/\D/g,'');const n=c.startsWith('0')?'90'+c.slice(1):c.startsWith('90')?c:'90'+c;return'https://wa.me/'+n+'?text='+encodeURIComponent(msg);}
+function waNumaraUyari(tel){
+  const mesaj=tel?t('wa_format_gecersiz')+' ('+tel+')':t('wa_numara_yok');
+  alert(mesaj);
+}
 function waBtnAlert(tel,ad,si,dl){
   const tpl=dl<=0?WA_SABLON.doldu:dl<=3?WA_SABLON.yakin:WA_SABLON.hatirla;
   const msg=waReplaceVars(tpl,ad,si,dl);
   return waBR(tel,msg);
 }
 function waBtnG(tel,ad){return waBR(tel,waReplaceVars(WA_SABLON.genel,ad,'',''));}
-function waBR(tel,msg){return `<button class="wa-btn" onclick="window.open('${waLink(tel,msg)}','_blank')"><svg width="13" height="13" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.12 1.524 5.847L.057 23.57l5.938-1.56C7.68 22.949 9.765 23.5 12 23.5 18.627 23.5 24 18.127 24 11.5S18.627 0 12 0zm0 21.5c-1.944 0-3.752-.545-5.28-1.484l-.379-.225-3.523.927.94-3.433-.246-.392A9.469 9.469 0 012.5 11.5C2.5 6.253 6.753 2 12 2s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/></svg>WA</button>`;}
+function waBR(tel,msg){
+  const gecerli=telGecerliMi(tel);
+  const onclick=gecerli?`window.open('${waLink(tel,msg)}','_blank')`:`waNumaraUyari('${(tel||'').replace(/'/g,"")}')`;
+  return `<button class="wa-btn${gecerli?'':' wa-btn-devre-disi'}" onclick="${onclick}"><svg width="13" height="13" viewBox="0 0 24 24" fill="${gecerli?'#25D366':'#5c5a78'}"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.12 1.524 5.847L.057 23.57l5.938-1.56C7.68 22.949 9.765 23.5 12 23.5 18.627 23.5 24 18.127 24 11.5S18.627 0 12 0zm0 21.5c-1.944 0-3.752-.545-5.28-1.484l-.379-.225-3.523.927.94-3.433-.246-.392A9.469 9.469 0 012.5 11.5C2.5 6.253 6.753 2 12 2s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/></svg>WA</button>`;
+}
 
 // ── DRAWER ────────────────────────────────────────────
 function drawerAc(){
@@ -3131,7 +3151,7 @@ function renderAnasayfa(){
           </div>
           <span class="badge ${bc}" style="flex-shrink:0;white-space:nowrap;font-size:10px;">${dt}</span>
         </div>
-        <div style="display:flex;gap:6px;">${og.tel?waBtnAlert(og.tel,og.ad,sinif.ad,dl):''}<button class="btn btn-green btn-sm" onclick="openOdemeModal('${og.id}','${sinif.id}')">＋ ${t('odeme_al')}</button></div>
+        <div style="display:flex;gap:6px;">${waBtnAlert(og.tel,og.ad,sinif.ad,dl)}<button class="btn btn-green btn-sm" onclick="openOdemeModal('${og.id}','${sinif.id}')">＋ ${t('odeme_al')}</button></div>
       </div>`;
     }).join('');
     return `<div class="odeme-sinif-grup" style="margin-bottom:8px;overflow:hidden;">
@@ -3247,7 +3267,7 @@ function renderAnasayfa(){
           </div>
           <span class="badge badge-amber">${t('yeni_kayit')}</span>
         </div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">${og.tel?waBtnG(og.tel,og.ad):''}</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">${waBtnG(og.tel,og.ad)}</div>
       </div>`;
     }
     const alertCls=hicOdeme?'soon':'ok';
@@ -3265,7 +3285,7 @@ function renderAnasayfa(){
         <span class="badge ${badgeCls}">${badgeTxt}</span>
       </div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">
-        ${og.tel?waBtnG(og.tel,og.ad):''}
+        ${waBtnG(og.tel,og.ad)}
         <button class="btn btn-accent btn-sm" onclick="openOdemeModal('${og.id}','${si.id}')">＋ ${t('odeme_al')}</button>
       </div>
     </div>`;
@@ -3683,7 +3703,7 @@ function renderOdemeler(){
         <div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;">
           ${!donduruldu?`<button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOdemeModal('${og.id}','${si.id}')">＋ ${t('odeme_al')}</button>`:''}
           <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openOdemeDetay('${og.id}','${si.id}')">${t('gecmis')}</button>
-          ${og.tel?waBtnG(og.tel,og.ad):''}
+          ${waBtnG(og.tel,og.ad)}
         </div>
       </div>`;
     });
@@ -3697,7 +3717,7 @@ function renderOdemeler(){
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
       const topOzel=paketler.reduce((s,p)=>s+(p.tutar||0),0);
       const aktif=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
-      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text3);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text3);margin-top:2px;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">＋ ${t('btn_yeni_paket')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${og.tel?waBtnG(og.tel,og.ad):''}</div></div>`;
+      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text3);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text3);margin-top:2px;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">＋ ${t('btn_yeni_paket')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnG(og.tel,og.ad)}</div></div>`;
     });
     html+=`</div></div>`;
   }
