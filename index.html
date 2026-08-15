@@ -1920,7 +1920,7 @@ function waReplaceVars(tpl,ad,sinif,gun){
 function telGecerliMi(tel){
   if(!tel)return false;
   const c=String(tel).replace(/\D/g,'');
-  return c.length>=10&&c.length<=13;
+  return c.length>=5;
 }
 function waLink(tel,msg){const c=tel.replace(/\D/g,'');const n=c.startsWith('0')?'90'+c.slice(1):c.startsWith('90')?c:'90'+c;return'https://wa.me/'+n+'?text='+encodeURIComponent(msg);}
 function waNumaraUyari(tel){
