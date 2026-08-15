@@ -1382,6 +1382,9 @@ const TRANSLATIONS={
     ekle:'Ekle', dus:'Düş', aktif_paket_olmadan_ders_engel:'Bu öğrencinin aktif paketi yok — ders planlanamaz. Önce paket ekleyin.',
     wa_numara_yok:'Bu öğrencinin kayıtlı telefon numarası yok, bu yüzden WhatsApp\'a yönlendirilemiyor. Öğrenci bilgilerinden telefon numarası ekleyin.',
     wa_format_gecersiz:'Kayıtlı telefon numarasının formatı WhatsApp için uygun değil, bu yüzden yönlendirilemiyor. Numarayı kontrol edip düzeltin:',
+    ozel_ders_studyo_kirasi:'Özel Ders Stüdyo Kirası',
+    ozel_kira_aciklama:'Ana eğitmenlerin özel ders verdiği stüdyo için ödenen ortak aylık kira. Bu tutar, kaç ana eğitmen olursa olsun her ay bir kez düşülür.',
+    aylik_ortak_kira:'Aylık Ortak Kira (₺)', nin_ozel_dersleri:'{ad}\'in Özel Dersleri', atanmamis_ozel_dersler:'Atanmamış Özel Dersler',
   },
   en:{
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
@@ -1519,6 +1522,9 @@ const TRANSLATIONS={
     ekle:'Add', dus:'Deduct', aktif_paket_olmadan_ders_engel:'This student has no active package — a lesson cannot be scheduled. Add a package first.',
     wa_numara_yok:'This student has no phone number on file, so WhatsApp can\'t be opened. Add a phone number in the student\'s info.',
     wa_format_gecersiz:'The phone number on file isn\'t in a format WhatsApp can use, so it can\'t be opened. Please check and fix the number:',
+    ozel_ders_studyo_kirasi:'Private Lesson Studio Rent',
+    ozel_kira_aciklama:'The shared monthly rent paid for the studio where head instructors give private lessons. This amount is deducted once per month regardless of how many head instructors there are.',
+    aylik_ortak_kira:'Shared Monthly Rent (₺)', nin_ozel_dersleri:'{ad}\'s Private Lessons', atanmamis_ozel_dersler:'Unassigned Private Lessons',
   },
   ru:{
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
@@ -1656,6 +1662,9 @@ const TRANSLATIONS={
     ekle:'Добавить', dus:'Списать', aktif_paket_olmadan_ders_engel:'У этого ученика нет активного пакета — занятие нельзя запланировать. Сначала добавьте пакет.',
     wa_numara_yok:'У этого ученика не указан номер телефона, поэтому WhatsApp открыть нельзя. Добавьте номер в данных ученика.',
     wa_format_gecersiz:'Указанный номер телефона имеет формат, непригодный для WhatsApp, поэтому открыть нельзя. Проверьте и исправьте номер:',
+    ozel_ders_studyo_kirasi:'Аренда студии для частных уроков',
+    ozel_kira_aciklama:'Общая ежемесячная аренда студии, где главные преподаватели проводят частные уроки. Эта сумма списывается один раз в месяц, независимо от количества главных преподавателей.',
+    aylik_ortak_kira:'Общая аренда в месяц (₺)', nin_ozel_dersleri:'Частные уроки {ad}', atanmamis_ozel_dersler:'Неназначенные частные уроки',
   },
 };
 function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIONS.tr[key]||key;}
@@ -3133,7 +3142,7 @@ function renderAnasayfa(){
   const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
   const toplamKira=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
   const asistanGider=aktifSiniflar.reduce((s,si)=>{const eg=S.egitmenler.find(e=>e.id===si.egitmenId);if(!eg||eg.basEgitmen)return s;const siGelir=S.odemeler.filter(o=>o.sinifId===si.id&&(o.aylar||[]).includes(bk)).reduce((t,o)=>t+(o.tutar||0),0);return s+siGelir*(si.asistanPct||0)/100;},0);
-  const netTotal=total-toplamKira-asistanGider;
+  const netTotal=total-toplamKira-asistanGider-(GIDER_AYARLARI.kira||0);
   const fmt=v=>v>=1000?Math.round(v/1000)+'K':(Math.round(v)||'0');
   document.getElementById('st-odeme').textContent=fmt(total);
   document.getElementById('st-net').textContent=fmt(netTotal);
@@ -3758,7 +3767,7 @@ function renderGelir(){
     const og=S.ozelOgrenciler.find(o=>o.id===p.ogrenciId);
     if(!ayMap[k])ayMap[k]={toplam:0,adet:0,gruplar:{},ozel:[]};
     ayMap[k].toplam+=p.tutar||0;ayMap[k].adet++;
-    ayMap[k].ozel.push({ad:og?og.ad+' '+(og.soyad||''):'?',tutar:p.tutar||0,ogrenciId:p.ogrenciId,paketId:p.id});
+    ayMap[k].ozel.push({ad:og?og.ad+' '+(og.soyad||''):'?',tutar:p.tutar||0,ogrenciId:p.ogrenciId,paketId:p.id,egitmenIds:p.egitmenIds||[]});
   });
   if(!Object.keys(ayMap).length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('henuz_odeme_kaydi_yok')+'</div></div>';return;}
   const sirali=Object.entries(ayMap).sort((a,b)=>b[0].localeCompare(a[0]));
@@ -3791,7 +3800,7 @@ function renderGelir(){
       }).reduce((t,o)=>t+(o.tutar||0),0);
       return s+siGelir*(si.asistanPct||0)/100;
     },0);
-    const ayNet=v.toplam-aylikKira-buAyAsistan;
+    const ayNet=v.toplam-aylikKira-buAyAsistan-(GIDER_AYARLARI.kira||0);
     const gruplar=v.gruplar||{};
     html+=`<div class="gelir-row">
       <div class="gelir-row-header" onclick="toggleGelirAy('${key}')">
@@ -3847,35 +3856,48 @@ function renderGelir(){
           '</div>';
         }).join('')}
         ${(v.ozel&&v.ozel.length)?(()=>{
-          const ozelToplam=v.ozel.reduce((s,o)=>s+(o.tutar||0),0);
-          const ozelAcik=GELIR_ACIK.has(key+'_ozel');
-          const ozelId=key+'_ozel';
-          return '<div class="gelir-detay-item" style="cursor:pointer;user-select:none;color:var(--purple);" data-sid="'+ozelId+'" onclick="event.stopPropagation();toggleGelirSinif(this.dataset.sid)">'+
-            '<div style="display:flex;justify-content:space-between;align-items:center;">'+
-              '<span>✦ '+t('ozel_dersler')+'</span>'+
-              '<div style="display:flex;align-items:center;gap:6px;">'+
-                '<span style="color:var(--green);font-weight:600;">'+ozelToplam.toLocaleString(LC())+' ₺</span>'+
-                '<span style="font-size:12px;color:var(--text3);">'+(ozelAcik?'▾':'▸')+'</span>'+
+          const basEgitmenler=S.egitmenler.filter(e=>e.basEgitmen);
+          const gruplarOzel={};const digerOzel=[];
+          v.ozel.forEach(o=>{
+            const atananBas=(o.egitmenIds||[]).map(id=>basEgitmenler.find(e=>e.id===id)).find(Boolean);
+            if(atananBas){
+              if(!gruplarOzel[atananBas.id])gruplarOzel[atananBas.id]={ad:atananBas.ad,items:[]};
+              gruplarOzel[atananBas.id].items.push(o);
+            }else{digerOzel.push(o);}
+          });
+          const satirlar=[...Object.entries(gruplarOzel).map(([egId,g])=>({id:egId,baslik:t('nin_ozel_dersleri').replace('{ad}',g.ad),items:g.items}))];
+          if(digerOzel.length)satirlar.push({id:'diger',baslik:t('atanmamis_ozel_dersler'),items:digerOzel});
+          return satirlar.map(grp=>{
+            const grpToplam=grp.items.reduce((s,o)=>s+(o.tutar||0),0);
+            const grpAcik=GELIR_ACIK.has(key+'_ozel_'+grp.id);
+            const grpId=key+'_ozel_'+grp.id;
+            return '<div class="gelir-detay-item" style="cursor:pointer;user-select:none;color:var(--purple);" data-sid="'+grpId+'" onclick="event.stopPropagation();toggleGelirSinif(this.dataset.sid)">'+
+              '<div style="display:flex;justify-content:space-between;align-items:center;">'+
+                '<span>✦ '+grp.baslik+'</span>'+
+                '<div style="display:flex;align-items:center;gap:6px;">'+
+                  '<span style="color:var(--green);font-weight:600;">'+grpToplam.toLocaleString(LC())+' ₺</span>'+
+                  '<span style="font-size:12px;color:var(--text3);">'+(grpAcik?'▾':'▸')+'</span>'+
+                '</div>'+
               '</div>'+
-            '</div>'+
-            (ozelAcik?
-              '<div style="margin-top:6px;border-left:2px solid var(--border2);padding-left:10px;">'+
-                v.ozel.map(o=>{
-                  const odEl=document.createElement('div');
-                  odEl.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:5px 0;cursor:pointer;';
-                  odEl.dataset.ogId=o.ogrenciId||'';odEl.dataset.paketId=o.paketId||'';
-                  odEl.onclick=function(e){e.stopPropagation();closeModal('m-aylik-gelir');if(this.dataset.ogId)openOzelPaketModal(this.dataset.ogId,this.dataset.paketId);};
-                  odEl.innerHTML=
-                    '<div><div style="font-size:13px;font-weight:500;">'+o.ad+'</div></div>'+
-                    '<div style="display:flex;align-items:center;gap:6px;">'+
-                      '<span style="color:var(--green);font-size:13px;font-weight:600;">'+((o.tutar||0).toLocaleString(LC()))+' ₺</span>'+
-                      '<span style="font-size:11px;color:var(--text3);">✎</span>'+
-                    '</div>';
-                  return odEl.outerHTML;
-                }).join('')+
-              '</div>'
-            :'')+
-          '</div>';
+              (grpAcik?
+                '<div style="margin-top:6px;border-left:2px solid var(--border2);padding-left:10px;">'+
+                  grp.items.map(o=>{
+                    const odEl=document.createElement('div');
+                    odEl.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:5px 0;cursor:pointer;';
+                    odEl.dataset.ogId=o.ogrenciId||'';odEl.dataset.paketId=o.paketId||'';
+                    odEl.onclick=function(e){e.stopPropagation();closeModal('m-aylik-gelir');if(this.dataset.ogId)openOzelPaketModal(this.dataset.ogId,this.dataset.paketId);};
+                    odEl.innerHTML=
+                      '<div><div style="font-size:13px;font-weight:500;">'+o.ad+'</div></div>'+
+                      '<div style="display:flex;align-items:center;gap:6px;">'+
+                        '<span style="color:var(--green);font-size:13px;font-weight:600;">'+((o.tutar||0).toLocaleString(LC()))+' ₺</span>'+
+                        '<span style="font-size:11px;color:var(--text3);">✎</span>'+
+                      '</div>';
+                    return odEl.outerHTML;
+                  }).join('')+
+                '</div>'
+              :'')+
+            '</div>';
+          }).join('');
         })():''}
       </div>
     </div>`;
@@ -5314,11 +5336,18 @@ async function giderAyarlariniKaydet(kira,pct){
   await db.collection('gider_ayarlari').doc('ayarlar').set({kira:parseFloat(kira)||0,basEgitmenPayPct:parseFloat(pct)||0});
 }
 
+// Senkron erişim için önbellek — özel ders stüdyo kirası birçok yerde senkron render fonksiyonunda kullanılıyor
+let GIDER_AYARLARI={kira:0,basEgitmenPayPct:30};
+async function giderAyarlariniOnbellekleYukle(){
+  GIDER_AYARLARI=await giderAyarlariniYukle();
+}
+
 // Eğitmen yönetim paneli
 async function renderEgitmenPanel(){
   const el=document.getElementById('egitmen-panel-content2')||document.getElementById('egitmen-panel-content');
   if(!el)return;
   const ayarlar=await giderAyarlariniYukle();
+  GIDER_AYARLARI=ayarlar;
 
   let html=`
     <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('egitmenler')}</div>
@@ -5335,17 +5364,24 @@ async function renderEgitmenPanel(){
         </div>
       </div>`).join('')}
     ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text3);padding:8px 0 4px;">'+t('henuz_egitmen_yok')+'</div>':''}
-    <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>`;
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>
+    <div style="height:1px;background:var(--border);margin:16px 0;"></div>
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('ozel_ders_studyo_kirasi')}</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;">${t('ozel_kira_aciklama')}</div>
+    <div class="field"><label>${t('aylik_ortak_kira')}</label><input id="ga-kira" type="number" placeholder="10000" value="${ayarlar.kira||''}"/></div>
+    <button class="btn btn-accent" style="width:100%;" onclick="egitmenAyarKaydet()">${t('btn_kaydet')}</button>`;
 
   el.innerHTML=html;
 }
 
 async function egitmenAyarKaydet(){
-  const pct=document.getElementById('ga-pct')?.value;
+  const kira=document.getElementById('ga-kira')?.value;
   setSyncing(true);
   try{
-    await giderAyarlariniKaydet(0,pct);
+    await giderAyarlariniKaydet(kira,GIDER_AYARLARI.basEgitmenPayPct||0);
+    await giderAyarlariniOnbellekleYukle();
     toastGoster('✓ '+t('ayarlar_kaydedildi'));
+    renderAll();
   }catch(e){alert('Hata: '+e.message);}
   setSyncing(false);
 }
@@ -5489,8 +5525,26 @@ async function renderGiderRapor(){
     const payBasina=Math.round(atanamamisKar/basEgitmenler.length);
     basEgitmenler.forEach(be=>{basEgitmenKarMap[be.id]+=payBasina;});
   }
-  // Net kâr = toplam gelir − kiralar − asistan ödemeleri
-  const netKar=Object.values(basEgitmenKarMap).reduce((s,v)=>s+v,0);
+  // Özel ders gelirini de ilgili baş eğitmenin kârına ekle
+  let ozelAtanamamisKar=0;
+  S.ozelPaketler.forEach(p=>{
+    if(!p.tarih)return;
+    const d=new Date(p.tarih+'T00:00:00');
+    if(ayKey(d.getFullYear(),d.getMonth()+1)!==buAyKey)return;
+    const atananBas=(p.egitmenIds||[]).map(id=>basEgitmenler.find(e=>e.id===id)).find(Boolean);
+    if(atananBas&&basEgitmenKarMap.hasOwnProperty(atananBas.id)){
+      basEgitmenKarMap[atananBas.id]+=p.tutar||0;
+    }else{
+      ozelAtanamamisKar+=p.tutar||0;
+    }
+  });
+  if(basEgitmenler.length>0&&ozelAtanamamisKar>0){
+    const payBasina2=Math.round(ozelAtanamamisKar/basEgitmenler.length);
+    basEgitmenler.forEach(be=>{basEgitmenKarMap[be.id]+=payBasina2;});
+  }
+  // Net kâr = toplam gelir − kiralar − asistan ödemeleri − özel ders stüdyo kirası (tek sefer, paylaşımlı)
+  const ozelStudyoKira=GIDER_AYARLARI.kira||0;
+  const netKar=Object.values(basEgitmenKarMap).reduce((s,v)=>s+v,0)-ozelStudyoKira;
 
   let html=`
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
@@ -5513,9 +5567,10 @@ async function renderGiderRapor(){
       <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('giderler')}</div>
       <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('toplam_kira')}</span><span style="font-weight:600;color:var(--accent);">−${toplamKira.toLocaleString(LC())} ₺</span></div>
       ${toplamAsistanOdeme>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('asistan_odemeleri')}</span><span style="font-weight:600;color:var(--accent);">−${toplamAsistanOdeme.toLocaleString(LC())} ₺</span></div>`:''}
+      ${ozelStudyoKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('ozel_ders_studyo_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${ozelStudyoKira.toLocaleString(LC())} ₺</span></div>`:''}
       <div class="gider-satir" style="border-top:1px solid #ff6b6b40;margin-top:4px;padding-top:8px;">
         <span style="font-weight:700;">${t('toplam_gider')}</span>
-        <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamAsistanOdeme>0?(toplamKira+toplamAsistanOdeme).toLocaleString(LC())+' ₺':'0 ₺'}</span>
+        <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamAsistanOdeme+ozelStudyoKira>0?(toplamKira+toplamAsistanOdeme+ozelStudyoKira).toLocaleString(LC())+' ₺':'0 ₺'}</span>
       </div>
     </div>
 
@@ -5696,7 +5751,7 @@ function renderGelirTrend(){
       const siGelir=S.odemeler.filter(o=>o.sinifId===si.id&&(o.aylar||[]).includes(key)).reduce((t,o)=>t+(o.tutar||0),0);
       return s+siGelir*(si.asistanPct||0)/100;
     },0);
-    const net=(grup+ozel)-kiraToplam-asistanGider;
+    const net=(grup+ozel)-kiraToplam-asistanGider-(GIDER_AYARLARI.kira||0);
     aylar.push({key,label,toplam:grup+ozel,grup,ozel,net:Math.max(0,net)});
   }
 
@@ -6301,6 +6356,7 @@ function notiOkundu(id,el){
 
 // Başlangıç
 applyLang();
+giderAyarlariniOnbellekleYukle();
 waSablonYukle();
 temaUygula(AKTİF_TEMA); // Kayıtlı temayı uygula
 if(portalLoginKontrol()){
