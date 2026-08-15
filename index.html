@@ -3758,7 +3758,7 @@ function renderGelir(){
     const og=S.ozelOgrenciler.find(o=>o.id===p.ogrenciId);
     if(!ayMap[k])ayMap[k]={toplam:0,adet:0,gruplar:{},ozel:[]};
     ayMap[k].toplam+=p.tutar||0;ayMap[k].adet++;
-    ayMap[k].ozel.push({ad:og?og.ad+' '+(og.soyad||''):'?',tutar:p.tutar||0});
+    ayMap[k].ozel.push({ad:og?og.ad+' '+(og.soyad||''):'?',tutar:p.tutar||0,ogrenciId:p.ogrenciId,paketId:p.id});
   });
   if(!Object.keys(ayMap).length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('henuz_odeme_kaydi_yok')+'</div></div>';return;}
   const sirali=Object.entries(ayMap).sort((a,b)=>b[0].localeCompare(a[0]));
@@ -3846,6 +3846,37 @@ function renderGelir(){
             :'')+
           '</div>';
         }).join('')}
+        ${(v.ozel&&v.ozel.length)?(()=>{
+          const ozelToplam=v.ozel.reduce((s,o)=>s+(o.tutar||0),0);
+          const ozelAcik=GELIR_ACIK.has(key+'_ozel');
+          const ozelId=key+'_ozel';
+          return '<div class="gelir-detay-item" style="cursor:pointer;user-select:none;color:var(--purple);" data-sid="'+ozelId+'" onclick="event.stopPropagation();toggleGelirSinif(this.dataset.sid)">'+
+            '<div style="display:flex;justify-content:space-between;align-items:center;">'+
+              '<span>✦ '+t('ozel_dersler')+'</span>'+
+              '<div style="display:flex;align-items:center;gap:6px;">'+
+                '<span style="color:var(--green);font-weight:600;">'+ozelToplam.toLocaleString(LC())+' ₺</span>'+
+                '<span style="font-size:12px;color:var(--text3);">'+(ozelAcik?'▾':'▸')+'</span>'+
+              '</div>'+
+            '</div>'+
+            (ozelAcik?
+              '<div style="margin-top:6px;border-left:2px solid var(--border2);padding-left:10px;">'+
+                v.ozel.map(o=>{
+                  const odEl=document.createElement('div');
+                  odEl.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:5px 0;cursor:pointer;';
+                  odEl.dataset.ogId=o.ogrenciId||'';odEl.dataset.paketId=o.paketId||'';
+                  odEl.onclick=function(e){e.stopPropagation();closeModal('m-aylik-gelir');if(this.dataset.ogId)openOzelPaketModal(this.dataset.ogId,this.dataset.paketId);};
+                  odEl.innerHTML=
+                    '<div><div style="font-size:13px;font-weight:500;">'+o.ad+'</div></div>'+
+                    '<div style="display:flex;align-items:center;gap:6px;">'+
+                      '<span style="color:var(--green);font-size:13px;font-weight:600;">'+((o.tutar||0).toLocaleString(LC()))+' ₺</span>'+
+                      '<span style="font-size:11px;color:var(--text3);">✎</span>'+
+                    '</div>';
+                  return odEl.outerHTML;
+                }).join('')+
+              '</div>'
+            :'')+
+          '</div>';
+        })():''}
       </div>
     </div>`;
   });
