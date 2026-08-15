@@ -1047,7 +1047,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="field" id="dp-egitmen-multi-wrap" style="display:none;"><label>Dersi Veren Eğitmen</label><select id="dp-egitmen-select"></select></div>
   <div class="field"><label>Başlangıç Saati</label><input id="dp-saat" type="time" step="1800"/></div>
   <div class="field"><label>Süre</label><select id="dp-sure"><option value="0.5">0.5 saat</option><option value="1" selected>1 saat</option><option value="1.5">1.5 saat</option><option value="2">2 saat</option></select></div>
-  <div id="dp-paket-uyari" style="display:none;font-size:12px;color:var(--text3);margin-bottom:8px;">Bu öğrencinin aktif paketi yok — ders planlanır ama saat düşülmez.</div>
+  <div id="dp-paket-uyari" style="display:none;font-size:12px;color:var(--accent);background:var(--accentbg);border:1px solid #ff6b6b30;border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px;" data-i18n="aktif_paket_olmadan_ders_engel">Bu öğrencinin aktif paketi yok — ders planlanamaz. Önce paket ekleyin.</div>
   <div id="dp-mevcut" style="display:none;margin-bottom:8px;"></div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ders-planla')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-dp" onclick="saveDersPlan()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
@@ -1373,6 +1373,8 @@ const TRANSLATIONS={
     dersi_sil:'Dersi Sil', ders_sil_aciklama:'Bu planlanan ders silinecek.',
     ders_sil_saat_geri:'Bu ders paketten düşülmüştü — silinince saat pakete geri eklenecek.',
     dersler:'Dersler', henuz_ders_yok:'Bu pakette henüz ders kaydı yok.', takvimden:'takvimden', saat_dus_ekle:'Saat Düş/Ekle',
+    paket_bitti_uyari:'Bu paket bitti — düşülecek saat kalmadı. Devam etmek için yeni saat ekleyin ya da yeni paket açın.',
+    ekle:'Ekle', dus:'Düş', aktif_paket_olmadan_ders_engel:'Bu öğrencinin aktif paketi yok — ders planlanamaz. Önce paket ekleyin.',
   },
   en:{
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
@@ -1506,6 +1508,8 @@ const TRANSLATIONS={
     dersi_sil:'Delete Lesson', ders_sil_aciklama:'This planned lesson will be deleted.',
     ders_sil_saat_geri:'This lesson was already deducted from the package — deleting it will restore that hour to the package.',
     dersler:'Lessons', henuz_ders_yok:'No lessons recorded for this package yet.', takvimden:'from calendar', saat_dus_ekle:'Deduct/Add Hours',
+    paket_bitti_uyari:'This package is finished — no hours left to deduct. Add more hours or open a new package to continue.',
+    ekle:'Add', dus:'Deduct', aktif_paket_olmadan_ders_engel:'This student has no active package — a lesson cannot be scheduled. Add a package first.',
   },
   ru:{
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
@@ -1639,6 +1643,8 @@ const TRANSLATIONS={
     dersi_sil:'Удалить занятие', ders_sil_aciklama:'Это запланированное занятие будет удалено.',
     ders_sil_saat_geri:'Этот час уже был списан с пакета — при удалении он будет возвращён в пакет.',
     dersler:'Занятия', henuz_ders_yok:'Занятий в этом пакете пока нет.', takvimden:'из календаря', saat_dus_ekle:'Списать/Добавить часы',
+    paket_bitti_uyari:'Этот пакет исчерпан — часов для списания не осталось. Добавьте часы или откройте новый пакет, чтобы продолжить.',
+    ekle:'Добавить', dus:'Списать', aktif_paket_olmadan_ders_engel:'У этого ученика нет активного пакета — занятие нельзя запланировать. Сначала добавьте пакет.',
   },
 };
 function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIONS.tr[key]||key;}
@@ -2680,7 +2686,7 @@ async function saveOzelPaket(){
 
 function fmtSaat(s){return s%1===0?s.toString():(Math.floor(s)+'.5');}
 let CUR_PAKET_EGITMENLER=[];
-function openOzelSaatModal(paketId){CUR_OZEL_PAKET=paketId;const p=S.ozelPaketler.find(x=>x.id===paketId);if(!p)return;const og=S.ozelOgrenciler.find(o=>o.id===p.ogrenciId);document.getElementById('m-ozel-saat-title').textContent=og?og.ad+' '+(og.soyad||''):'Ders Güncelle';const kalan=p.toplamSaat-p.yapilanSaat;const pct=Math.min(100,Math.round((p.yapilanSaat/p.toplamSaat)*100));OS_VAL=-1;
+function openOzelSaatModal(paketId){CUR_OZEL_PAKET=paketId;const p=S.ozelPaketler.find(x=>x.id===paketId);if(!p)return;const og=S.ozelOgrenciler.find(o=>o.id===p.ogrenciId);document.getElementById('m-ozel-saat-title').textContent=og?og.ad+' '+(og.soyad||''):'Ders Güncelle';const kalan=p.toplamSaat-p.yapilanSaat;const pct=Math.min(100,Math.round((p.yapilanSaat/p.toplamSaat)*100));const bitti=kalan<=0;OS_VAL=bitti?1:-1;
 CUR_PAKET_EGITMENLER=(p.egitmenIds||[]).map(id=>S.egitmenler.find(e=>e.id===id)).filter(Boolean);
 document.getElementById('m-ozel-saat-content').innerHTML=`
   <div class="grad-card gc-cyan" style="margin-bottom:14px;">
@@ -2689,20 +2695,21 @@ document.getElementById('m-ozel-saat-content').innerHTML=`
     <div style="font-size:12px;color:var(--text3);">${fmtSaat(p.yapilanSaat)}/${fmtSaat(p.toplamSaat)} saat yapıldı · %${pct}</div>
     <div class="saat-bar" style="margin-top:8px;"><div class="saat-bar-fill${kalan===0?' bitti-renk':kalan<=1?' az':''}" style="width:${pct}%"></div></div>
   </div>
+  ${bitti?`<div style="font-size:12px;color:var(--accent);background:var(--accentbg);border:1px solid #ff6b6b30;border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:12px;">${t('paket_bitti_uyari')}</div>`:''}
   <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:12px;">
-    <button class="btn btn-danger" style="width:56px;height:56px;padding:0;font-size:24px;font-weight:700;" onclick="osStep(-1)">－</button>
-    <input id="os-miktar" type="text" inputmode="numeric" value="－1" style="width:90px;text-align:center;font-size:18px;font-weight:600;" onchange="osInputEdited()"/>
+    <button class="btn btn-danger" style="width:56px;height:56px;padding:0;font-size:24px;font-weight:700;${bitti?'opacity:.35;pointer-events:none;':''}" onclick="osStep(-1)" ${bitti?'disabled':''}>－</button>
+    <input id="os-miktar" type="text" inputmode="numeric" value="${bitti?'1':'－1'}" style="width:90px;text-align:center;font-size:18px;font-weight:600;" onchange="osInputEdited()"/>
     <button class="btn btn-ghost" style="width:44px;height:44px;padding:0;font-size:18px;" onclick="osStep(1)">＋</button>
   </div>
-  <div id="os-tarih-wrap" class="field" style="display:block;">
+  <div id="os-tarih-wrap" class="field" style="${bitti?'opacity:.4;':''}">
     <label>Dersin Yapıldığı Tarih</label>
-    <input id="os-tarih" type="date" value="${new Date().toISOString().slice(0,10)}"/>
+    <input id="os-tarih" type="date" value="${new Date().toISOString().slice(0,10)}" ${bitti?'disabled':''}/>
   </div>
-  <div id="os-egitmen-wrap" class="field" style="display:${CUR_PAKET_EGITMENLER.length>=2?'block':'none'};">
+  <div id="os-egitmen-wrap" class="field" style="display:${!bitti&&CUR_PAKET_EGITMENLER.length>=2?'block':'none'};">
     <label>Dersi Veren Eğitmen</label>
     <select id="os-egitmen">${CUR_PAKET_EGITMENLER.map(e=>`<option value="${e.id}">${e.ad}</option>`).join('')}</select>
   </div>
-  <button id="os-action-btn" class="btn btn-danger" style="width:100%;margin-bottom:14px;" onclick="osUygula()">－ Düş</button>
+  <button id="os-action-btn" class="btn ${bitti?'btn-green':'btn-danger'}" style="width:100%;margin-bottom:14px;" onclick="osUygula()">${bitti?'＋ '+t('ekle'):'－ '+t('dus')}</button>
   <div class="divider"></div>
   <div style="display:flex;gap:8px;">
     <button class="btn btn-ghost" style="flex:1;" onclick="closeModal('m-ozel-saat');openOzelPaketModal('${p.ogrenciId}','${paketId}')">✎ Paketi Düzenle</button>
@@ -2737,15 +2744,18 @@ function osInputEdited(){
 function osRefreshUI(){
   const btn=document.getElementById('os-action-btn');
   const tarihWrap=document.getElementById('os-tarih-wrap');
+  const tarihInput=document.getElementById('os-tarih');
   const egitmenWrap=document.getElementById('os-egitmen-wrap');
   if(!btn)return;
   if(OS_VAL<0){
     btn.textContent='－ Düş';btn.className='btn btn-danger';btn.style.width='100%';btn.style.marginBottom='14px';
-    if(tarihWrap)tarihWrap.style.display='block';
+    if(tarihWrap)tarihWrap.style.opacity='';
+    if(tarihInput)tarihInput.disabled=false;
     if(egitmenWrap)egitmenWrap.style.display=CUR_PAKET_EGITMENLER.length>=2?'block':'none';
   }else{
     btn.textContent='＋ Ekle';btn.className='btn btn-green';btn.style.width='100%';btn.style.marginBottom='14px';
-    if(tarihWrap)tarihWrap.style.display='none';
+    if(tarihWrap)tarihWrap.style.opacity='.4';
+    if(tarihInput)tarihInput.disabled=true;
     if(egitmenWrap)egitmenWrap.style.display='none';
   }
 }
@@ -2755,6 +2765,8 @@ async function osUygula(){
   if(miktar<=0)return;
   const btn=document.getElementById('os-action-btn');if(btn)btn.disabled=true;
   if(OS_VAL<0){
+    const kalanSimdi=Math.round((p.toplamSaat-p.yapilanSaat)*10)/10;
+    if(kalanSimdi<=0){alert(t('paket_bitti_uyari'));if(btn)btn.disabled=false;return;}
     const tarih=document.getElementById('os-tarih').value;
     if(!tarih){alert('Dersin yapıldığı tarihi girin.');if(btn)btn.disabled=false;return;}
     let egitmenId=null;
@@ -2924,7 +2936,10 @@ function dpOgrenciChange(){
     const eg=paketEgitmenler.length===1?paketEgitmenler[0]:(og?S.egitmenler.find(e=>e.id===og.egitmenId):null);
     document.getElementById('dp-egitmen').value=eg?eg.ad:(og?'— Eğitmen atanmamış —':'');
   }
+  const paketVarMi=!!paket;
   uyari.style.display=(og&&!paket)?'block':'none';
+  const saveBtn=document.getElementById('btn-save-dp');
+  if(saveBtn)saveBtn.disabled=!!(og&&!paketVarMi);
 }
 async function saveDersPlan(){
   const ogId=document.getElementById('dp-ogrenci').value;
@@ -2934,6 +2949,7 @@ async function saveDersPlan(){
   const sure=parseFloat(document.getElementById('dp-sure').value);
   if(!saat){alert('Saat girin.');return;}
   const paket=dpAktifPaket(ogId);
+  if(!paket){alert(t('aktif_paket_olmadan_ders_engel'));return;}
   const paketEgitmenler=(paket&&paket.egitmenIds||[]).map(id=>S.egitmenler.find(e=>e.id===id)).filter(Boolean);
   let egitmenId=null;
   if(paketEgitmenler.length>=2){
