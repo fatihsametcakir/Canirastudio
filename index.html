@@ -746,7 +746,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <button class="nav-item" onclick="goTo('ogrenciler',this)"><div class="nav-icon-wrap"><span class="nav-icon">♟</span></div><span id="navlbl-ogrenciler">Öğrenciler</span></button>
     <button class="nav-item" onclick="goTo('siniflar',this)"><div class="nav-icon-wrap"><span class="nav-icon">◈</span></div><span id="navlbl-siniflar">Sınıflar</span></button>
     <button class="nav-item" onclick="goTo('takvim',this)"><div class="nav-icon-wrap"><span class="nav-icon">▦</span></div><span id="navlbl-takvim">Takvim</span></button>
-    <button class="nav-item" onclick="goTo('yoklama',this)"><div class="nav-icon-wrap"><span class="nav-icon">✓</span></div><span id="navlbl-yoklama">Yoklama</span></button>
+    <button class="nav-item" onclick="goTo('ozel',this)"><div class="nav-icon-wrap"><span class="nav-icon">✦</span></div><span id="navlbl-ozel">Özel Dersler</span></button>
     <button class="nav-item" onclick="goTo('odemeler',this)"><div class="nav-icon-wrap"><span class="nav-icon">◎</span></div><span id="navlbl-odemeler">Ödemeler</span></button>
     <button class="nav-item" onclick="openGelirGiderSheet()"><div class="nav-icon-wrap"><span class="nav-icon">₺</span></div><span id="navlbl-gelirgider">Gelir/Gider</span></button>
   </nav>
@@ -766,7 +766,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
     <!-- Hızlı Erişim -->
     <div style="padding:10px 16px 6px;">
-      <button class="drawer-btn" id="drawerBtnOzel" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('ozel',null)">✦ Özel Dersler</button>
+      <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('yoklama',null)">✓ Yoklama</button>
       <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:0;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
     </div>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
@@ -1247,7 +1247,7 @@ const TRANSLATIONS={
     nav_takvim:'Takvim', nav_yoklama:'Yoklama', nav_odemeler:'Ödemeler', nav_gelirgider:'Gelir/Gider',
     lbl_aktif_ogrenci:'Aktif Öğrenci', lbl_kayit:'kayıt', lbl_sinif:'Sınıf',
     lbl_bu_ay_gelir:'Bu ay gelir', lbl_net:'Net', lbl_paket_yenileme:'Paket yenileme',
-    drawer_ozel:'✦ Özel Dersler', drawer_videolar:'🎬 Ders Videoları',
+    drawer_ozel:'✦ Özel Dersler', drawer_videolar:'🎬 Ders Videoları', drawer_yoklama:'✓ Yoklama', nav_ozel:'Özel Dersler',
     filter_aktif:'Aktif', filter_pasif:'Pasif', filter_hepsi:'Hepsi',
     siniftagore:'Sınıfa Göre', tumunugoster:'Tümünü Göster',
     sonEklenen:'Son Eklenen', ilkEklenen:'İlk Eklenen',
@@ -1380,7 +1380,7 @@ const TRANSLATIONS={
     nav_takvim:'Calendar', nav_yoklama:'Attendance', nav_odemeler:'Payments', nav_gelirgider:'Income/Expense',
     lbl_aktif_ogrenci:'Active Students', lbl_kayit:'enrollments', lbl_sinif:'Classes',
     lbl_bu_ay_gelir:'Income this month', lbl_net:'Net', lbl_paket_yenileme:'Package renewals',
-    drawer_ozel:'✦ Private Lessons', drawer_videolar:'🎬 Lesson Videos',
+    drawer_ozel:'✦ Private Lessons', drawer_videolar:'🎬 Lesson Videos', drawer_yoklama:'✓ Attendance', nav_ozel:'Private Lessons',
     filter_aktif:'Active', filter_pasif:'Inactive', filter_hepsi:'All',
     siniftagore:'By Class', tumunugoster:'Show All',
     sonEklenen:'Recently Added', ilkEklenen:'First Added',
@@ -1513,7 +1513,7 @@ const TRANSLATIONS={
     nav_takvim:'Календарь', nav_yoklama:'Посещаемость', nav_odemeler:'Платежи', nav_gelirgider:'Доходы/Расходы',
     lbl_aktif_ogrenci:'Активные ученики', lbl_kayit:'записей', lbl_sinif:'Групп',
     lbl_bu_ay_gelir:'Доход за месяц', lbl_net:'Чистыми', lbl_paket_yenileme:'Обновление пакетов',
-    drawer_ozel:'✦ Частные уроки', drawer_videolar:'🎬 Видео уроков',
+    drawer_ozel:'✦ Частные уроки', drawer_videolar:'🎬 Видео уроков', drawer_yoklama:'✓ Посещаемость', nav_ozel:'Частные уроки',
     filter_aktif:'Активные', filter_pasif:'Неактивные', filter_hepsi:'Все',
     siniftagore:'По группам', tumunugoster:'Показать всех',
     sonEklenen:'Недавно добавленные', ilkEklenen:'Первые добавленные',
@@ -1650,7 +1650,8 @@ function applyLang(){
     'navlbl-odemeler':'nav_odemeler','navlbl-gelirgider':'nav_gelirgider',
     'lbl-aktif-ogrenci':'lbl_aktif_ogrenci','lbl-kayit':'lbl_kayit','lbl-sinif':'lbl_sinif',
     'lbl-bu-ay-gelir':'lbl_bu_ay_gelir','lbl-net':'lbl_net','lbl-paket-yenileme':'lbl_paket_yenileme',
-    'drawerBtnOzel':'drawer_ozel','drawerBtnVideolar':'drawer_videolar',
+    'drawerBtnYoklama':'drawer_yoklama','drawerBtnVideolar':'drawer_videolar',
+    'navlbl-ozel':'nav_ozel',
     'lbl-filter-aktif':'filter_aktif','lbl-filter-pasif':'filter_pasif','lbl-filter-hepsi':'filter_hepsi',
     'lbl-siniftagore':'siniftagore','lbl-tumunugoster':'tumunugoster',
     'lbl-sonEklenen':'sonEklenen','lbl-ilkEklenen':'ilkEklenen',
@@ -1805,7 +1806,7 @@ function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showP
 function goBack(){
   const bt=PREV_PAGE==='sinif-detay'?'siniflar':PREV_PAGE;
   PAGE=bt;showPage(bt);setTopbar(false);
-  const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:3,yoklama:4,odemeler:5,ozel:-1};
+  const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:3,ozel:4,odemeler:5,yoklama:-1};
   document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',i===(map[bt]??-1)));
   const fab=document.getElementById('mainFab');if(fab)fab.style.display='flex';
   renderAll();
@@ -5148,7 +5149,7 @@ function renderTakvimGunDetay(){
 
   // Bugün veya gelecekse yoklama butonu
   if(!gecmis){
-    html+=`<button class="btn btn-cyan" style="width:100%;margin-top:4px;" onclick="goTo('yoklama',document.querySelectorAll('.nav-item')[4])">✓ Yoklama Sayfasına Git</button>`;
+    html+=`<button class="btn btn-cyan" style="width:100%;margin-top:4px;" onclick="goTo('yoklama',null)">✓ Yoklama Sayfasına Git</button>`;
   }
 
   el.innerHTML=html;
