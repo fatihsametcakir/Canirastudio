@@ -4512,10 +4512,16 @@ async function yedekal(){
   if(btn){btn.disabled=true;btn.textContent=t('yedek_hazirlaniyor');}
   setSyncing(true);
   try{
-    const veri={tarih:new Date().toISOString(),versiyon:2};
+    const veri={tarih:new Date().toISOString(),versiyon:3};
     for(const col of TUM_KOLEKSIYONLAR){
       veri[col]=await fsTumBelgeler(col);
     }
+    veri.yerelAyarlar={
+      gh_token:localStorage.getItem('gh_token')||'',
+      gh_repo:localStorage.getItem('gh_repo')||'',
+      wa_sablon:localStorage.getItem('wa_sablon')||'',
+      aktif_tema:localStorage.getItem('aktif_tema')||''
+    };
     const json=JSON.stringify(veri,null,2);
     const blob=new Blob([json],{type:'application/json'});
     const url=URL.createObjectURL(blob);
@@ -4565,6 +4571,13 @@ function geriYukle(input){
           };
           for(const k of mevcutKoleksiyonlar){
             await yazBatch(k,veri[k]);
+          }
+          if(veri.yerelAyarlar){
+            const ya=veri.yerelAyarlar;
+            if(ya.gh_token)localStorage.setItem('gh_token',ya.gh_token);
+            if(ya.gh_repo)localStorage.setItem('gh_repo',ya.gh_repo);
+            if(ya.wa_sablon)localStorage.setItem('wa_sablon',ya.wa_sablon);
+            if(ya.aktif_tema)localStorage.setItem('aktif_tema',ya.aktif_tema);
           }
           setSyncing(false);
           alert(t('yedek_geri_yuklendi'));
