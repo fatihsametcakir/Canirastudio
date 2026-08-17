@@ -1310,7 +1310,7 @@ const TRANSLATIONS={
     gecersiz_yedek:'Geçersiz veya boş yedek dosyası.',
     yedekten_geri_yukle_baslik:'Yedekten Geri Yükle',
     yedekten_geri_yukle_aciklama:'Bu yedekte {k} koleksiyon, toplam {n} kayıt var. Mevcut TÜM veriler silinip yedeğin verileriyle değiştirilecek. Bu işlem geri alınamaz. Emin misiniz?',
-    yedek_geri_yuklendi:'Yedek başarıyla geri yüklendi! Sayfa yenileniyor...',
+    yedek_geri_yuklendi:'Yedek başarıyla geri yüklendi! Sayfa yenileniyor...', kaydedildi:'Kaydedildi',
     github_simdi_yedekle:'☁ GitHub\'a Şimdi Yedekle', github_token_sifirla:'🔑 GitHub Token Sıfırla',
     yedek_otomatik_aciklama:'Her gece 04:00\'te otomatik çalışır. Manuel tetiklemek için tıklayın.',
     excel_aciklama:'Tüm sekmeler tek Excel dosyasında indirilir.', excel_indir:'Excel İndir (.xlsx)',
@@ -1455,7 +1455,7 @@ const TRANSLATIONS={
     gecersiz_yedek:'Invalid or empty backup file.',
     yedekten_geri_yukle_baslik:'Restore From Backup',
     yedekten_geri_yukle_aciklama:'This backup contains {k} collections, {n} records in total. ALL current data will be deleted and replaced with the backup data. This cannot be undone. Are you sure?',
-    yedek_geri_yuklendi:'Backup restored successfully! Reloading...',
+    yedek_geri_yuklendi:'Backup restored successfully! Reloading...', kaydedildi:'Saved',
     github_simdi_yedekle:'☁ Back Up to GitHub Now', github_token_sifirla:'🔑 Reset GitHub Token',
     yedek_otomatik_aciklama:'Runs automatically every night at 04:00. Tap to trigger manually.',
     excel_aciklama:'All tabs are downloaded in a single Excel file.', excel_indir:'Download Excel (.xlsx)',
@@ -1600,7 +1600,7 @@ const TRANSLATIONS={
     gecersiz_yedek:'Недействительный или пустой файл резервной копии.',
     yedekten_geri_yukle_baslik:'Восстановить из резервной копии',
     yedekten_geri_yukle_aciklama:'В этой копии {k} коллекций, всего {n} записей. ВСЕ текущие данные будут удалены и заменены данными из копии. Это действие нельзя отменить. Вы уверены?',
-    yedek_geri_yuklendi:'Резервная копия успешно восстановлена! Перезагрузка...',
+    yedek_geri_yuklendi:'Резервная копия успешно восстановлена! Перезагрузка...', kaydedildi:'Сохранено',
     github_simdi_yedekle:'☁ Сохранить в GitHub сейчас', github_token_sifirla:'🔑 Сбросить GitHub токен',
     yedek_otomatik_aciklama:'Запускается автоматически каждую ночь в 04:00. Нажмите для ручного запуска.',
     excel_aciklama:'Все вкладки скачиваются в одном файле Excel.', excel_indir:'Скачать Excel (.xlsx)',
@@ -1917,8 +1917,26 @@ const WA_VARSAYILAN={
 };
 let WA_SABLON={...WA_VARSAYILAN};
 
-function waSablonYukle(){
-  try{const k=localStorage.getItem('wa_sablon');if(k)WA_SABLON={...WA_VARSAYILAN,...JSON.parse(k)};}catch(e){}
+async function waSablonYukle(){
+  // Önce Firestore'dan dene (tüm cihazlarda ortak)
+  try{
+    const snap=await db.collection('ayarlar').doc('waSablon').get();
+    if(snap.exists){
+      WA_SABLON={...WA_VARSAYILAN,...snap.data()};
+      localStorage.setItem('wa_sablon',JSON.stringify(WA_SABLON)); // yerel önbelleği de güncelle
+    }else{
+      // Firestore'da yok — bu cihazda daha önce özelleştirilmiş mi bak, varsa Firestore'a taşı
+      let yerel=null;
+      try{const k=localStorage.getItem('wa_sablon');if(k)yerel=JSON.parse(k);}catch(e){}
+      if(yerel){
+        WA_SABLON={...WA_VARSAYILAN,...yerel};
+        try{await db.collection('ayarlar').doc('waSablon').set(WA_SABLON);}catch(e){}
+      }
+    }
+  }catch(e){
+    // Firestore'a erişilemedi — yerel önbelleğe düş
+    try{const k=localStorage.getItem('wa_sablon');if(k)WA_SABLON={...WA_VARSAYILAN,...JSON.parse(k)};}catch(e2){}
+  }
   // Ayarlar sayfasındaki alanları doldur
   const el=id=>document.getElementById(id);
   if(el('wa-tpl-doldu'))el('wa-tpl-doldu').value=WA_SABLON.doldu;
@@ -1926,14 +1944,21 @@ function waSablonYukle(){
   if(el('wa-tpl-hatirla'))el('wa-tpl-hatirla').value=WA_SABLON.hatirla;
   if(el('wa-tpl-genel'))el('wa-tpl-genel').value=WA_SABLON.genel;
 }
-function waSablonKaydet(){
+async function waSablonKaydet(){
   WA_SABLON.doldu=document.getElementById('wa-tpl-doldu').value||WA_VARSAYILAN.doldu;
   WA_SABLON.yakin=document.getElementById('wa-tpl-yakın').value||WA_VARSAYILAN.yakin;
   WA_SABLON.hatirla=document.getElementById('wa-tpl-hatirla').value||WA_VARSAYILAN.hatirla;
   WA_SABLON.genel=document.getElementById('wa-tpl-genel').value||WA_VARSAYILAN.genel;
-  localStorage.setItem('wa_sablon',JSON.stringify(WA_SABLON));
-  // Küçük bildirim
-  const btn=event.target;const org=btn.textContent;btn.textContent='✓ Kaydedildi';btn.style.background='var(--greenbg)';btn.style.color='var(--green)';btn.style.border='1px solid #34d39930';
+  const btn=event.target;const org=btn.textContent;
+  btn.textContent=t('yedek_hazirlaniyor');
+  try{
+    await db.collection('ayarlar').doc('waSablon').set(WA_SABLON);
+    localStorage.setItem('wa_sablon',JSON.stringify(WA_SABLON)); // yerel önbellek, çevrimdışı hız için
+    btn.textContent='✓ '+t('kaydedildi');
+    btn.style.background='var(--greenbg)';btn.style.color='var(--green)';btn.style.border='1px solid #34d39930';
+  }catch(e){
+    btn.textContent='✕ Hata';btn.style.background='var(--accentbg)';btn.style.color='var(--accent)';
+  }
   setTimeout(()=>{btn.textContent=org;btn.style.background='';btn.style.color='';btn.style.border='';},1800);
 }
 function waReplaceVars(tpl,ad,sinif,gun){
@@ -5378,15 +5403,26 @@ function renderPortalTakvim(el,og){
 // gider_ayarlari dokümanı: {kira, basEgitmenPayPct}
 // Sınıf → egitmenId alanı
 
+// Gider ayarları artık tek çatı altında: ayarlar/giderAyarlari
+// (Eskiden ayrı bir "gider_ayarlari" koleksiyonundaydı — geriye dönük uyumluluk için oradan da okunur)
+
 async function giderAyarlariniYukle(){
   try{
-    const snap=await db.collection('gider_ayarlari').doc('ayarlar').get();
-    return snap.exists?snap.data():{kira:0,basEgitmenPayPct:30};
+    const yeniSnap=await db.collection('ayarlar').doc('giderAyarlari').get();
+    if(yeniSnap.exists)return yeniSnap.data();
+    // Yeni yerde yok — eski koleksiyonda var mı bak, varsa yeni yere taşı
+    const eskiSnap=await db.collection('gider_ayarlari').doc('ayarlar').get();
+    if(eskiSnap.exists){
+      const veri=eskiSnap.data();
+      try{await db.collection('ayarlar').doc('giderAyarlari').set(veri);}catch(e){}
+      return veri;
+    }
+    return {kira:0,basEgitmenPayPct:30};
   }catch(e){return {kira:0,basEgitmenPayPct:30};}
 }
 
 async function giderAyarlariniKaydet(kira,pct){
-  await db.collection('gider_ayarlari').doc('ayarlar').set({kira:parseFloat(kira)||0,basEgitmenPayPct:parseFloat(pct)||0});
+  await db.collection('ayarlar').doc('giderAyarlari').set({kira:parseFloat(kira)||0,basEgitmenPayPct:parseFloat(pct)||0});
 }
 
 // Senkron erişim için önbellek — özel ders stüdyo kirası birçok yerde senkron render fonksiyonunda kullanılıyor
