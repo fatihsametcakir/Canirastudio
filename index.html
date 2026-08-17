@@ -831,7 +831,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
         <span class="acc-arrow" id="arr-acc-yedek">›</span>
       </div>
       <div class="acc-body" id="acc-yedek">
-        <button class="drawer-btn" onclick="yedekal()" data-i18n="json_yedek_indir">↓ JSON Yedek İndir</button>
+        <button class="drawer-btn" id="yedek-indir-btn" onclick="yedekal()" data-i18n="json_yedek_indir">↓ JSON Yedek İndir</button>
         <div class="drawer-sep"></div>
         <input type="file" id="restore-file" accept=".json" style="display:none;" onchange="geriYukle(this)"/>
         <button class="drawer-btn" onclick="document.getElementById('restore-file').click()" data-i18n="yedekten_geri_yukle">↑ Yedekten Geri Yükle</button>
@@ -1306,6 +1306,11 @@ const TRANSLATIONS={
     degiskenler:'Değişkenler', suresi_dolmus:'Süresi Dolmuş', gun_3_icinde:'3 Gün İçinde',
     gun_4_7_hatirlatma:'4-7 Gün Hatırlatma', genel_mesaj:'Genel Mesaj',
     json_yedek_indir:'↓ JSON Yedek İndir', yedekten_geri_yukle:'↑ Yedekten Geri Yükle',
+    yedek_hazirlaniyor:'Hazırlanıyor...', yedek_indirildi:'Yedek indirildi (tüm veriler dahil)',
+    gecersiz_yedek:'Geçersiz veya boş yedek dosyası.',
+    yedekten_geri_yukle_baslik:'Yedekten Geri Yükle',
+    yedekten_geri_yukle_aciklama:'Bu yedekte {k} koleksiyon, toplam {n} kayıt var. Mevcut TÜM veriler silinip yedeğin verileriyle değiştirilecek. Bu işlem geri alınamaz. Emin misiniz?',
+    yedek_geri_yuklendi:'Yedek başarıyla geri yüklendi! Sayfa yenileniyor...',
     github_simdi_yedekle:'☁ GitHub\'a Şimdi Yedekle', github_token_sifirla:'🔑 GitHub Token Sıfırla',
     yedek_otomatik_aciklama:'Her gece 04:00\'te otomatik çalışır. Manuel tetiklemek için tıklayın.',
     excel_aciklama:'Tüm sekmeler tek Excel dosyasında indirilir.', excel_indir:'Excel İndir (.xlsx)',
@@ -1446,6 +1451,11 @@ const TRANSLATIONS={
     degiskenler:'Variables', suresi_dolmus:'Expired', gun_3_icinde:'Within 3 Days',
     gun_4_7_hatirlatma:'4-7 Day Reminder', genel_mesaj:'General Message',
     json_yedek_indir:'↓ Download JSON Backup', yedekten_geri_yukle:'↑ Restore From Backup',
+    yedek_hazirlaniyor:'Preparing...', yedek_indirildi:'Backup downloaded (all data included)',
+    gecersiz_yedek:'Invalid or empty backup file.',
+    yedekten_geri_yukle_baslik:'Restore From Backup',
+    yedekten_geri_yukle_aciklama:'This backup contains {k} collections, {n} records in total. ALL current data will be deleted and replaced with the backup data. This cannot be undone. Are you sure?',
+    yedek_geri_yuklendi:'Backup restored successfully! Reloading...',
     github_simdi_yedekle:'☁ Back Up to GitHub Now', github_token_sifirla:'🔑 Reset GitHub Token',
     yedek_otomatik_aciklama:'Runs automatically every night at 04:00. Tap to trigger manually.',
     excel_aciklama:'All tabs are downloaded in a single Excel file.', excel_indir:'Download Excel (.xlsx)',
@@ -1586,6 +1596,11 @@ const TRANSLATIONS={
     degiskenler:'Переменные', suresi_dolmus:'Истёк срок', gun_3_icinde:'В течение 3 дней',
     gun_4_7_hatirlatma:'Напоминание за 4-7 дней', genel_mesaj:'Общее сообщение',
     json_yedek_indir:'↓ Скачать резервную копию JSON', yedekten_geri_yukle:'↑ Восстановить из копии',
+    yedek_hazirlaniyor:'Подготовка...', yedek_indirildi:'Резервная копия скачана (все данные включены)',
+    gecersiz_yedek:'Недействительный или пустой файл резервной копии.',
+    yedekten_geri_yukle_baslik:'Восстановить из резервной копии',
+    yedekten_geri_yukle_aciklama:'В этой копии {k} коллекций, всего {n} записей. ВСЕ текущие данные будут удалены и заменены данными из копии. Это действие нельзя отменить. Вы уверены?',
+    yedek_geri_yuklendi:'Резервная копия успешно восстановлена! Перезагрузка...',
     github_simdi_yedekle:'☁ Сохранить в GitHub сейчас', github_token_sifirla:'🔑 Сбросить GitHub токен',
     yedek_otomatik_aciklama:'Запускается автоматически каждую ночь в 04:00. Нажмите для ручного запуска.',
     excel_aciklama:'Все вкладки скачиваются в одном файле Excel.', excel_indir:'Скачать Excel (.xlsx)',
@@ -3735,7 +3750,7 @@ function renderOdemeler(){
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
       const topOzel=paketler.reduce((s,p)=>s+(p.tutar||0),0);
       const aktif=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
-      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text3);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text3);margin-top:2px;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">＋ ${t('btn_yeni_paket')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnG(og.tel,og.ad)}</div></div>`;
+      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text3);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text3);margin-top:2px;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnG(og.tel,og.ad)}</div></div>`;
     });
     html+=`</div></div>`;
   }
@@ -4474,30 +4489,50 @@ function excelIndir(){
   }
 }
 
-function yedekal(){
-  const veri={
-    tarih:new Date().toISOString(),
-    versiyon:1,
-    ogrenciler:S.ogrenciler,
-    siniflar:S.siniflar,
-    odemeler:S.odemeler,
-    ozelOgrenciler:S.ozelOgrenciler,
-    ozelPaketler:S.ozelPaketler
-  };
-  const json=JSON.stringify(veri,null,2);
-  const blob=new Blob([json],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  const tarihStr=new Date().toISOString().slice(0,10);
-  a.href=url;a.download=`dans-studio-yedek-${tarihStr}.json`;
-  document.body.appendChild(a);a.click();
-  document.body.removeChild(a);URL.revokeObjectURL(url);
+// Uygulamadaki TÜM Firestore koleksiyonları — yedekleme/geri yükleme bunları kapsar
+const TUM_KOLEKSIYONLAR=['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler','ozelSeanslar','egitmenler','tatiller','videoSiniflar','yoklamalar','gider_ayarlari','ayarlar','ogrenci_hesaplar','ogrenci_notlar'];
+
+// Bir koleksiyondaki TÜM belgeleri (300 belge sınırını sayfalayarak aşar) çeker
+async function fsTumBelgeler(col){
+  let acc=[];
+  let url=`${FS_API}/${col}?pageSize=300&key=${FS_KEY}`;
+  while(true){
+    const r=await fetch(url);
+    const data=await r.json();
+    if(data.error)throw new Error(data.error.message||'Firestore hatası');
+    acc=acc.concat((data.documents||[]).map(docToObj));
+    if(!data.nextPageToken)break;
+    url=`${FS_API}/${col}?pageSize=300&pageToken=${data.nextPageToken}&key=${FS_KEY}`;
+  }
+  return acc;
+}
+
+async function yedekal(){
+  const btn=document.getElementById('yedek-indir-btn');
+  if(btn){btn.disabled=true;btn.textContent=t('yedek_hazirlaniyor');}
+  setSyncing(true);
+  try{
+    const veri={tarih:new Date().toISOString(),versiyon:2};
+    for(const col of TUM_KOLEKSIYONLAR){
+      veri[col]=await fsTumBelgeler(col);
+    }
+    const json=JSON.stringify(veri,null,2);
+    const blob=new Blob([json],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const tarihStr=new Date().toISOString().slice(0,10);
+    a.href=url;a.download=`dans-studio-yedek-${tarihStr}.json`;
+    document.body.appendChild(a);a.click();
+    document.body.removeChild(a);URL.revokeObjectURL(url);
+    toastGoster('✓ '+t('yedek_indirildi'));
+  }catch(e){alert('Hata: '+e.message);}
+  if(btn){btn.disabled=false;btn.textContent=t('json_yedek_indir');}
+  setSyncing(false);
 }
 
 async function sildKoleksiyon(koleksiyon){
-  const snap=await db.collection(koleksiyon).get();
-  if(!snap||snap.empty)return;
-  for(const d of snap.docs){
+  const docs=await fsTumBelgeler(koleksiyon);
+  for(const d of docs){
     await db.collection(koleksiyon).doc(d.id).delete();
   }
 }
@@ -4508,28 +4543,33 @@ function geriYukle(input){
   reader.onload=async(e)=>{
     try{
       const veri=JSON.parse(e.target.result);
-      if(!veri.ogrenciler&&!veri.siniflar){alert('Geçersiz yedek dosyası.');return;}
-      confirm_('Yedekten Geri Yükle','Mevcut TÜM veriler silinecek ve yedeğin verileriyle değiştirilecek. Emin misiniz?',async()=>{
+      const mevcutKoleksiyonlar=TUM_KOLEKSIYONLAR.filter(k=>Array.isArray(veri[k]));
+      if(!mevcutKoleksiyonlar.length){alert(t('gecersiz_yedek'));return;}
+      const kayitSayisi=mevcutKoleksiyonlar.reduce((s,k)=>s+veri[k].length,0);
+      confirm_(t('yedekten_geri_yukle_baslik'),t('yedekten_geri_yukle_aciklama').replace('{n}',kayitSayisi).replace('{k}',mevcutKoleksiyonlar.length),async()=>{
         setSyncing(true);
-        for(const k of['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler']){
-          await sildKoleksiyon(k);
-        }
-        const yazBatch=async(koleksiyon,liste)=>{
-          if(!liste||!liste.length)return;
-          for(let i=0;i<liste.length;i+=400){
-            const b=db.batch();
-            liste.slice(i,i+400).forEach(item=>{
-              const{id,...data}=item;
-              b.set({_col:koleksiyon,_id:id||('id'+Date.now()+Math.random())},data);
-            });
-            await b.commit();
+        try{
+          for(const k of mevcutKoleksiyonlar){
+            await sildKoleksiyon(k);
           }
-        };
-        for(const[k,v] of[['ogrenciler',veri.ogrenciler],['siniflar',veri.siniflar],['odemeler',veri.odemeler],['ozelOgrenciler',veri.ozelOgrenciler],['ozelPaketler',veri.ozelPaketler]]){
-          await yazBatch(k,v||[]);
-        }
-        setSyncing(false);
-        alert('Yedek başarıyla geri yüklendi!');
+          const yazBatch=async(koleksiyon,liste)=>{
+            if(!liste||!liste.length)return;
+            for(let i=0;i<liste.length;i+=400){
+              const b=db.batch();
+              liste.slice(i,i+400).forEach(item=>{
+                const{id,...data}=item;
+                b.set({_col:koleksiyon,_id:id||('id'+Date.now()+Math.random())},data);
+              });
+              await b.commit();
+            }
+          };
+          for(const k of mevcutKoleksiyonlar){
+            await yazBatch(k,veri[k]);
+          }
+          setSyncing(false);
+          alert(t('yedek_geri_yuklendi'));
+          location.reload();
+        }catch(err){setSyncing(false);alert('Hata: '+err.message);}
       });
     }catch(err){alert('Hata: '+err.message);}
     input.value='';
