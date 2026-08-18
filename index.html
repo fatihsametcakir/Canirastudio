@@ -883,6 +883,18 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       </div>
     </div>
 
+    <!-- Öğrenci Birleştirme -->
+    <div class="acc-item">
+      <div class="acc-head" onclick="accToggle('acc-birlestir')">
+        <div class="acc-title"><span class="acc-icon">🔗</span> <span data-i18n="ogrenci_birlestirme">Öğrenci Birleştirme</span></div>
+        <span class="acc-arrow" id="arr-acc-birlestir">›</span>
+      </div>
+      <div class="acc-body" id="acc-birlestir">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.6;" data-i18n="birlestirme_aciklama">Özel ders öğrencilerini, sınıf öğrencileriyle aynı listeye taşır (mevcut ad/telefon eşleşmesi varsa oraya bağlar, yoksa yeni kayıt açar). Hiçbir mevcut veri silinmez, işlem güvenle tekrar çalıştırılabilir.</div>
+        <button class="btn btn-accent" id="birlestir-btn" style="width:100%;" onclick="confirm_(t('ogrenci_birlestirme'),t('birlestirme_onay'),ozelOgrencileriBirlestir)" data-i18n="birlestir_btn_metni">🔗 Şimdi Birleştir</button>
+      </div>
+    </div>
+
     <!-- Veri Yönetimi -->
     <div class="acc-item">
       <div class="acc-head" onclick="accToggle('acc-veri')">
@@ -1010,6 +1022,19 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="field"><label data-i18n="lbl_cinsiyet">Cinsiyet</label><div class="seg"><div class="seg-btn active" id="oseg-k" onclick="setOSeg('k')" data-i18n="kadin">Kadın</div><div class="seg-btn" id="oseg-e" onclick="setOSeg('e')" data-i18n="erkek">Erkek</div></div></div>
   <div class="field"><label data-i18n="lbl_telefon">Telefon</label><input id="oog-tel" placeholder="+90 5xx xxx xx xx" type="tel"/></div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ozel-og')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-oog" onclick="saveOzelOg()" data-i18n="btn_kaydet">Kaydet</button></div>
+</div></div>
+
+<!-- Özel Derse Öğrenci Ekle (birleşik model) -->
+<div class="overlay" id="m-ozel-ekle"><div class="sheet">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ozel-ekle')">✕</button>
+  <div class="sheet-title" data-i18n="ozel_ders_icin_ogrenci_sec">Özel Ders İçin Öğrenci Seç</div>
+  <div class="field">
+    <label data-i18n="ogrenci_ara">Öğrenci Ara</label>
+    <input id="oe-ara" placeholder="İsim veya telefon yazarak ara..." data-i18n-ph="ogrenci_ara_ph" oninput="oeAraInput()"/>
+    <div id="oe-ara-sonuc"></div>
+  </div>
+  <div style="font-size:12px;color:var(--text3);margin:12px 0;text-align:center;" data-i18n="ozel_ekle_ayrac">— veya —</div>
+  <button class="btn btn-accent" style="width:100%;" onclick="oeYeniOgrenci()" data-i18n="yeni_ogrenci_ekle_btn">＋ Yeni Öğrenci Ekle</button>
 </div></div>
 
 <!-- Özel Ders Paket Ekle -->
@@ -1261,6 +1286,10 @@ const TRANSLATIONS={
     empty_ogrenci:'Henüz öğrenci eklenmedi.', empty_sinif:'Henüz sınıf eklenmedi.',
     no_result:'Sonuç bulunamadı', empty_ogrenci_pasif:'Pasif öğrenci yok',
     btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız',
+    sadece_ozel_ders:'Sadece Özel Ders',
+    ozel_ders_icin_ogrenci_sec:'Özel Ders İçin Öğrenci Seç', ogrenci_ara:'Öğrenci Ara', ogrenci_ara_ph:'İsim veya telefon yazarak ara...',
+    ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
+    zaten_ozel_ders:'zaten özel ders alıyor', sec_yonlendir:'seç ›', eslesme_yok_yeni_devam:'Eşleşme bulunamadı — "Yeni Öğrenci Ekle" ile devam edebilirsin.',
     kayitli:'kayıtlı', badge_aktif:'aktif', tek:'tek', pasif_siniflar:'Pasif Sınıflar',
     tatil_gunleri:'🎌 Tatil Günleri', ph_tatil_ad:'Açıklama (örn: Kurban Bayramı)', btn_tatil_ekle:'＋ Tatil Ekle',
     haftalik:'Haftalık', aylik:'Aylık', bu_hafta:'Bu Hafta',
@@ -1318,6 +1347,12 @@ const TRANSLATIONS={
     pwa_yukle:'↓ Yükle (Android)', pwa_android:'⋮ menü → "Ana ekrana ekle"', pwa_iphone:'Paylaş ↑ → "Ana Ekrana Ekle"',
     sil_odemeler:'Tüm Ödemeleri Sil', sil_ozel_paketler:'Tüm Özel Paketleri Sil', sil_ozel_ogrenciler:'Tüm Özel Öğrencileri Sil',
     sil_siniflar:'Tüm Sınıfları Sil', sil_ogrenciler:'Tüm Öğrencileri Sil', tum_verileri_sifirla:'⚠ Tüm Verileri Sıfırla',
+    ogrenci_birlestirme:'Öğrenci Birleştirme',
+    birlestirme_aciklama:'Özel ders öğrencilerini, sınıf öğrencileriyle aynı listeye taşır (mevcut ad/telefon eşleşmesi varsa oraya bağlar, yoksa yeni kayıt açar). Hiçbir mevcut veri silinmez, işlem güvenle tekrar çalıştırılabilir.',
+    birlestir_btn_metni:'🔗 Şimdi Birleştir', birlestiriliyor:'Birleştiriliyor...',
+    birlestirme_onay:'Özel ders öğrencileri, sınıf öğrencileri listesiyle birleştirilecek. Bu işlem geri alınamaz (ama veri silinmez, sadece taşınır). Devam edilsin mi?',
+    birlestirilecek_kalmadi:'Birleştirilecek özel öğrenci kalmadı — hepsi zaten birleştirilmiş.',
+    birlestirme_sonuc:'Birleştirme tamamlandı!\n\n{e} öğrenci mevcut kayıtla eşleşti\n{y} yeni öğrenci kaydı oluşturuldu\n{h} hata oluştu',
     sinif_birlestir:'⇄ Sınıf Birleştir', hedef_sinif:'Hedef Sınıf (öğrenciler buraya taşınır)',
     birlestir_uyari:'⚠️ Kaynak sınıftaki tüm aktif öğrenciler hedef sınıfa eklenir.<br>Zaten hedef sınıfta olanlar atlanır.<br>Kaynak sınıf otomatik pasife alınır.',
     kayit_islemleri:'Kayıt İşlemleri', odeme_ekle:'Ödeme Ekle', aylik_paket:'Aylık Paket', tek_ders:'Tek Ders',
@@ -1406,6 +1441,10 @@ const TRANSLATIONS={
     empty_ogrenci:'No students added yet.', empty_sinif:'No classes added yet.',
     no_result:'No results found', empty_ogrenci_pasif:'No inactive students',
     btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class',
+    sadece_ozel_ders:'Private Lessons Only',
+    ozel_ders_icin_ogrenci_sec:'Select Student for Private Lesson', ogrenci_ara:'Search Student', ogrenci_ara_ph:'Search by name or phone...',
+    ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
+    zaten_ozel_ders:'already has private lessons', sec_yonlendir:'select ›', eslesme_yok_yeni_devam:'No match found — you can continue with "Add New Student".',
     kayitli:'enrolled', badge_aktif:'active', tek:'drop-in', pasif_siniflar:'Inactive Classes',
     tatil_gunleri:'🎌 Holidays', ph_tatil_ad:'Description (e.g. Eid Holiday)', btn_tatil_ekle:'＋ Add Holiday',
     haftalik:'Weekly', aylik:'Monthly', bu_hafta:'This Week',
@@ -1463,6 +1502,12 @@ const TRANSLATIONS={
     pwa_yukle:'↓ Install (Android)', pwa_android:'⋮ menu → "Add to Home screen"', pwa_iphone:'Share ↑ → "Add to Home Screen"',
     sil_odemeler:'Delete All Payments', sil_ozel_paketler:'Delete All Private Packages', sil_ozel_ogrenciler:'Delete All Private Students',
     sil_siniflar:'Delete All Classes', sil_ogrenciler:'Delete All Students', tum_verileri_sifirla:'⚠ Reset All Data',
+    ogrenci_birlestirme:'Merge Students',
+    birlestirme_aciklama:'Moves private-lesson students into the same list as class students (links to an existing match by name/phone, or creates a new record if none found). No existing data is deleted, and this can be safely run again.',
+    birlestir_btn_metni:'🔗 Merge Now', birlestiriliyor:'Merging...',
+    birlestirme_onay:'Private-lesson students will be merged into the class student list. This cannot be undone (but no data is deleted, only moved). Continue?',
+    birlestirilecek_kalmadi:'No private students left to merge — all already merged.',
+    birlestirme_sonuc:'Merge complete!\n\n{e} students matched to existing records\n{y} new student records created\n{h} errors occurred',
     sinif_birlestir:'⇄ Merge Class', hedef_sinif:'Target Class (students move here)',
     birlestir_uyari:'⚠️ All active students in the source class are added to the target class.<br>Those already in the target class are skipped.<br>The source class is automatically deactivated.',
     kayit_islemleri:'Enrollment Actions', odeme_ekle:'Add Payment', aylik_paket:'Monthly Package', tek_ders:'Drop-in',
@@ -1551,6 +1596,10 @@ const TRANSLATIONS={
     empty_ogrenci:'Учеников пока нет.', empty_sinif:'Групп пока нет.',
     no_result:'Результат не найден', empty_ogrenci_pasif:'Нет неактивных учеников',
     btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы',
+    sadece_ozel_ders:'Только частные уроки',
+    ozel_ders_icin_ogrenci_sec:'Выбрать ученика для частного урока', ogrenci_ara:'Поиск ученика', ogrenci_ara_ph:'Поиск по имени или телефону...',
+    ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
+    zaten_ozel_ders:'уже посещает частные уроки', sec_yonlendir:'выбрать ›', eslesme_yok_yeni_devam:'Совпадений не найдено — можно продолжить через "Добавить нового ученика".',
     kayitli:'записано', badge_aktif:'активно', tek:'разовое', pasif_siniflar:'Неактивные группы',
     tatil_gunleri:'🎌 Праздничные дни', ph_tatil_ad:'Описание (напр. Ураза-байрам)', btn_tatil_ekle:'＋ Добавить праздник',
     haftalik:'Неделя', aylik:'Месяц', bu_hafta:'Эта неделя',
@@ -1608,6 +1657,12 @@ const TRANSLATIONS={
     pwa_yukle:'↓ Установить (Android)', pwa_android:'⋮ меню → "Добавить на главный экран"', pwa_iphone:'Поделиться ↑ → "На экран Домой"',
     sil_odemeler:'Удалить все платежи', sil_ozel_paketler:'Удалить все частные пакеты', sil_ozel_ogrenciler:'Удалить всех частных учеников',
     sil_siniflar:'Удалить все группы', sil_ogrenciler:'Удалить всех учеников', tum_verileri_sifirla:'⚠ Сбросить все данные',
+    ogrenci_birlestirme:'Объединение учеников',
+    birlestirme_aciklama:'Переносит учеников частных уроков в тот же список, что и учеников групп (привязывает к существующему совпадению по имени/телефону, иначе создаёт новую запись). Существующие данные не удаляются, операцию можно безопасно повторить.',
+    birlestir_btn_metni:'🔗 Объединить сейчас', birlestiriliyor:'Объединение...',
+    birlestirme_onay:'Ученики частных уроков будут объединены со списком учеников групп. Это действие нельзя отменить (но данные не удаляются, только переносятся). Продолжить?',
+    birlestirilecek_kalmadi:'Нет учеников для объединения — все уже объединены.',
+    birlestirme_sonuc:'Объединение завершено!\n\n{e} учеников сопоставлено с существующими записями\n{y} новых записей создано\n{h} ошибок',
     sinif_birlestir:'⇄ Объединить группу', hedef_sinif:'Целевая группа (ученики переносятся сюда)',
     birlestir_uyari:'⚠️ Все активные ученики исходной группы добавляются в целевую.<br>Те, кто уже в целевой группе, пропускаются.<br>Исходная группа автоматически деактивируется.',
     kayit_islemleri:'Действия с записью', odeme_ekle:'Добавить платёж', aylik_paket:'Месячный пакет', tek_ders:'Разовое занятие',
@@ -1769,6 +1824,65 @@ function addDays(s,d){const dt=new Date(s+'T00:00:00');dt.setDate(dt.getDate()+d
 function formatDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short'});}catch(e){return d;}}
 function daysLeft(d){if(!d)return 999;return Math.ceil((new Date(d+'T00:00:00')-new Date())/864e5);}
 function initials(a,b){return((a||'')[0]||'').toUpperCase()+((b||'')[0]||'').toUpperCase();}
+
+// ── ÖZEL DERS / GRUP ÖĞRENCİ BİRLEŞTİRME ────────────────
+// Bir öğrencinin "özel ders öğrencisi" sayılması için tek koşul:
+// S.ogrenciler içindeki kaydına bağlı en az bir ozelPaketler kaydı olması.
+function ozelDersOgrencileri(){
+  const idSet=new Set(S.ozelPaketler.map(p=>p.ogrenciId));
+  return S.ogrenciler.filter(o=>idSet.has(o.id));
+}
+function ozelDersPaketiVarMi(ogrenciId){
+  return S.ozelPaketler.some(p=>p.ogrenciId===ogrenciId);
+}
+function ogrenciEslesirMi(ozel,adayListesi){
+  const normTel=t=>(t||'').replace(/\D/g,'');
+  const ozelTel=normTel(ozel.tel);
+  const ozelAdSoyad=((ozel.ad||'')+' '+(ozel.soyad||'')).trim().toLocaleLowerCase('tr-TR');
+  if(ozelTel.length>=7){
+    const telMatch=adayListesi.find(o=>normTel(o.tel)===ozelTel);
+    if(telMatch)return telMatch;
+  }
+  return adayListesi.find(o=>((o.ad||'')+' '+(o.soyad||'')).trim().toLocaleLowerCase('tr-TR')===ozelAdSoyad)||null;
+}
+async function ozelOgrencileriBirlestir(){
+  const bekleyenler=S.ozelOgrenciler.filter(o=>!o.migrasyonTamamlandi);
+  if(!bekleyenler.length){alert(t('birlestirilecek_kalmadi'));return;}
+  const btn=document.getElementById('birlestir-btn');
+  if(btn){btn.disabled=true;btn.textContent=t('birlestiriliyor');}
+  setSyncing(true);
+  let eslesen=0,yeniEklenen=0,hataSay=0;
+  const gunlukOgrenciler=[...S.ogrenciler]; // eşleştirme sırasında yeni eklenenleri de aday listesine katmak için
+  for(const ozel of bekleyenler){
+    try{
+      const eslesme=ogrenciEslesirMi(ozel,gunlukOgrenciler);
+      let hedefId;
+      if(eslesme){
+        hedefId=eslesme.id;eslesen++;
+      }else{
+        const yeniData={ad:ozel.ad,soyad:ozel.soyad||'',cinsiyet:ozel.cinsiyet||'k',tel:ozel.tel||'',not:''};
+        const eklendi=await db.collection('ogrenciler').add(yeniData);
+        hedefId=eklendi.id;
+        gunlukOgrenciler.push({id:hedefId,...yeniData});
+        yeniEklenen++;
+      }
+      const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===ozel.id);
+      for(const p of paketler){
+        await db.collection('ozelPaketler').doc(p.id).update({ogrenciId:hedefId});
+      }
+      const seanslar=S.ozelSeanslar.filter(s=>s.ogrenciId===ozel.id);
+      for(const s of seanslar){
+        await db.collection('ozelSeanslar').doc(s.id).update({ogrenciId:hedefId});
+      }
+      await db.collection('ozelOgrenciler').doc(ozel.id).update({migrasyonTamamlandi:true,migrasyonHedefId:hedefId});
+    }catch(e){hataSay++;}
+  }
+  _poll('ogrenciler');_poll('ozelPaketler');_poll('ozelSeanslar');_poll('ozelOgrenciler');
+  setSyncing(false);
+  if(btn){btn.disabled=false;btn.textContent=t('birlestir_btn_metni');}
+  alert(t('birlestirme_sonuc').replace('{e}',eslesen).replace('{y}',yeniEklenen).replace('{h}',hataSay));
+  setTimeout(()=>renderAll(),300);
+}
 function setSyncing(v){const d=document.getElementById('syncDot'),tx=document.getElementById('syncText');if(v){d.classList.add('syncing');tx.textContent=t('sync_saving');}else{d.classList.remove('syncing');tx.textContent=t('sync_live');}}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function confirm_(title,desc,cb){
@@ -1861,7 +1975,7 @@ function setTopbar(d,t=''){
   const sagTaraf=document.getElementById('topbar-sag');
   if(sagTaraf)sagTaraf.style.display=d?'none':'flex';
 }
-function fabAction(){if(PAGE==='ogrenciler')openOgrenciModal();else if(PAGE==='siniflar')openSinifModal();else if(PAGE==='sinif-detay')openSinifOgrenci(CUR_SINIF);else if(PAGE==='ozel')openOzelOgModal();else if(PAGE==='odemeler')openOdemeModal();else openOgrenciModal();}
+function fabAction(){if(PAGE==='ogrenciler')openOgrenciModal();else if(PAGE==='siniflar')openSinifModal();else if(PAGE==='sinif-detay')openSinifOgrenci(CUR_SINIF);else if(PAGE==='ozel')ozelEkleBaslat();else if(PAGE==='odemeler')openOdemeModal();else openOgrenciModal();}
 
 // Filtreler
 
@@ -2092,6 +2206,14 @@ async function saveOgrenci(){
     } else {
       const result=await db.collection('ogrenciler').add({...data,durum:'aktif'});
       S.ogrenciler.push({...data,durum:'aktif',id:result.id});
+      if(OZEL_PAKET_SONRASI_ACILSIN){
+        OZEL_PAKET_SONRASI_ACILSIN=false;
+        closeModal('m-ogrenci');
+        renderAll();
+        setTimeout(()=>openOzelPaketModal(result.id),300);
+        btn.disabled=false;setSyncing(false);
+        return;
+      }
     }
     closeModal('m-ogrenci');
     renderAll();
@@ -2718,6 +2840,40 @@ function oogAraSec(ogId){
 async function saveOzelOg(){const ad=document.getElementById('oog-ad').value.trim();if(!ad)return;const btn=document.getElementById('btn-save-oog');btn.disabled=true;setSyncing(true);const data={ad,soyad:document.getElementById('oog-soyad').value.trim(),cinsiyet:OSEG,tel:document.getElementById('oog-tel').value.trim()};try{if(EDIT_OZEL_OG)await db.collection('ozelOgrenciler').doc(EDIT_OZEL_OG).update(data);else await db.collection('ozelOgrenciler').add(data);closeModal('m-ozel-og');_poll('ozelOgrenciler');}catch(e){alert('Hata: '+e.message);}btn.disabled=false;setSyncing(false);}
 async function silOzelOg(id){confirm_('Öğrenciyi Sil','Bu öğrenci ve tüm paketleri silinecek.',async()=>{setSyncing(true);const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===id);const batch=db.batch();paketler.forEach(p=>batch.delete(db.collection('ozelPaketler').doc(p.id)));batch.delete(db.collection('ozelOgrenciler').doc(id));await batch.commit();_poll('ozelOgrenciler');_poll('ozelPaketler');setSyncing(false);});}
 
+// ── ÖZEL DERSE ÖĞRENCİ EKLE (birleşik model) ────────────
+function ozelEkleBaslat(){
+  document.getElementById('oe-ara').value='';
+  document.getElementById('oe-ara-sonuc').innerHTML='';
+  openModal('m-ozel-ekle');
+  setTimeout(()=>document.getElementById('oe-ara')?.focus(),300);
+}
+function oeAraInput(){
+  const q=document.getElementById('oe-ara').value.trim().toLocaleLowerCase(LC());
+  const sonucEl=document.getElementById('oe-ara-sonuc');
+  if(q.length<2){sonucEl.innerHTML='';return;}
+  const eslesen=S.ogrenciler.filter(o=>
+    ((o.ad||'')+' '+(o.soyad||'')).toLocaleLowerCase(LC()).includes(q)||
+    (o.tel||'').replace(/\D/g,'').includes(q.replace(/\D/g,''))
+  ).slice(0,8);
+  sonucEl.innerHTML=eslesen.length?eslesen.map(o=>{
+    const paketVarMi=ozelDersPaketiVarMi(o.id);
+    return `<div class="oog-ara-item" onclick="oeOgrenciSec('${o.id}')">
+      <span>${o.ad} ${o.soyad||''}${o.tel?' · '+o.tel:''}</span>
+      <span class="oai-not">${paketVarMi?t('zaten_ozel_ders'):t('sec_yonlendir')}</span>
+    </div>`;
+  }).join(''):'<div style="font-size:12px;color:var(--text3);padding:6px 2px;">'+t('eslesme_yok_yeni_devam')+'</div>';
+}
+function oeOgrenciSec(ogId){
+  closeModal('m-ozel-ekle');
+  setTimeout(()=>openOzelPaketModal(ogId),300);
+}
+let OZEL_PAKET_SONRASI_ACILSIN=false;
+function oeYeniOgrenci(){
+  closeModal('m-ozel-ekle');
+  OZEL_PAKET_SONRASI_ACILSIN=true;
+  setTimeout(()=>openOgrenciModal(),300);
+}
+
 let EDIT_OZEL_PAKET=null;
 function openOzelPaketModal(ogId,paketId){
   CUR_OZEL_OG=ogId;EDIT_OZEL_PAKET=paketId||null;
@@ -2768,7 +2924,7 @@ async function saveOzelPaket(){
 
 function fmtSaat(s){return s%1===0?s.toString():(Math.floor(s)+'.5');}
 let CUR_PAKET_EGITMENLER=[];
-function openOzelSaatModal(paketId){CUR_OZEL_PAKET=paketId;const p=S.ozelPaketler.find(x=>x.id===paketId);if(!p)return;const og=S.ozelOgrenciler.find(o=>o.id===p.ogrenciId);document.getElementById('m-ozel-saat-title').textContent=og?og.ad+' '+(og.soyad||''):'Ders Güncelle';const kalan=p.toplamSaat-p.yapilanSaat;const pct=Math.min(100,Math.round((p.yapilanSaat/p.toplamSaat)*100));const bitti=kalan<=0;OS_VAL=bitti?1:-1;
+function openOzelSaatModal(paketId){CUR_OZEL_PAKET=paketId;const p=S.ozelPaketler.find(x=>x.id===paketId);if(!p)return;const og=S.ogrenciler.find(o=>o.id===p.ogrenciId);document.getElementById('m-ozel-saat-title').textContent=og?og.ad+' '+(og.soyad||''):'Ders Güncelle';const kalan=p.toplamSaat-p.yapilanSaat;const pct=Math.min(100,Math.round((p.yapilanSaat/p.toplamSaat)*100));const bitti=kalan<=0;OS_VAL=bitti?1:-1;
 CUR_PAKET_EGITMENLER=(p.egitmenIds||[]).map(id=>S.egitmenler.find(e=>e.id===id)).filter(Boolean);
 document.getElementById('m-ozel-saat-content').innerHTML=`
   <div class="grad-card gc-cyan" style="margin-bottom:14px;">
@@ -2920,7 +3076,7 @@ function renderOzelTakvim(){
   const ayKisa=(d)=>d.toLocaleDateString(LC(),{month:'short'});
   labelEl.textContent=`${ilkGun.getDate()} ${ayKisa(ilkGun)} – ${sonGun.getDate()} ${ayKisa(sonGun)}`;
 
-  const kullanilanEgitmenIds=[...new Set(S.ozelOgrenciler.map(o=>o.egitmenId).filter(Boolean))];
+  const kullanilanEgitmenIds=[...new Set(S.ozelPaketler.flatMap(p=>p.egitmenIds||[]))];
   legendEl.innerHTML=kullanilanEgitmenIds.map(id=>{
     const eg=S.egitmenler.find(e=>e.id===id);
     if(!eg)return'';
@@ -2968,7 +3124,7 @@ function renderOzelTakvim(){
     });
     const toplamKolon=Math.max(1,kolonBitis.length);
     seanslar.forEach(s=>{
-      const og=S.ozelOgrenciler.find(o=>o.id===s.ogrenciId);
+      const og=S.ogrenciler.find(o=>o.id===s.ogrenciId);
       const genislikYuzde=100/toplamKolon;
       const solYuzde=genislikYuzde*s._kol;
       const span=Math.min(s._span,OT_TOPLAM_SLOT-s._start);
@@ -2987,7 +3143,7 @@ function otHucreTikla(tarih,saat){
   DP_TARIH=tarih;EDIT_DERS_PLAN=null;
   const ogSel=document.getElementById('dp-ogrenci');
   ogSel.innerHTML='<option value="">— Seçin —</option>'+
-    [...S.ozelOgrenciler].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'))
+    [...ozelDersOgrencileri()].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'))
       .map(o=>`<option value="${o.id}">${o.ad} ${o.soyad||''}</option>`).join('');
   document.getElementById('dp-egitmen').value='';
   document.getElementById('dp-egitmen-single-wrap').style.display='block';
@@ -3004,7 +3160,7 @@ function dpAktifPaket(ogId){
 }
 function dpOgrenciChange(){
   const ogId=document.getElementById('dp-ogrenci').value;
-  const og=S.ozelOgrenciler.find(o=>o.id===ogId);
+  const og=S.ogrenciler.find(o=>o.id===ogId);
   const singleWrap=document.getElementById('dp-egitmen-single-wrap');
   const multiWrap=document.getElementById('dp-egitmen-multi-wrap');
   const uyari=document.getElementById('dp-paket-uyari');
@@ -3015,7 +3171,7 @@ function dpOgrenciChange(){
     document.getElementById('dp-egitmen-select').innerHTML=paketEgitmenler.map(e=>`<option value="${e.id}">${e.ad}</option>`).join('');
   }else{
     multiWrap.style.display='none';singleWrap.style.display='block';
-    const eg=paketEgitmenler.length===1?paketEgitmenler[0]:(og?S.egitmenler.find(e=>e.id===og.egitmenId):null);
+    const eg=paketEgitmenler.length===1?paketEgitmenler[0]:null;
     document.getElementById('dp-egitmen').value=eg?eg.ad:(og?'— Eğitmen atanmamış —':'');
   }
   const paketVarMi=!!paket;
@@ -3026,7 +3182,7 @@ function dpOgrenciChange(){
 async function saveDersPlan(){
   const ogId=document.getElementById('dp-ogrenci').value;
   if(!ogId){alert('Öğrenci seçin.');return;}
-  const og=S.ozelOgrenciler.find(o=>o.id===ogId);
+  const og=S.ogrenciler.find(o=>o.id===ogId);
   const saat=document.getElementById('dp-saat').value;
   const sure=parseFloat(document.getElementById('dp-sure').value);
   if(!saat){alert('Saat girin.');return;}
@@ -3040,7 +3196,7 @@ async function saveDersPlan(){
   }else if(paketEgitmenler.length===1){
     egitmenId=paketEgitmenler[0].id;
   }else{
-    egitmenId=og?(og.egitmenId||null):null;
+    egitmenId=null;
   }
   const btn=document.getElementById('btn-save-dp');btn.disabled=true;setSyncing(true);
   try{
@@ -3065,7 +3221,7 @@ function otSeansDuzenle(id){
   EDIT_DERS_PLAN=id;DP_TARIH=s.tarih;
   const ogSel=document.getElementById('dp-ogrenci');
   ogSel.innerHTML='<option value="">— Seçin —</option>'+
-    [...S.ozelOgrenciler].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'))
+    [...S.ogrenciler].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'))
       .map(o=>`<option value="${o.id}" ${o.id===s.ogrenciId?'selected':''}>${o.ad} ${o.soyad||''}</option>`).join('');
   document.getElementById('dp-saat').value=s.saat;
   document.getElementById('dp-sure').value=String(s.sure||1);
@@ -3079,7 +3235,7 @@ function otSeansDuzenle(id){
 }
 function otSeansDetay(id){
   const s=S.ozelSeanslar.find(x=>x.id===id);if(!s)return;
-  const og=S.ozelOgrenciler.find(o=>o.id===s.ogrenciId);
+  const og=S.ogrenciler.find(o=>o.id===s.ogrenciId);
   const eg=S.egitmenler.find(e=>e.id===s.egitmenId);
   const durum=s.paketId?(s.dusuldu?'Paketten düşüldü ✓':'Ders saati henüz geçmedi, düşülmedi'):'Aktif pakete bağlı değil';
   document.getElementById('m-seans-detay-title').textContent=og?og.ad+' '+(og.soyad||''):'Ders';
@@ -3444,10 +3600,17 @@ function renderOgrenciler(){
   if(arama)liste=liste.filter(o=>(o.ad+' '+(o.soyad||'')+' '+(o.tel||'')).toLowerCase().includes(arama));
   if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">♟</div><div class="empty-text">'+(arama?t('no_result'):OG_FILTER==='pasif'?t('empty_ogrenci_pasif'):t('empty_ogrenci'))+'</div></div>';return;}
   function siniflari(id){return S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===id)).map(s=>s.ad);}
-  const gruplar={};const sinifsizlar=[];
-  liste.forEach(og=>{const adlar=siniflari(og.id);if(!adlar.length)sinifsizlar.push(og);else adlar.forEach(ad=>{if(!gruplar[ad])gruplar[ad]=[];if(!gruplar[ad].find(x=>x.id===og.id))gruplar[ad].push(og);});});
+  const gruplar={};const sinifsizlar=[];const sadeceOzel=[];
+  liste.forEach(og=>{
+    const adlar=siniflari(og.id);
+    if(!adlar.length){
+      if(ozelDersPaketiVarMi(og.id))sadeceOzel.push(og);
+      else sinifsizlar.push(og);
+    }else adlar.forEach(ad=>{if(!gruplar[ad])gruplar[ad]=[];if(!gruplar[ad].find(x=>x.id===og.id))gruplar[ad].push(og);});
+  });
   Object.values(gruplar).forEach(g=>g.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr')));
   sinifsizlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
+  sadeceOzel.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   function row(og,sn,goster,num){
     const p=og.durum==='pasif';
     const snKisa=sn?sn.split(',')[0].trim():'';
@@ -3477,7 +3640,7 @@ function renderOgrenciler(){
     if(OG_SIRALAMA==='son')tumListe.reverse();
     html='<div class="card" style="padding:0 16px;">'+tumListe.map((og,i)=>row(og,siniflari(og.id).join(', '),true,i+1)).join('')+'</div>';
   } else {
-    window._ogSiraArr=[...sira,...(sinifsizlar.length?['__sinifsiz__']:[])];
+    window._ogSiraArr=[...sira,...(sadeceOzel.length?['__sadeceozel__']:[]),...(sinifsizlar.length?['__sinifsiz__']:[])];
     if(!window._ogGrupAcik)window._ogGrupAcik=new Set(window._ogSiraArr);
     sira.forEach((ad,gi)=>{
       const acik=window._ogGrupAcik.has(ad);
@@ -3490,8 +3653,19 @@ function renderOgrenciler(){
         +(acik?'<div class="card" style="padding:0 16px;margin-top:4px;border-radius:var(--radius-sm);">'+gruplar[ad].map((og,i)=>row(og,ad,false,i+1)).join('')+'</div>':'')
         +'</div>';
     });
+    if(sadeceOzel.length){
+      const soIdx=sira.length;
+      const soAcik=window._ogGrupAcik.has('__sadeceozel__');
+      html+='<div style="margin-bottom:6px;">'
+        +'<div onclick="toggleOgGrupByIdx('+soIdx+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--purplebg);border-radius:var(--radius-sm);cursor:pointer;border:1px solid #a78bfa30;">'
+        +'<div style="font-size:13px;font-weight:600;color:var(--purple);">✦ '+t('sadece_ozel_ders')+' <span style="font-size:12px;color:var(--text3);font-weight:400;">'+sadeceOzel.length+' '+t('lbl_ogrenci_kucuk')+'</span></div>'
+        +'<span style="color:var(--text3);transform:'+(soAcik?'rotate(90deg)':'rotate(0deg)')+';">›</span>'
+        +'</div>'
+        +(soAcik?'<div class="card" style="padding:0 16px;margin-top:4px;">'+sadeceOzel.map((og,i)=>row(og,'',false,i+1)).join('')+'</div>':'')
+        +'</div>';
+    }
     if(sinifsizlar.length){
-      const sfIdx=sira.length;
+      const sfIdx=sira.length+(sadeceOzel.length?1:0);
       const sfAcik=window._ogGrupAcik.has('__sinifsiz__');
       html+='<div style="margin-bottom:6px;">'
         +'<div onclick="toggleOgGrupByIdx('+sfIdx+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border2);">'
@@ -3623,8 +3797,9 @@ function toggleOzelOgAcik(id){
 }
 function renderOzel(){
   const el=document.getElementById('ozel-list');
-  if(!S.ozelOgrenciler.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">'+t('ozel_bos')+'<br>'+t('ozel_bos_alt')+'</div></div>';return;}
-  const sirali=[...S.ozelOgrenciler].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
+  const liste=ozelDersOgrencileri();
+  if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">'+t('ozel_bos')+'<br>'+t('ozel_bos_alt')+'</div></div>';return;}
+  const sirali=[...liste].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   el.innerHTML=sirali.map(og=>{
     const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
     const aktifPaket=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
@@ -3662,8 +3837,7 @@ function renderOzel(){
       </div>
       ${ogAcik?`
       <div style="display:flex;gap:5px;margin-top:10px;">
-        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="event.stopPropagation();openOzelOgModal('${og.id}')">${t('btn_bilgi_duzenle')}</button>
-        <button class="btn btn-danger btn-sm" style="flex:1;" onclick="event.stopPropagation();silOzelOg('${og.id}')">${t('btn_sil')}</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="event.stopPropagation();openOgrenciModal('${og.id}')">${t('btn_bilgi_duzenle')}</button>
       </div>
       ${paketler.length?'<div style="font-size:11px;color:var(--text3);margin:10px 0 4px;">'+t('paket_hint')+'</div>':'<div style="margin-top:10px;"></div>'}
       ${paketHTML}
@@ -3674,7 +3848,7 @@ function renderOzel(){
 }
 function openPaketDersler(paketId){
   const p=S.ozelPaketler.find(x=>x.id===paketId);if(!p)return;
-  const og=S.ozelOgrenciler.find(o=>o.id===p.ogrenciId);
+  const og=S.ogrenciler.find(o=>o.id===p.ogrenciId);
   document.getElementById('m-paket-dersler-title').textContent='📋 '+(og?og.ad+' '+(og.soyad||''):t('dersler'));
   const seanslar=S.ozelSeanslar.filter(s=>s.paketId===paketId).sort((a,b)=>(b.tarih||'').localeCompare(a.tarih||''));
   const el=document.getElementById('m-paket-dersler-content');
@@ -3768,10 +3942,11 @@ function renderOdemeler(){
     html+=`</div></div>`;
   });
   // Özel dersler grubu
-  if(S.ozelOgrenciler.length){
+  const ozelListe=ozelDersOgrencileri();
+  if(ozelListe.length){
     const acik=ODEME_ACIK.has('_ozel_');
-    html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('_ozel_')"><div><div class="odeme-sinif-adi" style="color:var(--purple);">${t('ozel_dersler')}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">${S.ozelOgrenciler.length} ${t('lbl_ogrenci_kucuk')}</div></div><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-_ozel_">›</span></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-_ozel_">`;
-    S.ozelOgrenciler.forEach(og=>{
+    html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('_ozel_')"><div><div class="odeme-sinif-adi" style="color:var(--purple);">${t('ozel_dersler')}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">${ozelListe.length} ${t('lbl_ogrenci_kucuk')}</div></div><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-_ozel_">›</span></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-_ozel_">`;
+    ozelListe.forEach(og=>{
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
       const topOzel=paketler.reduce((s,p)=>s+(p.tutar||0),0);
       const aktif=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
@@ -3804,7 +3979,7 @@ function renderGelir(){
     if(!p.tarih)return;
     const d=new Date(p.tarih+'T00:00:00');
     const k=ayKey(d.getFullYear(),d.getMonth()+1);
-    const og=S.ozelOgrenciler.find(o=>o.id===p.ogrenciId);
+    const og=S.ogrenciler.find(o=>o.id===p.ogrenciId);
     if(!ayMap[k])ayMap[k]={toplam:0,adet:0,gruplar:{},ozel:[]};
     ayMap[k].toplam+=p.tutar||0;ayMap[k].adet++;
     ayMap[k].ozel.push({ad:og?og.ad+' '+(og.soyad||''):'?',tutar:p.tutar||0,ogrenciId:p.ogrenciId,paketId:p.id,egitmenIds:p.egitmenIds||[]});
@@ -4462,7 +4637,7 @@ function excelIndir(){
       if(!p.tarih)return;
       const d=new Date(p.tarih+'T00:00:00');
       const k=ayKey(d.getFullYear(),d.getMonth()+1);
-      const og=S.ozelOgrenciler.find(o=>o.id===p.ogrenciId);
+      const og=S.ogrenciler.find(o=>o.id===p.ogrenciId);
       if(!ayMap[k])ayMap[k]={toplam:0,adet:0,siniflar:{}};
       ayMap[k].toplam+=p.tutar||0;ayMap[k].adet++;
       const label='Özel Ders'+(og?' ('+og.ad+')':'');
@@ -4480,7 +4655,7 @@ function excelIndir(){
 
     // ── 5. Özel Dersler ────────────────────────────────
     const ozelRows=[];
-    S.ozelOgrenciler.forEach(og=>{
+    ozelDersOgrencileri().forEach(og=>{
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
       if(!paketler.length){
         ozelRows.push({'Öğrenci':og.ad+' '+(og.soyad||''),'Telefon':og.tel||'','Toplam Saat':'','Yapılan Saat':'','Kalan Saat':'','Tutar (₺)':'','Ödeme Tarihi':'','Durum':''});
