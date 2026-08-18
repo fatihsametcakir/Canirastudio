@@ -1412,6 +1412,7 @@ const TRANSLATIONS={
     odeme_duzenle:'Ödeme Düzenle', ogrenci_duzenle:'Öğrenci Düzenle', yeni_ogrenci:'Yeni Öğrenci',
     sinifi_duzenle:'Sınıfı Düzenle', yeni_sinif:'Yeni Sınıf', sinif_playlist_ekle_baslik:'Sınıf / Playlist Ekle',
     ozel_ders_ogrencisi:'Özel Ders Öğrencisi', paketi_duzenle:'Paketi Düzenle', yeni_paket:'Yeni Paket',
+    paketi_sil:'Paketi Sil', paket_sil_aciklama:'Bu paket ve buna bağlı tüm ders kayıtları kalıcı olarak silinecek. Bu paketin geliri de gelir raporlarından otomatik düşecek. Bu işlem geri alınamaz.',
     kontrol_ediliyor:'Kontrol ediliyor...', kamera_baslatiliyor:'Kamera başlatılıyor...', qr_kamera_tutun:'QR kodu kameraya tutun',
     kamera_erisim_yok:'Kamera erişimi sağlanamadı', qr_kod_gecersiz:'Bu kod geçerli değil',
     merhaba:'Merhaba', tel_sifre_zorunlu:'Telefon ve şifre zorunlu.', hata:'Hata',
@@ -1567,6 +1568,7 @@ const TRANSLATIONS={
     odeme_duzenle:'Edit Payment', ogrenci_duzenle:'Edit Student', yeni_ogrenci:'New Student',
     sinifi_duzenle:'Edit Class', yeni_sinif:'New Class', sinif_playlist_ekle_baslik:'Add Class / Playlist',
     ozel_ders_ogrencisi:'Private Lesson Student', paketi_duzenle:'Edit Package', yeni_paket:'New Package',
+    paketi_sil:'Delete Package', paket_sil_aciklama:'This package and all lesson records linked to it will be permanently deleted. Its income will also be automatically removed from income reports. This cannot be undone.',
     kontrol_ediliyor:'Checking...', kamera_baslatiliyor:'Starting camera...', qr_kamera_tutun:'Point the camera at the QR code',
     kamera_erisim_yok:'Could not access camera', qr_kod_gecersiz:'This code is not valid',
     merhaba:'Hello', tel_sifre_zorunlu:'Phone and password are required.', hata:'Error',
@@ -1722,6 +1724,7 @@ const TRANSLATIONS={
     odeme_duzenle:'Изменить платёж', ogrenci_duzenle:'Изменить ученика', yeni_ogrenci:'Новый ученик',
     sinifi_duzenle:'Изменить группу', yeni_sinif:'Новая группа', sinif_playlist_ekle_baslik:'Добавить группу / плейлист',
     ozel_ders_ogrencisi:'Ученик на частные уроки', paketi_duzenle:'Изменить пакет', yeni_paket:'Новый пакет',
+    paketi_sil:'Удалить пакет', paket_sil_aciklama:'Этот пакет и все связанные с ним записи о занятиях будут удалены безвозвратно. Доход от этого пакета также автоматически исчезнет из отчётов о доходах. Это действие нельзя отменить.',
     kontrol_ediliyor:'Проверка...', kamera_baslatiliyor:'Запуск камеры...', qr_kamera_tutun:'Наведите камеру на QR-код',
     kamera_erisim_yok:'Не удалось получить доступ к камере', qr_kod_gecersiz:'Этот код недействителен',
     merhaba:'Здравствуйте', tel_sifre_zorunlu:'Телефон и пароль обязательны.', hata:'Ошибка',
@@ -3028,7 +3031,24 @@ async function osUygula(){
   }
   setTimeout(()=>openOzelSaatModal(CUR_OZEL_PAKET),300);
 }
-async function silOzelPaket(id){confirm_('Paketi Sil','Bu paket kaydı silinecek.',async()=>{setSyncing(true);await db.collection('ozelPaketler').doc(id).delete();_poll('ozelPaketler');setSyncing(false);closeModal('m-ozel-saat');});}
+async function silOzelPaket(id){
+  confirm_(t('paketi_sil'),t('paket_sil_aciklama'),async()=>{
+    setSyncing(true);
+    try{
+      const ilgiliSeanslar=S.ozelSeanslar.filter(s=>s.paketId===id);
+      if(ilgiliSeanslar.length){
+        const batch=db.batch();
+        ilgiliSeanslar.forEach(s=>batch.delete(db.collection('ozelSeanslar').doc(s.id)));
+        await batch.commit();
+      }
+      await db.collection('ozelPaketler').doc(id).delete();
+      _poll('ozelPaketler');_poll('ozelSeanslar');
+    }catch(e){alert('Hata: '+e.message);}
+    setSyncing(false);
+    closeModal('m-ozel-saat');
+    renderAll();
+  });
+}
 
 // ── ÖZEL DERS HAFTALIK TAKVİM ──────────────────────────
 function otGetMonday(d){const x=new Date(d);const day=x.getDay();const diff=(day===0?-6:1-day);x.setDate(x.getDate()+diff);x.setHours(0,0,0,0);return x;}
@@ -3824,6 +3844,7 @@ function renderOzel(){
           <button class="btn btn-accent btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openOzelSaatModal('${p.id}')">－ ${t('saat_dus_ekle')}</button>
           <button class="btn btn-cyan btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}','${p.id}')">${t('btn_paket_duzenle')}</button>
           <button class="btn btn-ghost btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openPaketDersler('${p.id}')">📋 ${t('dersler')}</button>
+          <button class="btn btn-danger btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();silOzelPaket('${p.id}')">🗑 ${t('btn_sil')}</button>
         </div>`:''}
       </div>`;
     }).join(''):`<div style="font-size:13px;color:var(--text3);padding:8px 0;">${t('henuz_paket_yok')}</div>`;
