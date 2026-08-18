@@ -3662,7 +3662,7 @@ function renderOgrenciler(){
     html='<div class="card" style="padding:0 16px;">'+tumListe.map((og,i)=>row(og,siniflari(og.id).join(', '),true,i+1)).join('')+'</div>';
   } else {
     window._ogSiraArr=[...sira,...(sadeceOzel.length?['__sadeceozel__']:[]),...(sinifsizlar.length?['__sinifsiz__']:[])];
-    if(!window._ogGrupAcik)window._ogGrupAcik=new Set(window._ogSiraArr);
+    if(!window._ogGrupAcik)window._ogGrupAcik=new Set();
     sira.forEach((ad,gi)=>{
       const acik=window._ogGrupAcik.has(ad);
       const sayi=gruplar[ad].length;
