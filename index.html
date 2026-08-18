@@ -1030,7 +1030,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="sheet-title" data-i18n="ozel_ders_icin_ogrenci_sec">Özel Ders İçin Öğrenci Seç</div>
   <div class="field">
     <label data-i18n="ogrenci_ara">Öğrenci Ara</label>
-    <input id="oe-ara" placeholder="İsim veya telefon yazarak ara..." data-i18n-ph="ogrenci_ara_ph" oninput="oeAraInput()"/>
+    <input id="oe-ara" placeholder="İsim veya telefon yazarak ara..." data-i18n-ph="ogrenci_ara_ph" autocomplete="off" autocorrect="off" spellcheck="false" oninput="oeAraInput()"/>
     <div id="oe-ara-sonuc"></div>
   </div>
   <div style="font-size:12px;color:var(--text3);margin:12px 0;text-align:center;" data-i18n="ozel_ekle_ayrac">— veya —</div>
@@ -2851,9 +2851,10 @@ function oeAraInput(){
   const q=document.getElementById('oe-ara').value.trim().toLocaleLowerCase(LC());
   const sonucEl=document.getElementById('oe-ara-sonuc');
   if(q.length<2){sonucEl.innerHTML='';return;}
+  const qDigits=q.replace(/\D/g,'');
   const eslesen=S.ogrenciler.filter(o=>
     ((o.ad||'')+' '+(o.soyad||'')).toLocaleLowerCase(LC()).includes(q)||
-    (o.tel||'').replace(/\D/g,'').includes(q.replace(/\D/g,''))
+    (qDigits.length>=3&&(o.tel||'').replace(/\D/g,'').includes(qDigits))
   ).slice(0,8);
   sonucEl.innerHTML=eslesen.length?eslesen.map(o=>{
     const paketVarMi=ozelDersPaketiVarMi(o.id);
