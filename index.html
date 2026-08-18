@@ -1009,21 +1009,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 </div></div>
 
 <!-- Özel Ders Öğrenci Ekle -->
-<div class="overlay" id="m-ozel-og"><div class="sheet">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ozel-og')">✕</button>
-  <div class="sheet-title" id="m-ozel-og-title">Özel Ders Öğrencisi</div>
-  <div class="field" id="oog-ara-wrap">
-    <label>Mevcut Öğrenci Listesinden Ara</label>
-    <input id="oog-ara" placeholder="İsim yazarak ara..." oninput="oogAraInput()"/>
-    <div id="oog-ara-sonuc"></div>
-  </div>
-  <div class="field"><label data-i18n="lbl_ad">Ad</label><input id="oog-ad" placeholder="Ad"/></div>
-  <div class="field"><label data-i18n="lbl_soyad">Soyad</label><input id="oog-soyad" placeholder="Soyad"/></div>
-  <div class="field"><label data-i18n="lbl_cinsiyet">Cinsiyet</label><div class="seg"><div class="seg-btn active" id="oseg-k" onclick="setOSeg('k')" data-i18n="kadin">Kadın</div><div class="seg-btn" id="oseg-e" onclick="setOSeg('e')" data-i18n="erkek">Erkek</div></div></div>
-  <div class="field"><label data-i18n="lbl_telefon">Telefon</label><input id="oog-tel" placeholder="+90 5xx xxx xx xx" type="tel"/></div>
-  <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ozel-og')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-oog" onclick="saveOzelOg()" data-i18n="btn_kaydet">Kaydet</button></div>
-</div></div>
-
 <!-- Özel Derse Öğrenci Ekle (birleşik model) -->
 <div class="overlay" id="m-ozel-ekle"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ozel-ekle')">✕</button>
@@ -1262,9 +1247,9 @@ window._firebaseReady=true;
 
 // State
 let S={ogrenciler:[],siniflar:[],odemeler:[],ozelOgrenciler:[],ozelPaketler:[],yoklamalar:[],egitmenler:[],tatiller:[],videoSiniflar:[],ozelSeanslar:[]};
-let SEG_CINSIYET='k', OSEG='k', SEG_TIP='paket';
+let SEG_CINSIYET='k', SEG_TIP='paket';
 let CUR_SINIF=null, CUR_KAYIT=null, EDIT_OG=null, EDIT_ODEME=null, EDIT_EGITMEN=null;
-let CUR_OZEL_OG=null, CUR_OZEL_PAKET=null, EDIT_OZEL_OG=null;
+let CUR_OZEL_OG=null, CUR_OZEL_PAKET=null;
 let CUR_OG_DETAY=null, OG_DETAY_TAB='odemeler';
 let PAGE='anasayfa', PREV_PAGE='anasayfa';
 
@@ -2820,29 +2805,6 @@ async function saveOdeme(){
 async function silOdeme(){if(!EDIT_ODEME)return;confirm_('Ödemeyi Sil','Bu ödeme kaydı kalıcı olarak silinecek.',async()=>{setSyncing(true);await db.collection('odemeler').doc(EDIT_ODEME).delete();_poll('odemeler');setSyncing(false);closeModal('m-odeme');});}
 function openOdemeDetay(ogId,siId){const og=S.ogrenciler.find(o=>o.id===ogId);const si=S.siniflar.find(s=>s.id===siId);const list=ogSiOd(ogId,siId).sort((a,b)=>b.olusturma-a.olusturma);document.getElementById('m-odeme-detay-title').textContent=(og?og.ad+' '+og.soyad:'')+(si?' · '+si.ad:'');const el=document.getElementById('m-odeme-detay-content');if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">Henüz ödeme kaydı yok</div></div>';openModal('m-odeme-detay');return;}el.innerHTML=list.map(od=>`<div class="odeme-gecmis-item"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--green);font-size:15px;font-weight:600;">${(od.tutar||0).toLocaleString(LC())} ₺</span><div style="display:flex;gap:6px;align-items:center;"><span class="badge badge-amber">${od.yontem||'—'}</span><button class="btn btn-ghost btn-sm" onclick="closeModal('m-odeme-detay');openOdemeModal('${ogId}','${siId}','${od.id}')">Düzenle</button></div></div><div style="font-size:12px;color:var(--text3);">${formatDate(od.tarih)}${od.aylar&&od.aylar.length?' · '+od.aylar.map(a=>ayLabel(a)).join(', '):''}</div>${od.not?`<div style="font-size:12px;color:var(--text3);margin-top:3px;">${od.not}</div>`:''}</div>`).join('');openModal('m-odeme-detay');}
 
-// ── ÖZEL DERS ──────────────────────────────────────────
-function setOSeg(v){OSEG=v;document.getElementById('oseg-k').classList.toggle('active',v==='k');document.getElementById('oseg-e').classList.toggle('active',v==='e');}
-function openOzelOgModal(id){EDIT_OZEL_OG=id||null;const araWrap=document.getElementById('oog-ara-wrap');document.getElementById('oog-ara').value='';document.getElementById('oog-ara-sonuc').innerHTML='';araWrap.style.display='block';if(id){const og=S.ozelOgrenciler.find(o=>o.id===id);document.getElementById('oog-ad').value=og.ad;document.getElementById('oog-soyad').value=og.soyad||'';document.getElementById('oog-tel').value=og.tel||'';setOSeg(og.cinsiyet||'k');document.getElementById('m-ozel-og-title').textContent=t('ogrenci_duzenle');}else{['oog-ad','oog-soyad','oog-tel'].forEach(i=>document.getElementById(i).value='');setOSeg('k');document.getElementById('m-ozel-og-title').textContent=t('ozel_ders_ogrencisi');}openModal('m-ozel-og');}
-function oogAraInput(){
-  const q=document.getElementById('oog-ara').value.trim().toLocaleLowerCase(LC());
-  const sonucEl=document.getElementById('oog-ara-sonuc');
-  if(q.length<2){sonucEl.innerHTML='';return;}
-  const eslesen=S.ogrenciler.filter(o=>((o.ad||'')+' '+(o.soyad||'')).toLocaleLowerCase(LC()).includes(q)).slice(0,6);
-  sonucEl.innerHTML=eslesen.length?eslesen.map(o=>`<div class="oog-ara-item" onclick="oogAraSec('${o.id}')"><span>${o.ad} ${o.soyad||''}</span><span class="oai-not">seç ›</span></div>`).join(''):
-    '<div style="font-size:12px;color:var(--text3);padding:6px 2px;">Eşleşme bulunamadı — yeni öğrenci olarak devam edebilirsin.</div>';
-}
-function oogAraSec(ogId){
-  const o=S.ogrenciler.find(x=>x.id===ogId);if(!o)return;
-  document.getElementById('oog-ad').value=o.ad||'';
-  document.getElementById('oog-soyad').value=o.soyad||'';
-  document.getElementById('oog-tel').value=o.tel||'';
-  if(o.cinsiyet)setOSeg(o.cinsiyet);
-  document.getElementById('oog-ara').value=`${o.ad} ${o.soyad||''} seçildi`;
-  document.getElementById('oog-ara-sonuc').innerHTML='';
-}
-async function saveOzelOg(){const ad=document.getElementById('oog-ad').value.trim();if(!ad)return;const btn=document.getElementById('btn-save-oog');btn.disabled=true;setSyncing(true);const data={ad,soyad:document.getElementById('oog-soyad').value.trim(),cinsiyet:OSEG,tel:document.getElementById('oog-tel').value.trim()};try{if(EDIT_OZEL_OG)await db.collection('ozelOgrenciler').doc(EDIT_OZEL_OG).update(data);else await db.collection('ozelOgrenciler').add(data);closeModal('m-ozel-og');_poll('ozelOgrenciler');}catch(e){alert('Hata: '+e.message);}btn.disabled=false;setSyncing(false);}
-async function silOzelOg(id){confirm_('Öğrenciyi Sil','Bu öğrenci ve tüm paketleri silinecek.',async()=>{setSyncing(true);const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===id);const batch=db.batch();paketler.forEach(p=>batch.delete(db.collection('ozelPaketler').doc(p.id)));batch.delete(db.collection('ozelOgrenciler').doc(id));await batch.commit();_poll('ozelOgrenciler');_poll('ozelPaketler');setSyncing(false);});}
-
 // ── ÖZEL DERSE ÖĞRENCİ EKLE (birleşik model) ────────────
 function ozelEkleBaslat(){
   document.getElementById('oe-ara').value='';
@@ -3021,7 +2983,7 @@ async function osUygula(){
     const yeni=Math.round(Math.max(0,Math.min(p.toplamSaat,p.yapilanSaat+miktar))*10)/10;
     setSyncing(true);
     await db.collection('ozelPaketler').doc(CUR_OZEL_PAKET).update({yapilanSaat:yeni,aktif:yeni<p.toplamSaat,sonDersTarihi:tarih});
-    try{await db.collection('ozelSeanslar').add({ogrenciId:p.ogrenciId,paketId:p.id,egitmenId:egitmenId||null,tarih,saat:null,sure:miktar,olusturma:Date.now(),kaynak:'paket'});}catch(e){}
+    try{await db.collection('ozelSeanslar').add({ogrenciId:p.ogrenciId,paketId:p.id,egitmenId:egitmenId||null,tarih,saat:null,sure:miktar,olusturma:Date.now(),kaynak:'paket',dusuldu:true});}catch(e){}
     _poll('ozelPaketler');_poll('ozelSeanslar');setSyncing(false);
   }else{
     const yeniToplam=Math.round((p.toplamSaat+miktar)*10)/10;
@@ -3301,7 +3263,7 @@ let OT_ISLENEN=new Set();
 function otOtoDusKontrol(){
   const simdi=Date.now();
   S.ozelSeanslar.forEach(s=>{
-    if(s.kaynak!=='takvim'||s.dusuldu||!s.tarih||!s.saat)return;
+    if(s.dusuldu||!s.tarih||!s.saat)return;
     if(OT_ISLENEN.has(s.id))return;
     const dt=new Date(s.tarih+'T'+s.saat+':00');
     if(isNaN(dt.getTime())||dt.getTime()>simdi)return;
@@ -3892,7 +3854,7 @@ function openPaketDersler(paketId){
 }
 async function dersKaydiSil(id){
   const s=S.ozelSeanslar.find(x=>x.id===id);if(!s)return;
-  const dusulduMu=s.kaynak==='paket'||s.dusuldu;
+  const dusulduMu=s.dusuldu;
   confirm_(t('dersi_sil'),dusulduMu?t('ders_sil_saat_geri'):t('ders_sil_aciklama'),async()=>{
     setSyncing(true);
     try{
@@ -6212,8 +6174,8 @@ async function portalLoginDene(){
     // State'ten bul, yoksa direkt çek
     let og=S.ogrenciler.find(o=>normTel(o.tel)===tel);
     if(!og){
-      const snap=await db.collection('ogrenciler').get();
-      og=snap.docs.map(d=>({id:d.id,...d.data()})).find(o=>normTel(o.tel)===tel);
+      const tumOgrenciler=await fsTumBelgeler('ogrenciler');
+      og=tumOgrenciler.find(o=>normTel(o.tel)===tel);
     }
     if(!og){throw new Error('Bu telefon numarasıyla kayıtlı öğrenci bulunamadı.');}
     const ogId=og.id;
@@ -6519,10 +6481,10 @@ function renderPortalNot(el,og){
   </div>
   <div id="portal-onceki-notlar"></div>`;
 
-  // Önceki notları yükle
-  db.collection('ogrenci_notlar').get()
-    .then(snap=>{
-      const notlar=snap.docs.map(d=>({id:d.id,...d.data()}))
+  // Önceki notları yükle (sayfalama dahil, 300 sınırı yok)
+  fsTumBelgeler('ogrenci_notlar')
+    .then(tumNotlar=>{
+      const notlar=tumNotlar
         .filter(n=>n.ogrenciId===og.id)
         .sort((a,b)=>b.olusturma-a.olusturma).slice(0,10);
       const notEl=document.getElementById('portal-onceki-notlar');
@@ -6605,8 +6567,8 @@ function adminNotifBaslat(){
 }
 
 async function bildirimlerAc(){
-  const snap=await db.collection('ogrenci_notlar').get();
-  const notlar=snap.docs.map(d=>({...d.data(),id:d.id}))
+  const tumNotlar=await fsTumBelgeler('ogrenci_notlar');
+  const notlar=tumNotlar
     .sort((a,b)=>b.olusturma-a.olusturma).slice(0,50);
 
   let html='';
