@@ -1398,6 +1398,10 @@ const TRANSLATIONS={
     sinifi_duzenle:'Sınıfı Düzenle', yeni_sinif:'Yeni Sınıf', sinif_playlist_ekle_baslik:'Sınıf / Playlist Ekle',
     ozel_ders_ogrencisi:'Özel Ders Öğrencisi', paketi_duzenle:'Paketi Düzenle', yeni_paket:'Yeni Paket',
     paketi_sil:'Paketi Sil', paket_sil_aciklama:'Bu paket ve buna bağlı tüm ders kayıtları kalıcı olarak silinecek. Bu paketin geliri de gelir raporlarından otomatik düşecek. Bu işlem geri alınamaz.',
+    bugune_don:'Bugüne Dön', bu_gun_tatil:'Bu gün tatil', yoklama_henuz_alinmadi:'Henüz alınmadı',
+    yoklama_al_aciklama:'Derse gelen öğrencileri işaretle, sonra Yoklama Al\'a bas.',
+    sinifta_aktif_ogrenci_yok:'Bu sınıfta aktif öğrenci yok.', yoklama_al_buton:'Yoklama Al',
+    yoklama_kaydedildi:'Yoklama kaydedildi', katildi_kucuk:'katıldı',
     kontrol_ediliyor:'Kontrol ediliyor...', kamera_baslatiliyor:'Kamera başlatılıyor...', qr_kamera_tutun:'QR kodu kameraya tutun',
     kamera_erisim_yok:'Kamera erişimi sağlanamadı', qr_kod_gecersiz:'Bu kod geçerli değil',
     merhaba:'Merhaba', tel_sifre_zorunlu:'Telefon ve şifre zorunlu.', hata:'Hata',
@@ -1554,6 +1558,10 @@ const TRANSLATIONS={
     sinifi_duzenle:'Edit Class', yeni_sinif:'New Class', sinif_playlist_ekle_baslik:'Add Class / Playlist',
     ozel_ders_ogrencisi:'Private Lesson Student', paketi_duzenle:'Edit Package', yeni_paket:'New Package',
     paketi_sil:'Delete Package', paket_sil_aciklama:'This package and all lesson records linked to it will be permanently deleted. Its income will also be automatically removed from income reports. This cannot be undone.',
+    bugune_don:'Back to Today', bu_gun_tatil:'Holiday today', yoklama_henuz_alinmadi:'Not taken yet',
+    yoklama_al_aciklama:'Check the students who attended, then tap Take Attendance.',
+    sinifta_aktif_ogrenci_yok:'No active students in this class.', yoklama_al_buton:'Take Attendance',
+    yoklama_kaydedildi:'Attendance saved', katildi_kucuk:'attended',
     kontrol_ediliyor:'Checking...', kamera_baslatiliyor:'Starting camera...', qr_kamera_tutun:'Point the camera at the QR code',
     kamera_erisim_yok:'Could not access camera', qr_kod_gecersiz:'This code is not valid',
     merhaba:'Hello', tel_sifre_zorunlu:'Phone and password are required.', hata:'Error',
@@ -4143,6 +4151,7 @@ function renderOgDetay(){
     <div class="detay-tab-row" style="margin-top:14px;">
       <div class="detay-tab${OG_DETAY_TAB==='odemeler'?' active':''}" onclick="ogDetayTab('odemeler')">${t('nav_odemeler')}</div>
       <div class="detay-tab${OG_DETAY_TAB==='siniflar'?' active':''}" onclick="ogDetayTab('siniflar')">${t('nav_siniflar')}</div>
+      <div class="detay-tab${OG_DETAY_TAB==='yoklama'?' active':''}" onclick="ogDetayTab('yoklama')">✓ ${t('nav_yoklama')}</div>
       <div class="detay-tab${OG_DETAY_TAB==='qr'?' active':''}" onclick="ogDetayTab('qr')">📱 ${t('qr_sifre')}</div>
     </div>`;
 
@@ -4203,6 +4212,45 @@ function renderOgDetay(){
       </div>`).join('');
     }
 
+  } else if(OG_DETAY_TAB==='yoklama'){
+    if(!siniflar.length){
+      html+='<div class="empty" style="padding:24px 0;"><div class="empty-text">'+t('kayitli_sinif_yok')+'</div></div>';
+    } else {
+      siniflar.forEach(si=>{
+        const gunNo=sinifGunNo(si);
+        const tarihler=[];
+        if(gunNo>=0){
+          let d=new Date(bugunTarih()+'T00:00:00');
+          while(d.getDay()!==gunNo)d.setDate(d.getDate()-1);
+          let guvenlik=0;
+          while(tarihler.length<10&&guvenlik<80){
+            const ts=d.toISOString().slice(0,10);
+            if(!S.tatiller.some(tt=>tt.tarih===ts)){
+              const geldiMi=S.yoklamalar.some(y=>y.sinifId===si.id&&y.ogrenciId===og.id&&y.tarih===ts);
+              tarihler.push({tarih:ts,geldi:geldiMi});
+            }
+            d.setDate(d.getDate()-7);
+            guvenlik++;
+          }
+        }
+        const gelenSayisi=tarihler.filter(x=>x.geldi).length;
+        html+=`<div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-size:13px;font-weight:600;">${si.ad}</div>
+            <span style="font-size:11px;color:var(--text3);">${gelenSayisi}/${tarihler.length} ${t('katildi_kucuk')}</span>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            ${tarihler.slice().reverse().map(x=>{
+              const gd=new Date(x.tarih+'T00:00:00');
+              return `<div style="text-align:center;min-width:38px;">
+                <div style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:${x.geldi?'var(--greenbg)':'var(--accentbg)'};color:${x.geldi?'var(--green)':'var(--accent)'};border:1px solid ${x.geldi?'#34d39930':'#ff6b6b30'};">${x.geldi?'✓':'✕'}</div>
+                <div style="font-size:9px;color:var(--text3);margin-top:2px;">${gd.getDate()}.${gd.getMonth()+1}</div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      });
+    }
   } else if(OG_DETAY_TAB==='qr'){
     const qrUrl=location.href.split('?')[0]+'?ogQR='+og.id;
     html+=`<div style="text-align:center;padding:16px 0 10px;">
@@ -4838,79 +4886,138 @@ function yoklamaBtnHTML(sinifId, ogrenciId){
   return `<button class="yoklama-btn" onclick="yoklamaKaydet('${sinifId}','${ogrenciId}')" title="Geldi olarak işaretle">+ Geldi</button>`;
 }
 
-// ── Yoklama Accordion State ────────────────────────────
-const YOK_ACIK=new Set();
-function toggleYokSinif(id){
-  if(YOK_ACIK.has(id))YOK_ACIK.delete(id);else YOK_ACIK.add(id);
-  const body=document.getElementById('yok-body-'+id);
-  const chev=document.getElementById('yok-chev-'+id);
-  if(body)body.style.display=YOK_ACIK.has(id)?'block':'none';
-  if(chev)chev.style.transform=YOK_ACIK.has(id)?'rotate(90deg)':'';
+let YOK_SEC_TARIH=null;
+function yokTarihDegistir(gunSayisi){
+  const d=new Date((YOK_SEC_TARIH||bugunTarih())+'T00:00:00');
+  d.setDate(d.getDate()+gunSayisi);
+  YOK_SEC_TARIH=d.toISOString().slice(0,10);
+  renderYoklama();
 }
+function yokBugune(){YOK_SEC_TARIH=bugunTarih();renderYoklama();}
 
 function renderYoklama(){
   const el=document.getElementById('yoklama-content');
   if(!el)return;
-  const bugunFmt=new Date().toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'});
+  if(!YOK_SEC_TARIH)YOK_SEC_TARIH=bugunTarih();
+  const tarih=YOK_SEC_TARIH;
+  const dObj=new Date(tarih+'T00:00:00');
+  const gunFmt=dObj.toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'});
+  const bugunMu=tarih===bugunTarih();
 
   if(!S.siniflar.length){
     el.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">'+t('yoklama_once_sinif')+'</div></div>';
     return;
   }
 
-  let html=`<div class="grad-card gc-cyan" style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
-    <div>
-      <div style="font-size:11px;color:var(--text2);margin-bottom:2px;text-transform:uppercase;letter-spacing:.08em;">${t('bugun')}</div>
-      <div style="font-family:Fraunces,serif;font-size:18px;font-weight:600;">${bugunFmt}</div>
+  let html=`<div class="grad-card gc-cyan" style="margin-bottom:14px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <button class="btn btn-ghost btn-sm" style="width:38px;padding:0;flex-shrink:0;" onclick="yokTarihDegistir(-1)">‹</button>
+      <div style="text-align:center;flex:1;min-width:0;">
+        <div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;">${bugunMu?t('bugun'):''}</div>
+        <div style="font-family:Fraunces,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${gunFmt}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="width:38px;padding:0;flex-shrink:0;" onclick="yokTarihDegistir(1)">›</button>
     </div>
-    <button class="btn btn-cyan btn-sm" onclick="acQrOkuyu()">📷 ${t('qr_tara')}</button>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      ${!bugunMu?`<button class="btn btn-ghost btn-sm" style="flex:1;" onclick="yokBugune()">${t('bugune_don')}</button>`:''}
+      <button class="btn btn-cyan btn-sm" style="flex:1;" onclick="acQrOkuyu()">📷 ${t('qr_tara')}</button>
+    </div>
   </div>`;
 
-  S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').forEach((si,idx)=>{
-    const kayitlar=(si.kayitlar||[]);
-    const aktifOgList=kayitlar
+  const tatilVarMi=S.tatiller.find(tt=>tt.tarih===tarih);
+  if(tatilVarMi){
+    html+=`<div class="empty" style="padding:24px 0;"><div class="empty-icon">🎌</div><div class="empty-text">${t('bu_gun_tatil')}: ${tatilVarMi.ad}</div></div>`;
+    el.innerHTML=html;
+    return;
+  }
+
+  const gunNo=dObj.getDay();
+  const gununSiniflari=S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif'&&sinifGunNo(si)===gunNo);
+
+  if(!gununSiniflari.length){
+    html+=`<div class="empty" style="padding:24px 0;"><div class="empty-icon">✓</div><div class="empty-text">${t('bu_gun_ders_yok')}</div></div>`;
+    el.innerHTML=html;
+    return;
+  }
+
+  gununSiniflari.forEach((si,idx)=>{
+    const aktifOgList=(si.kayitlar||[])
       .map(k=>S.ogrenciler.find(o=>o.id===k.ogrenciId))
-      .filter(o=>o&&(o.durum||'aktif')==='aktif')
-      .sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
-    if(!aktifOgList.length)return;
-
-    const gelenler=aktifOgList.filter(o=>ogBugunGeldiMi(si.id,o.id));
+      .filter(o=>o&&(o.durum||'aktif')==='aktif');
+    const gelenSayisi=S.yoklamalar.filter(y=>y.sinifId===si.id&&y.tarih===tarih).length;
+    const alindiMi=S.yoklamalar.some(y=>y.sinifId===si.id&&y.tarih===tarih);
     const renk=RENK_BAR[idx%RENK_BAR.length];
-    const acik=YOK_ACIK.has(si.id);
-    const hepsiGeldi=gelenler.length===aktifOgList.length;
 
-    html+=`<div class="card" style="padding:0;margin-bottom:10px;overflow:hidden;">
+    html+=`<div class="card" style="padding:0;margin-bottom:10px;overflow:hidden;cursor:pointer;" onclick="yoklamaAlBaslat('${si.id}','${tarih}')">
       <div style="height:3px;background:${renk};"></div>
-      <div class="odeme-sinif-baslik" onclick="toggleYokSinif('${si.id}')" style="padding:13px 15px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 15px;">
         <div style="min-width:0;flex:1;">
           <div style="font-family:Fraunces,serif;font-size:15px;font-weight:600;">${si.ad}</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:1px;">${si.gun} · ${si.saat}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:1px;">${si.saat} · ${aktifOgList.length} ${t('lbl_ogrenci_kucuk')}</div>
         </div>
         <div style="display:flex;align-items:center;gap:7px;flex-shrink:0;">
-          <span class="badge ${hepsiGeldi&&aktifOgList.length>0?'badge-green':gelenler.length>0?'badge-amber':'badge-gray'}">${gelenler.length}/${aktifOgList.length}</span>
+          <span class="badge ${alindiMi?(gelenSayisi===aktifOgList.length&&aktifOgList.length>0?'badge-green':'badge-amber'):'badge-gray'}">${alindiMi?gelenSayisi+'/'+aktifOgList.length:t('yoklama_henuz_alinmadi')}</span>
           <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();yoklamaGecmis('${si.id}')">${t('gecmis')}</button>
-          <span style="font-size:18px;color:var(--text3);transition:transform .2s;display:inline-block;${acik?'transform:rotate(90deg)':''}" id="yok-chev-${si.id}">›</span>
+          <span style="font-size:18px;color:var(--text3);">›</span>
         </div>
-      </div>
-      <div id="yok-body-${si.id}" style="display:${acik?'block':'none'};padding:0 14px 12px;">
-        ${aktifOgList.map(og=>{
-          const geldi=ogBugunGeldiMi(si.id,og.id);
-          return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
-            <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:30px;height:30px;font-size:11px;">${initials(og.ad,og.soyad||'')}</div>
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div>
-            </div>
-            ${geldi
-              ?`<button class="yoklama-btn yapildi" onclick="yoklamaSil('${geldi.id}')">✓ ${t('geldi')}</button>`
-              :`<button class="yoklama-btn" onclick="yoklamaKaydet('${si.id}','${og.id}')">+ ${t('geldi')}</button>`
-            }
-          </div>`;
-        }).join('')}
       </div>
     </div>`;
   });
 
   el.innerHTML=html;
+}
+
+// ── Yoklama Al — seçilen sınıf/tarih için toplu işaretleme ─
+function yoklamaAlBaslat(sinifId,tarih){
+  const si=S.siniflar.find(s=>s.id===sinifId);if(!si)return;
+  const aktifOgList=(si.kayitlar||[])
+    .map(k=>S.ogrenciler.find(o=>o.id===k.ogrenciId))
+    .filter(o=>o&&(o.durum||'aktif')==='aktif')
+    .sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
+  const mevcutGelenler=new Set(S.yoklamalar.filter(y=>y.sinifId===sinifId&&y.tarih===tarih).map(y=>y.ogrenciId));
+  const dObj=new Date(tarih+'T00:00:00');
+  document.getElementById('m-kayit-islem-title').textContent=si.ad+' — '+dObj.toLocaleDateString(LC(),{day:'numeric',month:'long'});
+  document.getElementById('m-kayit-islem-content').innerHTML=`
+    <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">${t('yoklama_al_aciklama')}</div>
+    <div id="yal-liste">
+      ${aktifOgList.length?aktifOgList.map(og=>`
+        <label class="eg-check-row" style="padding:11px 2px;">
+          <input type="checkbox" class="yal-cb" value="${og.id}" ${mevcutGelenler.has(og.id)?'checked':''}/>
+          <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:26px;height:26px;font-size:10px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
+          <span style="flex:1;">${og.ad} ${og.soyad||''}</span>
+        </label>`).join(''):'<div style="font-size:13px;color:var(--text3);padding:12px 0;">'+t('sinifta_aktif_ogrenci_yok')+'</div>'}
+    </div>
+    ${aktifOgList.length?`<button class="btn btn-accent" style="width:100%;margin-top:14px;" id="yal-kaydet-btn" onclick="yoklamaAlKaydet('${sinifId}','${tarih}')">✓ ${t('yoklama_al_buton')}</button>`:''}
+  `;
+  openModal('m-kayit-islem');
+}
+async function yoklamaAlKaydet(sinifId,tarih){
+  const btn=document.getElementById('yal-kaydet-btn');if(btn)btn.disabled=true;
+  const secilenler=new Set([...document.querySelectorAll('.yal-cb')].filter(c=>c.checked).map(c=>c.value));
+  const mevcut=S.yoklamalar.filter(y=>y.sinifId===sinifId&&y.tarih===tarih);
+  setSyncing(true);
+  try{
+    const batch=db.batch();
+    let degisti=false;
+    secilenler.forEach(ogId=>{
+      if(!mevcut.find(y=>y.ogrenciId===ogId)){
+        batch.set({_col:'yoklamalar',_id:'yk'+Date.now()+Math.random().toString(36).slice(2)},{sinifId,ogrenciId:ogId,tarih,olusturma:Date.now()});
+        degisti=true;
+      }
+    });
+    mevcut.forEach(y=>{
+      if(!secilenler.has(y.ogrenciId)){
+        batch.delete(db.collection('yoklamalar').doc(y.id));
+        degisti=true;
+      }
+    });
+    if(degisti)await batch.commit();
+    _poll('yoklamalar');
+    closeModal('m-kayit-islem');
+    toastGoster('✓ '+t('yoklama_kaydedildi'));
+  }catch(e){alert('Hata: '+e.message);}
+  if(btn)btn.disabled=false;
+  setSyncing(false);
 }
 
 // ── Yoklama Geçmişi — haftalık görünüm ─────────────────
@@ -5260,7 +5367,7 @@ function adminSifreSifirla(ogId, ad){
 // Günler: Pzt=1, Sal=2, ..., Paz=7 (JS: 0=Paz, 1=Pzt, ...)
 const GUN_MAP={
   'pazartesi':1,'salı':2,'çarşamba':3,'perşembe':4,
-  'Cuma':5,'Cumartesi':6,'Pazar':0
+  'cuma':5,'cumartesi':6,'pazar':0
 };
 const GUN_KISA=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
 const GUN_KISA_MAP={
