@@ -522,30 +522,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
 </div></div>
 
-<div class="page" id="pg-gelirgider">
-  <div class="sec-title" data-i18n="gelir_gider" style="margin-bottom:12px;">Gelir & Gider</div>
-  <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:8px;">
-    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-aylik-gelir');renderGelir();">
-      📊 <span data-i18n="aylik_gelir">Aylık Gelir</span>
-    </button>
-    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-gider-rapor');renderGiderRapor();">
-      💰 <span data-i18n="gider_raporu">Gider Raporu</span>
-    </button>
-    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-gelir-trend');renderGelirTrend();">
-      📈 <span data-i18n="aylik_gelir_trendi">Aylık Gelir Trendi</span>
-    </button>
-    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-egitmen-panel');renderEgitmenPanel();">
-      👨‍🏫 <span data-i18n="egitmenler_giderler">Eğitmenler & Giderler</span>
-    </button>
-    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-odeme-bilgi-ayar');odemeBilgiYukle()">
-      🏦 <span data-i18n="odeme_bilgileri">Ödeme Bilgileri</span>
-    </button>
-    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-tutma-orani');renderRetention();">
-      📉 <span data-i18n="ogrenci_tutma_orani">Öğrenci Tutma Oranı</span>
-    </button>
-  </div>
-</div>
-
 <!-- BİRLEŞTİR MODAL -->
 <div class="overlay" id="m-birlestir"><div class="sheet">
   <div class="sheet-handle"></div>
@@ -703,6 +679,31 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button class="tab-btn" onclick="openOzelTakvim()" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
     </div>
     <div id="ozel-list"></div>
+  </div>
+
+  <!-- GELİR & GİDER -->
+  <div class="page" id="pg-gelirgider">
+    <div class="sec-title" data-i18n="gelir_gider" style="margin-bottom:12px;">Gelir & Gider</div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:8px;">
+      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-aylik-gelir');renderGelir();">
+        📊 <span data-i18n="aylik_gelir">Aylık Gelir</span>
+      </button>
+      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-gider-rapor');renderGiderRapor();">
+        💰 <span data-i18n="gider_raporu">Gider Raporu</span>
+      </button>
+      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-gelir-trend');renderGelirTrend();">
+        📈 <span data-i18n="aylik_gelir_trendi">Aylık Gelir Trendi</span>
+      </button>
+      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-egitmen-panel');renderEgitmenPanel();">
+        👨‍🏫 <span data-i18n="egitmenler_giderler">Eğitmenler & Giderler</span>
+      </button>
+      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-odeme-bilgi-ayar');odemeBilgiYukle()">
+        🏦 <span data-i18n="odeme_bilgileri">Ödeme Bilgileri</span>
+      </button>
+      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-tutma-orani');renderRetention();">
+        📉 <span data-i18n="ogrenci_tutma_orani">Öğrenci Tutma Oranı</span>
+      </button>
+    </div>
   </div>
 
   <!-- ÖZEL DERS HAFTALIK TAKVİM -->
