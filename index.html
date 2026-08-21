@@ -4247,7 +4247,7 @@ function renderOgDetay(){
             ${tarihler.slice().reverse().map(x=>{
               const gd=new Date(x.tarih+'T00:00:00');
               return `<div style="text-align:center;min-width:38px;">
-                <div style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:${x.geldi?'var(--greenbg)':'var(--accentbg)'};color:${x.geldi?'var(--green)':'var(--accent)'};border:1px solid ${x.geldi?'#34d39930':'#ff6b6b30'};">${x.geldi?'✓':'✕'}</div>
+                <div style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;background:${x.geldi?'#34d399':'#ff6b6b'};color:#0d0d14;">${x.geldi?'✓':'✕'}</div>
                 <div style="font-size:9px;color:var(--text3);margin-top:2px;">${gd.getDate()}.${gd.getMonth()+1}</div>
               </div>`;
             }).join('')}
@@ -5026,10 +5026,10 @@ function yoklamaGoster(sinifId,tarih){
     <div>
       ${aktifOgList.map(og=>{
         const geldi=gelenler.has(og.id);
-        return `<div onclick="closeModal('m-kayit-islem');openOgDetay('${og.id}','yoklama')" style="display:flex;align-items:center;gap:10px;padding:11px 8px;margin-bottom:6px;border-radius:var(--radius-sm);cursor:pointer;background:${geldi?'var(--greenbg)':'var(--accentbg)'};border:1px solid ${geldi?'#34d39930':'#ff6b6b30'};">
+        return `<div onclick="closeModal('m-kayit-islem');openOgDetay('${og.id}','yoklama')" style="display:flex;align-items:center;gap:10px;padding:12px 10px;margin-bottom:7px;border-radius:var(--radius-sm);cursor:pointer;background:${geldi?'#34d39922':'#ff6b6b22'};border:1.5px solid ${geldi?'#34d399':'#ff6b6b'};">
           <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:26px;height:26px;font-size:10px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
-          <span style="flex:1;font-size:14px;color:${geldi?'var(--green)':'var(--accent)'};">${og.ad} ${og.soyad||''}</span>
-          <span style="font-size:16px;">${geldi?'✓':'✕'}</span>
+          <span style="flex:1;font-size:14px;font-weight:600;color:${geldi?'#34d399':'#ff6b6b'};">${og.ad} ${og.soyad||''}</span>
+          <span style="width:26px;height:26px;border-radius:50%;background:${geldi?'#34d399':'#ff6b6b'};color:#0d0d14;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;">${geldi?'✓':'✕'}</span>
         </div>`;
       }).join('')}
     </div>
