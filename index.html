@@ -1816,7 +1816,7 @@ let CONFIRM_CB=null;
 // helpers
 function ayKey(y,m){return y+'-'+(m<10?'0':'')+m;}
 function ayLabel(k){if(!k)return'';const[y,m]=k.split('-');const d=new Date(parseInt(y),parseInt(m)-1,1);return d.toLocaleDateString(LC(),{month:'long'})+' '+y;}
-function addDays(s,d){const dt=new Date(s+'T00:00:00');dt.setDate(dt.getDate()+d);return dt.toISOString().slice(0,10);}
+function addDays(s,d){const dt=new Date(s+'T00:00:00');dt.setDate(dt.getDate()+d);return otTarihStr(dt);}
 function formatDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short'});}catch(e){return d;}}
 function daysLeft(d){if(!d)return 999;return Math.ceil((new Date(d+'T00:00:00')-new Date())/864e5);}
 function initials(a,b){return((a||'')[0]||'').toUpperCase()+((b||'')[0]||'').toUpperCase();}
@@ -2506,7 +2506,7 @@ async function saveSinifOgrenci(){
   const btn=document.getElementById('btn-save-so');btn.disabled=true;setSyncing(true);
   const si=S.siniflar.find(s=>s.id===CUR_SINIF);
   const hak=4;
-  const bas=new Date().toISOString().slice(0,10);
+  const bas=bugunTarih();
   const bit=addDays(bas,28);
   const yeniKayitlar=SO_SECILEN.map((o,i)=>({id:'k'+(Date.now()+i),ogrenciId:o.id,tip:SEG_TIP,hak,basTarih:bas,bitisTarih:bit}));
   // Firestore'daki güncel kayitlar'ı çek, sonra üzerine ekle (race condition önlemi)
@@ -2536,8 +2536,8 @@ function hesaplaKayit(ogId,siId){
   if(k.tip!=='paket')return{hak:k.hak,bitisTarih:k.bitisTarih};
   if(!ods.length)return{hak:0,bitisTarih:k.bitisTarih};
 
-  const GUN_MAP={'pazartesi':1,'salı':2,'çarşamba':3,'perşembe':4,'cuma':5,'cumartesi':6,'pazar':0};
-  const dersGunu=GUN_MAP[(si.gun||'').toLowerCase()]??1;
+  const gunNoTespit=sinifGunNo(si);
+  const dersGunu=gunNoTespit>=0?gunNoTespit:1;
   const bugun=new Date();bugun.setHours(0,0,0,0);
   const tatilSet=new Set((S.tatiller||[]).map(t=>t.tarih));
 
@@ -2688,7 +2688,7 @@ function buildAyGrid(ogId,siId,editId){
   }).join('');
 }
 function toggleAy(el,k){el.classList.toggle('active');if(OD_AYLAR.includes(k))OD_AYLAR=OD_AYLAR.filter(x=>x!==k);else OD_AYLAR.push(k);}
-function openOdemeModal(preOg,preSi,editId){EDIT_ODEME=editId||null;document.getElementById('m-odeme-title').textContent=editId?t('odeme_duzenle'):t('odeme_ekle');document.getElementById('od-edit-sil-row').style.display=editId?'block':'none';const ss=document.getElementById('od-sinif');ss.innerHTML=S.siniflar.map(s=>`<option value="${s.id}">${s.ad}</option>`).join('');if(editId){const od=S.odemeler.find(o=>o.id===editId);if(od){ss.value=od.sinifId;odSinifChange();document.getElementById('od-ogrenci').value=od.ogrenciId;document.getElementById('od-tutar').value=od.tutar||'';document.getElementById('od-tarih').value=od.tarih||'';document.getElementById('od-yontem').value=od.yontem||'nakit';document.getElementById('od-not').value=od.not||'';buildAyGrid(od.ogrenciId,od.sinifId,editId);}}else{if(preSi)ss.value=preSi;odSinifChange(true);if(preOg)document.getElementById('od-ogrenci').value=preOg;odOgrenciChange();document.getElementById('od-tarih').value=new Date().toISOString().slice(0,10);document.getElementById('od-not').value='';const s=S.siniflar.find(x=>x.id===ss.value);if(s)document.getElementById('od-tutar').value=s.paket||'';}openModal('m-odeme');}
+function openOdemeModal(preOg,preSi,editId){EDIT_ODEME=editId||null;document.getElementById('m-odeme-title').textContent=editId?t('odeme_duzenle'):t('odeme_ekle');document.getElementById('od-edit-sil-row').style.display=editId?'block':'none';const ss=document.getElementById('od-sinif');ss.innerHTML=S.siniflar.map(s=>`<option value="${s.id}">${s.ad}</option>`).join('');if(editId){const od=S.odemeler.find(o=>o.id===editId);if(od){ss.value=od.sinifId;odSinifChange();document.getElementById('od-ogrenci').value=od.ogrenciId;document.getElementById('od-tutar').value=od.tutar||'';document.getElementById('od-tarih').value=od.tarih||'';document.getElementById('od-yontem').value=od.yontem||'nakit';document.getElementById('od-not').value=od.not||'';buildAyGrid(od.ogrenciId,od.sinifId,editId);}}else{if(preSi)ss.value=preSi;odSinifChange(true);if(preOg)document.getElementById('od-ogrenci').value=preOg;odOgrenciChange();document.getElementById('od-tarih').value=bugunTarih();document.getElementById('od-not').value='';const s=S.siniflar.find(x=>x.id===ss.value);if(s)document.getElementById('od-tutar').value=s.paket||'';}openModal('m-odeme');}
 function odSinifChange(skipOgChange){const siId=document.getElementById('od-sinif').value;const s=S.siniflar.find(x=>x.id===siId);const ids=(s?.kayitlar||[]).map(k=>k.ogrenciId);const list=S.ogrenciler.filter(o=>ids.includes(o.id)&&(o.durum||'aktif')==='aktif');document.getElementById('od-ogrenci').innerHTML=list.length?list.map(o=>`<option value="${o.id}">${o.ad} ${o.soyad}</option>`).join(''):'<option value="">Aktif öğrenci yok</option>';if(!EDIT_ODEME&&s)document.getElementById('od-tutar').value=s.paket||'';if(!skipOgChange)odOgrenciChange();}
 function odOgrenciChange(){const siId=document.getElementById('od-sinif').value,ogId=document.getElementById('od-ogrenci').value;if(ogId&&siId)buildAyGrid(ogId,siId,EDIT_ODEME);else document.getElementById('od-ay-grid').innerHTML='';}
 function toggleClear(btnId,val){const b=document.getElementById(btnId);if(b)b.classList.toggle('visible',val.length>0);}
@@ -2857,14 +2857,14 @@ function openOzelPaketModal(ogId,paketId){
     if(!p)return;
     document.getElementById('op-toplam').value=p.toplamSaat;
     document.getElementById('op-tutar').value=p.tutar;
-    document.getElementById('op-tarih').value=p.tarih||new Date().toISOString().slice(0,10);
+    document.getElementById('op-tarih').value=p.tarih||bugunTarih();
     document.getElementById('op-yontem').value=p.yontem||'nakit';
     document.getElementById('op-not').value=p.not||'';
     secili=p.egitmenIds||[];
     document.getElementById('m-ozel-paket-title').textContent=t('paketi_duzenle');
   }else{
     ['op-toplam','op-tutar','op-not'].forEach(i=>document.getElementById(i).value='');
-    document.getElementById('op-tarih').value=new Date().toISOString().slice(0,10);
+    document.getElementById('op-tarih').value=bugunTarih();
     document.getElementById('op-yontem').value='nakit';
     document.getElementById('m-ozel-paket-title').textContent=t('yeni_paket');
   }
@@ -2915,7 +2915,7 @@ document.getElementById('m-ozel-saat-content').innerHTML=`
   </div>
   <div id="os-tarih-wrap" class="field" style="${bitti?'opacity:.4;':''}">
     <label>Dersin Yapıldığı Tarih</label>
-    <input id="os-tarih" type="date" value="${new Date().toISOString().slice(0,10)}" ${bitti?'disabled':''}/>
+    <input id="os-tarih" type="date" value="${bugunTarih()}" ${bitti?'disabled':''}/>
   </div>
   <div id="os-egitmen-wrap" class="field" style="display:${!bitti&&CUR_PAKET_EGITMENLER.length>=2?'block':'none'};">
     <label>Dersi Veren Eğitmen</label>
@@ -4224,7 +4224,7 @@ function renderOgDetay(){
           while(d.getDay()!==gunNo)d.setDate(d.getDate()-1);
           let guvenlik=0;
           while(tarihler.length<10&&guvenlik<80){
-            const ts=d.toISOString().slice(0,10);
+            const ts=otTarihStr(d);
             if(!S.tatiller.some(tt=>tt.tarih===ts)){
               const geldiMi=S.yoklamalar.some(y=>y.sinifId===si.id&&y.ogrenciId===og.id&&y.tarih===ts);
               tarihler.push({tarih:ts,geldi:geldiMi});
@@ -4758,7 +4758,7 @@ async function yedekal(){
     const blob=new Blob([json],{type:'application/json'});
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
-    const tarihStr=new Date().toISOString().slice(0,10);
+    const tarihStr=bugunTarih();
     a.href=url;a.download=`dans-studio-yedek-${tarihStr}.json`;
     document.body.appendChild(a);a.click();
     document.body.removeChild(a);URL.revokeObjectURL(url);
@@ -4852,7 +4852,7 @@ function toastGoster(msg,sure=2800){
 
 // ── YOKLAMA SİSTEMİ ────────────────────────────────────
 
-function bugunTarih(){return new Date().toISOString().slice(0,10);}
+function bugunTarih(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
 async function yoklamaKaydet(sinifId, ogrenciId){
   const tarih=bugunTarih();
@@ -4887,10 +4887,22 @@ function yoklamaBtnHTML(sinifId, ogrenciId){
 }
 
 let YOK_SEC_TARIH=null;
-function yokTarihDegistir(gunSayisi){
-  const d=new Date((YOK_SEC_TARIH||bugunTarih())+'T00:00:00');
-  d.setDate(d.getDate()+gunSayisi);
-  YOK_SEC_TARIH=d.toISOString().slice(0,10);
+function yokTarihDegistir(yon){
+  // Bir sonraki/önceki DERS GÜNÜNE atla (boş günleri atla), doğru yerel tarih hesabıyla
+  let d=new Date((YOK_SEC_TARIH||bugunTarih())+'T00:00:00');
+  const aktifGunNolari=new Set(S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').map(si=>sinifGunNo(si)).filter(g=>g>=0));
+  if(!aktifGunNolari.size){
+    d.setDate(d.getDate()+yon);
+    YOK_SEC_TARIH=otTarihStr(d);
+    renderYoklama();
+    return;
+  }
+  let guvenlik=0;
+  do{
+    d.setDate(d.getDate()+yon);
+    guvenlik++;
+  }while(!aktifGunNolari.has(d.getDay())&&guvenlik<14);
+  YOK_SEC_TARIH=otTarihStr(d);
   renderYoklama();
 }
 function yokBugune(){YOK_SEC_TARIH=bugunTarih();renderYoklama();}
@@ -5055,7 +5067,7 @@ function yoklamaGecmis(sinifId){
     const gun=d.getDay(); // 0=Pazar
     const fark=(gun===0)?-6:(1-gun);
     const pb=new Date(d);pb.setDate(d.getDate()+fark);
-    return pb.toISOString().slice(0,10);
+    return otTarihStr(pb);
   }
 
   const haftaMap={};
@@ -5383,7 +5395,22 @@ let TAK_HAFTA_OFFSET=0;       // bu haftadan kaç hafta ileri/geri
 let TAK_AY_OFFSET=0;          // bu aydan kaç ay ileri/geri
 
 // Sınıfın ders günü JS dayOfWeek değeri
-function sinifGunNo(si){return GUN_MAP[(si.gun||'').toLowerCase()]??-1;}
+function sinifGunNo(si){
+  let g=(si.gun||'').trim();
+  if(g.normalize)g=g.normalize('NFC'); // farklı klavye/kaynaklardan gelen Unicode kodlama farklarını eşitle
+  g=g.toLowerCase();
+  const esnekMap={
+    'pazartesi':1,'monday':1,
+    'sali':2,'salı':2,'tuesday':2,
+    'carsamba':3,'çarşamba':3,'wednesday':3,
+    'persembe':4,'perşembe':4,'thursday':4,
+    'cuma':5,'friday':5,
+    'cumartesi':6,'saturday':6,
+    'pazar':0,'sunday':0,
+  };
+  if(esnekMap.hasOwnProperty(g))return esnekMap[g];
+  return GUN_MAP[g]??-1;
+}
 
 // O tarihte ders olan sınıfları getir
 function gunDersleri(tarihStr){
@@ -5402,14 +5429,14 @@ function haftaGunleri(offset=0){
   pzt.setDate(bugun.getDate()+pztFark+offset*7);
   return Array.from({length:7},(_,i)=>{
     const d=new Date(pzt);d.setDate(pzt.getDate()+i);
-    return d.toISOString().slice(0,10);
+    return otTarihStr(d);
   });
 }
 
 function renderTakvim(){
   const el=document.getElementById('takvim-content');
   if(!el)return;
-  if(!TAK_SEL_GUN) TAK_SEL_GUN=new Date().toISOString().slice(0,10);
+  if(!TAK_SEL_GUN) TAK_SEL_GUN=bugunTarih();
 
   let html=`<div class="takvim-mod-row">
     <button class="takvim-mod-btn${TAK_MOD==='hafta'?' active':''}" onclick="takMod('hafta')">${t('haftalik')}</button>
@@ -5433,7 +5460,7 @@ function takAyDegis(d){TAK_AY_OFFSET+=d;if(d===0)TAK_AY_OFFSET=0;renderTakvim();
 
 function renderTakvimHafta(){
   const gunler=haftaGunleri(TAK_HAFTA_OFFSET);
-  const bugun=new Date().toISOString().slice(0,10);
+  const bugun=bugunTarih();
 
   // Hafta label
   const bas=new Date(gunler[0]+'T00:00:00');
@@ -5473,7 +5500,7 @@ function renderTakvimAy(){
   const hedefAy=new Date(bugun.getFullYear(),bugun.getMonth()+TAK_AY_OFFSET,1);
   const yil=hedefAy.getFullYear();
   const ay=hedefAy.getMonth();
-  const bugunStr=bugun.toISOString().slice(0,10);
+  const bugunStr=otTarihStr(bugun);
 
   const ayLabel=hedefAy.toLocaleDateString(LC(),{month:'long',year:'numeric'});
 
@@ -5556,7 +5583,7 @@ function renderTakvimGunDetay(){
 
   const d=new Date(tarih+'T00:00:00');
   const tarihFmt=d.toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'});
-  const bugun=new Date().toISOString().slice(0,10);
+  const bugun=bugunTarih();
   const gecmis=tarih<bugun;
 
   const dersler=gunDersleri(tarih);
@@ -5621,7 +5648,7 @@ function renderPortalTakvim(el,og){
     const gunler=[];
     for(let g=0;g<7;g++){
       const d=new Date(pzt);d.setDate(pzt.getDate()+h*7+g);
-      const tarih=d.toISOString().slice(0,10);
+      const tarih=otTarihStr(d);
       const gunDers=siniflar.filter(si=>sinifGunNo(si)===d.getDay());
       if(gunDers.length)gunler.push({tarih,d,dersler:gunDers});
     }
@@ -5641,8 +5668,8 @@ function renderPortalTakvim(el,og){
 
     gunler.forEach(({tarih,d,dersler})=>{
       const tarihFmt=d.toLocaleDateString(LC(),{weekday:'long',day:'numeric',month:'long'});
-      const gecmis=tarih<new Date().toISOString().slice(0,10);
-      const isBugun=tarih===new Date().toISOString().slice(0,10);
+      const gecmis=tarih<bugunTarih();
+      const isBugun=tarih===bugunTarih();
 
       dersler.forEach((si,i)=>{
         const origIdx=S.siniflar.indexOf(si);
@@ -6544,7 +6571,7 @@ function renderPortalYoklama(el,og){
     const son30=[];
     for(let i=29;i>=0;i--){
       const d=new Date();d.setDate(d.getDate()-i);
-      son30.push(d.toISOString().slice(0,10));
+      son30.push(otTarihStr(d));
     }
     const gelenGunler=new Set(tarihler);
     const son30Katilim=son30.filter(t=>gelenGunler.has(t)).length;
@@ -6771,7 +6798,7 @@ async function ogDetaySinifEkle(siId){
   if(!og)return;
   const si=S.siniflar.find(s=>s.id===siId);
   if(!si)return;
-  const bas=new Date().toISOString().slice(0,10);
+  const bas=bugunTarih();
   const bit=addDays(bas,28);
   const yeniKayit={id:'k'+Date.now(),ogrenciId:og.id,tip:'paket',hak:4,basTarih:bas,bitisTarih:bit};
   setSyncing(true);
