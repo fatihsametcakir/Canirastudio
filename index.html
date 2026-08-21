@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Dans Studio">
@@ -522,31 +522,27 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
 </div></div>
 
-<div class="overlay" id="m-gelir-gider">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <button class="sheet-close" onclick="closeModal('m-gelir-gider')">✕</button>
-    <div class="sheet-title" data-i18n="gelir_gider">Gelir & Gider</div>
-    <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:8px;">
-      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-aylik-gelir');renderGelir();">
-        📊 <span data-i18n="aylik_gelir">Aylık Gelir</span>
-      </button>
-      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-gider-rapor');renderGiderRapor();">
-        💰 <span data-i18n="gider_raporu">Gider Raporu</span>
-      </button>
-      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-gelir-trend');renderGelirTrend();">
-        📈 <span data-i18n="aylik_gelir_trendi">Aylık Gelir Trendi</span>
-      </button>
-      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-egitmen-panel');renderEgitmenPanel();">
-        👨‍🏫 <span data-i18n="egitmenler_giderler">Eğitmenler & Giderler</span>
-      </button>
-      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-odeme-bilgi-ayar');odemeBilgiYukle()">
-        🏦 <span data-i18n="odeme_bilgileri">Ödeme Bilgileri</span>
-      </button>
-      <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="closeModal('m-gelir-gider');openModal('m-tutma-orani');renderRetention();">
-        📉 <span data-i18n="ogrenci_tutma_orani">Öğrenci Tutma Oranı</span>
-      </button>
-    </div>
+<div class="page" id="pg-gelirgider">
+  <div class="sec-title" data-i18n="gelir_gider" style="margin-bottom:12px;">Gelir & Gider</div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:8px;">
+    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-aylik-gelir');renderGelir();">
+      📊 <span data-i18n="aylik_gelir">Aylık Gelir</span>
+    </button>
+    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-gider-rapor');renderGiderRapor();">
+      💰 <span data-i18n="gider_raporu">Gider Raporu</span>
+    </button>
+    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-gelir-trend');renderGelirTrend();">
+      📈 <span data-i18n="aylik_gelir_trendi">Aylık Gelir Trendi</span>
+    </button>
+    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-egitmen-panel');renderEgitmenPanel();">
+      👨‍🏫 <span data-i18n="egitmenler_giderler">Eğitmenler & Giderler</span>
+    </button>
+    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-odeme-bilgi-ayar');odemeBilgiYukle()">
+      🏦 <span data-i18n="odeme_bilgileri">Ödeme Bilgileri</span>
+    </button>
+    <button class="btn" style="width:100%;text-align:left;padding:14px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);" onclick="openModal('m-tutma-orani');renderRetention();">
+      📉 <span data-i18n="ogrenci_tutma_orani">Öğrenci Tutma Oranı</span>
+    </button>
   </div>
 </div>
 
@@ -639,7 +635,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <div class="stats-row">
       <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-aktif-ogrenci">Aktif Öğrenci</div><div class="stat-val" id="st-ogrenci">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span></div></div>
       <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-sinif">Sınıf</div><div class="stat-val" id="st-sinif">0</div></div>
-      <div class="stat-card s3" onclick="openGelirGiderSheet()" style="cursor:pointer;"><div class="stat-label" id="lbl-bu-ay-gelir">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="lbl-net">Net</span>: <span id="st-net">0</span></div></div>
+      <div class="stat-card s3" onclick="goTo('gelirgider',document.querySelectorAll('.nav-item')[6])" style="cursor:pointer;"><div class="stat-label" id="lbl-bu-ay-gelir">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="lbl-net">Net</span>: <span id="st-net">0</span></div></div>
       <div class="stat-card s4"><div class="stat-label" id="lbl-paket-yenileme">Paket yenileme</div><div class="stat-val" id="st-yaklasan">0</div></div>
     </div>
     <div id="anasayfa-alerts" style="padding-bottom:8px;"></div>
@@ -754,7 +750,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <button class="nav-item" onclick="goTo('takvim',this)"><div class="nav-icon-wrap"><span class="nav-icon">▦</span></div><span id="navlbl-takvim">Takvim</span></button>
     <button class="nav-item" onclick="goTo('ozel',this)"><div class="nav-icon-wrap"><span class="nav-icon">✦</span></div><span id="navlbl-ozel">Özel Dersler</span></button>
     <button class="nav-item" onclick="goTo('odemeler',this)"><div class="nav-icon-wrap"><span class="nav-icon">◎</span></div><span id="navlbl-odemeler">Ödemeler</span></button>
-    <button class="nav-item" onclick="openGelirGiderSheet()"><div class="nav-icon-wrap"><span class="nav-icon">₺</span></div><span id="navlbl-gelirgider">Gelir/Gider</span></button>
+    <button class="nav-item" onclick="goTo('gelirgider',this)"><div class="nav-icon-wrap"><span class="nav-icon">₺</span></div><span id="navlbl-gelirgider">Gelir/Gider</span></button>
   </nav>
   <button class="fab" id="mainFab" onclick="fabAction()">＋</button>
 </div>
@@ -1951,14 +1947,14 @@ function goTo(p,btn){
   if(btn)btn.classList.add('active');
   setTopbar(false);
   const fab=document.getElementById('mainFab');
-  if(fab)fab.style.display=(p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar')?'none':'flex';
+  if(fab)fab.style.display=(p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider')?'none':'flex';
   renderAll();
 }
 function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
 function goBack(){
   const bt=PREV_PAGE==='sinif-detay'?'siniflar':PREV_PAGE;
   PAGE=bt;showPage(bt);setTopbar(false);
-  const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:3,ozel:4,odemeler:5,yoklama:-1};
+  const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:3,ozel:4,odemeler:5,gelirgider:6,yoklama:-1};
   document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',i===(map[bt]??-1)));
   const fab=document.getElementById('mainFab');if(fab)fab.style.display='flex';
   renderAll();
@@ -2694,7 +2690,6 @@ function odSinifChange(skipOgChange){const siId=document.getElementById('od-sini
 function odOgrenciChange(){const siId=document.getElementById('od-sinif').value,ogId=document.getElementById('od-ogrenci').value;if(ogId&&siId)buildAyGrid(ogId,siId,EDIT_ODEME);else document.getElementById('od-ay-grid').innerHTML='';}
 function toggleClear(btnId,val){const b=document.getElementById(btnId);if(b)b.classList.toggle('visible',val.length>0);}
 function clearSearch(inputId,cb){const el=document.getElementById(inputId);if(el){el.value='';const clr=document.getElementById(inputId+'-clear');if(clr)clr.classList.remove('visible');}if(cb)cb();}
-function openGelirGiderSheet(){openModal('m-gelir-gider');}
 function openGiderRaporu(){openModal('m-gider-rapor');renderGiderRapor();}
 function openAylikGelirTrend(){openModal('m-gelir-trend');renderGelirTrend();}
 function openEgitmenGiderler(){openModal('m-egitmen-panel');renderEgitmenPanel();}
