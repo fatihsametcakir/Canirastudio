@@ -192,6 +192,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .sheet{background:var(--surface);border-radius:26px 26px 0 0;border-top:1px solid var(--border2);padding:22px 20px max(26px,env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:90vh;overflow-y:auto;position:relative;}
 .sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px;}
 .sheet-title{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:18px;padding-right:40px;}
+#m-kayit-islem-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:18px;}
 .sheet-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .field{margin-bottom:13px;}
 .field label{display:block;font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
@@ -770,7 +771,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <!-- Hızlı Erişim -->
     <div style="padding:10px 16px 6px;">
       <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('yoklama',null)">✓ Yoklama</button>
-      <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:0;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
+      <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
+      <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:0;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
     </div>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
 
@@ -1104,7 +1106,16 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div id="qr-scan-result" style="margin-top:12px;font-size:13px;color:var(--text3);text-align:center;"></div>
 </div></div>
 
-<!-- Öğrenci Yoklama Self-Check Modal -->
+<!-- Devamsız Öğrenciler -->
+<div class="overlay" id="m-devamsiz"><div class="sheet" style="max-height:85vh;">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-devamsiz')">✕</button>
+  <div class="sheet-title" data-i18n="devamsiz_ogrenciler">🚩 Devamsız Öğrenciler</div>
+  <div class="tab-row">
+    <button class="tab-btn active" id="devamsiz-tab-2" onclick="devamsizTabSec('2')" data-i18n="iki_hafta_ustuste">2 Hafta Üst Üste</button>
+    <button class="tab-btn" id="devamsiz-tab-3" onclick="devamsizTabSec('3')" data-i18n="uc_hafta_ustuste">3 Hafta Üst Üste</button>
+  </div>
+  <div id="devamsiz-content" style="overflow-y:auto;max-height:calc(85vh - 160px);"></div>
+</div></div>
 <div class="overlay" id="m-yoklama-ogrenci"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-yoklama-ogrenci')">✕</button>
   <div class="sheet-title" id="m-yok-og-title">Yoklama</div>
@@ -1401,6 +1412,8 @@ const TRANSLATIONS={
     sinifta_aktif_ogrenci_yok:'Bu sınıfta aktif öğrenci yok.', yoklama_al_buton:'Yoklama Al',
     yoklama_kaydedildi:'Yoklama kaydedildi', katildi_kucuk:'katıldı',
     duzenle:'Düzenle', yoklama_alindi_aciklama:'Bu ders için yoklama alındı. Bir öğrenciye dokunarak katılım geçmişini görebilir, düzenlemek için aşağıdaki butonu kullanabilirsin.',
+    devamsiz_ogrenciler:'🚩 Devamsız Öğrenciler', iki_hafta_ustuste:'2 Hafta Üst Üste', uc_hafta_ustuste:'3 Hafta Üst Üste',
+    devamsiz_ogrenci_yok:'Bu kategoride devamsız öğrenci yok 🎉',
     kontrol_ediliyor:'Kontrol ediliyor...', kamera_baslatiliyor:'Kamera başlatılıyor...', qr_kamera_tutun:'QR kodu kameraya tutun',
     kamera_erisim_yok:'Kamera erişimi sağlanamadı', qr_kod_gecersiz:'Bu kod geçerli değil',
     merhaba:'Merhaba', tel_sifre_zorunlu:'Telefon ve şifre zorunlu.', hata:'Hata',
@@ -1562,6 +1575,8 @@ const TRANSLATIONS={
     sinifta_aktif_ogrenci_yok:'No active students in this class.', yoklama_al_buton:'Take Attendance',
     yoklama_kaydedildi:'Attendance saved', katildi_kucuk:'attended',
     duzenle:'Edit', yoklama_alindi_aciklama:'Attendance has been taken for this class. Tap a student to see their attendance history, or use the button below to edit.',
+    devamsiz_ogrenciler:'🚩 Absent Students', iki_hafta_ustuste:'2 Weeks in a Row', uc_hafta_ustuste:'3 Weeks in a Row',
+    devamsiz_ogrenci_yok:'No absent students in this category 🎉',
     kontrol_ediliyor:'Checking...', kamera_baslatiliyor:'Starting camera...', qr_kamera_tutun:'Point the camera at the QR code',
     kamera_erisim_yok:'Could not access camera', qr_kod_gecersiz:'This code is not valid',
     merhaba:'Hello', tel_sifre_zorunlu:'Phone and password are required.', hata:'Error',
@@ -1726,6 +1741,8 @@ const TRANSLATIONS={
     sinifta_aktif_ogrenci_yok:'В этой группе нет активных учеников.', yoklama_al_buton:'Отметить посещаемость',
     yoklama_kaydedildi:'Посещаемость сохранена', katildi_kucuk:'присутствовал',
     duzenle:'Изменить', yoklama_alindi_aciklama:'Посещаемость для этого занятия уже отмечена. Нажмите на ученика, чтобы увидеть историю посещений, или используйте кнопку ниже для изменения.',
+    devamsiz_ogrenciler:'🚩 Отсутствующие ученики', iki_hafta_ustuste:'2 недели подряд', uc_hafta_ustuste:'3 недели подряд',
+    devamsiz_ogrenci_yok:'В этой категории нет отсутствующих учеников 🎉',
     dersi_sil:'Удалить занятие', ders_sil_aciklama:'Это запланированное занятие будет удалено.',
     ders_sil_saat_geri:'Этот час уже был списан с пакета — при удалении он будет возвращён в пакет.',
     dersler:'Занятия', henuz_ders_yok:'Занятий в этом пакете пока нет.', takvimden:'из календаря', saat_dus_ekle:'Списать/Добавить часы',
@@ -4995,7 +5012,7 @@ function yoklamaAlBaslat(sinifId,tarih,zorlaEdit){
     .sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   const mevcutGelenler=new Set(S.yoklamalar.filter(y=>y.sinifId===sinifId&&y.tarih===tarih).map(y=>y.ogrenciId));
   const dObj=new Date(tarih+'T00:00:00');
-  document.getElementById('m-kayit-islem-title').textContent=si.ad+' — '+dObj.toLocaleDateString(LC(),{day:'numeric',month:'long'});
+  document.getElementById('m-kayit-islem-title').textContent=si.ad+' — '+dObj.toLocaleDateString(LC(),{day:'numeric',month:'short'});
   document.getElementById('m-kayit-islem-content').innerHTML=`
     <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">${t('yoklama_al_aciklama')}</div>
     <div id="yal-liste">
@@ -5020,7 +5037,7 @@ function yoklamaGoster(sinifId,tarih){
     .sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   const gelenler=new Set(S.yoklamalar.filter(y=>y.sinifId===sinifId&&y.tarih===tarih).map(y=>y.ogrenciId));
   const dObj=new Date(tarih+'T00:00:00');
-  document.getElementById('m-kayit-islem-title').textContent=si.ad+' — '+dObj.toLocaleDateString(LC(),{day:'numeric',month:'long'});
+  document.getElementById('m-kayit-islem-title').textContent=si.ad+' — '+dObj.toLocaleDateString(LC(),{day:'numeric',month:'short'});
   document.getElementById('m-kayit-islem-content').innerHTML=`
     <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">${t('yoklama_alindi_aciklama')}</div>
     <div>
@@ -5444,6 +5461,82 @@ function sinifGunNo(si){
   };
   if(esnekMap.hasOwnProperty(g))return esnekMap[g];
   return GUN_MAP[g]??-1;
+}
+
+// Bir sınıfın en son N ders tarihini (tatiller hariç), en yeniden eskiye doğru döndürür
+function sinifSonDersTarihleri(si,n){
+  const gunNo=sinifGunNo(si);
+  const tarihler=[];
+  if(gunNo<0)return tarihler;
+  let d=new Date(bugunTarih()+'T00:00:00');
+  while(d.getDay()!==gunNo)d.setDate(d.getDate()-1);
+  let guvenlik=0;
+  while(tarihler.length<n&&guvenlik<80){
+    const ts=otTarihStr(d);
+    if(!S.tatiller.some(tt=>tt.tarih===ts))tarihler.push(ts);
+    d.setDate(d.getDate()-7);
+    guvenlik++;
+  }
+  return tarihler;
+}
+
+// ── DEVAMSIZ ÖĞRENCİLER ──────────────────────────────────
+function devamsizOgrencileriHesapla(){
+  const grup2={},grup3={};
+  S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').forEach(si=>{
+    const sonTarihler=sinifSonDersTarihleri(si,3);
+    if(sonTarihler.length<2)return; // yeterli ders geçmişi yok
+    const aktifOgList=(si.kayitlar||[]).map(k=>S.ogrenciler.find(o=>o.id===k.ogrenciId)).filter(o=>o&&(o.durum||'aktif')==='aktif');
+    aktifOgList.forEach(og=>{
+      const geldiMi=(tarih)=>S.yoklamalar.some(y=>y.sinifId===si.id&&y.ogrenciId===og.id&&y.tarih===tarih);
+      const son2=sonTarihler.slice(0,2);
+      const son3=sonTarihler.slice(0,3);
+      if(son2.length===2&&son2.every(t=>!geldiMi(t))){
+        if(!grup2[si.id])grup2[si.id]={si,ogrenciler:[]};
+        grup2[si.id].ogrenciler.push(og);
+      }
+      if(son3.length===3&&son3.every(t=>!geldiMi(t))){
+        if(!grup3[si.id])grup3[si.id]={si,ogrenciler:[]};
+        grup3[si.id].ogrenciler.push(og);
+      }
+    });
+  });
+  return {iki:Object.values(grup2),uc:Object.values(grup3)};
+}
+let DEVAMSIZ_TAB='2';
+function openDevamsizModal(){
+  DEVAMSIZ_TAB='2';
+  renderDevamsiz();
+  openModal('m-devamsiz');
+}
+function devamsizTabSec(tab){
+  DEVAMSIZ_TAB=tab;
+  document.getElementById('devamsiz-tab-2').classList.toggle('active',tab==='2');
+  document.getElementById('devamsiz-tab-3').classList.toggle('active',tab==='3');
+  renderDevamsiz();
+}
+function renderDevamsiz(){
+  const {iki,uc}=devamsizOgrencileriHesapla();
+  const liste=DEVAMSIZ_TAB==='2'?iki:uc;
+  const el=document.getElementById('devamsiz-content');
+  const toplamKisi=liste.reduce((s,g)=>s+g.ogrenciler.length,0);
+  if(!toplamKisi){
+    el.innerHTML='<div class="empty" style="padding:28px 0;"><div class="empty-icon">✓</div><div class="empty-text">'+t('devamsiz_ogrenci_yok')+'</div></div>';
+    return;
+  }
+  el.innerHTML=liste.filter(g=>g.ogrenciler.length).map(grp=>{
+    return `<div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">${grp.si.ad} · ${grp.si.gun}</div>
+      ${grp.ogrenciler.map(og=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:11px;margin-bottom:7px;border-radius:var(--radius-sm);background:#ff6b6b1e;border:1.5px solid #ff6b6b;">
+          <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:30px;height:30px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:600;color:#ff6b6b;">${og.ad} ${og.soyad||''}</div>
+          </div>
+          ${waBtnG(og.tel,og.ad)}
+        </div>`).join('')}
+    </div>`;
+  }).join('');
 }
 
 // O tarihte ders olan sınıfları getir
