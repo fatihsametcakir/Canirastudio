@@ -5603,7 +5603,7 @@ function renderTakvimGunDetay(){
     const yoklamaYapildi=gelenler.length>0;
     const egitmen=S.egitmenler.find(e=>e.id===si.egitmenId);
 
-    html+=`<div class="takvim-ders-kart" onclick="openSinifDetay('${si.id}')">
+    html+=`<div class="takvim-ders-kart" onclick="yoklamaAlBaslat('${si.id}','${tarih}')">
       <div class="takvim-ders-sol" style="background:${renk};"></div>
       <div class="takvim-ders-icerik">
         <div class="takvim-ders-saat">${si.saat}${egitmen?` · ${egitmen.ad}`:''}</div>
@@ -5613,7 +5613,7 @@ function renderTakvimGunDetay(){
           ${gecmis||tarih===bugun?`<span class="badge ${yoklamaYapildi?'badge-green':'badge-gray'}" style="font-size:10px;">${yoklamaYapildi?`✓ ${gelenler.length} katıldı`:'Yoklama alınmadı'}</span>`:''}
         </div>
       </div>
-      <div style="font-size:20px;color:var(--text3);">›</div>
+      <div style="font-size:20px;color:var(--text3);">✓</div>
     </div>`;
   });
 
