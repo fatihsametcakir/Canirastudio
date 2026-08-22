@@ -1116,6 +1116,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
   <div id="devamsiz-content" style="overflow-y:auto;max-height:calc(85vh - 160px);"></div>
 </div></div>
+
+<!-- Öğrenci Geçmişi -->
+<div class="overlay" id="m-ogrenci-gecmisi"><div class="sheet" style="max-height:80vh;">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ogrenci-gecmisi')">✕</button>
+  <div class="sheet-title" id="m-ogrenci-gecmisi-title" data-i18n="ogrenci_gecmisi">📜 Öğrenci Geçmişi</div>
+  <div id="ogrenci-gecmisi-content" style="overflow-y:auto;max-height:calc(80vh - 90px);"></div>
+</div></div>
 <div class="overlay" id="m-yoklama-ogrenci"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-yoklama-ogrenci')">✕</button>
   <div class="sheet-title" id="m-yok-og-title">Yoklama</div>
@@ -1255,7 +1262,7 @@ window.db={
 window._firebaseReady=true;
 
 // State
-let S={ogrenciler:[],siniflar:[],odemeler:[],ozelOgrenciler:[],ozelPaketler:[],yoklamalar:[],egitmenler:[],tatiller:[],videoSiniflar:[],ozelSeanslar:[]};
+let S={ogrenciler:[],siniflar:[],odemeler:[],ozelOgrenciler:[],ozelPaketler:[],yoklamalar:[],egitmenler:[],tatiller:[],videoSiniflar:[],ozelSeanslar:[],ogrenciGecmisi:[]};
 let SEG_CINSIYET='k', SEG_TIP='paket';
 let CUR_SINIF=null, CUR_KAYIT=null, EDIT_OG=null, EDIT_ODEME=null, EDIT_EGITMEN=null;
 let CUR_OZEL_OG=null, CUR_OZEL_PAKET=null;
@@ -1414,6 +1421,9 @@ const TRANSLATIONS={
     duzenle:'Düzenle', yoklama_alindi_aciklama:'Bu ders için yoklama alındı. Bir öğrenciye dokunarak katılım geçmişini görebilir, düzenlemek için aşağıdaki butonu kullanabilirsin.',
     devamsiz_ogrenciler:'🚩 Devamsız Öğrenciler', iki_hafta_ustuste:'2 Hafta Üst Üste', uc_hafta_ustuste:'3+ Hafta',
     devamsiz_ogrenci_yok:'Bu kategoride devamsız öğrenci yok 🎉',
+    ogrenci_gecmisi:'📜 Öğrenci Geçmişi', gecmis_kaydi_yok:'Henüz kayıtlı bir geçmiş yok.',
+    olay_giris:'Sınıfa katıldı', olay_cikis:'Sınıftan çıkarıldı', olay_dondur:'Kayıt donduruldu', olay_coz:'Dondurma çözüldü',
+    olay_genel_aktif:'Öğrenci aktif edildi', olay_genel_pasif:'Öğrenci pasife alındı',
     kontrol_ediliyor:'Kontrol ediliyor...', kamera_baslatiliyor:'Kamera başlatılıyor...', qr_kamera_tutun:'QR kodu kameraya tutun',
     kamera_erisim_yok:'Kamera erişimi sağlanamadı', qr_kod_gecersiz:'Bu kod geçerli değil',
     merhaba:'Merhaba', tel_sifre_zorunlu:'Telefon ve şifre zorunlu.', hata:'Hata',
@@ -1577,6 +1587,9 @@ const TRANSLATIONS={
     duzenle:'Edit', yoklama_alindi_aciklama:'Attendance has been taken for this class. Tap a student to see their attendance history, or use the button below to edit.',
     devamsiz_ogrenciler:'🚩 Absent Students', iki_hafta_ustuste:'2 Weeks in a Row', uc_hafta_ustuste:'3+ Weeks',
     devamsiz_ogrenci_yok:'No absent students in this category 🎉',
+    ogrenci_gecmisi:'📜 Student History', gecmis_kaydi_yok:'No history recorded yet.',
+    olay_giris:'Joined class', olay_cikis:'Removed from class', olay_dondur:'Enrollment frozen', olay_coz:'Freeze lifted',
+    olay_genel_aktif:'Student activated', olay_genel_pasif:'Student deactivated',
     kontrol_ediliyor:'Checking...', kamera_baslatiliyor:'Starting camera...', qr_kamera_tutun:'Point the camera at the QR code',
     kamera_erisim_yok:'Could not access camera', qr_kod_gecersiz:'This code is not valid',
     merhaba:'Hello', tel_sifre_zorunlu:'Phone and password are required.', hata:'Error',
@@ -1743,6 +1756,9 @@ const TRANSLATIONS={
     duzenle:'Изменить', yoklama_alindi_aciklama:'Посещаемость для этого занятия уже отмечена. Нажмите на ученика, чтобы увидеть историю посещений, или используйте кнопку ниже для изменения.',
     devamsiz_ogrenciler:'🚩 Отсутствующие ученики', iki_hafta_ustuste:'2 недели подряд', uc_hafta_ustuste:'3+ недели',
     devamsiz_ogrenci_yok:'В этой категории нет отсутствующих учеников 🎉',
+    ogrenci_gecmisi:'📜 История ученика', gecmis_kaydi_yok:'История пока не записана.',
+    olay_giris:'Присоединился к группе', olay_cikis:'Удалён из группы', olay_dondur:'Запись заморожена', olay_coz:'Заморозка снята',
+    olay_genel_aktif:'Ученик активирован', olay_genel_pasif:'Ученик деактивирован',
     dersi_sil:'Удалить занятие', ders_sil_aciklama:'Это запланированное занятие будет удалено.',
     ders_sil_saat_geri:'Этот час уже был списан с пакета — при удалении он будет возвращён в пакет.',
     dersler:'Занятия', henuz_ders_yok:'Занятий в этом пакете пока нет.', takvimden:'из календаря', saat_dus_ekle:'Списать/Добавить часы',
@@ -1930,7 +1946,7 @@ function startListeners(){
   document.getElementById('loading').style.display='flex';
   document.getElementById('app').style.display='none';
   applyLang();
-  const done={og:false,si:false,od:false,oog:false,op:false,yk:false,eg:false,tt:false,vs:false,oz2:false};
+  const done={og:false,si:false,od:false,oog:false,op:false,yk:false,eg:false,tt:false,vs:false,oz2:false,ogh:false};
 
   const timeout=setTimeout(()=>{
     document.getElementById('loading').style.display='none';
@@ -1960,6 +1976,7 @@ function startListeners(){
   snap('tatiller','tatiller','tt');
   snap('videoSiniflar','videoSiniflar','vs');
   snap('ozelSeanslar','ozelSeanslar','oz2');
+  snap('ogrenciGecmisi','ogrenciGecmisi','ogh');
   // Admin bildirimlerini sadece admin oturumunda başlat
   if(!PORTAL_OG_ID) adminNotifBaslat();
 }
@@ -2242,7 +2259,7 @@ async function saveOgrenci(){
   }
   btn.disabled=false;setSyncing(false);
 }
-async function toggleOgrenciDurum(id){const og=S.ogrenciler.find(o=>o.id===id);if(!og)return;const y=og.durum==='aktif'?'pasif':'aktif';confirm_(y==='pasif'?'Pasife Al':'Aktife Al',y==='pasif'?'Öğrenci pasif yapılacak.':'Öğrenci aktif yapılacak.',async()=>{setSyncing(true);await db.collection('ogrenciler').doc(id).update({durum:y});_poll('ogrenciler');setSyncing(false);});}
+async function toggleOgrenciDurum(id){const og=S.ogrenciler.find(o=>o.id===id);if(!og)return;const y=og.durum==='aktif'?'pasif':'aktif';confirm_(y==='pasif'?'Pasife Al':'Aktife Al',y==='pasif'?'Öğrenci pasif yapılacak.':'Öğrenci aktif yapılacak.',async()=>{setSyncing(true);await db.collection('ogrenciler').doc(id).update({durum:y});await ogrenciOlayEkle(id,null,null,y);_poll('ogrenciler');setSyncing(false);});}
 
 // ── SINIF ──────────────────────────────────────────────
 let EDIT_SINIF=null;
@@ -2540,6 +2557,7 @@ async function saveSinifOgrenci(){
     // Local state güncelle
     const idx=S.siniflar.findIndex(s=>s.id===CUR_SINIF);
     if(idx>=0)S.siniflar[idx]={...S.siniflar[idx],kayitlar};
+    Promise.all(yeniKayitlar.map(k=>ogrenciOlayEkle(k.ogrenciId,CUR_SINIF,si?si.ad:null,'giris')));
     closeModal('m-sinif-ogrenci');
     renderAll();
     _poll('siniflar');
@@ -2674,6 +2692,21 @@ function openKayitIslem(siId,kayitId){
   openModal('m-kayit-islem');
 }
 
+// Kayıt geçmişi günlüğü — dondurma/çözme/çıkış olaylarını tarihiyle birlikte kaydeder.
+// Mevcut "kayitlar" yapısına dokunmaz, ayrı ve ek bir alan olarak tutulur.
+// Öğrenci geçmişi günlüğü — dondurma/çözme/çıkış/giriş/pasif/aktif gibi tüm olayları tek merkezi koleksiyonda tutar
+async function ogrenciOlayEkle(ogrenciId,sinifId,sinifAdi,olay){
+  try{
+    const yeniKayit={ogrenciId,sinifId:sinifId||null,sinifAdi:sinifAdi||null,olay,tarih:bugunTarih(),olusturma:Date.now()};
+    const result=await db.collection('ogrenciGecmisi').add(yeniKayit);
+    S.ogrenciGecmisi.push({...yeniKayit,id:result.id});
+  }catch(e){/* günlük tutulamazsa sessizce geç, ana işlemi engellemez */}
+}
+// Geriye dönük uyumluluk: eski çağrı adı, yeni fonksiyona yönlendirir
+async function kayitGecmisineEkle(sinifId,ogrenciId,olay){
+  const si=S.siniflar.find(s=>s.id===sinifId);
+  await ogrenciOlayEkle(ogrenciId,sinifId,si?si.ad:null,olay);
+}
 async function toggleDondur(){
   const si=S.siniflar.find(s=>s.id===CUR_SINIF);
   const k=si.kayitlar.find(x=>x.id===CUR_KAYIT);
@@ -2681,12 +2714,13 @@ async function toggleDondur(){
   const kayitlar=si.kayitlar.map(x=>x.id!==CUR_KAYIT?x:{...x,donduruldu:yeniDurum});
   setSyncing(true);
   await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});
+  await kayitGecmisineEkle(CUR_SINIF,k.ogrenciId,yeniDurum?'dondur':'coz');
   _poll('siniflar');setSyncing(false);
   setTimeout(()=>openKayitIslem(CUR_SINIF,CUR_KAYIT),300);
 }
 async function hakEkle(n){const si=S.siniflar.find(s=>s.id===CUR_SINIF);const kayitlar=si.kayitlar.map(k=>k.id!==CUR_KAYIT?k:{...k,manuelHak:(k.manuelHak||0)+n});setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});_poll('siniflar');setSyncing(false);setTimeout(()=>openKayitIslem(CUR_SINIF,CUR_KAYIT),300);}
-async function silKayit(){confirm_('Sınıftan Çıkar','Öğrenci bu sınıftan silinecek.',async()=>{const si=S.siniflar.find(s=>s.id===CUR_SINIF);const kayitlar=si.kayitlar.filter(k=>k.id!==CUR_KAYIT);setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});_poll('siniflar');setSyncing(false);closeModal('m-kayit-islem');});}
-async function tasiKayit(){const hId=document.getElementById('ki-sinif').value;if(!hId)return;const k=S.siniflar.find(s=>s.id===CUR_SINIF);const h=S.siniflar.find(s=>s.id===hId);const kayit=k.kayitlar.find(x=>x.id===CUR_KAYIT);if(!kayit||!h)return;setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar:k.kayitlar.filter(x=>x.id!==CUR_KAYIT)});await db.collection('siniflar').doc(hId).update({kayitlar:[...(h.kayitlar||[]),{...kayit,id:'k'+Date.now()}]});_poll('siniflar');setSyncing(false);closeModal('m-kayit-islem');}
+async function silKayit(){confirm_('Sınıftan Çıkar','Öğrenci bu sınıftan silinecek.',async()=>{const si=S.siniflar.find(s=>s.id===CUR_SINIF);const k=si.kayitlar.find(x=>x.id===CUR_KAYIT);const kayitlar=si.kayitlar.filter(x=>x.id!==CUR_KAYIT);setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});if(k)await kayitGecmisineEkle(CUR_SINIF,k.ogrenciId,'cikis');_poll('siniflar');setSyncing(false);closeModal('m-kayit-islem');});}
+async function tasiKayit(){const hId=document.getElementById('ki-sinif').value;if(!hId)return;const k=S.siniflar.find(s=>s.id===CUR_SINIF);const h=S.siniflar.find(s=>s.id===hId);const kayit=k.kayitlar.find(x=>x.id===CUR_KAYIT);if(!kayit||!h)return;setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar:k.kayitlar.filter(x=>x.id!==CUR_KAYIT)});await db.collection('siniflar').doc(hId).update({kayitlar:[...(h.kayitlar||[]),{...kayit,id:'k'+Date.now()}]});await ogrenciOlayEkle(kayit.ogrenciId,CUR_SINIF,k.ad,'cikis');await ogrenciOlayEkle(kayit.ogrenciId,hId,h.ad,'giris');_poll('siniflar');setSyncing(false);closeModal('m-kayit-islem');}
 
 // ── GRUP ÖDEME ─────────────────────────────────────────
 function ogSiOd(ogId,siId){return S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);}
@@ -2779,6 +2813,11 @@ async function sinifBirlestir(){
         const idx=S.odemeler.findIndex(o=>o.id===od.id);
         if(idx>=0)S.odemeler[idx]={...S.odemeler[idx],sinifId:hedefId};
       });
+      // Taşınan öğrenciler için geçmiş günlüğüne çıkış/giriş kaydı düş
+      Promise.all(kaynakKayitlar.map(k=>Promise.all([
+        ogrenciOlayEkle(k.ogrenciId,BIRLESTIR_KAYNAK,kaynak.ad,'cikis'),
+        ogrenciOlayEkle(k.ogrenciId,hedefId,hedef.ad,'giris')
+      ])));
       _poll('siniflar');_poll('odemeler');
       closeModal('m-birlestir');
       renderAll();
@@ -4158,10 +4197,11 @@ function renderOgDetay(){
     <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px;margin-bottom:14px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
         <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}">${initials(og.ad,og.soyad||'')}</div>
-        <div>
+        <div style="flex:1;min-width:0;">
           <div style="font-size:15px;font-weight:600;">${og.ad} ${og.soyad||''}</div>
           <div style="font-size:12px;color:var(--text3);">${og.tel||t('telefon_yok')}</div>
         </div>
+        <button class="btn btn-ghost btn-sm" style="flex-shrink:0;" onclick="openOgrenciGecmisi('${og.id}')">📜 ${t('gecmis')}</button>
       </div>
       ${og.not?`<div style="font-size:13px;color:var(--amber);background:var(--amberbg);border-radius:6px;padding:8px 10px;border:1px solid #fbbf2430;">📝 ${og.not}</div>`:''}
     </div>
@@ -4743,7 +4783,7 @@ function excelIndir(){
 }
 
 // Uygulamadaki TÜM Firestore koleksiyonları — yedekleme/geri yükleme bunları kapsar
-const TUM_KOLEKSIYONLAR=['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler','ozelSeanslar','egitmenler','tatiller','videoSiniflar','yoklamalar','gider_ayarlari','ayarlar','ogrenci_hesaplar','ogrenci_notlar'];
+const TUM_KOLEKSIYONLAR=['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler','ozelSeanslar','egitmenler','tatiller','videoSiniflar','yoklamalar','gider_ayarlari','ayarlar','ogrenci_hesaplar','ogrenci_notlar','ogrenciGecmisi'];
 
 // Bir koleksiyondaki TÜM belgeleri (300 belge sınırını sayfalayarak aşar) çeker
 async function fsTumBelgeler(col){
@@ -4974,9 +5014,7 @@ function renderYoklama(){
   }
 
   gununSiniflari.forEach((si,idx)=>{
-    const aktifOgList=(si.kayitlar||[])
-      .map(k=>S.ogrenciler.find(o=>o.id===k.ogrenciId))
-      .filter(o=>o&&(o.durum||'aktif')==='aktif');
+    const aktifOgList=yoklamaOgrenciListesi(si,tarih);
     const gelenSayisi=S.yoklamalar.filter(y=>y.sinifId===si.id&&y.tarih===tarih).length;
     const alindiMi=S.yoklamalar.some(y=>y.sinifId===si.id&&y.tarih===tarih);
     const renk=RENK_BAR[idx%RENK_BAR.length];
@@ -5002,14 +5040,52 @@ function renderYoklama(){
 }
 
 // ── Yoklama Al — seçilen sınıf/tarih için toplu işaretleme ─
+// Bir öğrencinin bir sınıftaki kaydının, belirli bir tarihte "dondurulmuş" olup olmadığını
+// kayıt geçmişi günlüğünden hesaplar. Günlükte kayıt yoksa (eski/geçmiş veri) dondurulmamış varsayılır.
+function kayitOTarihteDonukMu(si,ogrenciId,tarih){
+  const olaylar=S.ogrenciGecmisi
+    .filter(g=>g.sinifId===si.id&&g.ogrenciId===ogrenciId&&(g.olay==='dondur'||g.olay==='coz')&&g.tarih<=tarih)
+    .sort((a,b)=>a.tarih.localeCompare(b.tarih)||0);
+  if(!olaylar.length)return false;
+  return olaylar[olaylar.length-1].olay==='dondur';
+}
+// Bir sınıf + tarih için yoklamada gösterilecek öğrenci listesini hesaplar.
+// Her kayıt için, o TARİHTEKİ gerçek durum (öğrenci geçmişi günlüğüne göre) dikkate alınır —
+// şu anki dondurulmuş/çıkarılmış olması geçmiş tarihleri etkilemez.
+function yoklamaOgrenciListesi(si,tarih){
+  const gecmisMi=tarih<bugunTarih();
+  const eklenenIds=new Set();
+  const liste=[];
+  // 1) Hâlâ sınıfta kayıtlı olanlar
+  (si.kayitlar||[]).forEach(k=>{
+    const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);
+    if(!og)return;
+    if(k.basTarih&&k.basTarih>tarih)return; // o tarihte henüz kayıtlı değildi
+    if(kayitOTarihteDonukMu(si,og.id,tarih))return; // o tarihte dondurulmuştu
+    if(!gecmisMi&&(og.durum||'aktif')!=='aktif')return; // genel pasif durumu — sadece bugün/gelecek için filtrelenir
+    if(!eklenenIds.has(og.id)){eklenenIds.add(og.id);liste.push(og);}
+  });
+  // 2) Artık sınıfta kayıtlı olmayan ama o tarihte hâlâ kayıtlıyken sonradan çıkmış olanlar (öğrenci geçmişinden)
+  S.ogrenciGecmisi.filter(g=>g.sinifId===si.id&&g.olay==='cikis'&&g.tarih>tarih).forEach(g=>{
+    if(eklenenIds.has(g.ogrenciId))return;
+    if((si.kayitlar||[]).some(k=>k.ogrenciId===g.ogrenciId))return; // hâlâ kayıtlıysa 1. adımda zaten işlendi
+    const og=S.ogrenciler.find(o=>o.id===g.ogrenciId);
+    if(og){eklenenIds.add(og.id);liste.push(og);}
+  });
+  // 3) O tarihte zaten bir yoklama kaydı varsa (son güvence)
+  S.yoklamalar.filter(y=>y.sinifId===si.id&&y.tarih===tarih).forEach(y=>{
+    if(eklenenIds.has(y.ogrenciId))return;
+    const og=S.ogrenciler.find(o=>o.id===y.ogrenciId);
+    if(og){eklenenIds.add(og.id);liste.push(og);}
+  });
+  return liste.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
+}
+
 function yoklamaAlBaslat(sinifId,tarih,zorlaEdit){
   const mevcutVarMi=S.yoklamalar.some(y=>y.sinifId===sinifId&&y.tarih===tarih);
   if(mevcutVarMi&&!zorlaEdit){yoklamaGoster(sinifId,tarih);return;}
   const si=S.siniflar.find(s=>s.id===sinifId);if(!si)return;
-  const aktifOgList=(si.kayitlar||[])
-    .map(k=>S.ogrenciler.find(o=>o.id===k.ogrenciId))
-    .filter(o=>o&&(o.durum||'aktif')==='aktif')
-    .sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
+  const aktifOgList=yoklamaOgrenciListesi(si,tarih);
   const mevcutGelenler=new Set(S.yoklamalar.filter(y=>y.sinifId===sinifId&&y.tarih===tarih).map(y=>y.ogrenciId));
   const dObj=new Date(tarih+'T00:00:00');
   document.getElementById('m-kayit-islem-title').textContent=si.ad+' — '+dObj.toLocaleDateString(LC(),{day:'numeric',month:'short'});
@@ -5031,10 +5107,7 @@ function yoklamaAlBaslat(sinifId,tarih,zorlaEdit){
 // ── Yoklama Göster — zaten alınmış yoklamayı yeşil/kırmızı liste olarak göster ─
 function yoklamaGoster(sinifId,tarih){
   const si=S.siniflar.find(s=>s.id===sinifId);if(!si)return;
-  const aktifOgList=(si.kayitlar||[])
-    .map(k=>S.ogrenciler.find(o=>o.id===k.ogrenciId))
-    .filter(o=>o&&(o.durum||'aktif')==='aktif')
-    .sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
+  const aktifOgList=yoklamaOgrenciListesi(si,tarih);
   const gelenler=new Set(S.yoklamalar.filter(y=>y.sinifId===sinifId&&y.tarih===tarih).map(y=>y.ogrenciId));
   const dObj=new Date(tarih+'T00:00:00');
   document.getElementById('m-kayit-islem-title').textContent=si.ad+' — '+dObj.toLocaleDateString(LC(),{day:'numeric',month:'short'});
@@ -5541,6 +5614,38 @@ function renderDevamsiz(){
   }).join('');
 }
 
+function openOgrenciGecmisi(ogId){
+  const og=S.ogrenciler.find(o=>o.id===ogId);if(!og)return;
+  document.getElementById('m-ogrenci-gecmisi-title').textContent='📜 '+og.ad+' '+(og.soyad||'')+' — '+t('gecmis');
+  const olaylar=S.ogrenciGecmisi.filter(g=>g.ogrenciId===ogId).sort((a,b)=>b.tarih.localeCompare(a.tarih)||(b.olusturma||0)-(a.olusturma||0));
+  const el=document.getElementById('ogrenci-gecmisi-content');
+  if(!olaylar.length){
+    el.innerHTML='<div class="empty" style="padding:28px 0;"><div class="empty-text">'+t('gecmis_kaydi_yok')+'</div></div>';
+    openModal('m-ogrenci-gecmisi');
+    return;
+  }
+  const olayBilgi={
+    giris:{ikon:'➕',renk:'var(--green)',metin:t('olay_giris')},
+    cikis:{ikon:'➖',renk:'var(--accent)',metin:t('olay_cikis')},
+    dondur:{ikon:'⏸',renk:'var(--amber)',metin:t('olay_dondur')},
+    coz:{ikon:'▶',renk:'var(--cyan)',metin:t('olay_coz')},
+    aktif:{ikon:'✓',renk:'var(--green)',metin:t('olay_genel_aktif')},
+    pasif:{ikon:'✕',renk:'var(--accent)',metin:t('olay_genel_pasif')},
+  };
+  el.innerHTML=olaylar.map(g=>{
+    const bilgi=olayBilgi[g.olay]||{ikon:'•',renk:'var(--text3)',metin:g.olay};
+    const dObj=new Date(g.tarih+'T00:00:00');
+    return `<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border);">
+      <div style="width:26px;height:26px;border-radius:50%;background:${bilgi.renk}22;color:${bilgi.renk};display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">${bilgi.ikon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:500;color:${bilgi.renk};">${bilgi.metin}${g.sinifAdi?' · '+g.sinifAdi:''}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:1px;">${dObj.toLocaleDateString(LC(),{day:'numeric',month:'long',year:'numeric'})}</div>
+      </div>
+    </div>`;
+  }).join('');
+  openModal('m-ogrenci-gecmisi');
+}
+
 // O tarihte ders olan sınıfları getir
 function gunDersleri(tarihStr){
   const d=new Date(tarihStr+'T00:00:00');
@@ -5728,9 +5833,7 @@ function renderTakvimGunDetay(){
   dersler.forEach((si,i)=>{
     const origIdx=S.siniflar.indexOf(si);
     const renk=RENK_BAR[origIdx%RENK_BAR.length];
-    const aktifOgList=(si.kayitlar||[])
-      .map(k=>S.ogrenciler.find(o=>o.id===k.ogrenciId))
-      .filter(o=>o&&(o.durum||'aktif')==='aktif');
+    const aktifOgList=yoklamaOgrenciListesi(si,tarih);
     const gelenler=S.yoklamalar.filter(y=>y.sinifId===si.id&&y.tarih===tarih);
     const yoklamaYapildi=gelenler.length>0;
     const egitmen=S.egitmenler.find(e=>e.id===si.egitmenId);
