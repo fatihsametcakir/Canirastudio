@@ -1123,6 +1123,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="sheet-title" id="m-ogrenci-gecmisi-title" data-i18n="ogrenci_gecmisi">📜 Öğrenci Geçmişi</div>
   <div id="ogrenci-gecmisi-content" style="overflow-y:auto;max-height:calc(80vh - 90px);"></div>
 </div></div>
+
+<!-- Sınıf Geçmişi -->
+<div class="overlay" id="m-sinif-gecmisi"><div class="sheet" style="max-height:80vh;">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-sinif-gecmisi')">✕</button>
+  <div class="sheet-title" id="m-sinif-gecmisi-title" data-i18n="sinif_gecmisi">📜 Sınıf Geçmişi</div>
+  <div id="sinif-gecmisi-content" style="overflow-y:auto;max-height:calc(80vh - 90px);"></div>
+</div></div>
 <div class="overlay" id="m-yoklama-ogrenci"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-yoklama-ogrenci')">✕</button>
   <div class="sheet-title" id="m-yok-og-title">Yoklama</div>
@@ -1262,7 +1269,7 @@ window.db={
 window._firebaseReady=true;
 
 // State
-let S={ogrenciler:[],siniflar:[],odemeler:[],ozelOgrenciler:[],ozelPaketler:[],yoklamalar:[],egitmenler:[],tatiller:[],videoSiniflar:[],ozelSeanslar:[],ogrenciGecmisi:[]};
+let S={ogrenciler:[],siniflar:[],odemeler:[],ozelOgrenciler:[],ozelPaketler:[],yoklamalar:[],egitmenler:[],tatiller:[],videoSiniflar:[],ozelSeanslar:[],ogrenciGecmisi:[],sinifGecmisi:[]};
 let SEG_CINSIYET='k', SEG_TIP='paket';
 let CUR_SINIF=null, CUR_KAYIT=null, EDIT_OG=null, EDIT_ODEME=null, EDIT_EGITMEN=null;
 let CUR_OZEL_OG=null, CUR_OZEL_PAKET=null;
@@ -1424,6 +1431,11 @@ const TRANSLATIONS={
     ogrenci_gecmisi:'📜 Öğrenci Geçmişi', gecmis_kaydi_yok:'Henüz kayıtlı bir geçmiş yok.',
     olay_giris:'Sınıfa katıldı', olay_cikis:'Sınıftan çıkarıldı', olay_dondur:'Kayıt donduruldu', olay_coz:'Dondurma çözüldü',
     olay_genel_aktif:'Öğrenci aktif edildi', olay_genel_pasif:'Öğrenci pasife alındı',
+    sinif_gecmisi:'📜 Sınıf Geçmişi',
+    olay_ad_degisti:'Sınıf adı değişti', olay_gun_degisti:'Ders günü değişti', olay_saat_degisti:'Ders saati değişti',
+    olay_egitmen_degisti:'Eğitmen değişti', olay_kira_degisti:'Kira tutarı değişti',
+    olay_paket_ucreti_degisti:'Paket ücreti değişti', olay_tekders_ucreti_degisti:'Tek ders ücreti değişti',
+    olay_sinif_pasif:'Sınıf pasife alındı', olay_sinif_aktif:'Sınıf aktife alındı',
     kontrol_ediliyor:'Kontrol ediliyor...', kamera_baslatiliyor:'Kamera başlatılıyor...', qr_kamera_tutun:'QR kodu kameraya tutun',
     kamera_erisim_yok:'Kamera erişimi sağlanamadı', qr_kod_gecersiz:'Bu kod geçerli değil',
     merhaba:'Merhaba', tel_sifre_zorunlu:'Telefon ve şifre zorunlu.', hata:'Hata',
@@ -1590,6 +1602,11 @@ const TRANSLATIONS={
     ogrenci_gecmisi:'📜 Student History', gecmis_kaydi_yok:'No history recorded yet.',
     olay_giris:'Joined class', olay_cikis:'Removed from class', olay_dondur:'Enrollment frozen', olay_coz:'Freeze lifted',
     olay_genel_aktif:'Student activated', olay_genel_pasif:'Student deactivated',
+    sinif_gecmisi:'📜 Class History',
+    olay_ad_degisti:'Class name changed', olay_gun_degisti:'Class day changed', olay_saat_degisti:'Class time changed',
+    olay_egitmen_degisti:'Instructor changed', olay_kira_degisti:'Rent amount changed',
+    olay_paket_ucreti_degisti:'Package fee changed', olay_tekders_ucreti_degisti:'Drop-in fee changed',
+    olay_sinif_pasif:'Class deactivated', olay_sinif_aktif:'Class activated',
     kontrol_ediliyor:'Checking...', kamera_baslatiliyor:'Starting camera...', qr_kamera_tutun:'Point the camera at the QR code',
     kamera_erisim_yok:'Could not access camera', qr_kod_gecersiz:'This code is not valid',
     merhaba:'Hello', tel_sifre_zorunlu:'Phone and password are required.', hata:'Error',
@@ -1759,6 +1776,11 @@ const TRANSLATIONS={
     ogrenci_gecmisi:'📜 История ученика', gecmis_kaydi_yok:'История пока не записана.',
     olay_giris:'Присоединился к группе', olay_cikis:'Удалён из группы', olay_dondur:'Запись заморожена', olay_coz:'Заморозка снята',
     olay_genel_aktif:'Ученик активирован', olay_genel_pasif:'Ученик деактивирован',
+    sinif_gecmisi:'📜 История группы',
+    olay_ad_degisti:'Название группы изменено', olay_gun_degisti:'День занятия изменён', olay_saat_degisti:'Время занятия изменено',
+    olay_egitmen_degisti:'Преподаватель изменён', olay_kira_degisti:'Сумма аренды изменена',
+    olay_paket_ucreti_degisti:'Стоимость пакета изменена', olay_tekders_ucreti_degisti:'Стоимость разового занятия изменена',
+    olay_sinif_pasif:'Группа деактивирована', olay_sinif_aktif:'Группа активирована',
     dersi_sil:'Удалить занятие', ders_sil_aciklama:'Это запланированное занятие будет удалено.',
     ders_sil_saat_geri:'Этот час уже был списан с пакета — при удалении он будет возвращён в пакет.',
     dersler:'Занятия', henuz_ders_yok:'Занятий в этом пакете пока нет.', takvimden:'из календаря', saat_dus_ekle:'Списать/Добавить часы',
@@ -1946,7 +1968,7 @@ function startListeners(){
   document.getElementById('loading').style.display='flex';
   document.getElementById('app').style.display='none';
   applyLang();
-  const done={og:false,si:false,od:false,oog:false,op:false,yk:false,eg:false,tt:false,vs:false,oz2:false,ogh:false};
+  const done={og:false,si:false,od:false,oog:false,op:false,yk:false,eg:false,tt:false,vs:false,oz2:false,ogh:false,sgh:false};
 
   const timeout=setTimeout(()=>{
     document.getElementById('loading').style.display='none';
@@ -1977,6 +1999,7 @@ function startListeners(){
   snap('videoSiniflar','videoSiniflar','vs');
   snap('ozelSeanslar','ozelSeanslar','oz2');
   snap('ogrenciGecmisi','ogrenciGecmisi','ogh');
+  snap('sinifGecmisi','sinifGecmisi','sgh');
   // Admin bildirimlerini sadece admin oturumunda başlat
   if(!PORTAL_OG_ID) adminNotifBaslat();
 }
@@ -2303,7 +2326,9 @@ async function saveSinif(){
   const data={ad,gun:document.getElementById('si-gun').value,saat:document.getElementById('si-saat').value,paket:parseFloat(document.getElementById('si-paket').value)||0,tekders:parseFloat(document.getElementById('si-tekders').value)||0,kira:parseFloat(document.getElementById('si-kira').value)||0,asistanPct:parseFloat(document.getElementById('si-asistan-pct').value)||0,egitmenId:document.getElementById('si-egitmen').value||null};
   try{
     if(EDIT_SINIF){
+      const eski=S.siniflar.find(s=>s.id===EDIT_SINIF);
       await db.collection('siniflar').doc(EDIT_SINIF).update(data);
+      if(eski)sinifDegisiklikleriGunlukle(EDIT_SINIF,eski,data);
       // Topbar adını güncelle
       if(PAGE==='sinif-detay')document.getElementById('topbarPageTitle').textContent=ad;
     } else {
@@ -2312,6 +2337,25 @@ async function saveSinif(){
     closeModal('m-sinif');_poll('siniflar');
   }catch(e){alert('Hata: '+e.message);}
   btn.disabled=false;setSyncing(false);
+}
+// Sınıf düzenlemesinde hangi alanların değiştiğini tespit edip sinifGecmisi'ne kaydeder
+async function sinifDegisiklikleriGunlukle(sinifId,eski,yeni){
+  const egAd=id=>id?(S.egitmenler.find(e=>e.id===id)?.ad||'—'):'—';
+  const alanlar=[
+    {key:'ad',olay:'ad_degisti',fmt:v=>v},
+    {key:'gun',olay:'gun_degisti',fmt:v=>v},
+    {key:'saat',olay:'saat_degisti',fmt:v=>v},
+    {key:'egitmenId',olay:'egitmen_degisti',fmt:v=>egAd(v)},
+    {key:'kira',olay:'kira_degisti',fmt:v=>(v||0).toLocaleString(LC())+' ₺'},
+    {key:'paket',olay:'paket_ucreti_degisti',fmt:v=>(v||0).toLocaleString(LC())+' ₺'},
+    {key:'tekders',olay:'tekders_ucreti_degisti',fmt:v=>(v||0).toLocaleString(LC())+' ₺'},
+  ];
+  for(const a of alanlar){
+    const eskiDeger=eski[a.key]??(a.key==='ad'?'':0);
+    const yeniDeger=yeni[a.key]??(a.key==='ad'?'':0);
+    if(String(eskiDeger)===String(yeniDeger))continue;
+    await sinifOlayEkle(sinifId,a.olay,a.fmt(eskiDeger),a.fmt(yeniDeger));
+  }
 }
 async function silSinif(id){confirm_('Sınıfı Sil','Bu sınıf ve tüm kayıtları silinecek.',async()=>{setSyncing(true);await db.collection('siniflar').doc(id).delete();_poll('siniflar');setSyncing(false);if(PAGE==='sinif-detay')goBack();});}
 
@@ -2510,6 +2554,14 @@ function renderVideolar(){
   liste.forEach(vs=>{if(vs.playlistId)ensureVideoCount(vs.id,vs.playlistId);});
 }
 
+// Sınıf geçmişi günlüğü — ad/gün/saat/eğitmen/ücret/pasife-alma değişikliklerini tarihiyle tutar
+async function sinifOlayEkle(sinifId,olay,eskiDeger,yeniDeger){
+  try{
+    const yeniKayit={sinifId,olay,eskiDeger:eskiDeger??null,yeniDeger:yeniDeger??null,tarih:bugunTarih(),olusturma:Date.now()};
+    const result=await db.collection('sinifGecmisi').add(yeniKayit);
+    S.sinifGecmisi.push({...yeniKayit,id:result.id});
+  }catch(e){/* günlük tutulamazsa sessizce geç, ana işlemi engellemez */}
+}
 async function sinifDurumToggle(id){
   const si=S.siniflar.find(s=>s.id===id);
   if(!si)return;
@@ -2520,6 +2572,7 @@ async function sinifDurumToggle(id){
   confirm_(yeniDurum==='pasif'?'Pasife Al':'Aktife Al', mesaj, async()=>{
     setSyncing(true);
     await db.collection('siniflar').doc(id).update({durum:yeniDurum});
+    await sinifOlayEkle(id,yeniDurum==='pasif'?'sinif_pasif':'sinif_aktif',null,null);
     _poll('siniflar');setSyncing(false);
     toastGoster(yeniDurum==='pasif'?'⏸ Sınıf pasife alındı':'✓ Sınıf aktife alındı');
   });
@@ -3833,7 +3886,7 @@ function renderSinifDetay(siId){
   <button class="btn ${si.durum==='pasif'?'btn-green':'btn-amber'} btn-sm" style="flex:1;" onclick="sinifDurumToggle('${si.id}')">${si.durum==='pasif'?'✓ '+t('aktife_al'):'⏸ '+t('pasife_al')}</button>
   <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openBirlestirModal('${si.id}')">⇄ ${t('birlestir')}</button>
   <button class="btn" style="flex:1;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b40;" onclick="silSinif('${si.id}')">🗑 ${t('btn_sil')}</button>
-</div><div style="display:flex;gap:8px;margin-bottom:14px;"><button class="btn btn-cyan btn-sm" style="flex:1;" onclick="qrGoster('${si.id}')">📱 ${t('qr_yoklama')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="yoklamaGecmis('${si.id}')">${t('yoklama_gecmisi')}</button></div><div class="card" style="padding:0 16px;">${kHTML}</div>`;
+</div><div style="display:flex;gap:8px;margin-bottom:14px;"><button class="btn btn-cyan btn-sm" style="flex:1;" onclick="qrGoster('${si.id}')">📱 ${t('qr_yoklama')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="yoklamaGecmis('${si.id}')">${t('yoklama_gecmisi')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openSinifGecmisi('${si.id}')">📜 ${t('gecmis')}</button></div><div class="card" style="padding:0 16px;">${kHTML}</div>`;
 }
 
 let OG_PAKET_ACIK=new Set();
@@ -4783,7 +4836,7 @@ function excelIndir(){
 }
 
 // Uygulamadaki TÜM Firestore koleksiyonları — yedekleme/geri yükleme bunları kapsar
-const TUM_KOLEKSIYONLAR=['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler','ozelSeanslar','egitmenler','tatiller','videoSiniflar','yoklamalar','gider_ayarlari','ayarlar','ogrenci_hesaplar','ogrenci_notlar','ogrenciGecmisi'];
+const TUM_KOLEKSIYONLAR=['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler','ozelSeanslar','egitmenler','tatiller','videoSiniflar','yoklamalar','gider_ayarlari','ayarlar','ogrenci_hesaplar','ogrenci_notlar','ogrenciGecmisi','sinifGecmisi'];
 
 // Bir koleksiyondaki TÜM belgeleri (300 belge sınırını sayfalayarak aşar) çeker
 async function fsTumBelgeler(col){
@@ -5644,6 +5697,43 @@ function openOgrenciGecmisi(ogId){
     </div>`;
   }).join('');
   openModal('m-ogrenci-gecmisi');
+}
+
+function openSinifGecmisi(sinifId){
+  const si=S.siniflar.find(s=>s.id===sinifId);if(!si)return;
+  document.getElementById('m-sinif-gecmisi-title').textContent='📜 '+si.ad+' — '+t('gecmis');
+  const olaylar=S.sinifGecmisi.filter(g=>g.sinifId===sinifId).sort((a,b)=>b.tarih.localeCompare(a.tarih)||(b.olusturma||0)-(a.olusturma||0));
+  const el=document.getElementById('sinif-gecmisi-content');
+  if(!olaylar.length){
+    el.innerHTML='<div class="empty" style="padding:28px 0;"><div class="empty-text">'+t('gecmis_kaydi_yok')+'</div></div>';
+    openModal('m-sinif-gecmisi');
+    return;
+  }
+  const olayBilgi={
+    ad_degisti:{ikon:'✎',renk:'var(--cyan)',metin:t('olay_ad_degisti')},
+    gun_degisti:{ikon:'📅',renk:'var(--cyan)',metin:t('olay_gun_degisti')},
+    saat_degisti:{ikon:'🕐',renk:'var(--cyan)',metin:t('olay_saat_degisti')},
+    egitmen_degisti:{ikon:'👤',renk:'var(--purple)',metin:t('olay_egitmen_degisti')},
+    kira_degisti:{ikon:'₺',renk:'var(--amber)',metin:t('olay_kira_degisti')},
+    paket_ucreti_degisti:{ikon:'₺',renk:'var(--amber)',metin:t('olay_paket_ucreti_degisti')},
+    tekders_ucreti_degisti:{ikon:'₺',renk:'var(--amber)',metin:t('olay_tekders_ucreti_degisti')},
+    sinif_pasif:{ikon:'⏸',renk:'var(--accent)',metin:t('olay_sinif_pasif')},
+    sinif_aktif:{ikon:'✓',renk:'var(--green)',metin:t('olay_sinif_aktif')},
+  };
+  el.innerHTML=olaylar.map(g=>{
+    const bilgi=olayBilgi[g.olay]||{ikon:'•',renk:'var(--text3)',metin:g.olay};
+    const dObj=new Date(g.tarih+'T00:00:00');
+    const degisimVar=g.eskiDeger!=null&&g.yeniDeger!=null;
+    return `<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border);">
+      <div style="width:26px;height:26px;border-radius:50%;background:${bilgi.renk}22;color:${bilgi.renk};display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">${bilgi.ikon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:500;color:${bilgi.renk};">${bilgi.metin}</div>
+        ${degisimVar?`<div style="font-size:12px;color:var(--text2);margin-top:2px;">${g.eskiDeger} → ${g.yeniDeger}</div>`:''}
+        <div style="font-size:11px;color:var(--text3);margin-top:1px;">${dObj.toLocaleDateString(LC(),{day:'numeric',month:'long',year:'numeric'})}</div>
+      </div>
+    </div>`;
+  }).join('');
+  openModal('m-sinif-gecmisi');
 }
 
 // O tarihte ders olan sınıfları getir
