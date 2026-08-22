@@ -367,25 +367,29 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 /* Slide-over panel */
 .drawer-overlay{position:fixed;inset:0;background:#00000070;z-index:300;display:none;backdrop-filter:blur(3px);}
 .drawer-overlay.open{display:block;}
-.drawer{position:fixed;top:0;left:0;bottom:0;width:min(300px,85vw);background:var(--surface);z-index:301;transform:translateX(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:min(300px,85vw);background:linear-gradient(180deg,#1a1926,#16151f 40%);z-index:301;transform:translateX(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;}
 .drawer.open{transform:translateX(0);}
-.drawer-header{padding:20px 20px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.drawer-header{padding:20px 20px 16px;position:relative;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.drawer-header::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1.5px;background:linear-gradient(90deg,var(--accent),var(--purple,#a78bfa),transparent);opacity:.5;}
 .drawer-logo{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
 .drawer-logo span{color:var(--accent);font-style:italic;}
-.drawer-close{width:30px;height:30px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.drawer-close{width:32px;height:32px;border-radius:50%;background:var(--accentbg);border:1px solid #ff6b6b35;color:var(--accent);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
+.drawer-close:active{transform:scale(.85) rotate(90deg);}
 .drawer-body{flex:1;padding:8px 0 24px;}
 /* Accordion */
-.acc-item{border-bottom:1px solid var(--border);}
-.acc-head{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;cursor:pointer;user-select:none;}
-.acc-head:active{background:var(--surface2);}
-.acc-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px;}
-.acc-icon{font-size:16px;}
-.acc-arrow{font-size:14px;color:var(--text3);transition:transform .2s;}
-.acc-arrow.open{transform:rotate(90deg);}
+.acc-item{border-bottom:1px solid var(--border);transition:background .25s;}
+.acc-item:has(.acc-body.open){background:linear-gradient(90deg,color-mix(in srgb,var(--item-color,var(--accent)) 12%,transparent),transparent 60%);}
+.acc-head{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;cursor:pointer;user-select:none;transition:transform .15s;}
+.acc-head:active{transform:scale(.98);}
+.acc-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:10px;}
+.acc-icon{width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--item-color,var(--accent)) 18%,transparent);color:var(--item-color,var(--accent));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+.acc-item:has(.acc-body.open) .acc-icon{transform:scale(1.12);box-shadow:0 3px 10px -2px var(--item-color,var(--accent));}
+.acc-arrow{font-size:14px;color:var(--text3);transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
+.acc-arrow.open{transform:rotate(90deg);color:var(--item-color,var(--accent));}
 .acc-body{display:none;padding:0 16px 16px;}
 .acc-body.open{display:block;}
-.drawer-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border-radius:var(--radius-sm);border:none;background:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;text-align:left;margin-bottom:4px;}
-.drawer-btn:active{background:var(--surface2);}
+.drawer-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border-radius:var(--radius-sm);border:none;background:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;text-align:left;margin-bottom:4px;transition:transform .15s;}
+.drawer-btn:active{transform:scale(.97);background:var(--surface2);}
 .drawer-btn.danger{color:var(--accent);}
 .drawer-sep{height:1px;background:var(--border);margin:4px 0 8px;}
 /* Gruplama seçici */
@@ -793,7 +797,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
 
     <!-- Tema -->
-    <div class="acc-item">
+    <div class="acc-item" style="--item-color:var(--purple);">
       <div class="acc-head" onclick="accToggle('acc-tema')">
         <div class="acc-title"><span class="acc-icon">🎨</span> <span data-i18n="acc_tema">Tema</span></div>
         <span class="acc-arrow" id="arr-acc-tema">›</span>
@@ -806,7 +810,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     </div>
 
     <!-- Güvenlik -->
-    <div class="acc-item">
+    <div class="acc-item" style="--item-color:var(--accent);">
       <div class="acc-head" onclick="accToggle('acc-guvenlik')">
         <div class="acc-title"><span class="acc-icon">🔒</span> <span data-i18n="acc_guvenlik">Güvenlik</span></div>
         <span class="acc-arrow" id="arr-acc-guvenlik">›</span>
@@ -821,7 +825,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     </div>
 
     <!-- WhatsApp Şablonları -->
-    <div class="acc-item">
+    <div class="acc-item" style="--item-color:var(--green);">
       <div class="acc-head" onclick="accToggle('acc-wa')">
         <div class="acc-title"><span class="acc-icon">💬</span> <span data-i18n="acc_wa">WhatsApp Şablonları</span></div>
         <span class="acc-arrow" id="arr-acc-wa">›</span>
@@ -841,7 +845,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <!-- Ödeme Bilgileri -->
 
     <!-- Yedekleme -->
-    <div class="acc-item">
+    <div class="acc-item" style="--item-color:var(--cyan);">
       <div class="acc-head" onclick="accToggle('acc-yedek')">
         <div class="acc-title"><span class="acc-icon">💾</span> <span data-i18n="acc_yedek">Yedekleme</span></div>
         <span class="acc-arrow" id="arr-acc-yedek">›</span>
@@ -866,7 +870,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <!-- Aylık Gelir Trendi -->
 
     <!-- Excel Dışa Aktarma -->
-    <div class="acc-item">
+    <div class="acc-item" style="--item-color:var(--amber);">
       <div class="acc-head" onclick="accToggle('acc-excel')">
         <div class="acc-title"><span class="acc-icon">📊</span> <span data-i18n="acc_excel">Excel'e Aktar</span></div>
         <span class="acc-arrow" id="arr-acc-excel">›</span>
@@ -883,7 +887,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     </div>
 
     <!-- Uygulamayı Yükle -->
-    <div class="acc-item">
+    <div class="acc-item" style="--item-color:var(--purple);">
       <div class="acc-head" onclick="accToggle('acc-pwa')">
         <div class="acc-title"><span class="acc-icon">📱</span> <span data-i18n="acc_pwa">Uygulamayı Yükle</span></div>
         <span class="acc-arrow" id="arr-acc-pwa">›</span>
@@ -900,7 +904,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     </div>
 
     <!-- Öğrenci Birleştirme -->
-    <div class="acc-item">
+    <div class="acc-item" style="--item-color:var(--cyan);">
       <div class="acc-head" onclick="accToggle('acc-birlestir')">
         <div class="acc-title"><span class="acc-icon">🔗</span> <span data-i18n="ogrenci_birlestirme">Öğrenci Birleştirme</span></div>
         <span class="acc-arrow" id="arr-acc-birlestir">›</span>
@@ -912,7 +916,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     </div>
 
     <!-- Veri Yönetimi -->
-    <div class="acc-item">
+    <div class="acc-item" style="--item-color:var(--accent);">
       <div class="acc-head" onclick="accToggle('acc-veri')">
         <div class="acc-title"><span class="acc-icon">🗑</span> <span data-i18n="acc_veri">Veri Yönetimi</span></div>
         <span class="acc-arrow" id="arr-acc-veri">›</span>
@@ -930,7 +934,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
   </div>
   <div style="padding:12px 16px max(20px,env(safe-area-inset-bottom));border-top:1px solid var(--border);flex-shrink:0;">
-    <button class="btn" style="width:100%;padding:12px;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-weight:600;" onclick="cikisYap()" data-i18n="cikis_yap">→ Çıkış Yap</button>
+    <button class="btn" style="width:100%;padding:12px;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-weight:600;transition:transform .15s;" onclick="cikisYap()" data-i18n="cikis_yap">→ Çıkış Yap</button>
   </div>
 </div>
 <div class="overlay" id="m-ogrenci"><div class="sheet">
