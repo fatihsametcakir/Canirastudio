@@ -39,7 +39,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding-bottom:140px;padding-top:70px;}
-.topbar{padding:14px 14px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:fixed;top:0;left:0;right:0;max-width:480px;margin:0 auto;z-index:200;background:linear-gradient(180deg,#1a1926 0%,#16151f 85%,transparent 100%);backdrop-filter:blur(12px);position:relative;}
+.topbar{padding:14px 14px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:fixed;top:0;left:0;right:0;max-width:480px;margin:0 auto;z-index:200;background:linear-gradient(180deg,#1a1926 0%,#16151f 85%,transparent 100%);backdrop-filter:blur(12px);}
 .topbar::after{content:'';position:absolute;bottom:0;left:14px;right:14px;height:1.5px;background:linear-gradient(90deg,transparent,var(--accent),var(--purple,#a78bfa),transparent);opacity:.55;}
 .topbar-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden;}
 .back-btn{width:36px;height:36px;border-radius:50%;background:var(--purplebg);border:1px solid #a78bfa35;color:var(--purple);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
