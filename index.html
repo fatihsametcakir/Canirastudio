@@ -203,7 +203,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .oog-ara-item{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);margin-top:6px;cursor:pointer;font-size:13px;}
 .oog-ara-item:active{opacity:.8;}
 .oog-ara-item span.oai-not{font-size:11px;color:var(--text3);}
-.field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .2s;}
+.field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .2s;color-scheme:dark;}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:#ff6b6b70;}
 .field select option{background:var(--surface2);}
 .field textarea{resize:none;height:72px;}
@@ -660,8 +660,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <div style="margin-bottom:12px;padding:14px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border2);">
       <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
       <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <input id="tatil-tarih" type="date" style="flex:1;"/>
-        <input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad" style="flex:2;"/>
+        <input id="tatil-tarih" type="date" style="flex:1;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;color-scheme:dark;"/>
+        <input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad" style="flex:2;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
       </div>
       <button class="btn btn-accent" style="width:100%;margin-bottom:12px;" onclick="tatilEkle()" data-i18n="btn_tatil_ekle">＋ Tatil Ekle</button>
       <div id="tatil-liste"></div>
