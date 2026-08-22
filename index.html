@@ -5102,11 +5102,27 @@ function kayitOTarihteDonukMu(si,ogrenciId,tarih){
   if(!olaylar.length)return false;
   return olaylar[olaylar.length-1].olay==='dondur';
 }
+// Bir öğrencinin GENEL (sınıftan bağımsız) aktif/pasif durumunu, belirli bir tarih için hesaplar.
+// O tarihe kadar kaydedilmiş bir aktif/pasif geçmişi varsa ona göre; hiç geçmiş yoksa (bu takip
+// başlamadan önceki tarihler için) şu anki duruma göre karar verir.
+function ogrenciOTarihteAktifMi(ogrenciId,tarih){
+  const tumOlaylar=S.ogrenciGecmisi
+    .filter(g=>g.ogrenciId===ogrenciId&&(g.olay==='aktif'||g.olay==='pasif'))
+    .sort((a,b)=>a.tarih.localeCompare(b.tarih)||0);
+  if(!tumOlaylar.length){
+    // Hiç kayıt yok (takip başlamadan önceki tarihler için) — şu anki duruma göre karar ver
+    const og=S.ogrenciler.find(o=>o.id===ogrenciId);
+    return (og?.durum||'aktif')==='aktif';
+  }
+  const geceriliOlaylar=tumOlaylar.filter(o=>o.tarih<=tarih);
+  if(geceriliOlaylar.length)return geceriliOlaylar[geceriliOlaylar.length-1].olay==='aktif';
+  // Sorgulanan tarih, ilk kayıtlı değişiklikten bile önce — o değişiklikten hemen önceki durum, değişikliğin tersidir
+  return tumOlaylar[0].olay==='pasif';
+}
 // Bir sınıf + tarih için yoklamada gösterilecek öğrenci listesini hesaplar.
 // Her kayıt için, o TARİHTEKİ gerçek durum (öğrenci geçmişi günlüğüne göre) dikkate alınır —
-// şu anki dondurulmuş/çıkarılmış olması geçmiş tarihleri etkilemez.
+// şu anki dondurulmuş/çıkarılmış/pasif olması geçmiş tarihleri etkilemez.
 function yoklamaOgrenciListesi(si,tarih){
-  const gecmisMi=tarih<bugunTarih();
   const eklenenIds=new Set();
   const liste=[];
   // 1) Hâlâ sınıfta kayıtlı olanlar
@@ -5115,13 +5131,14 @@ function yoklamaOgrenciListesi(si,tarih){
     if(!og)return;
     if(k.basTarih&&k.basTarih>tarih)return; // o tarihte henüz kayıtlı değildi
     if(kayitOTarihteDonukMu(si,og.id,tarih))return; // o tarihte dondurulmuştu
-    if(!gecmisMi&&(og.durum||'aktif')!=='aktif')return; // genel pasif durumu — sadece bugün/gelecek için filtrelenir
+    if(!ogrenciOTarihteAktifMi(og.id,tarih))return; // o tarihte genel olarak pasifti
     if(!eklenenIds.has(og.id)){eklenenIds.add(og.id);liste.push(og);}
   });
   // 2) Artık sınıfta kayıtlı olmayan ama o tarihte hâlâ kayıtlıyken sonradan çıkmış olanlar (öğrenci geçmişinden)
   S.ogrenciGecmisi.filter(g=>g.sinifId===si.id&&g.olay==='cikis'&&g.tarih>tarih).forEach(g=>{
     if(eklenenIds.has(g.ogrenciId))return;
     if((si.kayitlar||[]).some(k=>k.ogrenciId===g.ogrenciId))return; // hâlâ kayıtlıysa 1. adımda zaten işlendi
+    if(!ogrenciOTarihteAktifMi(g.ogrenciId,tarih))return; // o tarihte genel olarak pasifti
     const og=S.ogrenciler.find(o=>o.id===g.ogrenciId);
     if(og){eklenenIds.add(og.id);liste.push(og);}
   });
