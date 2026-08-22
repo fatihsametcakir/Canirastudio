@@ -51,13 +51,23 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 
 /* BOTTOM NAV — 5 item */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--border2);display:flex;z-index:100;padding:9px 0 max(9px,env(safe-area-inset-bottom));}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 2px;cursor:pointer;border:none;background:none;color:var(--text2);font-size:10px;font-weight:500;font-family:'DM Sans',sans-serif;transition:color 0.2s;}
-.nav-item.active{color:var(--accent);font-weight:700;}
-.nav-icon-wrap{display:flex;align-items:center;justify-content:center;width:36px;height:30px;border-radius:10px;transition:background .2s;}
-.nav-item.active .nav-icon-wrap{background:var(--accentbg);}
-.nav-icon{font-size:19px;line-height:1;}
-.nav-item.active .nav-icon{filter:drop-shadow(0 0 6px var(--accent));}
+.bottom-nav{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:464px;display:flex;align-items:center;z-index:100;background:linear-gradient(180deg,#22212e,#1a1926);border-radius:20px;padding:6px 3px max(6px,env(safe-area-inset-bottom));box-shadow:0 10px 26px -8px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06) inset;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 1px;cursor:pointer;border:none;background:none;color:#8682a3;font-family:'DM Sans',sans-serif;position:relative;transition:transform .3s cubic-bezier(.34,1.56,.64,1),color .25s;}
+.nav-icon-wrap{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;transition:all .3s cubic-bezier(.34,1.56,.64,1);}
+.nav-icon-wrap svg{width:17px;height:17px;transition:all .25s;}
+.nav-label{font-size:9px;font-weight:700;opacity:0;max-height:0;overflow:hidden;display:block;transition:opacity .2s, max-height .2s;}
+.nav-item.active{color:#fff;transform:translateY(-7px);}
+.nav-item.active .nav-icon-wrap{background:var(--item-color,var(--accent));box-shadow:0 5px 14px -2px var(--item-color,var(--accent));animation:navpulse 2.2s ease-in-out infinite;}
+.nav-item.active .nav-icon-wrap svg{transform:scale(1.15);}
+.nav-item.active .nav-label{opacity:1;max-height:12px;margin-top:2px;color:var(--item-color,var(--accent));}
+.c-home{--item-color:var(--accent);}
+.c-og{--item-color:var(--cyan,#22d3ee);}
+.c-si{--item-color:var(--purple,#a78bfa);}
+.c-tak{--item-color:var(--accent);}
+.c-ozel{--item-color:var(--purple,#a78bfa);}
+.c-od{--item-color:var(--green,#34d399);}
+.c-gg{--item-color:var(--amber,#fbbf24);}
+@keyframes navpulse{0%,100%{box-shadow:0 5px 14px -2px var(--item-color,var(--accent));}50%{box-shadow:0 5px 19px 1px var(--item-color,var(--accent));}}
 
 .page{display:none;flex:1;padding:0 16px;}
 .page.active{display:block;}
@@ -94,7 +104,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .btn-amber{background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2430;}
 .btn-cyan{background:var(--cyanbg);color:var(--cyan);border:1px solid #22d3ee30;}
 .btn-sm{padding:6px 12px;font-size:12px;border-radius:8px;}
-.fab{position:fixed;bottom:80px;right:max(16px,calc(50vw - 224px));width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff6b6b,#ff4757);color:#fff;font-size:22px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px #ff6b6b50;z-index:99;transition:transform .15s;}
+.fab{position:fixed;bottom:88px;right:max(16px,calc(50vw - 224px));width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff6b6b,#ff4757);color:#fff;font-size:22px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px #ff6b6b50;z-index:99;transition:transform .15s;}
 .fab:active{transform:scale(.9);}
 .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;}
 .av-k{background:linear-gradient(135deg,#f472b630,#f472b615);color:var(--pink);border:1px solid #f472b635;}
@@ -747,13 +757,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div id="toast-container"></div>
   <div id="toast-container"></div>
   <nav class="bottom-nav">
-    <button class="nav-item active" onclick="goTo('anasayfa',this)"><div class="nav-icon-wrap"><span class="nav-icon">⌂</span></div><span id="navlbl-anasayfa">Ana Sayfa</span></button>
-    <button class="nav-item" onclick="goTo('ogrenciler',this)"><div class="nav-icon-wrap"><span class="nav-icon">♟</span></div><span id="navlbl-ogrenciler">Öğrenciler</span></button>
-    <button class="nav-item" onclick="goTo('siniflar',this)"><div class="nav-icon-wrap"><span class="nav-icon">◈</span></div><span id="navlbl-siniflar">Sınıflar</span></button>
-    <button class="nav-item" onclick="goTo('takvim',this)"><div class="nav-icon-wrap"><span class="nav-icon">▦</span></div><span id="navlbl-takvim">Takvim</span></button>
-    <button class="nav-item" onclick="goTo('ozel',this)"><div class="nav-icon-wrap"><span class="nav-icon">✦</span></div><span id="navlbl-ozel">Özel Dersler</span></button>
-    <button class="nav-item" onclick="goTo('odemeler',this)"><div class="nav-icon-wrap"><span class="nav-icon">◎</span></div><span id="navlbl-odemeler">Ödemeler</span></button>
-    <button class="nav-item" onclick="goTo('gelirgider',this)"><div class="nav-icon-wrap"><span class="nav-icon">₺</span></div><span id="navlbl-gelirgider">Gelir/Gider</span></button>
+    <button class="nav-item active c-home" onclick="goTo('anasayfa',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.6" fill="currentColor" stroke="none"/><path d="M9 8l-3.5 12h13L15 8z"/><path d="M8.3 14h7.4"/></svg></div><span class="nav-label" id="navlbl-anasayfa">Ana Sayfa</span></button>
+    <button class="nav-item c-og" onclick="goTo('ogrenciler',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.5" r="1.8"/><circle cx="16" cy="5.5" r="1.8"/><path d="M8 9c-1.5 1-2 2.5-1.5 5l1 6"/><path d="M16 9c1.5 1 2 2.5 1.5 5l-1 6"/><path d="M8 9c1.5 1.5 4.5 1.5 6 0"/><path d="M9.5 13.5h3"/></svg></div><span class="nav-label" id="navlbl-ogrenciler">Öğrenciler</span></button>
+    <button class="nav-item c-si" onclick="goTo('siniflar',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="2.5"/><circle cx="16" cy="15" r="2.5"/><path d="M9.5 17V5.5L18.5 4v11"/><path d="M9.5 9L18.5 7.5"/></svg></div><span class="nav-label" id="navlbl-siniflar">Sınıflar</span></button>
+    <button class="nav-item c-tak" onclick="goTo('takvim',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/><circle cx="8" cy="14.5" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="14.5" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg></div><span class="nav-label" id="navlbl-takvim">Takvim</span></button>
+    <button class="nav-item c-ozel" onclick="goTo('ozel',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v3.5M12 18.5V22M4.5 12H2M22 12h-2.5M6 6l1.7 1.7M16.3 16.3L18 18M18 6l-1.7 1.7M7.7 16.3L6 18"/><circle cx="12" cy="12" r="3.5"/></svg></div><span class="nav-label" id="navlbl-ozel">Özel Dersler</span></button>
+    <button class="nav-item c-od" onclick="goTo('odemeler',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 000 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 000-4V6a2 2 0 00-2-2H5a2 2 0 00-2 2v3z"/><path d="M14 4.5v15" stroke-dasharray="2.2 2.2"/></svg></div><span class="nav-label" id="navlbl-odemeler">Ödemeler</span></button>
+    <button class="nav-item c-gg" onclick="goTo('gelirgider',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V13M10 20V8M16 20V11M20 20V4"/></svg></div><span class="nav-label" id="navlbl-gelirgider">Gelir/Gider</span></button>
   </nav>
   <button class="fab" id="mainFab" onclick="fabAction()">＋</button>
 </div>
