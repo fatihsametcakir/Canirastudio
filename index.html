@@ -1112,7 +1112,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="sheet-title" data-i18n="devamsiz_ogrenciler">🚩 Devamsız Öğrenciler</div>
   <div class="tab-row">
     <button class="tab-btn active" id="devamsiz-tab-2" onclick="devamsizTabSec('2')" data-i18n="iki_hafta_ustuste">2 Hafta Üst Üste</button>
-    <button class="tab-btn" id="devamsiz-tab-3" onclick="devamsizTabSec('3')" data-i18n="uc_hafta_ustuste">3 Hafta Üst Üste</button>
+    <button class="tab-btn" id="devamsiz-tab-3" onclick="devamsizTabSec('3')" data-i18n="uc_hafta_ustuste">3+ Hafta</button>
   </div>
   <div id="devamsiz-content" style="overflow-y:auto;max-height:calc(85vh - 160px);"></div>
 </div></div>
@@ -1412,7 +1412,7 @@ const TRANSLATIONS={
     sinifta_aktif_ogrenci_yok:'Bu sınıfta aktif öğrenci yok.', yoklama_al_buton:'Yoklama Al',
     yoklama_kaydedildi:'Yoklama kaydedildi', katildi_kucuk:'katıldı',
     duzenle:'Düzenle', yoklama_alindi_aciklama:'Bu ders için yoklama alındı. Bir öğrenciye dokunarak katılım geçmişini görebilir, düzenlemek için aşağıdaki butonu kullanabilirsin.',
-    devamsiz_ogrenciler:'🚩 Devamsız Öğrenciler', iki_hafta_ustuste:'2 Hafta Üst Üste', uc_hafta_ustuste:'3 Hafta Üst Üste',
+    devamsiz_ogrenciler:'🚩 Devamsız Öğrenciler', iki_hafta_ustuste:'2 Hafta Üst Üste', uc_hafta_ustuste:'3+ Hafta',
     devamsiz_ogrenci_yok:'Bu kategoride devamsız öğrenci yok 🎉',
     kontrol_ediliyor:'Kontrol ediliyor...', kamera_baslatiliyor:'Kamera başlatılıyor...', qr_kamera_tutun:'QR kodu kameraya tutun',
     kamera_erisim_yok:'Kamera erişimi sağlanamadı', qr_kod_gecersiz:'Bu kod geçerli değil',
@@ -1575,7 +1575,7 @@ const TRANSLATIONS={
     sinifta_aktif_ogrenci_yok:'No active students in this class.', yoklama_al_buton:'Take Attendance',
     yoklama_kaydedildi:'Attendance saved', katildi_kucuk:'attended',
     duzenle:'Edit', yoklama_alindi_aciklama:'Attendance has been taken for this class. Tap a student to see their attendance history, or use the button below to edit.',
-    devamsiz_ogrenciler:'🚩 Absent Students', iki_hafta_ustuste:'2 Weeks in a Row', uc_hafta_ustuste:'3 Weeks in a Row',
+    devamsiz_ogrenciler:'🚩 Absent Students', iki_hafta_ustuste:'2 Weeks in a Row', uc_hafta_ustuste:'3+ Weeks',
     devamsiz_ogrenci_yok:'No absent students in this category 🎉',
     kontrol_ediliyor:'Checking...', kamera_baslatiliyor:'Starting camera...', qr_kamera_tutun:'Point the camera at the QR code',
     kamera_erisim_yok:'Could not access camera', qr_kod_gecersiz:'This code is not valid',
@@ -1741,7 +1741,7 @@ const TRANSLATIONS={
     sinifta_aktif_ogrenci_yok:'В этой группе нет активных учеников.', yoklama_al_buton:'Отметить посещаемость',
     yoklama_kaydedildi:'Посещаемость сохранена', katildi_kucuk:'присутствовал',
     duzenle:'Изменить', yoklama_alindi_aciklama:'Посещаемость для этого занятия уже отмечена. Нажмите на ученика, чтобы увидеть историю посещений, или используйте кнопку ниже для изменения.',
-    devamsiz_ogrenciler:'🚩 Отсутствующие ученики', iki_hafta_ustuste:'2 недели подряд', uc_hafta_ustuste:'3 недели подряд',
+    devamsiz_ogrenciler:'🚩 Отсутствующие ученики', iki_hafta_ustuste:'2 недели подряд', uc_hafta_ustuste:'3+ недели',
     devamsiz_ogrenci_yok:'В этой категории нет отсутствующих учеников 🎉',
     dersi_sil:'Удалить занятие', ders_sil_aciklama:'Это запланированное занятие будет удалено.',
     ders_sil_saat_geri:'Этот час уже был списан с пакета — при удалении он будет возвращён в пакет.',
@@ -5469,6 +5469,7 @@ function sinifSonDersTarihleri(si,n){
   const tarihler=[];
   if(gunNo<0)return tarihler;
   let d=new Date(bugunTarih()+'T00:00:00');
+  d.setDate(d.getDate()-1); // bugünü hariç tut — sadece kesinlikle geçmiş dersleri say
   while(d.getDay()!==gunNo)d.setDate(d.getDate()-1);
   let guvenlik=0;
   while(tarihler.length<n&&guvenlik<80){
@@ -5484,20 +5485,21 @@ function sinifSonDersTarihleri(si,n){
 function devamsizOgrencileriHesapla(){
   const grup2={},grup3={};
   S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').forEach(si=>{
-    const sonTarihler=sinifSonDersTarihleri(si,3);
+    const sonTarihler=sinifSonDersTarihleri(si,3); // en yeniden eskiye [t1,t2,t3]
     if(sonTarihler.length<2)return; // yeterli ders geçmişi yok
     const aktifOgList=(si.kayitlar||[]).map(k=>S.ogrenciler.find(o=>o.id===k.ogrenciId)).filter(o=>o&&(o.durum||'aktif')==='aktif');
     aktifOgList.forEach(og=>{
       const geldiMi=(tarih)=>S.yoklamalar.some(y=>y.sinifId===si.id&&y.ogrenciId===og.id&&y.tarih===tarih);
-      const son2=sonTarihler.slice(0,2);
-      const son3=sonTarihler.slice(0,3);
-      if(son2.length===2&&son2.every(t=>!geldiMi(t))){
-        if(!grup2[si.id])grup2[si.id]={si,ogrenciler:[]};
-        grup2[si.id].ogrenciler.push(og);
-      }
-      if(son3.length===3&&son3.every(t=>!geldiMi(t))){
+      const [t1,t2,t3]=sonTarihler;
+      const son2Gelmedi=!geldiMi(t1)&&!geldiMi(t2);
+      if(!son2Gelmedi)return; // en az son 2 dersi kaçırmadıysa hiçbir listeye girmez
+      const ucVeUzeri=t3!==undefined&&!geldiMi(t3);
+      if(ucVeUzeri){
         if(!grup3[si.id])grup3[si.id]={si,ogrenciler:[]};
         grup3[si.id].ogrenciler.push(og);
+      }else{
+        if(!grup2[si.id])grup2[si.id]={si,ogrenciler:[]};
+        grup2[si.id].ogrenciler.push(og);
       }
     });
   });
