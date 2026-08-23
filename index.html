@@ -1103,10 +1103,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 </div></div>
 
 <!-- Öğrenci Detay Modal -->
-<div class="overlay" id="m-og-detay"><div class="sheet">
+<div class="overlay" id="m-og-detay"><div class="sheet" style="height:82vh;max-height:82vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-og-detay')">✕</button>
-  <div class="sheet-title" id="m-og-detay-title">Öğrenci Detayı</div>
-  <div id="m-og-detay-content"></div>
+  <div class="sheet-title" id="m-og-detay-title" style="flex-shrink:0;">Öğrenci Detayı</div>
+  <div id="m-og-detay-content" style="flex:1;overflow-y:auto;"></div>
 </div></div>
 
 <!-- QR Göster Modal -->
