@@ -290,8 +290,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 .yoklama-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;border:1px solid #34d39930;background:var(--greenbg);color:var(--green);font-size:11px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
 .yoklama-btn:active{transform:scale(.94);}
-.yoklama-btn.yapildi{background:var(--surface2);color:var(--text3);border-color:var(--border2);cursor:default;}
-.yoklama-btn.yapildi:active{transform:none;}
+.yoklama-btn.yapildi{background:var(--surface2);color:var(--text3);border-color:var(--border2);}
+.yoklama-btn.yapildi:active{transform:scale(.94);}
 .qr-modal-box{background:var(--surface);border-radius:var(--radius);padding:20px;text-align:center;max-width:280px;margin:0 auto;}
 .qr-modal-box canvas,.qr-modal-box img{border-radius:10px;background:#fff;padding:10px;display:block;margin:0 auto;}
 .qr-scan-video{width:100%;border-radius:10px;background:#000;}
@@ -5025,7 +5025,7 @@ function ogBugunGeldiMi(sinifId,ogrenciId){
 function yoklamaBtnHTML(sinifId, ogrenciId){
   const geldi=ogBugunGeldiMi(sinifId,ogrenciId);
   if(geldi){
-    return `<button class="yoklama-btn yapildi" title="Bugün geldi">✓ Geldi</button>`;
+    return `<button class="yoklama-btn yapildi" onclick="yoklamaSil('${geldi.id}')" title="Geri almak için tıkla" style="cursor:pointer;">✓ Geldi</button>`;
   }
   return `<button class="yoklama-btn" onclick="yoklamaKaydet('${sinifId}','${ogrenciId}')" title="Geldi olarak işaretle">+ Geldi</button>`;
 }
