@@ -1378,6 +1378,7 @@ const TRANSLATIONS={
     ozel_bos:'Henüz özel ders öğrencisi yok.', ozel_bos_alt:'Yukarıdaki butona bas ekle.',
     saatlik_paket:'saatlik paket', tamamlandi:'Tamamlandı', saat_kaldi:'saat kaldı', saat_yapildi:'saat yapıldı',
     btn_paket_duzenle:'✎ Bu Paketi ve Eğitmenlerini Düzenle', henuz_paket_yok:'Henüz paket girilmedi',
+    kart_render_hata:'kart yüklenirken bir sorun oluştu, lütfen bildir',
     btn_bilgi_duzenle:'✎ Bilgi Düzenle', paket_hint:'Paket detayı, saat düşme ve eğitmen ataması için pakete dokun ›',
     btn_yeni_paket:'＋ Yeni Paket',
     video:'video', henuz_video_yok:'Henüz video yok', yukleniyor:'Yükleniyor...',
@@ -1550,6 +1551,7 @@ const TRANSLATIONS={
     ozel_bos:'No private lesson students yet.', ozel_bos_alt:'Tap the button above to add one.',
     saatlik_paket:'hour package', tamamlandi:'Completed', saat_kaldi:'hours left', saat_yapildi:'hours done',
     btn_paket_duzenle:'✎ Edit This Package and Instructors', henuz_paket_yok:'No package added yet',
+    kart_render_hata:'there was a problem loading this card, please report it',
     btn_bilgi_duzenle:'✎ Edit Info', paket_hint:'Tap a package for details, deducting hours and assigning instructors ›',
     btn_yeni_paket:'＋ New Package',
     video:'video', henuz_video_yok:'No videos yet', yukleniyor:'Loading...',
@@ -1722,6 +1724,7 @@ const TRANSLATIONS={
     ozel_bos:'Учеников на частные уроки пока нет.', ozel_bos_alt:'Нажмите кнопку выше, чтобы добавить.',
     saatlik_paket:'ч. пакет', tamamlandi:'Завершено', saat_kaldi:'ч. осталось', saat_yapildi:'ч. проведено',
     btn_paket_duzenle:'✎ Изменить пакет и преподавателей', henuz_paket_yok:'Пакетов пока нет',
+    kart_render_hata:'возникла проблема при загрузке карточки, сообщите об этом',
     btn_bilgi_duzenle:'✎ Изменить данные', paket_hint:'Нажмите на пакет для деталей, списания часов и назначения преподавателя ›',
     btn_yeni_paket:'＋ Новый пакет',
     video:'видео', henuz_video_yok:'Видео пока нет', yukleniyor:'Загрузка...',
@@ -4108,12 +4111,17 @@ function renderOzel(){
   const liste=ozelDersOgrencileri();
   if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">'+t('ozel_bos')+'<br>'+t('ozel_bos_alt')+'</div></div>';return;}
   // Kayıt sırası: her öğrencinin ilk özel paketinin oluşturulma tarihine göre (en eski önce)
+  // reduce kullanılıyor (Math.min(...array) yerine) — çok sayıda paket kaydı olsa bile çökme riski olmasın
   const ilkPaketZamani=og=>{
     const paketleri=S.ozelPaketler.filter(p=>p.ogrenciId===og.id);
-    return paketleri.length?Math.min(...paketleri.map(p=>p.olusturma||0)):Infinity;
+    if(!paketleri.length)return Infinity;
+    return paketleri.reduce((min,p)=>Math.min(min,p.olusturma||0),Infinity);
   };
   const sirali=[...liste].sort((a,b)=>ilkPaketZamani(a)-ilkPaketZamani(b));
   el.innerHTML=sirali.map((og,ozelSira)=>{
+    // Bir öğrencinin verisinde beklenmedik bir sorun olsa bile diğer öğrencilerin
+    // görünmesini engellemesin diye her kart kendi try/catch'i içinde üretiliyor
+    try{
     const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
     const aktifPaket=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
     const ogAcik=OZEL_OG_ACIK.has(og.id);
@@ -4161,6 +4169,10 @@ function renderOzel(){
       <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button>
       `:''}
     </div>`;
+    }catch(e){
+      console.warn('Özel ders kartı render hatası:',og.id,og.ad,e);
+      return `<div class="ozel-og-kart" style="border-color:#ff6b6b50;"><div style="font-size:13px;color:var(--accent);">⚠ ${og.ad} ${og.soyad||''} — ${t('kart_render_hata')}</div></div>`;
+    }
   }).join('');
 }
 function openPaketDersler(paketId){
