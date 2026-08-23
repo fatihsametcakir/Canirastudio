@@ -309,22 +309,25 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .gelir-chart-svg{display:block;}
 /* Takvim */
 .takvim-mod-row{display:flex;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:14px;}
-.takvim-mod-btn{flex:1;padding:8px 10px;border:none;background:transparent;color:var(--text3);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
-.takvim-mod-btn.active{background:var(--surface);color:var(--accent);}
+.takvim-mod-btn{flex:1;padding:8px 10px;border:none;background:transparent;color:var(--text3);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .25s cubic-bezier(.34,1.56,.64,1);}
+.takvim-mod-btn.active{background:var(--surface);color:var(--accent);box-shadow:inset 0 0 0 1px #ff6b6b40;}
+.takvim-mod-btn:active{transform:scale(.95);}
 .hafta-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .hafta-gunler{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none;}
 .hafta-gunler::-webkit-scrollbar{display:none;}
-.hafta-gun-btn{flex-shrink:0;width:44px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;border-radius:10px;border:1px solid transparent;cursor:pointer;background:transparent;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.hafta-gun-btn{flex-shrink:0;width:44px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;border-radius:10px;border:1px solid transparent;cursor:pointer;background:transparent;font-family:'DM Sans',sans-serif;transition:all .25s cubic-bezier(.34,1.56,.64,1);}
+.hafta-gun-btn:active{transform:scale(.92);}
 .hafta-gun-btn.bugun{border-color:var(--accent);}
-.hafta-gun-btn.secili{background:var(--accent);border-color:var(--accent);}
+.hafta-gun-btn.secili{background:var(--accent);border-color:var(--accent);box-shadow:0 4px 14px -3px #ff6b6b80;transform:scale(1.05);}
 .hafta-gun-ad{font-size:10px;color:var(--text3);}
 .hafta-gun-btn.secili .hafta-gun-ad,.hafta-gun-btn.secili .hafta-gun-sayi{color:#fff;}
 .hafta-gun-sayi{font-size:16px;font-weight:600;color:var(--text);}
 .hafta-gun-btn.bugun:not(.secili) .hafta-gun-sayi{color:var(--accent);}
-.hafta-gun-nokta{width:5px;height:5px;border-radius:50%;background:var(--cyan);}
-.hafta-gun-btn.secili .hafta-gun-nokta{background:rgba(255,255,255,.8);}
-.takvim-ders-kart{display:flex;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:8px;cursor:pointer;transition:opacity .15s;}
-.takvim-ders-kart:active{opacity:.75;}
+.hafta-gun-nokta{width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 5px var(--cyan);animation:haftanokta 1.8s ease-in-out infinite;}
+@keyframes haftanokta{0%,100%{opacity:1;}50%{opacity:.4;}}
+.hafta-gun-btn.secili .hafta-gun-nokta{background:rgba(255,255,255,.9);box-shadow:0 0 5px rgba(255,255,255,.6);}
+.takvim-ders-kart{display:flex;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:8px;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;}
+.takvim-ders-kart:active{transform:scale(.97);box-shadow:0 8px 20px -6px var(--card-color,#00000060);}
 .takvim-ders-sol{width:4px;border-radius:2px;flex-shrink:0;align-self:stretch;}
 .takvim-ders-icerik{flex:1;min-width:0;}
 .takvim-ders-saat{font-size:12px;color:var(--text3);margin-bottom:2px;}
@@ -333,12 +336,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .ay-grid-baslik{display:grid;grid-template-columns:repeat(7,1fr);}
 .ay-grid-gun-baslik{padding:7px 0;text-align:center;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;background:var(--surface2);}
 .ay-grid-body{display:grid;grid-template-columns:repeat(7,1fr);}
-.ay-gun{min-height:56px;padding:4px 3px;border-top:1px solid var(--border);border-right:1px solid var(--border);cursor:pointer;transition:background .1s;position:relative;}
+.ay-gun{min-height:56px;padding:4px 3px;border-top:1px solid var(--border);border-right:1px solid var(--border);cursor:pointer;transition:background .2s;position:relative;}
 .ay-gun:nth-child(7n){border-right:none;}
 .ay-gun:active{background:var(--surface2);}
 .ay-gun.dis-ay{opacity:.25;pointer-events:none;}
-.ay-gun.bugun .ay-gun-sayi-inner{background:var(--accent);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+.ay-gun.bugun .ay-gun-sayi-inner{background:var(--accent);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 0 10px #ff6b6b70;transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
 .ay-gun.secili{background:var(--accentbg);}
+.ay-gun.secili:not(.bugun) .ay-gun-sayi-inner{transform:scale(1.1);}
 .ay-gun-sayi{text-align:center;margin-bottom:3px;display:flex;justify-content:center;}
 .ay-gun-sayi-inner{font-size:12px;font-weight:500;line-height:22px;min-width:22px;text-align:center;}
 .ay-gun-dotlar{display:flex;gap:2px;justify-content:center;flex-wrap:wrap;padding:0 2px;}
@@ -682,8 +686,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
   <!-- TAKVİM -->
   <div class="page" id="pg-takvim">
-    <div style="margin-bottom:12px;padding:14px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border2);">
-      <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
+    <div style="margin-bottom:12px;padding:14px;background:linear-gradient(135deg,#fbbf2414,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #fbbf2435;">
+      <div style="font-size:12px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
       <div style="display:flex;gap:8px;margin-bottom:8px;">
         <input id="tatil-tarih" type="date" style="flex:1;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;color-scheme:dark;"/>
         <input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad" style="flex:2;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
@@ -5966,8 +5970,8 @@ function renderTakvimGunDetay(){
     const yoklamaYapildi=gelenler.length>0;
     const egitmen=S.egitmenler.find(e=>e.id===si.egitmenId);
 
-    html+=`<div class="takvim-ders-kart" onclick="yoklamaAlBaslat('${si.id}','${tarih}')">
-      <div class="takvim-ders-sol" style="background:${renk};"></div>
+    html+=`<div class="takvim-ders-kart" onclick="yoklamaAlBaslat('${si.id}','${tarih}')" style="--card-color:${renk};">
+      <div class="takvim-ders-sol" style="background:${renk};box-shadow:0 0 8px ${renk};"></div>
       <div class="takvim-ders-icerik">
         <div class="takvim-ders-saat">${si.saat}${egitmen?` · ${egitmen.ad}`:''}</div>
         <div class="takvim-ders-ad">${si.ad}</div>
