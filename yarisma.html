@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Jack & Jill | Can & Irina Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --wine-950:#1c0410;
+    --wine-900:#350a1f;
+    --wine-800:#5c1030;
+    --wine-700:#83184a;
+    --wine-600:#a3225e;
+    --gold-500:#f0a824;
+    --gold-400:#f7c04a;
+    --gold-300:#ffd668;
+    --gold-050:#fff6df;
+    --rose-500:#ff5f7e;
+    --ivory:#fbf4e8;
+    --ivory-dim:#f1e6d3;
+    --ink:#2b0714;
+    --ink-soft:#6b3d4c;
+    --green-ok:#2f9d6b;
+    --shadow:0 20px 50px -20px rgba(28,4,16,.7);
+    --glow-gold:0 6px 24px -6px rgba(240,168,36,.55);
+    --ease:cubic-bezier(.2,.8,.3,1.1);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans',sans-serif;
+    background:
+      radial-gradient(1100px 560px at 12% -8%, var(--wine-600) 0%, transparent 58%),
+      radial-gradient(900px 520px at 105% 4%, var(--rose-500) 0%, transparent 40%),
+      radial-gradient(700px 500px at 50% 115%, var(--gold-500) 0%, transparent 34%),
+      linear-gradient(180deg,var(--wine-950) 0%, var(--wine-900) 100%);
+    background-attachment:fixed;
+    color:var(--ivory);
+    min-height:100vh;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .shell{max-width:520px;margin:0 auto;padding:20px 16px 60px;min-height:100vh;position:relative;}
+  h1,h2,h3{font-family:'Playfair Display',serif;margin:0;}
+  .brand{display:flex;align-items:center;gap:11px;padding:6px 2px 22px;}
+  .brand .mark{
+    width:40px;height:40px;border-radius:50%;
+    background:conic-gradient(from 220deg,var(--gold-300),var(--rose-500),var(--gold-500),var(--gold-300));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Playfair Display',serif;font-weight:800;color:var(--wine-950);font-size:15px;
+    box-shadow:0 0 0 3px rgba(240,168,36,.2), var(--glow-gold);
+    animation:markSpin 8s linear infinite;
+  }
+  @keyframes markSpin{0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(8deg);}}
+  .brand .name{font-size:13px;letter-spacing:.16em;text-transform:uppercase;background:linear-gradient(90deg,var(--gold-300),var(--gold-500));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700;}
+  .brand .sub{font-size:11px;color:var(--ivory-dim);opacity:.6;margin-top:1px;}
+
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  .card{
+    background:linear-gradient(165deg,#fffaf1,var(--ivory));
+    color:var(--ink);
+    border-radius:24px;
+    padding:22px;
+    box-shadow:var(--shadow);
+    margin-bottom:16px;
+    border:1px solid rgba(255,255,255,.5);
+    animation:cardIn .32s var(--ease);
+  }
+  .card.dark{
+    background:linear-gradient(150deg,var(--wine-700) -10%,var(--wine-900) 60%,var(--wine-950));
+    color:var(--ivory);
+    border:1px solid rgba(255,214,104,.22);
+    box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;background:linear-gradient(90deg,var(--gold-500),var(--rose-500));-webkit-background-clip:text;background-clip:text;color:var(--gold-500);font-weight:800;margin-bottom:6px;}
+  .card.dark .eyebrow{background:linear-gradient(90deg,var(--gold-300),var(--gold-400));-webkit-background-clip:text;background-clip:text;color:var(--gold-300);}
+  h2.title{font-size:24px;line-height:1.15;margin-bottom:4px;letter-spacing:-.01em;}
+  p.desc{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:6px 0 0;}
+  .card.dark p.desc{color:rgba(251,244,232,.68);}
+
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
+  .choice{
+    background:linear-gradient(165deg,#fffaf1,var(--ivory));color:var(--ink);border-radius:20px;padding:22px 14px;
+    text-align:center;cursor:pointer;border:1.5px solid rgba(240,168,36,.18);
+    box-shadow:var(--shadow);transition:transform .18s var(--ease), box-shadow .18s var(--ease), border-color .18s ease;
+  }
+  .choice:active{transform:scale(.96);}
+  .choice:hover{transform:translateY(-3px);box-shadow:var(--shadow), var(--glow-gold);border-color:rgba(240,168,36,.5);}
+  .choice .ic{font-size:28px;display:block;margin-bottom:8px;transition:transform .25s var(--ease);}
+  .choice:hover .ic{transform:scale(1.15) rotate(-4deg);}
+  .choice .lbl{font-family:'Playfair Display',serif;font-weight:700;font-size:16.5px;}
+  .choice .hint{font-size:11.5px;color:var(--ink-soft);margin-top:3px;}
+
+  button{font-family:'Work Sans',sans-serif;cursor:pointer;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:14px 18px;border-radius:16px;border:none;
+    font-weight:700;font-size:15px;letter-spacing:.015em;
+    transition:transform .14s var(--ease), box-shadow .18s ease, filter .18s ease, opacity .18s ease;
+  }
+  .btn:active{transform:scale(.965);}
+  .btn-gold{background:linear-gradient(120deg,var(--gold-300),var(--gold-500) 55%,var(--rose-500));background-size:180% 100%;background-position:0% 0%;color:var(--wine-950);box-shadow:var(--glow-gold);}
+  .btn-gold:hover{background-position:60% 0%;filter:brightness(1.04);}
+  .btn-gold:disabled{opacity:.38;box-shadow:none;}
+  .btn-outline{background:rgba(240,168,36,.06);border:1.5px solid var(--gold-500);color:var(--gold-500);}
+  .btn-outline:hover{background:rgba(240,168,36,.16);}
+  .card.dark .btn-outline{color:var(--gold-300);border-color:rgba(255,214,104,.55);}
+  .btn-ghost{background:rgba(43,7,20,.06);color:var(--ink);}
+  .card.dark .btn-ghost{background:rgba(251,244,232,.1);color:var(--ivory);}
+  .btn-ghost:hover{background:rgba(43,7,20,.1);}
+  .btn-danger{background:rgba(255,95,126,.14);color:#c23a58;}
+  .btn-row{display:flex;gap:10px;}
+  .btn-row .btn{width:auto;flex:1;}
+
+  label{font-size:12.5px;font-weight:700;color:var(--ink-soft);display:block;margin:14px 0 6px;letter-spacing:.02em;}
+  label:first-of-type{margin-top:0;}
+  input[type=text],input[type=date],textarea,select{
+    width:100%;padding:12px 13px;border-radius:13px;border:1.5px solid rgba(43,7,20,.13);
+    font-family:'Work Sans',sans-serif;font-size:14.5px;background:#fff;color:var(--ink);
+    transition:border-color .16s ease, box-shadow .16s ease;
+  }
+  textarea{resize:vertical;min-height:90px;line-height:1.6;font-size:13.5px;}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold-500);box-shadow:0 0 0 4px rgba(240,168,36,.16);}
+
+  .rowline{display:flex;gap:8px;align-items:center;}
+  .rowline input{flex:1;}
+  .iconbtn{
+    width:38px;height:38px;flex:0 0 38px;border-radius:12px;border:none;
+    background:rgba(43,7,20,.07);color:var(--ink-soft);font-size:16px;display:flex;align-items:center;justify-content:center;
+    transition:background .16s ease, transform .16s ease;
+  }
+  .iconbtn:active{transform:scale(.9);}
+  .iconbtn:hover{background:rgba(255,95,126,.14);color:#c23a58;}
+  .stack{display:flex;flex-direction:column;gap:8px;}
+
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;
+    font-size:11.5px;font-weight:700;background:rgba(43,7,20,.07);color:var(--ink-soft);
+  }
+  .chip.on{background:linear-gradient(120deg,rgba(47,157,107,.18),rgba(47,157,107,.28));color:var(--green-ok);}
+  .chip.wait{background:linear-gradient(120deg,rgba(240,168,36,.2),rgba(255,95,126,.16));color:#a6650f;animation:pulseSoft 2.2s ease-in-out infinite;}
+  @keyframes pulseSoft{0%,100%{opacity:1;}50%{opacity:.6;}}
+  .card.dark .chip{background:rgba(251,244,232,.1);color:rgba(251,244,232,.7);}
+
+  .bib{
+    width:44px;height:44px;border-radius:50%;flex:0 0 44px;
+    background:linear-gradient(160deg,var(--wine-600),var(--wine-950));
+    color:var(--gold-300);display:flex;align-items:center;justify-content:center;
+    font-family:'Playfair Display',serif;font-weight:800;font-size:15px;
+    border:1.5px solid var(--gold-500);box-shadow:0 4px 14px -4px rgba(240,168,36,.4);
+  }
+  .stud-row{display:flex;align-items:center;gap:12px;padding:12px 6px;border-bottom:1px solid rgba(43,7,20,.08);}
+  .stud-row:last-child{border-bottom:none;}
+  .stud-name{font-weight:700;font-size:14.5px;}
+  .stud-meta{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+
+  .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(43,7,20,.15),transparent);margin:16px 0;}
+  .card.dark .divider{background:linear-gradient(90deg,transparent,rgba(255,214,104,.25),transparent);}
+
+  .backbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .back-btn{
+    display:inline-flex;align-items:center;gap:7px;
+    background:rgba(255,214,104,.14);border:1px solid rgba(255,214,104,.4);
+    color:var(--gold-300);padding:11px 18px;border-radius:999px;
+    font-family:'Work Sans',sans-serif;font-weight:700;font-size:13.5px;
+    transition:background .16s ease, transform .14s var(--ease);
+  }
+  .back-btn:active{background:rgba(255,214,104,.28);transform:scale(.95);}
+  .back-btn:hover{background:rgba(255,214,104,.22);}
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(15,2,8,.78);backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;
+    animation:fadeIn .18s ease;
+  }
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  .modal-card{
+    background:linear-gradient(150deg,var(--wine-700) -10%,var(--wine-900) 60%,var(--wine-950));
+    border:1px solid rgba(255,214,104,.3);border-radius:22px;padding:24px;
+    max-width:360px;width:100%;box-shadow:var(--shadow), var(--glow-gold);
+    animation:modalIn .22s var(--ease);
+  }
+  @keyframes modalIn{from{transform:scale(.92) translateY(8px);opacity:0;}to{transform:none;opacity:1;}}
+  .modal-title{font-family:'Playfair Display',serif;font-weight:700;font-size:19px;color:var(--ivory);margin-bottom:8px;}
+  .modal-msg{font-size:13.5px;line-height:1.55;color:rgba(251,244,232,.75);}
+  .btn-danger-solid{background:linear-gradient(120deg,var(--rose-500),#c0413f);color:#fff;box-shadow:0 6px 20px -6px rgba(255,95,126,.55);}
+
+  /* jury scoring */
+  .crit-block{margin-bottom:16px;}
+  .crit-name{font-family:'Playfair Display',serif;font-weight:700;font-size:15px;margin-bottom:8px;}
+  .num-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;}
+  .num-btn{
+    aspect-ratio:1;border-radius:10px;border:1.5px solid rgba(43,7,20,.12);
+    background:#fff;color:var(--ink);font-weight:800;font-size:12.5px;display:flex;align-items:center;justify-content:center;
+    transition:transform .12s var(--ease), background .16s ease, box-shadow .16s ease;
+  }
+  .num-btn:active{transform:scale(.88);}
+  @keyframes popSel{0%{transform:scale(.8);}60%{transform:scale(1.1);}100%{transform:scale(1);}}
+  .num-btn.sel{background:linear-gradient(140deg,var(--gold-300),var(--gold-500));border-color:var(--gold-500);color:var(--wine-950);box-shadow:0 4px 14px -4px rgba(240,168,36,.6);animation:popSel .22s var(--ease);}
+
+  .accordion-item{border-bottom:1px solid rgba(43,7,20,.08);}
+  .chip-strip{display:flex;gap:8px;overflow-x:auto;padding:16px 2px 4px;margin:0 -2px;-webkit-overflow-scrolling:touch;}
+  .chip-strip::-webkit-scrollbar{display:none;}
+  .chip-nav{
+    flex:0 0 auto;width:38px;height:38px;border-radius:50%;
+    background:rgba(251,244,232,.08);border:1.5px solid rgba(251,244,232,.22);
+    color:rgba(251,244,232,.75);font-weight:700;font-size:12.5px;font-family:'Playfair Display',serif;
+    transition:transform .18s var(--ease), background .18s ease, box-shadow .18s ease;
+  }
+  .chip-nav.done{background:linear-gradient(140deg,rgba(47,157,107,.35),rgba(47,157,107,.2));border-color:var(--green-ok);color:#d3f5e4;}
+  .chip-nav.active{background:linear-gradient(140deg,var(--gold-300),var(--gold-500));border-color:var(--gold-500);color:var(--wine-950);transform:scale(1.14);box-shadow:0 4px 16px -4px rgba(240,168,36,.7);}
+  .progress-track{height:7px;background:rgba(251,244,232,.14);border-radius:999px;overflow:hidden;margin-top:12px;position:relative;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-300),var(--gold-500),var(--rose-500));background-size:200% 100%;border-radius:999px;transition:width .35s var(--ease);animation:shimmerMove 2.4s linear infinite;}
+  @keyframes shimmerMove{0%{background-position:0% 0%;}100%{background-position:200% 0%;}}
+  .swipe-hint{font-size:11px;color:var(--ink-soft);font-weight:700;background:rgba(43,7,20,.06);padding:4px 9px;border-radius:999px;}
+  .score-footer{position:sticky;bottom:12px;z-index:40;box-shadow:0 -10px 34px -8px rgba(15,2,8,.65), var(--glow-gold);}
+  .crit-dots{display:flex;gap:6px;justify-content:center;margin:14px 0 2px;}
+  .crit-dot{width:9px;height:9px;padding:0;border-radius:50%;border:none;background:rgba(43,7,20,.15);transition:transform .16s ease, background .16s ease;}
+  .crit-dot.done{background:var(--green-ok);}
+  .crit-dot.active{background:var(--gold-500);transform:scale(1.5);}
+  .compact-score{padding:16px 18px;}
+  .compact-score .crit-block{margin-bottom:8px;}
+  .compact-score .crit-name{font-size:11.5px;margin-bottom:4px;font-weight:700;}
+  .compact-score .num-grid{gap:3px;}
+  .compact-score .num-btn{aspect-ratio:auto;height:27px;font-size:9.5px;border-radius:7px;}
+  .tight-header{padding:16px 18px;}
+  .tight-chips{padding:10px 2px 0;}
+  .chip-nav.tiny{width:28px;height:28px;font-size:10.5px;}
+  .accordion-item:last-child{border-bottom:none;}
+  .acc-head{display:flex;align-items:center;gap:12px;padding:13px 4px;cursor:pointer;}
+  .acc-head .status-dot{width:9px;height:9px;border-radius:50%;background:rgba(43,7,20,.18);flex:0 0 9px;}
+  .acc-head .status-dot.done{background:var(--green-ok);}
+  .acc-body{padding:6px 4px 18px;}
+
+  /* podium */
+  .podium{display:flex;align-items:flex-end;gap:10px;justify-content:center;margin:22px 0 8px;}
+  .p-col{flex:1;text-align:center;}
+  .p-bib{width:52px;height:52px;margin:0 auto 8px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:'Playfair Display',serif;font-weight:800;font-size:18px;border:2px solid var(--gold-500);
+    background:linear-gradient(160deg,var(--wine-600),var(--wine-950));color:var(--gold-300);box-shadow:0 6px 18px -6px rgba(240,168,36,.5);}
+  .p-name{font-size:12.5px;font-weight:700;color:var(--ivory);margin-bottom:2px;}
+  .p-score{font-size:11px;color:var(--gold-300);margin-bottom:8px;font-weight:700;}
+  .p-bar{border-radius:14px 14px 0 0;background:linear-gradient(180deg,var(--gold-300),var(--gold-500) 55%,var(--rose-500));position:relative;overflow:hidden;box-shadow:0 -4px 20px -6px rgba(240,168,36,.6);}
+  .p-bar::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.55) 48%,transparent 66%);background-size:250% 100%;animation:shine 2.6s ease-in-out infinite;}
+  @keyframes shine{0%{background-position:160% 0;}100%{background-position:-60% 0;}}
+  .p-rank{font-family:'Playfair Display',serif;font-weight:800;color:var(--wine-950);padding-top:8px;font-size:20px;position:relative;z-index:1;}
+  .p-col.first .p-bar{height:96px;}
+  .p-col.second .p-bar{height:72px;}
+  .p-col.third .p-bar{height:54px;}
+  .p-col.first .p-bib{width:66px;height:66px;font-size:23px;box-shadow:0 0 0 5px rgba(240,168,36,.22), 0 8px 22px -6px rgba(240,168,36,.6);}
+
+  .results-table{width:100%;border-collapse:collapse;margin-top:6px;}
+  .results-table th{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);text-align:left;padding:8px 6px;border-bottom:1.5px solid rgba(43,7,20,.12);}
+  .results-table td{padding:9px 6px;font-size:13.5px;border-bottom:1px solid rgba(43,7,20,.07);}
+  .results-table tr:last-child td{border-bottom:none;}
+  .results-table input[type=checkbox]{width:17px;height:17px;accent-color:var(--rose-500);}
+
+  .hist-item{display:flex;align-items:center;justify-content:space-between;padding:13px 4px;border-bottom:1px solid rgba(251,244,232,.1);cursor:pointer;transition:background .16s ease;border-radius:10px;}
+  .hist-item:hover{background:rgba(255,214,104,.06);}
+  .hist-item:last-child{border-bottom:none;}
+  .hist-item .h-name{font-weight:700;font-size:14px;}
+  .hist-item .h-date{font-size:11.5px;color:rgba(251,244,232,.55);margin-top:2px;}
+
+  .empty{text-align:center;padding:26px 10px;color:var(--ink-soft);font-size:13px;}
+  .card.dark .empty{color:rgba(251,244,232,.55);}
+
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(8px);
+    background:linear-gradient(135deg,var(--wine-800),var(--wine-950));color:var(--gold-300);padding:13px 22px;border-radius:14px;
+    font-size:13px;font-weight:700;box-shadow:var(--shadow), var(--glow-gold);z-index:50;border:1px solid rgba(240,168,36,.4);
+    opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s var(--ease);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .link-box{
+    display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.2);border-radius:13px;padding:10px 12px;
+    font-size:12px;word-break:break-all;color:var(--gold-300);border:1px solid rgba(255,214,104,.15);
+  }
+  .qr-box{
+    background:#fff;border-radius:18px;padding:16px;display:flex;align-items:center;justify-content:center;
+    margin-top:12px;box-shadow:var(--glow-gold);
+  }
+  .stu-num{max-width:70px;flex:0 0 70px;text-align:center;}
+  .student-row-wrap{border:1px solid rgba(43,7,20,.09);border-radius:14px;padding:10px;transition:border-color .16s ease;}
+  .student-row-wrap:hover{border-color:rgba(240,168,36,.35);}
+  .gender-toggle{display:flex;gap:6px;margin-top:8px;}
+  .gender-btn{flex:1;padding:8px;border-radius:9px;border:1.5px solid rgba(43,7,20,.12);background:#fff;font-size:12.5px;font-weight:700;color:var(--ink-soft);font-family:'Work Sans',sans-serif;transition:all .16s ease;}
+  .gender-btn.sel{background:linear-gradient(140deg,var(--gold-300),var(--gold-500));border-color:var(--gold-500);color:var(--wine-950);box-shadow:0 3px 10px -3px rgba(240,168,36,.5);}
+  .jury-assign{margin-top:10px;}
+  .jury-assign-label{font-size:11px;color:var(--ink-soft);font-weight:700;margin-bottom:5px;}
+  .jury-assign-chips{display:flex;flex-wrap:wrap;gap:5px;}
+  .assign-chip{padding:6px 11px;border-radius:999px;border:1.5px solid rgba(43,7,20,.12);background:#fff;font-size:11.5px;font-weight:700;color:var(--ink-soft);font-family:'Work Sans',sans-serif;transition:all .16s ease;}
+  .assign-chip.sel{background:linear-gradient(140deg,var(--gold-300),var(--gold-500));border-color:var(--gold-500);color:var(--wine-950);box-shadow:0 3px 10px -3px rgba(240,168,36,.5);}
+  .krit-en-preview{font-size:11px;color:var(--ink-soft);font-style:italic;margin-top:4px;padding-left:2px;min-height:14px;}
+  .crit-name-en{font-size:10.5px;color:var(--ink-soft);font-weight:400;font-style:italic;}
+  .locked-note{display:flex;align-items:center;gap:10px;padding:16px;background:linear-gradient(120deg,rgba(47,157,107,.14),rgba(47,157,107,.2));border-radius:15px;color:var(--green-ok);font-weight:700;font-size:13.5px;border:1px solid rgba(47,157,107,.25);}
+
+  .spin{
+    width:20px;height:20px;border-radius:50%;border:2.5px solid rgba(240,168,36,.25);border-top-color:var(--gold-500);
+    animation:spin .75s linear infinite;margin:0 auto;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .center{display:flex;align-items:center;justify-content:center;padding:30px;}
+
+  .cfg-warn{background:rgba(255,95,126,.14);color:#ff96ab;border-radius:15px;padding:14px 16px;font-size:12.5px;line-height:1.6;margin-bottom:16px;border:1px solid rgba(255,95,126,.35);}
+  .cfg-warn code{background:rgba(0,0,0,.25);padding:1px 5px;border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="shell" id="app">
+  <div class="brand">
+    <div class="mark">CI</div>
+    <div>
+      <div class="name">Can & Irina Studio</div>
+      <div class="sub">Jack & Jill Yarışma Sistemi</div>
+    </div>
+  </div>
+  <div id="view"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ FIREBASE / FIRESTORE CONFIG ============
+   Bu uygulama, Can & Irina Studio uygulamasından BAĞIMSIZ,
+   ayrı bir Firebase projesi kullanacak şekilde tasarlandı.
+   Kurulum talimatları için sohbetteki mesajıma bak.
+   Firebase konsolundan aldığın bilgileri aşağıya yapıştır: */
+const CONFIG = {
+  apiKey: "AIzaSyAjokbemkbr7o-2UEk_2ICAioSKmpq9d6o",
+  projectId: "bachata-jj"
+};
+/* ====================================================== */
+
+const CONFIGURED = CONFIG.apiKey !== "YOUR_API_KEY" && CONFIG.projectId !== "YOUR_PROJECT_ID";
+const BASE = `https://firestore.googleapis.com/v1/projects/${CONFIG.projectId}/databases/(default)/documents`;
+const KEY = () => `?key=${CONFIG.apiKey}`;
+
+const DEFAULT_CRITERIA = ["Teknik","Ritim","Bağlantı","Müzikalite","Sahne Duruşu"];
+const DEFAULT_CRITERIA_EN = { "Teknik":"Technique", "Ritim":"Rhythm", "Bağlantı":"Connection", "Müzikalite":"Musicality", "Sahne Duruşu":"Stage Presence" };
+
+async function translateToEnglish(text){
+  const t = (text||"").trim();
+  if(!t) return "";
+  try{
+    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(t)}&langpair=tr|en`);
+    const data = await res.json();
+    return (data?.responseData?.translatedText || "").trim();
+  }catch(e){
+    return "";
+  }
+}
+
+/* ---------- Firestore value <-> JS conversion ---------- */
+function toVal(v){
+  if(v===null||v===undefined) return {nullValue:null};
+  if(typeof v==="string") return {stringValue:v};
+  if(typeof v==="boolean") return {booleanValue:v};
+  if(typeof v==="number") return Number.isInteger(v) ? {integerValue:String(v)} : {doubleValue:v};
+  if(Array.isArray(v)) return {arrayValue:{values:v.map(toVal)}};
+  if(typeof v==="object") return {mapValue:{fields:toFields(v)}};
+  return {nullValue:null};
+}
+function toFields(obj){ const f={}; for(const k in obj) f[k]=toVal(obj[k]); return f; }
+function fromVal(v){
+  if(!v) return null;
+  if("stringValue" in v) return v.stringValue;
+  if("booleanValue" in v) return v.booleanValue;
+  if("integerValue" in v) return parseInt(v.integerValue,10);
+  if("doubleValue" in v) return v.doubleValue;
+  if("nullValue" in v) return null;
+  if("arrayValue" in v) return (v.arrayValue.values||[]).map(fromVal);
+  if("mapValue" in v) return fromFields(v.mapValue.fields||{});
+  return null;
+}
+function fromFields(fields){ const o={}; for(const k in (fields||{})) o[k]=fromVal(fields[k]); return o; }
+function docFrom(doc){ const id=doc.name.split("/").pop(); return {id, ...fromFields(doc.fields)}; }
+
+/* ---------- Firestore REST helpers ---------- */
+async function fsCreate(path, data, id){
+  const url = id ? `${BASE}/${path}${KEY()}&documentId=${encodeURIComponent(id)}` : `${BASE}/${path}${KEY()}`;
+  const res = await fetch(url,{method:"POST",body:JSON.stringify({fields:toFields(data)})});
+  const json = await res.json();
+  if(!res.ok){ throw new Error(json?.error?.message || `Kayıt hatası (HTTP ${res.status})`); }
+  return json;
+}
+async function fsGet(path){
+  const res = await fetch(`${BASE}/${path}${KEY()}`);
+  if(res.status===404) return null;
+  const json = await res.json();
+  if(!res.ok){ throw new Error(json?.error?.message || `Okuma hatası (HTTP ${res.status})`); }
+  return docFrom(json);
+}
+async function fsList(path){
+  const res = await fetch(`${BASE}/${path}${KEY()}&pageSize=300`);
+  const data = await res.json();
+  if(!res.ok){ throw new Error(data?.error?.message || `Liste alınamadı (HTTP ${res.status})`); }
+  return (data.documents||[]).map(docFrom);
+}
+async function fsPatch(path, data){
+  const masks = Object.keys(data).map(k=>`updateMask.fieldPaths=${encodeURIComponent(k)}`).join("&");
+  const res = await fetch(`${BASE}/${path}${KEY()}&${masks}`,{method:"PATCH",body:JSON.stringify({fields:toFields(data)})});
+  const json = await res.json();
+  if(!res.ok){ throw new Error(json?.error?.message || `Güncelleme hatası (HTTP ${res.status})`); }
+  return json;
+}
+async function fsDelete(path){
+  await fetch(`${BASE}/${path}${KEY()}`,{method:"DELETE"});
+}
+
+/* ---------- small utils ---------- */
+function uid(){ return Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4); }
+function toast(msg, duration){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"), duration || 2200);
+}
+function esc(s){ return (s||"").toString().replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtDate(d){
+  try{ return new Date(d).toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"}); }catch(e){ return d; }
+}
+function round1(n){ return Math.round(n*10)/10; }
+
+window.addEventListener("unhandledrejection", e=>{
+  console.error(e.reason);
+  toast("Hata: " + (e.reason?.message || e.reason), 6000);
+});
+
+function showConfirm(title, message, confirmLabel){
+  return new Promise(resolve=>{
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    overlay.innerHTML = `
+      <div class="modal-card">
+        <div class="modal-title">${esc(title)}</div>
+        <div class="modal-msg">${esc(message)}</div>
+        <div class="btn-row" style="margin-top:20px;">
+          <button class="btn btn-ghost" style="color:var(--ivory);background:rgba(251,244,232,.12);" id="modal-cancel">Vazgeç</button>
+          <button class="btn btn-danger-solid" id="modal-confirm">${esc(confirmLabel || "Evet")}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    const close = (result)=>{ overlay.remove(); resolve(result); };
+    overlay.querySelector("#modal-cancel").onclick = ()=>close(false);
+    overlay.querySelector("#modal-confirm").onclick = ()=>close(true);
+    overlay.addEventListener("click", e=>{ if(e.target===overlay) close(false); });
+  });
+}
+
+/* ---------- routing / state ---------- */
+const params = new URLSearchParams(location.search);
+const state = { role:null, compId: params.get("j") || null };
+const viewEl = document.getElementById("view");
+
+function render(html){ viewEl.innerHTML = html; }
+
+/* ================= ENTRY ================= */
+function screenHome(){
+  if(!CONFIGURED){ return screenConfigWarning(); }
+  if(state.compId){ return screenJuryEnterName(state.compId); }
+  render(`
+    <div class="card dark">
+      <div class="eyebrow">Hoş geldin</div>
+      <h2 class="title">Kimsin?</h2>
+      <p class="desc">Yarışma oluşturmak ve sonuçları görmek için Yönetici; puanlama yapmak için Jüri panelini seç.</p>
+      <div class="choice-grid">
+        <div class="choice" onclick="goAdmin()">
+          <span class="ic">🎙️</span>
+          <div class="lbl">Yönetici</div>
+          <div class="hint">Yarışma kur, sonuçları izle</div>
+        </div>
+        <div class="choice" onclick="goJurySelect()">
+          <span class="ic">⭐</span>
+          <div class="lbl">Jüri</div>
+          <div class="hint">Öğrencileri puanla</div>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function screenConfigWarning(){
+  render(`
+    <div class="cfg-warn">
+      <strong>Firebase ayarları eksik.</strong><br><br>
+      Bu uygulamanın çalışması için kendi Firebase projenin <code>apiKey</code> ve <code>projectId</code>
+      bilgilerini dosyanın en üstündeki <code>CONFIG</code> bölümüne yapıştırman gerekiyor.
+      Kurulum adımlarını sohbette bulabilirsin.
+    </div>
+  `);
+}
+
+function goAdmin(){ state.role="admin"; screenAdminHome(); }
+function goJurySelect(){ state.role="jury"; screenJuryPickCompetition(); }
+function goHome(){ state.role=null; state.compId=null; history.replaceState(null,"",location.pathname); screenHome(); }
+
+/* ================= ADMIN ================= */
+async function screenAdminHome(){
+  render(`<div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div>
+    <div class="card dark"><div class="center"><div class="spin"></div></div></div>`);
+  const comps = (await fsList("yarismalar")).sort((a,b)=> (b.olusturma||"").localeCompare(a.olusturma||""));
+  const aktif = comps.filter(c=>c.durum==="aktif");
+  const gecmis = comps.filter(c=>c.durum==="tamamlandi");
+
+  render(`
+    <div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div>
+    <div class="card dark">
+      <div class="eyebrow">Yönetici Paneli</div>
+      <h2 class="title">Yarışmalar</h2>
+      <p class="desc">Yeni bir Jack & Jill yarışması başlat ya da devam eden bir yarışmayı yönet.</p>
+      <div style="margin-top:16px;">
+        <button class="btn btn-gold" onclick="screenNewCompetition()">+ Yeni Yarışma Oluştur</button>
+      </div>
+    </div>
+
+    ${aktif.length ? `
+    <div class="card">
+      <div class="eyebrow">Devam Eden</div>
+      ${aktif.map(c=>`
+        <div class="hist-item" style="color:var(--ink);border-color:rgba(43,7,20,.08);">
+          <div onclick="screenAdminCompetition('${c.id}')" style="flex:1;cursor:pointer;">
+            <div class="h-name">${esc(c.isim)}</div><div class="h-date" style="color:var(--ink-soft);">${fmtDate(c.tarih)} · ${(c.ogrenciler||[]).length} öğrenci · ${(c.juriler||[]).length} jüri</div>
+          </div>
+          <span class="chip wait">Aktif</span>
+          <button class="iconbtn" style="background:rgba(214,60,60,.13);color:#b23a3a;margin-left:8px;" onclick="event.stopPropagation();deleteCompetition('${c.id}','${esc(c.isim).replace(/'/g,"\\'")}')">🗑</button>
+        </div>
+      `).join("")}
+    </div>` : ""}
+
+    <div class="card dark">
+      <div class="eyebrow">Geçmiş Yarışmalar</div>
+      ${gecmis.length ? gecmis.map(c=>`
+        <div class="hist-item">
+          <div onclick="screenResults('${c.id}')" style="flex:1;cursor:pointer;">
+            <div class="h-name">${esc(c.isim)}</div><div class="h-date">${fmtDate(c.tarih)}</div>
+          </div>
+          <span class="chip on">Tamamlandı</span>
+          <button class="iconbtn" style="background:rgba(214,60,60,.16);color:#e08a8a;margin-left:8px;" onclick="event.stopPropagation();deleteCompetition('${c.id}','${esc(c.isim).replace(/'/g,"\\'")}')">🗑</button>
+        </div>
+      `).join("") : `<div class="empty">Henüz tamamlanmış yarışma yok.</div>`}
+    </div>
+  `);
+}
+
+async function deleteCompetition(compId, isim){
+  if(!(await showConfirm("Yarışmayı Sil", `"${isim}" yarışmasını kalıcı olarak silmek istediğine emin misin? Bu işlem geri alınamaz.`, "Evet, Sil"))) return;
+  await fsDelete(`yarismalar/${compId}`);
+  toast("Yarışma silindi");
+  screenAdminHome();
+}
+
+let formEditId = null;
+
+function screenNewCompetition(){
+  formEditId = null;
+  renderCompetitionForm(null);
+}
+
+async function screenEditCompetition(compId){
+  render(`<div class="backbar"><button class="back-btn" onclick="screenAdminCompetition('${compId}')">‹ Yarışma</button></div><div class="card dark"><div class="center"><div class="spin"></div></div></div>`);
+  const comp = await fsGet(`yarismalar/${compId}`);
+  if(!comp){ toast("Yarışma bulunamadı"); return screenAdminHome(); }
+  formEditId = compId;
+  renderCompetitionForm(comp);
+}
+
+function renderCompetitionForm(comp){
+  const isEdit = !!formEditId;
+  render(`
+    <div class="backbar"><button class="back-btn" onclick="${isEdit ? `screenAdminCompetition('${formEditId}')` : "screenAdminHome()"}">‹ ${isEdit ? "Yarışma" : "Yarışmalar"}</button></div>
+    <div class="card">
+      <div class="eyebrow">${isEdit ? "Yarışmayı Düzenle" : "Yeni Yarışma"}</div>
+      <h2 class="title">Yarışma Bilgileri</h2>
+      ${isEdit ? `<p class="desc">Bir kriter adını veya öğrenci numarasını değiştirirsen, o alana daha önce verilmiş puanlar yeni değerle eşleşmeyebilir.</p>` : ""}
+
+      <label>Yarışma Adı</label>
+      <input type="text" id="f-isim" value="${esc(comp?.isim||"")}" placeholder="Örn. Yaz Dönemi Jack & Jill">
+
+      <label>Tarih</label>
+      <input type="date" id="f-tarih">
+
+      <label>Yarışma Türü</label>
+      <select id="f-tur" style="width:100%;padding:12px 13px;border-radius:12px;border:1.5px solid rgba(43,7,20,.13);font-family:'Work Sans',sans-serif;font-size:14.5px;background:#fff;color:var(--ink);">
+        <option value="karisik" selected>Karışık — Kız ve Erkek birlikte, tek sıralama</option>
+        <option value="ayri">Kız ve Erkek Ayrı Sıralanır</option>
+      </select>
+
+      <label>Öğrenciler</label>
+      <div class="stack" id="f-ogrenciler-list"></div>
+      <button class="btn btn-ghost" style="margin-top:8px;" onclick="addStudentField()">+ Öğrenci Ekle</button>
+
+      <label>Jüriler</label>
+      <div class="stack" id="f-juriler-list"></div>
+      <button class="btn btn-ghost" style="margin-top:8px;" onclick="addJuryField()">+ Jüri Ekle</button>
+
+      <label>Puanlama Kriterleri</label>
+      <div class="stack" id="f-kriterler"></div>
+      <button class="btn btn-ghost" style="margin-top:8px;" onclick="addCriterionField()">+ Kriter Ekle</button>
+
+      <label>Puanlama Skalası <span style="font-weight:400;color:var(--ink-soft);">(kaç üzerinden puanlanacak)</span></label>
+      <select id="f-skala" style="width:100%;padding:12px 13px;border-radius:12px;border:1.5px solid rgba(43,7,20,.13);font-family:'Work Sans',sans-serif;font-size:14.5px;background:#fff;color:var(--ink);">
+        <option value="5">5 üzerinden</option>
+        <option value="6">6 üzerinden</option>
+        <option value="7">7 üzerinden</option>
+        <option value="8">8 üzerinden</option>
+        <option value="9">9 üzerinden</option>
+        <option value="10" selected>10 üzerinden</option>
+      </select>
+
+      <div class="divider"></div>
+      <button class="btn btn-gold" onclick="saveCompetitionForm()">${isEdit ? "Değişiklikleri Kaydet" : "Yarışmayı Oluştur"}</button>
+      ${isEdit ? `<button class="btn btn-ghost" style="margin-top:10px;" onclick="screenAdminCompetition('${formEditId}')">Vazgeç</button>` : ""}
+    </div>
+  `);
+  document.getElementById("f-tarih").value = comp?.tarih || new Date().toISOString().slice(0,10);
+  if(comp){
+    document.getElementById("f-skala").value = String(comp.maxPuan || 10);
+    document.getElementById("f-tur").value = comp.yarismaTuru || "karisik";
+    (comp.ogrenciler||[]).forEach(o=>addStudentField(o.numara, o.isim, o.cinsiyet, o.atananJuriler));
+    (comp.juriler||[]).forEach(j=>addJuryField(j.isim, j.id, j.bitirdi));
+    (comp.kriterler||[]).forEach((k,i)=>addCriterionField(k, (comp.kriterlerEN||[])[i]));
+  } else {
+    [1,2,3,4].forEach(n=>addStudentField(String(n)));
+    [1,2].forEach(()=>addJuryField());
+    DEFAULT_CRITERIA.forEach(c=>addCriterionField(c, DEFAULT_CRITERIA_EN[c]));
+  }
+  refreshAllStudentJuryChips();
+}
+
+function addStudentField(numara, isim, cinsiyet, atananJuriler){
+  const wrap = document.getElementById("f-ogrenciler-list");
+  const nextNum = numara !== undefined ? numara : String(wrap.children.length + 1);
+  const g = cinsiyet === "E" ? "E" : "K";
+  const row = document.createElement("div");
+  row.className = "student-row-wrap";
+  row.dataset.gender = g;
+  row.dataset.assigned = (atananJuriler && atananJuriler.length) ? atananJuriler.join(",") : "";
+  row.innerHTML = `
+    <div class="rowline">
+      <input type="text" class="stu-num" value="${esc(nextNum)}" placeholder="No">
+      <input type="text" class="stu-name" value="${esc(isim||"")}" placeholder="İsim Soyisim">
+      <button class="iconbtn" onclick="this.closest('.student-row-wrap').remove()">✕</button>
+    </div>
+    <div class="gender-toggle">
+      <button type="button" class="gender-btn ${g==="K"?"sel":""}" onclick="setStudentGender(this,'K')">Kız</button>
+      <button type="button" class="gender-btn ${g==="E"?"sel":""}" onclick="setStudentGender(this,'E')">Erkek</button>
+    </div>
+    <div class="jury-assign">
+      <div class="jury-assign-label">Değerlendirecek jüriler</div>
+      <div class="jury-assign-chips"></div>
+    </div>`;
+  wrap.appendChild(row);
+  renderStudentJuryChips(row);
+}
+
+function setStudentGender(btn, g){
+  const rowWrap = btn.closest(".student-row-wrap");
+  rowWrap.dataset.gender = g;
+  rowWrap.querySelectorAll(".gender-btn").forEach(b=>b.classList.remove("sel"));
+  btn.classList.add("sel");
+}
+
+function renderStudentJuryChips(rowWrap){
+  const container = rowWrap.querySelector(".jury-assign-chips");
+  if(!container) return;
+  const juryRows = Array.from(document.querySelectorAll("#f-juriler-list .jury-row"));
+  const assignedRaw = rowWrap.dataset.assigned || "";
+  const assignedIds = assignedRaw ? assignedRaw.split(",") : [];
+  const allActive = assignedRaw === "";
+  if(!juryRows.length){ container.innerHTML = `<span style="font-size:11.5px;color:var(--ink-soft);">Önce jüri ekle</span>`; return; }
+  container.innerHTML = `
+    <button type="button" class="assign-chip ${allActive?"sel":""}" onclick="setStudentJuryAll(this)">Tümü</button>
+    ${juryRows.map(jr=>{
+      const jid = jr.dataset.id;
+      const jname = jr.querySelector(".jury-name").value.trim() || "İsimsiz";
+      const active = !allActive && assignedIds.includes(jid);
+      return `<button type="button" class="assign-chip ${active?"sel":""}" onclick="toggleStudentJury(this,'${jid}')">${esc(jname)}</button>`;
+    }).join("")}
+  `;
+}
+
+function refreshAllStudentJuryChips(){
+  document.querySelectorAll("#f-ogrenciler-list .student-row-wrap").forEach(renderStudentJuryChips);
+}
+
+function setStudentJuryAll(btn){
+  const rowWrap = btn.closest(".student-row-wrap");
+  rowWrap.dataset.assigned = "";
+  renderStudentJuryChips(rowWrap);
+}
+
+function toggleStudentJury(btn, jid){
+  const rowWrap = btn.closest(".student-row-wrap");
+  const assignedRaw = rowWrap.dataset.assigned || "";
+  let ids = assignedRaw ? assignedRaw.split(",") : [];
+  if(assignedRaw === ""){
+    ids = [jid];
+  } else if(ids.includes(jid)){
+    ids = ids.filter(x=>x!==jid);
+  } else {
+    ids.push(jid);
+  }
+  rowWrap.dataset.assigned = ids.length ? ids.join(",") : "";
+  renderStudentJuryChips(rowWrap);
+}
+
+function addJuryField(isim, id, bitirdi){
+  const wrap = document.getElementById("f-juriler-list");
+  const row = document.createElement("div");
+  row.className = "rowline jury-row";
+  row.dataset.id = id || uid();
+  row.dataset.bitirdi = bitirdi ? "true" : "false";
+  row.innerHTML = `<input type="text" class="jury-name" value="${esc(isim||"")}" placeholder="Jüri adı" oninput="refreshAllStudentJuryChips()">
+    <button class="iconbtn" onclick="this.parentElement.remove(); refreshAllStudentJuryChips();">✕</button>`;
+  wrap.appendChild(row);
+  refreshAllStudentJuryChips();
+}
+
+function addCriterionField(val, enVal){
+  const wrap = document.getElementById("f-kriterler");
+  const row = document.createElement("div");
+  row.className = "crit-field-wrap";
+  row.dataset.en = enVal || "";
+  row.innerHTML = `
+    <div class="rowline">
+      <input type="text" class="krit-input" value="${esc(val||"")}" placeholder="Kriter adı" oninput="onCriterionInput(this)">
+      <button class="iconbtn" onclick="this.closest('.crit-field-wrap').remove()">✕</button>
+    </div>
+    <div class="krit-en-preview">${esc(enVal||"")}</div>`;
+  wrap.appendChild(row);
+  if(val && !enVal){
+    translateToEnglish(val).then(en=>{
+      row.dataset.en = en;
+      row.querySelector(".krit-en-preview").textContent = en;
+    });
+  }
+}
+
+let critTranslateTimer = null;
+function onCriterionInput(inputEl){
+  const wrap = inputEl.closest(".crit-field-wrap");
+  const preview = wrap.querySelector(".krit-en-preview");
+  const text = inputEl.value.trim();
+  clearTimeout(critTranslateTimer);
+  if(!text){ preview.textContent = ""; wrap.dataset.en = ""; return; }
+  if(DEFAULT_CRITERIA_EN[text]){
+    wrap.dataset.en = DEFAULT_CRITERIA_EN[text];
+    preview.textContent = DEFAULT_CRITERIA_EN[text];
+    return;
+  }
+  preview.textContent = "çevriliyor…";
+  critTranslateTimer = setTimeout(async ()=>{
+    const en = await translateToEnglish(text);
+    wrap.dataset.en = en;
+    preview.textContent = en;
+  }, 500);
+}
+
+async function saveCompetitionForm(){
+  const isim = document.getElementById("f-isim").value.trim();
+  const tarih = document.getElementById("f-tarih").value;
+  const kriterler = [];
+  const kriterlerEN = [];
+  Array.from(document.querySelectorAll("#f-kriterler .crit-field-wrap")).forEach(row=>{
+    const v = row.querySelector(".krit-input").value.trim();
+    if(v){ kriterler.push(v); kriterlerEN.push(row.dataset.en || ""); }
+  });
+  const maxPuan = parseInt(document.getElementById("f-skala").value, 10) || 10;
+  const yarismaTuru = document.getElementById("f-tur").value;
+
+  const ogrenciler = Array.from(document.querySelectorAll("#f-ogrenciler-list .student-row-wrap")).map((row,idx)=>{
+    const numara = row.querySelector(".stu-num").value.trim();
+    const isimVal = row.querySelector(".stu-name").value.trim();
+    const cinsiyet = row.dataset.gender === "E" ? "E" : "K";
+    const assignedRaw = row.dataset.assigned || "";
+    const atananJuriler = assignedRaw ? assignedRaw.split(",") : [];
+    return { numara: numara || String(idx+1), isim: isimVal, cinsiyet, atananJuriler };
+  }).filter(o=>o.isim);
+
+  const juriler = Array.from(document.querySelectorAll("#f-juriler-list .jury-row")).map(row=>{
+    const isimVal = row.querySelector(".jury-name").value.trim();
+    if(!isimVal) return null;
+    return { id: row.dataset.id || uid(), isim: isimVal, bitirdi: row.dataset.bitirdi === "true" };
+  }).filter(Boolean);
+
+  if(!isim){ toast("Yarışma adı gerekli"); return; }
+  if(!ogrenciler.length){ toast("En az bir öğrenci ekle (isim gerekli)"); return; }
+  if(!kriterler.length){ toast("En az bir kriter gerekli"); return; }
+
+  try{
+    if(formEditId){
+      await fsPatch(`yarismalar/${formEditId}`, { isim, tarih, kriterler, kriterlerEN, ogrenciler, juriler, maxPuan, yarismaTuru });
+      toast("Değişiklikler kaydedildi");
+      screenAdminCompetition(formEditId);
+    } else {
+      const compId = uid();
+      await fsCreate("yarismalar", {
+        isim, tarih, durum:"aktif", olusturma: new Date().toISOString(),
+        kriterler, kriterlerEN, ogrenciler, juriler, maxPuan, yarismaTuru
+      }, compId);
+      toast("Yarışma oluşturuldu");
+      screenAdminCompetition(compId);
+    }
+  } catch(err){
+    console.error(err);
+    toast("Kaydedilemedi: " + err.message, 6000);
+  }
+}
+
+async function screenAdminCompetition(compId){
+  render(`<div class="backbar"><button class="back-btn" onclick="screenAdminHome()">‹ Yarışmalar</button></div><div class="card dark"><div class="center"><div class="spin"></div></div></div>`);
+  const comp = await fsGet(`yarismalar/${compId}`);
+  if(!comp){ toast("Yarışma bulunamadı"); return screenAdminHome(); }
+
+  if(comp.durum === "tamamlandi"){ return screenResults(compId); }
+
+  const puanlar = await fsList(`yarismalar/${compId}/puanlar`);
+  const juriDurum = (comp.juriler||[]).map(j=>{
+    const p = puanlar.find(x=>x.id===j.id);
+    return { ...j, bitirdi: p ? !!p.bitirdi : false, kayitVar: !!p };
+  });
+  const bitirenSayi = juriDurum.filter(j=>j.bitirdi).length;
+  const link = `${location.origin}${location.pathname}?j=${compId}`;
+
+  render(`
+    <div class="backbar"><button class="back-btn" onclick="screenAdminHome()">‹ Yarışmalar</button></div>
+    <div class="card dark">
+      <div class="eyebrow">Aktif Yarışma</div>
+      <h2 class="title">${esc(comp.isim)}</h2>
+      <p class="desc">${fmtDate(comp.tarih)} · ${(comp.ogrenciler||[]).length} öğrenci · ${juriDurum.length} jüri · ${comp.maxPuan||10} üzerinden · ${comp.yarismaTuru==="ayri" ? "Kız/Erkek ayrı" : "Karışık"}</p>
+      <div style="margin-top:14px;">
+        <button class="btn btn-outline" onclick="screenEditCompetition('${compId}')">✎ Yarışmayı Düzenle</button>
+      </div>
+
+      <div class="divider"></div>
+      <div class="eyebrow">Jüri Bağlantısı</div>
+      <p class="desc" style="margin-bottom:10px;">Bu linki jürilerin kendi telefonlarında açmaları yeterli, ya da QR kodu okutabilirler.</p>
+      <div class="link-box"><span style="flex:1;">${link}</span></div>
+      <div class="qr-box" id="qrbox"></div>
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn btn-outline" onclick="copyLink('${link}')">Kopyala</button>
+        <button class="btn btn-outline" onclick="shareLink('${link}','${esc(comp.isim)}')">Paylaş</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Jüri Durumu · ${bitirenSayi}/${juriDurum.length} tamamladı</div>
+      ${juriDurum.map(j=>{
+        const atanan = (comp.ogrenciler||[]).filter(o=>!o.atananJuriler || !o.atananJuriler.length || o.atananJuriler.includes(j.id)).length;
+        const toplam = (comp.ogrenciler||[]).length;
+        return `
+        <div class="stud-row">
+          <div class="bib">${esc((j.isim||"?").slice(0,2).toUpperCase())}</div>
+          <div style="flex:1;">
+            <div class="stud-name">${esc(j.isim)}</div>
+            ${atanan < toplam ? `<div class="stud-meta">${atanan}/${toplam} öğrenci atanmış</div>` : ""}
+          </div>
+          ${j.bitirdi ? '<span class="chip on">Tamamladı</span>' : (j.kayitVar ? '<span class="chip wait">Puanlıyor…</span>' : '<span class="chip">Bekleniyor</span>')}
+        </div>
+      `;}).join("")}
+    </div>
+
+    <div class="card dark">
+      <div class="eyebrow">Sonuçlandır</div>
+      <p class="desc">${bitirenSayi < juriDurum.length ? "Tüm jüriler bitirmeden de sonuçlandırabilirsin; henüz oy vermeyenler hesaba katılmaz." : "Tüm jüriler tamamladı, sonuçları açıklayabilirsin."}</p>
+      <div style="margin-top:14px;">
+        <button class="btn btn-gold" onclick="finalizeCompetition('${compId}')" ${bitirenSayi===0 ? "disabled" : ""}>Yarışmayı Sonuçlandır</button>
+      </div>
+      <button class="btn btn-ghost" style="margin-top:10px;" onclick="screenAdminCompetition('${compId}')">🔄 Durumu Yenile</button>
+    </div>
+  `);
+  renderJuryQR(link);
+}
+
+function renderJuryQR(link){
+  const box = document.getElementById("qrbox");
+  if(!box || typeof QRCode === "undefined") return;
+  box.innerHTML = "";
+  new QRCode(box, { text: link, width: 176, height: 176, colorDark: "#22040f", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+}
+
+function copyLink(link){
+  navigator.clipboard?.writeText(link).then(()=>toast("Link kopyalandı")).catch(()=>toast("Kopyalanamadı"));
+}
+function shareLink(link, isim){
+  if(navigator.share){ navigator.share({title:`${isim} · Jüri Oylama`, url:link}).catch(()=>{}); }
+  else copyLink(link);
+}
+
+async function finalizeCompetition(compId){
+  const comp = await fsGet(`yarismalar/${compId}`);
+  const puanlar = (await fsList(`yarismalar/${compId}/puanlar`)).filter(p=>p.bitirdi);
+  if(!puanlar.length){ toast("Henüz tamamlanmış oy yok"); return; }
+
+  const kriterler = comp.kriterler||[];
+  const yarismaTuru = comp.yarismaTuru || "karisik";
+  const sonuclar = (comp.ogrenciler||[]).map(og=>{
+    const kriterOrtalamalari = {};
+    let oyVerenSayisi = 0;
+    kriterler.forEach(k=>{
+      const vals = puanlar.map(p=>(p.puanlar||{})[og.numara]?.[k]).filter(v=>typeof v==="number");
+      kriterOrtalamalari[k] = vals.length ? round1(vals.reduce((a,b)=>a+b,0)/vals.length) : 0;
+      oyVerenSayisi = Math.max(oyVerenSayisi, vals.length);
+    });
+    const kVals = Object.values(kriterOrtalamalari);
+    const ortalama = kVals.length ? kVals.reduce((a,b)=>a+b,0)/kVals.length : 0;
+    return { numara: og.numara, isim: og.isim, cinsiyet: og.cinsiyet === "E" ? "E" : "K", ortalama: round1(ortalama), kriterOrtalamalari, oyVerenJuriSayisi: oyVerenSayisi };
+  });
+
+  if(yarismaTuru === "ayri"){
+    sonuclar.sort((a,b)=> a.cinsiyet===b.cinsiyet ? b.ortalama-a.ortalama : (a.cinsiyet==="K" ? -1 : 1));
+  } else {
+    sonuclar.sort((a,b)=> b.ortalama - a.ortalama);
+  }
+
+  await fsPatch(`yarismalar/${compId}`, { durum:"tamamlandi", kriterler, kriterlerEN: comp.kriterlerEN||[], yarismaTuru, sonuclar, sonuclandirmaTarihi: new Date().toISOString() });
+  toast("Sonuçlar açıklandı 🏆");
+  screenResults(compId);
+}
+
+/* ================= RESULTS (shared: admin + history) ================= */
+let resultsState = null;
+
+async function screenResults(compId){
+  render(`<div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div><div class="card dark"><div class="center"><div class="spin"></div></div></div>`);
+  const comp = await fsGet(`yarismalar/${compId}`);
+  if(!comp){ toast("Yarışma bulunamadı"); return goHome(); }
+  resultsState = {
+    compId,
+    isim: comp.isim,
+    tarih: comp.tarih,
+    kriterler: comp.kriterler || [],
+    kriterlerEN: comp.kriterlerEN || [],
+    juriler: comp.juriler || [],
+    maxPuan: comp.maxPuan || 10,
+    yarismaTuru: comp.yarismaTuru || "karisik",
+    sonuclar: comp.sonuclar || [],
+    selected: new Set(),
+    openIndex: -1
+  };
+  renderResultsScreen();
+}
+
+function keyOf(s){ return `${s.cinsiyet||"K"}|${s.numara}`; }
+
+function podiumHtml(list){
+  const top3 = list.slice(0,3);
+  if(!top3.length) return `<div class="empty">Sonuç bulunamadı.</div>`;
+  return `
+    <div class="podium">
+      ${top3[1] ? `<div class="p-col second"><div class="p-bib">${esc(top3[1].numara)}</div><div class="p-name">${esc(top3[1].isim)}</div><div class="p-score">${top3[1].ortalama}</div><div class="p-bar"><div class="p-rank">2</div></div></div>` : `<div class="p-col"></div>`}
+      <div class="p-col first"><div class="p-bib">${esc(top3[0].numara)}</div><div class="p-name">${esc(top3[0].isim)}</div><div class="p-score">${top3[0].ortalama}</div><div class="p-bar"><div class="p-rank">1</div></div></div>
+      ${top3[2] ? `<div class="p-col third"><div class="p-bib">${esc(top3[2].numara)}</div><div class="p-name">${esc(top3[2].isim)}</div><div class="p-score">${top3[2].ortalama}</div><div class="p-bar"><div class="p-rank">3</div></div></div>` : `<div class="p-col"></div>`}
+    </div>`;
+}
+
+function rankingTableHtml(list, isAdmin){
+  if(!list.length) return "";
+  const medal = ["🥇","🥈","🥉"];
+  return `
+    <table class="results-table">
+      <thead><tr>${isAdmin ? "<th></th>" : ""}<th>#</th><th>No</th><th>Öğrenci</th><th>Puan</th></tr></thead>
+      <tbody>
+        ${list.map((s,i)=>`<tr style="${i<3 ? "background:rgba(212,169,55,.08);" : ""}">
+          ${isAdmin ? `<td><input type="checkbox" ${resultsState.selected.has(keyOf(s))?"checked":""} onchange="toggleResultSelect('${keyOf(s)}')"></td>` : ""}
+          <td>${i<3 ? medal[i] : i+1}</td><td>${esc(s.numara)}</td><td>${esc(s.isim)}</td><td style="font-weight:700;">${s.ortalama}</td>
+        </tr>`).join("")}
+      </tbody>
+    </table>`;
+}
+
+function renderResultsScreen(){
+  const rs = resultsState;
+  const isAdmin = state.role === "admin";
+  const ayri = rs.yarismaTuru === "ayri";
+  const kizlar = rs.sonuclar.filter(s=>s.cinsiyet!=="E");
+  const erkekler = rs.sonuclar.filter(s=>s.cinsiyet==="E");
+
+  render(`
+    <div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div>
+    <div class="card dark">
+      <div class="eyebrow">Sonuçlar</div>
+      <h2 class="title">${esc(rs.isim)}</h2>
+      <p class="desc">${fmtDate(rs.tarih)}${ayri ? " · Kız ve Erkek ayrı sıralandı" : ""}</p>
+      ${ayri ? `
+        <div class="divider"></div>
+        <div class="eyebrow">Kız Sıralaması</div>
+        ${podiumHtml(kizlar)}
+        <div class="divider"></div>
+        <div class="eyebrow">Erkek Sıralaması</div>
+        ${podiumHtml(erkekler)}
+      ` : podiumHtml(rs.sonuclar)}
+    </div>
+
+    ${ayri ? `
+      ${kizlar.length ? `<div class="card"><div class="eyebrow">Kız · Tüm Sıralama · ${kizlar.length} yarışmacı</div>${rankingTableHtml(kizlar, isAdmin)}</div>` : ""}
+      ${erkekler.length ? `<div class="card"><div class="eyebrow">Erkek · Tüm Sıralama · ${erkekler.length} yarışmacı</div>${rankingTableHtml(erkekler, isAdmin)}</div>` : ""}
+    ` : (rs.sonuclar.length ? `<div class="card"><div class="eyebrow">Tüm Sıralama · ${rs.sonuclar.length} yarışmacı</div>${rankingTableHtml(rs.sonuclar, isAdmin)}</div>` : "")}
+
+    ${isAdmin && rs.sonuclar.length ? `
+    <div class="card dark">
+      <div class="eyebrow">Yeni Tur</div>
+      <p class="desc">Sıralamadan öğrenci seç, aynı jüri/kriter/skala ile onlar için yeni bir yarışma oluştur (örn. finale kalanlar).</p>
+      <div style="margin-top:14px;">
+        <button class="btn btn-gold" ${rs.selected.size ? "" : "disabled"} onclick="createFollowupCompetition()">Seçilenlerle Yeni Yarışma Oluştur (${rs.selected.size})</button>
+      </div>
+    </div>` : ""}
+
+    ${rs.sonuclar.length && rs.kriterler.length ? `
+    <div class="card">
+      <div class="eyebrow">Kritere Göre Ortalamalar</div>
+      <p class="desc" style="margin-bottom:6px;">Bir öğrenciye dokunarak kriter bazlı puan dağılımını gör.</p>
+      ${rs.sonuclar.map((s,i)=>`
+        <div class="accordion-item">
+          <div class="acc-head" onclick="toggleResultRow(${i})">
+            <div class="bib" style="width:36px;height:36px;flex:0 0 36px;font-size:12.5px;">${esc(s.numara)}</div>
+            <div style="flex:1;">
+              <div class="stud-name">${esc(s.isim)} <span style="font-weight:400;color:var(--ink-soft);font-size:11.5px;">${s.cinsiyet==="E" ? "(Erkek)" : "(Kız)"}</span></div>
+              <div class="stud-meta">Genel ortalama: ${s.ortalama}</div>
+            </div>
+            <div style="color:var(--ink-soft);">${rs.openIndex===i ? "▲" : "▼"}</div>
+          </div>
+          ${rs.openIndex===i ? `
+          <div class="acc-body">
+            ${rs.kriterler.map((k,ki)=>`
+              <div class="stud-row" style="padding:8px 0;">
+                <div style="flex:1;">
+                  <div style="font-size:13.5px;">${esc(k)}</div>
+                  ${rs.kriterlerEN[ki] ? `<div style="font-size:10.5px;color:var(--ink-soft);font-style:italic;">${esc(rs.kriterlerEN[ki])}</div>` : ""}
+                </div>
+                <div style="font-weight:700;">${(s.kriterOrtalamalari||{})[k] ?? "–"}</div>
+              </div>
+            `).join("")}
+          </div>` : ""}
+        </div>
+      `).join("")}
+    </div>` : ""}
+  `);
+}
+
+function toggleResultRow(i){
+  resultsState.openIndex = resultsState.openIndex===i ? -1 : i;
+  renderResultsScreen();
+}
+
+function toggleResultSelect(key){
+  if(resultsState.selected.has(key)) resultsState.selected.delete(key);
+  else resultsState.selected.add(key);
+  renderResultsScreen();
+}
+
+function createFollowupCompetition(){
+  const rs = resultsState;
+  const secilenler = rs.sonuclar.filter(s=>rs.selected.has(keyOf(s))).map(s=>({ numara: s.numara, isim: s.isim, cinsiyet: s.cinsiyet, atananJuriler: [] }));
+  if(!secilenler.length) return;
+  formEditId = null;
+  const draft = {
+    isim: `${rs.isim} - Final`,
+    tarih: new Date().toISOString().slice(0,10),
+    ogrenciler: secilenler,
+    juriler: (rs.juriler||[]).map(j=>({ id: uid(), isim: j.isim, bitirdi:false })),
+    kriterler: rs.kriterler||[],
+    kriterlerEN: rs.kriterlerEN||[],
+    maxPuan: rs.maxPuan||10,
+    yarismaTuru: rs.yarismaTuru||"karisik"
+  };
+  renderCompetitionForm(draft);
+}
+
+/* ================= JURY ================= */
+async function screenJuryPickCompetition(){
+  render(`<div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div><div class="card dark"><div class="center"><div class="spin"></div></div></div>`);
+  const comps = (await fsList("yarismalar")).filter(c=>c.durum==="aktif");
+  render(`
+    <div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div>
+    <div class="card dark">
+      <div class="eyebrow">Jüri Paneli</div>
+      <h2 class="title">Aktif Yarışmayı Seç</h2>
+      ${comps.length ? comps.map(c=>`
+        <div class="hist-item" onclick="location.search='?j=${c.id}'">
+          <div><div class="h-name">${esc(c.isim)}</div><div class="h-date">${fmtDate(c.tarih)}</div></div>
+          <span class="chip wait">Aktif</span>
+        </div>
+      `).join("") : `<div class="empty">Şu an aktif yarışma yok. Yöneticinin sana gönderdiği linki kullan.</div>`}
+    </div>
+  `);
+}
+
+async function screenJuryEnterName(compId){
+  render(`<div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div><div class="card dark"><div class="center"><div class="spin"></div></div></div>`);
+  const comp = await fsGet(`yarismalar/${compId}`);
+  if(!comp){ toast("Yarışma bulunamadı"); return goHome(); }
+  if(comp.durum==="tamamlandi"){ return screenResults(compId); }
+
+  const savedJuriId = localStorage.getItem(`jj_juri_${compId}`);
+  if(savedJuriId){
+    const existing = (comp.juriler||[]).find(j=>j.id===savedJuriId);
+    if(existing) return screenJuryScoring(compId, existing.id, existing.isim);
+  }
+
+  render(`
+    <div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div>
+    <div class="card dark">
+      <div class="eyebrow">${esc(comp.isim)}</div>
+      <h2 class="title">Sen kimsin?</h2>
+      <p class="desc">Eğer isminin listede olduğunu biliyorsan seç. Listede yoksan aşağıya yeni jüri olarak ekleyebilirsin.</p>
+      ${(comp.juriler||[]).length ? `
+      <div class="divider"></div>
+      <div class="stack">
+        ${comp.juriler.map(j=>`<button class="btn btn-outline" onclick="pickJury('${compId}','${j.id}','${esc(j.isim).replace(/'/g,"\\'")}')">${esc(j.isim)}</button>`).join("")}
+      </div>` : ""}
+      <div class="divider"></div>
+      <label>Yeni jüri olarak katıl</label>
+      <input type="text" id="f-juri-isim" placeholder="Adını yaz">
+      <button class="btn btn-gold" style="margin-top:12px;" onclick="addAndPickJury('${compId}')">Devam Et</button>
+    </div>
+  `);
+}
+
+async function pickJury(compId, juriId, isim){
+  localStorage.setItem(`jj_juri_${compId}`, juriId);
+  screenJuryScoring(compId, juriId, isim);
+}
+
+async function addAndPickJury(compId){
+  const isim = document.getElementById("f-juri-isim").value.trim();
+  if(!isim){ toast("İsim gerekli"); return; }
+  const comp = await fsGet(`yarismalar/${compId}`);
+  const juriId = uid();
+  const juriler = [...(comp.juriler||[]), { id: juriId, isim, bitirdi:false }];
+  await fsPatch(`yarismalar/${compId}`, { juriler });
+  localStorage.setItem(`jj_juri_${compId}`, juriId);
+  screenJuryScoring(compId, juriId, isim);
+}
+
+let scoringState = null;
+
+async function screenJuryScoring(compId, juriId, juriIsim){
+  render(`<div class="card dark"><div class="center"><div class="spin"></div></div></div>`);
+  const comp = await fsGet(`yarismalar/${compId}`);
+  if(!comp){ toast("Yarışma bulunamadı"); return goHome(); }
+  if(comp.durum==="tamamlandi"){ return screenResults(compId); }
+
+  let puanDoc = await fsGet(`yarismalar/${compId}/puanlar/${juriId}`);
+  if(!puanDoc){
+    await fsCreate(`yarismalar/${compId}/puanlar`, { juriIsim, bitirdi:false, puanlar:{} }, juriId);
+    puanDoc = { id: juriId, juriIsim, bitirdi:false, puanlar:{} };
+  }
+
+  const tumOgrenciler = comp.ogrenciler||[];
+  const atanmisOgrenciler = tumOgrenciler.filter(o => !o.atananJuriler || !o.atananJuriler.length || o.atananJuriler.includes(juriId));
+
+  scoringState = {
+    compId, juriId, juriIsim,
+    kriterler: comp.kriterler||[],
+    kriterlerEN: comp.kriterlerEN||[],
+    ogrenciler: atanmisOgrenciler,
+    toplamOgrenciSayisi: tumOgrenciler.length,
+    maxPuan: comp.maxPuan || 10,
+    puanlar: puanDoc.puanlar || {},
+    bitirdi: !!puanDoc.bitirdi,
+    current: 0
+  };
+
+  renderScoringScreen();
+}
+
+function studentComplete(s){
+  const p = scoringState.puanlar[s.numara];
+  if(!p) return false;
+  return scoringState.kriterler.every(k=>typeof p[k]==="number");
+}
+
+function renderScoringScreen(){
+  const st = scoringState;
+  const doneCount = st.ogrenciler.filter(studentComplete).length;
+  const allDone = doneCount === st.ogrenciler.length && st.ogrenciler.length>0;
+
+  if(st.bitirdi){
+    render(`
+      <div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div>
+      <div class="card dark">
+        <div class="eyebrow">${esc(st.juriIsim)}</div>
+        <h2 class="title">Oylama Tamamlandı</h2>
+      </div>
+      <div class="card">
+        <div class="locked-note">✓ Oylarını kaydettik. Yöneticinin sonuçları açıklamasını bekleyebilirsin.</div>
+      </div>
+    `);
+    return;
+  }
+
+  if(!st.ogrenciler.length){
+    render(`
+      <div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div>
+      <div class="card dark">
+        <div class="eyebrow">Jüri: ${esc(st.juriIsim)}</div>
+        <h2 class="title">Sana Atanan Öğrenci Yok</h2>
+        <p class="desc">Yönetici bu yarışmada sana henüz bir öğrenci atamamış.</p>
+      </div>
+    `);
+    return;
+  }
+
+  const s = st.ogrenciler[st.current];
+  const complete = studentComplete(s);
+  const pct = Math.round((doneCount/st.ogrenciler.length)*100);
+
+  render(`
+    <div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div>
+    <div class="card dark tight-header">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="eyebrow" style="margin-bottom:0;">Jüri: ${esc(st.juriIsim)}</div>
+        <div style="font-size:11.5px;color:var(--gold-300);font-weight:700;">${doneCount}/${st.ogrenciler.length}${st.ogrenciler.length < st.toplamOgrenciSayisi ? ` (${st.toplamOgrenciSayisi})` : ""}</div>
+      </div>
+      <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:${pct}%;"></div></div>
+      <div class="chip-strip tight-chips">
+        ${st.ogrenciler.map((o,i)=>`<button class="chip-nav tiny ${i===st.current?"active":""} ${studentComplete(o)?"done":""}" onclick="jumpToStudent(${i})">${esc(o.numara)}</button>`).join("")}
+      </div>
+    </div>
+
+    <div class="card compact-score" id="score-swipe-area">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div class="bib" style="width:30px;height:30px;font-size:11px;">${esc(s.numara)}</div>
+        <div class="stud-name" style="font-size:13.5px;">${esc(s.isim)}${complete ? " ✓" : ""}</div>
+      </div>
+      ${st.kriterler.map((k,ki)=>`
+        <div class="crit-block">
+          <div class="crit-name">${esc(k)}${st.kriterlerEN[ki] ? ` <span class="crit-name-en">${esc(st.kriterlerEN[ki])}</span>` : ""}</div>
+          <div class="num-grid" style="grid-template-columns:repeat(${st.maxPuan},1fr);">
+            ${Array.from({length:st.maxPuan},(_,idx)=>idx+1).map(n=>`
+              <button class="num-btn ${((st.puanlar[s.numara]||{})[k]===n) ? "sel":""}" onclick="setScore('${s.numara}','${k.replace(/'/g,"\\'")}',${n})">${n}</button>
+            `).join("")}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+
+    <div class="card dark score-footer" style="padding:14px 18px;">
+      <div class="btn-row">
+        <button class="btn btn-ghost" style="padding:11px 14px;" ${st.current===0 ? "disabled":""} onclick="jumpToStudent(${st.current-1})">‹ Önceki</button>
+        <button class="btn btn-outline" style="padding:11px 14px;" ${st.current===st.ogrenciler.length-1 ? "disabled":""} onclick="jumpToStudent(${st.current+1})">Sonraki ›</button>
+      </div>
+      <button class="btn btn-gold" style="margin-top:8px;padding:11px 14px;" ${allDone ? "" : "disabled"} onclick="finishJuryVoting()">${allDone ? "Oylamayı Bitir" : `Devam Et (${doneCount}/${st.ogrenciler.length})`}</button>
+    </div>
+  `);
+  attachSwipeHandlers();
+}
+
+function attachSwipeHandlers(){
+  const el = document.getElementById("score-swipe-area");
+  if(!el) return;
+  let startX = 0, startY = 0, tracking = false;
+  el.addEventListener("touchstart", e=>{
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY; tracking = true;
+  }, {passive:true});
+  el.addEventListener("touchend", e=>{
+    if(!tracking) return;
+    tracking = false;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5){
+      if(dx < 0) jumpToStudent(scoringState.current + 1);
+      else jumpToStudent(scoringState.current - 1);
+    }
+  }, {passive:true});
+}
+
+function jumpToStudent(i){
+  if(i<0 || i>=scoringState.ogrenciler.length) return;
+  scoringState.current = i;
+  renderScoringScreen();
+}
+
+let saveTimer = null;
+function setScore(numara, kriter, val){
+  const st = scoringState;
+  const student = st.ogrenciler.find(o=>o.numara===numara);
+  const wasComplete = studentComplete(student);
+
+  if(!st.puanlar[numara]) st.puanlar[numara] = {};
+  st.puanlar[numara][kriter] = val;
+  renderScoringScreen();
+
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    fsPatch(`yarismalar/${st.compId}/puanlar/${st.juriId}`, { puanlar: st.puanlar });
+  }, 500);
+
+  const nowComplete = studentComplete(student);
+  if(!wasComplete && nowComplete && st.current < st.ogrenciler.length-1){
+    setTimeout(()=>{ jumpToStudent(st.current+1); }, 300);
+  }
+}
+
+async function finishJuryVoting(){
+  const st = scoringState;
+  if(!(await showConfirm("Oylamayı Bitir", "Oylamayı bitirmek istediğine emin misin? Bitirdikten sonra puanları değiştiremezsin.", "Evet, Bitir"))) return;
+  await fsPatch(`yarismalar/${st.compId}/puanlar/${st.juriId}`, { puanlar: st.puanlar, bitirdi:true });
+  st.bitirdi = true;
+  toast("Oyların kaydedildi ✓");
+  renderScoringScreen();
+}
+
+/* ================= INIT ================= */
+screenHome();
+</script>
+</body>
+</html>
