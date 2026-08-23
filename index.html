@@ -474,11 +474,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <!-- Öğrenci alanları -->
     <div id="login-ogrenci-fields" style="display:none;">
       <div class="field"><label data-i18n="telefon_no">Telefon No</label>
-        <input id="login-tel" type="tel" placeholder="05xxxxxxxxx" onkeydown="if(event.key==='Enter')document.getElementById('login-og-sifre').focus()"/>
+        <input id="login-tel" type="tel" placeholder="Telefon numaranız" onkeydown="if(event.key==='Enter')document.getElementById('login-og-sifre').focus()"/>
       </div>
       <div class="field"><label data-i18n="lbl_sifre">Şifre</label>
         <div style="position:relative;">
-          <input id="login-og-sifre" type="password" placeholder="Şifreniz (ilk girişte telefon no)" data-i18n-ph="sifreniz_ph" onkeydown="if(event.key==='Enter')portalLoginDene();" style="padding-right:44px;"/>
+          <input id="login-og-sifre" type="password" placeholder="Şifreniz (ilk girişte son 4 hane)" data-i18n-ph="sifreniz_ph" onkeydown="if(event.key==='Enter')portalLoginDene();" style="padding-right:44px;"/>
           <button onclick="toggleOgSifreGoster()" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px;line-height:1;">👁</button>
         </div>
       </div>
@@ -1393,7 +1393,7 @@ const TRANSLATIONS={
     kayitli_siniflar:'Kayıtlı Sınıflar', ders_kaldi:'ders kaldı', bitis:'Bitiş', cikar:'Çıkar', kayitli_sinif_yok:'Kayıtlı sınıf yok',
     baska_sinifa_ekle:'Başka Sınıfa Ekle', btn_ekle:'Ekle',
     qr_kod_ozel_1:'Bu QR kod', qr_kod_ozel_2:'\'e özel.', qr_kod_ozel_3:'Öğrenci okutunca kendi yoklamasını işaretleyebilir.',
-    portal_sifresi:'Portal Şifresi', sifre_sifirla_aciklama:'Öğrenci şifresini sıfırladığınızda telefon numarası tekrar şifre olur. Öğrenci bir sonraki girişte yeni şifre belirlemek zorunda kalır.',
+    portal_sifresi:'Portal Şifresi', sifre_sifirla_aciklama:'Öğrenci şifresini sıfırladığınızda telefon numarasının son 4 hanesi tekrar şifre olur. Öğrenci bir sonraki girişte yeni şifre belirlemek zorunda kalır.',
     sifreyi_sifirla:'Şifreyi Sıfırla (Telefon No\'ya Döndür)', qr_olusturulamadi:'QR oluşturulamadı',
     gelir_gider:'Gelir & Gider', aylik_gelir:'Aylık Gelir', gider_raporu:'Gider Raporu',
     aylik_gelir_trendi:'Aylık Gelir Trendi', egitmenler_giderler:'Eğitmenler & Giderler',
@@ -1467,14 +1467,14 @@ const TRANSLATIONS={
     egitime_not_gonder:'Eğitime Not Gönder', not_gonder_aciklama:'Dersle ilgili görüş, öneri veya sorularınızı iletebilirsiniz.',
     mesajiniz:'Mesajınız', mesajinizi_yazin:'Mesajınızı buraya yazın...', gonder:'Gönder', gonderilen_notlar:'Gönderilen Notlar',
     mesaj_bos_olamaz:'Mesaj boş olamaz.', gonderiliyor:'Gönderiliyor...', notunuz_iletildi:'Notunuz iletildi', gonderilemedi:'Gönderilemedi',
-    ilk_giris_mesaj:'İlk girişiniz! Lütfen telefon numaranız yerine yeni bir şifre belirleyin.',
+    ilk_giris_mesaj:'İlk girişiniz! Lütfen telefon numaranızın son 4 hanesi yerine yeni bir şifre belirleyin.',
     yeni_sifre_gir_mesaj:'Yeni şifrenizi girin (en az 6 karakter).', sifre_belirle:'Şifre Belirle',
     en_az_6_uyari:'En az 6 karakter olmalı.', sifreler_eslesmiyor:'Şifreler eşleşmiyor.', sifre_guncellendi:'Şifre güncellendi',
     henuz_not_gonderilmedi:'Henüz not gönderilmedi', yeni:'Yeni',
     kayitli_sinif_yok:'Kayıtlı sınıf yok', katildim:'Katıldım', gelecek:'Gelecek',
     yonetim_paneli:'Yönetim Paneli', yonetici:'Yönetici', nav_ogrenciler_tekil:'Öğrenci', lbl_sifre:'Şifre',
     sifreyi_girin:'Şifreyi girin', beni_hatirla:'Beni hatırla', giris_yap:'Giriş Yap',
-    telefon_no:'Telefon No', sifreniz_ph:'Şifreniz (ilk girişte telefon no)', ogrenci_girisi:'Öğrenci Girişi',
+    telefon_no:'Telefon No', sifreniz_ph:'Şifreniz (ilk girişte son 4 hane)', ogrenci_girisi:'Öğrenci Girişi',
     hatali_sifre:'Hatalı şifre, tekrar deneyin.', ogrenci_portali:'Öğrenci Portalı',
     portal_onizleme:'🎯 Portal Önizleme', demo_aciklama:'Bir öğrenci seçerek onun gözünden portala bakın, veya demo modda açın.',
     ogrenci_ara:'Öğrenci ara...', son_odemeler:'Son Ödemeler', son_1_hafta:'Son 1 Hafta', son_1_ay:'Son 1 Ay', tumu:'Tümü',
@@ -1564,7 +1564,7 @@ const TRANSLATIONS={
     kayitli_siniflar:'Enrolled Classes', ders_kaldi:'lessons left', bitis:'Ends', cikar:'Remove', kayitli_sinif_yok:'No enrolled classes',
     baska_sinifa_ekle:'Add to Another Class', btn_ekle:'Add',
     qr_kod_ozel_1:'This QR code is specific to', qr_kod_ozel_2:'.', qr_kod_ozel_3:'The student can scan it to mark their own attendance.',
-    portal_sifresi:'Portal Password', sifre_sifirla_aciklama:'When you reset the student\'s password, their phone number becomes the password again. They must set a new password on next login.',
+    portal_sifresi:'Portal Password', sifre_sifirla_aciklama:'When you reset the student\'s password, the last 4 digits of their phone number become the password again. They must set a new password on next login.',
     sifreyi_sifirla:'Reset Password (Revert to Phone Number)', qr_olusturulamadi:'Could not generate QR',
     gelir_gider:'Income & Expense', aylik_gelir:'Monthly Income', gider_raporu:'Expense Report',
     aylik_gelir_trendi:'Monthly Income Trend', egitmenler_giderler:'Instructors & Expenses',
@@ -1638,14 +1638,14 @@ const TRANSLATIONS={
     egitime_not_gonder:'Send a Note to the Instructor', not_gonder_aciklama:'You can share thoughts, suggestions, or questions about the lesson.',
     mesajiniz:'Your Message', mesajinizi_yazin:'Type your message here...', gonder:'Send', gonderilen_notlar:'Sent Notes',
     mesaj_bos_olamaz:'Message cannot be empty.', gonderiliyor:'Sending...', notunuz_iletildi:'Your note was sent', gonderilemedi:'Could not send',
-    ilk_giris_mesaj:'This is your first login! Please set a new password instead of your phone number.',
+    ilk_giris_mesaj:'This is your first login! Please set a new password instead of the last 4 digits of your phone.',
     yeni_sifre_gir_mesaj:'Enter your new password (at least 6 characters).', sifre_belirle:'Set Password',
     en_az_6_uyari:'Must be at least 6 characters.', sifreler_eslesmiyor:'Passwords do not match.', sifre_guncellendi:'Password updated',
     henuz_not_gonderilmedi:'No notes sent yet', yeni:'New',
     kayitli_sinif_yok:'No enrolled classes', katildim:'Attended', gelecek:'Upcoming',
     yonetim_paneli:'Management Panel', yonetici:'Admin', nav_ogrenciler_tekil:'Student', lbl_sifre:'Password',
     sifreyi_girin:'Enter password', beni_hatirla:'Remember me', giris_yap:'Log In',
-    telefon_no:'Phone Number', sifreniz_ph:'Your password (first login: phone number)', ogrenci_girisi:'Student Login',
+    telefon_no:'Phone Number', sifreniz_ph:'Your password (first login: last 4 digits)', ogrenci_girisi:'Student Login',
     hatali_sifre:'Incorrect password, try again.', ogrenci_portali:'Student Portal',
     portal_onizleme:'🎯 Portal Preview', demo_aciklama:'Pick a student to view the portal through their eyes, or open it in demo mode.',
     ogrenci_ara:'Search student...', son_odemeler:'Recent Payments', son_1_hafta:'Last Week', son_1_ay:'Last Month', tumu:'All',
@@ -1735,7 +1735,7 @@ const TRANSLATIONS={
     kayitli_siniflar:'Записанные группы', ders_kaldi:'уроков осталось', bitis:'Окончание', cikar:'Удалить', kayitli_sinif_yok:'Нет записанных групп',
     baska_sinifa_ekle:'Добавить в другую группу', btn_ekle:'Добавить',
     qr_kod_ozel_1:'Этот QR-код предназначен для', qr_kod_ozel_2:'.', qr_kod_ozel_3:'Ученик может отсканировать его, чтобы отметить свою посещаемость.',
-    portal_sifresi:'Пароль портала', sifre_sifirla_aciklama:'При сбросе пароля номер телефона снова станет паролем. Ученику нужно будет задать новый пароль при следующем входе.',
+    portal_sifresi:'Пароль портала', sifre_sifirla_aciklama:'При сбросе пароля последние 4 цифры номера телефона снова станут паролем. Ученику нужно будет задать новый пароль при следующем входе.',
     sifreyi_sifirla:'Сбросить пароль (вернуть к номеру телефона)', qr_olusturulamadi:'Не удалось создать QR',
     gelir_gider:'Доходы и расходы', aylik_gelir:'Доход за месяц', gider_raporu:'Отчёт о расходах',
     aylik_gelir_trendi:'Динамика дохода по месяцам', egitmenler_giderler:'Преподаватели и расходы',
@@ -1809,14 +1809,14 @@ const TRANSLATIONS={
     egitime_not_gonder:'Отправить заметку преподавателю', not_gonder_aciklama:'Вы можете поделиться мнением, предложением или вопросом об уроке.',
     mesajiniz:'Ваше сообщение', mesajinizi_yazin:'Введите сообщение здесь...', gonder:'Отправить', gonderilen_notlar:'Отправленные заметки',
     mesaj_bos_olamaz:'Сообщение не может быть пустым.', gonderiliyor:'Отправка...', notunuz_iletildi:'Ваша заметка отправлена', gonderilemedi:'Не удалось отправить',
-    ilk_giris_mesaj:'Это ваш первый вход! Пожалуйста, установите новый пароль вместо номера телефона.',
+    ilk_giris_mesaj:'Это ваш первый вход! Пожалуйста, установите новый пароль вместо последних 4 цифр номера телефона.',
     yeni_sifre_gir_mesaj:'Введите новый пароль (минимум 6 символов).', sifre_belirle:'Установить пароль',
     en_az_6_uyari:'Минимум 6 символов.', sifreler_eslesmiyor:'Пароли не совпадают.', sifre_guncellendi:'Пароль обновлён',
     henuz_not_gonderilmedi:'Заметок пока нет', yeni:'Новое',
     kayitli_sinif_yok:'Нет записанных групп', katildim:'Присутствовал', gelecek:'Предстоит',
     yonetim_paneli:'Панель управления', yonetici:'Администратор', nav_ogrenciler_tekil:'Ученик', lbl_sifre:'Пароль',
     sifreyi_girin:'Введите пароль', beni_hatirla:'Запомнить меня', giris_yap:'Войти',
-    telefon_no:'Номер телефона', sifreniz_ph:'Ваш пароль (при первом входе — номер телефона)', ogrenci_girisi:'Вход ученика',
+    telefon_no:'Номер телефона', sifreniz_ph:'Ваш пароль (при первом входе — последние 4 цифры)', ogrenci_girisi:'Вход ученика',
     hatali_sifre:'Неверный пароль, попробуйте снова.', ogrenci_portali:'Портал ученика',
     portal_onizleme:'🎯 Предпросмотр портала', demo_aciklama:'Выберите ученика, чтобы посмотреть портал его глазами, или откройте демо-режим.',
     ogrenci_ara:'Поиск ученика...', son_odemeler:'Последние платежи', son_1_hafta:'Последняя неделя', son_1_ay:'Последний месяц', tumu:'Все',
@@ -5734,7 +5734,7 @@ async function ogrenciQRYoklama(ogrenciId){
 }
 
 function adminSifreSifirla(ogId, ad){
-  confirm_('Şifreyi Sıfırla', ad+' adlı öğrencinin şifresi telefon numarasına döndürülecek. Emin misiniz?', async ()=>{
+  confirm_('Şifreyi Sıfırla', ad+' adlı öğrencinin şifresi telefon numarasının son 4 hanesine döndürülecek. Emin misiniz?', async ()=>{
     setSyncing(true);
     try{
       await db.collection('ogrenci_hesaplar').doc(ogId).delete();
@@ -6825,12 +6825,14 @@ function demoOgrenciSec(ogId){
   portalTab('bilgiler');
 }
 async function portalLoginDene(){
-  // Tüm rakam dışı karakterleri temizle
+  // Tüm rakam dışı karakterleri temizle, sadece son 10 haneye bak (ülke kodu/başındaki 0 farkını önemsemez)
   const normTel=t=>(t||'').replace(/\D/g,'');
-  const tel=normTel(document.getElementById('login-tel').value);
+  const son10=t=>normTel(t).slice(-10);
+  const girilenTel=document.getElementById('login-tel').value;
+  const tel10=son10(girilenTel);
   const sifre=document.getElementById('login-og-sifre').value.trim();
   const errEl=document.getElementById('login-error');
-  if(!tel||!sifre){errEl.style.display='block';errEl.textContent=t('tel_sifre_zorunlu');return;}
+  if(!tel10||!sifre){errEl.style.display='block';errEl.textContent=t('tel_sifre_zorunlu');return;}
 
   const btn=document.querySelector('#login-ogrenci-fields .btn');
   btn.disabled=true;btn.textContent=t('kontrol_ediliyor');
@@ -6841,18 +6843,18 @@ async function portalLoginDene(){
   }
 
   try{
-    // State'ten bul, yoksa direkt çek
-    let og=S.ogrenciler.find(o=>normTel(o.tel)===tel);
+    // State'ten bul, yoksa direkt çek — son 10 haneye göre eşleştir
+    let og=S.ogrenciler.find(o=>son10(o.tel)===tel10);
     if(!og){
       const tumOgrenciler=await fsTumBelgeler('ogrenciler');
-      og=tumOgrenciler.find(o=>normTel(o.tel)===tel);
+      og=tumOgrenciler.find(o=>son10(o.tel)===tel10);
     }
     if(!og){throw new Error('Bu telefon numarasıyla kayıtlı öğrenci bulunamadı.');}
     const ogId=og.id;
 
     // Hesap dokümanını kontrol et
     const hesapSnap=await db.collection('ogrenci_hesaplar').doc(ogId).get();
-    let mevcutSifre=tel; // İlk şifre = normalize edilmiş telefon (sadece rakamlar)
+    let mevcutSifre=normTel(og.tel).slice(-4); // İlk şifre = kayıtlı telefonun son 4 hanesi
     let ilkGiris=true;
     if(hesapSnap.exists&&hesapSnap.data().sifre){
       mevcutSifre=hesapSnap.data().sifre;
@@ -6860,7 +6862,7 @@ async function portalLoginDene(){
     }
 
     if(sifre!==mevcutSifre){
-      throw new Error(ilkGiris?'İlk girişte şifreniz telefon numaranızdır (sadece rakamlar, örn: 05xxxxxxxxx).':'Şifre hatalı.');
+      throw new Error(ilkGiris?'İlk girişte şifreniz telefon numaranızın son 4 hanesidir.':'Şifre hatalı.');
     }
 
     // Başarılı giriş
