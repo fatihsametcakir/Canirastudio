@@ -139,7 +139,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .student-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .student-meta{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .student-actions{display:flex;gap:4px;flex-shrink:0;align-items:center;}
-.sinif-karti{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:0;margin-bottom:10px;overflow:hidden;cursor:pointer;}
+.sinif-karti{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:0;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;}
+.sinif-karti:active{transform:scale(.97);box-shadow:0 8px 22px -6px var(--card-color,#00000060);}
 .sinif-karti:active{opacity:.85;}
 .sinif-karti-renk-bar{height:4px;width:100%;}
 .sinif-karti-ust{padding:16px;}
@@ -288,10 +289,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 /* Özet satırı */
 .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1e1e2a;border:1px solid var(--green);color:var(--green);padding:10px 18px;border-radius:99px;font-size:13px;font-weight:500;z-index:999;white-space:nowrap;box-shadow:0 4px 20px #00000060;animation:toastIn .2s ease;}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
-.yoklama-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;border:1px solid #34d39930;background:var(--greenbg);color:var(--green);font-size:11px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
-.yoklama-btn:active{transform:scale(.94);}
-.yoklama-btn.yapildi{background:var(--surface2);color:var(--text3);border-color:var(--border2);}
-.yoklama-btn.yapildi:active{transform:scale(.94);}
 .qr-modal-box{background:var(--surface);border-radius:var(--radius);padding:20px;text-align:center;max-width:280px;margin:0 auto;}
 .qr-modal-box canvas,.qr-modal-box img{border-radius:10px;background:#fff;padding:10px;display:block;margin:0 auto;}
 .qr-scan-video{width:100%;border-radius:10px;background:#000;}
@@ -421,6 +418,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .toast.show{opacity:1;transform:translateY(0);}
 .search-wrap{position:relative;display:flex;align-items:center;}
 #og-arama:focus{border-color:#ff6b6b70;box-shadow:0 0 0 3px #ff6b6b1a;}
+#si-arama:focus{border-color:#a78bfa70;box-shadow:0 0 0 3px #a78bfa1a;}
 .search-clear{position:absolute;right:10px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px;display:none;line-height:1;}
 .search-clear.visible{display:block;}
 </style>
@@ -672,7 +670,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- SINIFLAR -->
   <div class="page" id="pg-siniflar">
     <div style="position:relative;margin:4px 0 12px;">
-      <div class="search-wrap"><input id="si-arama" placeholder="Sınıf ara..." oninput="renderSiniflar();toggleClear('si-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/><button id="si-arama-clear" class="search-clear" onclick="clearSearch('si-arama',renderSiniflar)">✕</button></div>
+      <div class="search-wrap"><input id="si-arama" placeholder="Sınıf ara..." oninput="renderSiniflar();toggleClear('si-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s;"/><button id="si-arama-clear" class="search-clear" onclick="clearSearch('si-arama',renderSiniflar)">✕</button></div>
       <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
     </div>
     <div id="sinif-list"></div>
@@ -2387,7 +2385,13 @@ async function sinifDegisiklikleriGunlukle(sinifId,eski,yeni){
     await sinifOlayEkle(sinifId,a.olay,a.fmt(eskiDeger),a.fmt(yeniDeger));
   }
 }
-async function silSinif(id){confirm_('Sınıfı Sil','Bu sınıf ve tüm kayıtları silinecek.',async()=>{setSyncing(true);await db.collection('siniflar').doc(id).delete();_poll('siniflar');setSyncing(false);if(PAGE==='sinif-detay')goBack();});}
+async function silSinif(id){
+  confirm_('Sınıfı Sil','Bir sınıfı silmek veri bütünlüğü açısından önerilmez — geçmiş ödemeler, yoklamalar ve raporlar etkilenebilir. Sınıfı kullanımdan kaldırmak istiyorsan "Pasife Al" seçeneğini kullanman önerilir. Yine de silmek istiyor musun?',()=>{
+    confirm_('Bir Kez Daha Düşün','Bu işlem geri alınamaz. Sınıf ve ona bağlı tüm kayıtlar kalıcı olarak silinecek. Gerçekten silmek istediğine emin misin?',async()=>{
+      setSyncing(true);await db.collection('siniflar').doc(id).delete();_poll('siniflar');setSyncing(false);if(PAGE==='sinif-detay')goBack();
+    });
+  });
+}
 
 // ── DERS VİDEOLARI ──────────────────────────────────────
 let EDIT_VIDEO_SINIF=null;
@@ -3846,8 +3850,9 @@ function renderSiniflar(){
     const cinsBilgi=aktifSayi>0?` · ♀${kadinSayi} ♂${erkekSayi}`:'';
     const cinsBadge=aktifSayi>0?' · ♀'+kadinSayi+' ♂'+erkekSayi:'';
     const kayitBadge=toplamSayi>aktifSayi?' ('+toplamSayi+' '+t('kayitli')+')':'';
-    return `<div class="sinif-karti" onclick="openSinifDetay('${si.id}')" style="${pasif?'opacity:.55;':''}">
-      <div class="sinif-karti-renk-bar" style="background:${pasif?'var(--border2)':RENK_BAR[origIdx%RENK_BAR.length]};"></div>
+    const kartRenk=pasif?'var(--border2)':RENK_BAR[origIdx%RENK_BAR.length];
+    return `<div class="sinif-karti" onclick="openSinifDetay('${si.id}')" style="${pasif?'opacity:.55;':''}--card-color:${kartRenk};">
+      <div class="sinif-karti-renk-bar" style="background:${kartRenk};${pasif?'':`box-shadow:0 0 8px ${kartRenk};`}"></div>
       <div class="sinif-karti-ust" style="padding:10px 12px;">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
           <div style="min-width:0;flex:1;">
@@ -3901,7 +3906,6 @@ function renderSinifDetay(siId){
         <div style="font-size:11px;color:var(--text3);">${donduruldu?t('donduruldu'):k.tip==='paket'?t('paket'):t('tek')} · ${hicOdemeYok?t('henuz_odeme_yok'):formatDate(gb)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:5px;">
-        ${yoklamaBtnHTML(siId,og.id)}
         <div class="glow-dot ${dc}"></div>
         <span class="badge ${bc}" style="font-size:${hicOdemeYok?'10':'11'}px;">${badgeText}</span>
         <button class="btn btn-ghost btn-sm" onclick="openKayitIslem('${si.id}','${k.id}')">⋯</button>
@@ -5010,25 +5014,12 @@ async function yoklamaKaydet(sinifId, ogrenciId){
   setSyncing(false);
 }
 
-async function yoklamaSil(id){
-  setSyncing(true);
-  await db.collection('yoklamalar').doc(id).delete();
-  _poll('yoklamalar');setSyncing(false);
-}
-
 function ogBugunGeldiMi(sinifId,ogrenciId){
   const tarih=bugunTarih();
   return S.yoklamalar.find(y=>y.sinifId===sinifId&&y.ogrenciId===ogrenciId&&y.tarih===tarih)||null;
 }
 
-// Sınıf detayındaki yoklama butonunu render et
-function yoklamaBtnHTML(sinifId, ogrenciId){
-  const geldi=ogBugunGeldiMi(sinifId,ogrenciId);
-  if(geldi){
-    return `<button class="yoklama-btn yapildi" onclick="yoklamaSil('${geldi.id}')" title="Geri almak için tıkla" style="cursor:pointer;">✓ Geldi</button>`;
-  }
-  return `<button class="yoklama-btn" onclick="yoklamaKaydet('${sinifId}','${ogrenciId}')" title="Geldi olarak işaretle">+ Geldi</button>`;
-}
+// (yoklamaBtnHTML kaldırıldı — sınıf detayındaki eski hızlı yoklama butonu artık kullanılmıyor, yerini Yoklama sekmesi aldı)
 
 let YOK_SEC_TARIH=null;
 function yokTarihDegistir(yon){
