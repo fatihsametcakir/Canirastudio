@@ -207,7 +207,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .gelir-row-header:active{opacity:.7;}
 .gelir-ay{font-size:14px;font-weight:500;}
 .gelir-tutar{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--green);}
-.gelir-adet{font-size:11px;color:var(--text3);}
+.gelir-adet{font-size:11px;color:var(--text2);}
 .gelir-detay{display:none;padding-bottom:10px;}
 .gelir-detay.open{display:block;}
 .gelir-detay-item{font-size:12px;color:var(--text2);padding:3px 0 3px 12px;border-left:2px solid var(--border2);margin-bottom:2px;}
@@ -555,7 +555,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-odeme-bilgi-ayar')">✕</button>
   <div class="sheet-title" data-i18n="odeme_bilgileri_ikon">🏦 Ödeme Bilgileri</div>
   <div style="padding:4px 0;">
-    <div style="font-size:12px;color:var(--text3);margin-bottom:12px;" data-i18n="odeme_bilgi_aciklama">Öğrenci portalında gösterilecek ödeme bilgileri.</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px;" data-i18n="odeme_bilgi_aciklama">Öğrenci portalında gösterilecek ödeme bilgileri.</div>
     <div class="field"><label data-i18n="ad_soyad_hesap">Ad Soyad (Hesap Sahibi)</label><input id="ob-adsoyad" type="text" placeholder="Örn: Can Yılmaz"/></div>
     <div class="field"><label>IBAN</label><input id="ob-iban" type="text" placeholder="TR00 0000 0000 0000 0000 0000 00" style="font-family:monospace;"/></div>
     <div class="field"><label data-i18n="banka_adi">Banka Adı</label><input id="ob-banka" type="text" placeholder="Örn: Ziraat Bankası"/></div>
@@ -565,7 +565,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
         <img id="ob-qr-img" style="max-width:160px;max-height:160px;border-radius:8px;border:1px solid var(--border2);" src=""/>
       </div>
       <input type="file" id="ob-qr-file" accept="image/*" style="display:none;" onchange="obQrSec(this)"/>
-      <button class="btn" style="width:100%;font-size:13px;" onclick="document.getElementById('ob-qr-file').click()" data-i18n="qr_gorsel_sec">📷 QR Görsel Seç</button>
+      <button class="btn btn-sm" style="width:100%;font-size:13px;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="document.getElementById('ob-qr-file').click()" data-i18n="qr_gorsel_sec">📷 QR Görsel Seç</button>
       <button id="ob-qr-sil-btn" class="btn" style="width:100%;font-size:13px;margin-top:6px;display:none;color:var(--accent);border-color:var(--accent);" onclick="obQrSil()" data-i18n="qr_gorseli_kaldir">✕ QR Görseli Kaldır</button>
     </div>
     <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="odemeBilgiKaydet()" data-i18n="btn_kaydet">Kaydet</button>
@@ -4229,7 +4229,7 @@ function renderGelir(){
                   odEl.innerHTML=
                     '<div>'+
                       '<div style="font-size:13px;font-weight:500;">'+(og?og.ad+' '+(og.soyad||''):'—')+'</div>'+
-                      '<div style="font-size:11px;color:var(--text3);">'+(od.yontem||'—')+'</div>'+
+                      '<div style="font-size:11px;color:var(--text2);">'+(od.yontem||'—')+'</div>'+
                     '</div>'+
                     '<div style="display:flex;align-items:center;gap:6px;">'+
                       '<span style="color:var(--green);font-size:13px;font-weight:600;">'+((od.tutar||0).toLocaleString(LC()))+' ₺</span>'+
@@ -6137,24 +6137,24 @@ async function renderEgitmenPanel(){
   GIDER_AYARLARI=ayarlar;
 
   let html=`
-    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('egitmenler')}</div>
+    <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('egitmenler')}</div>
     ${S.egitmenler.map(e=>`
       <div class="egitmen-pay-kart" style="display:flex;align-items:center;gap:10px;background:${e.basEgitmen?'var(--purplebg)':'var(--surface2)'};border-color:${e.basEgitmen?'#a78bfa40':'var(--border2)'};">
         <div style="font-size:22px;">${e.basEgitmen?'⭐':'👤'}</div>
         <div style="flex:1;min-width:0;">
           <div style="font-size:14px;font-weight:600;">${e.ad}</div>
-          <div style="font-size:11px;color:var(--text3);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}</div>
+          <div style="font-size:11px;color:var(--text2);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}</div>
         </div>
         <div style="display:flex;gap:6px;">
-          <button class="btn btn-ghost btn-sm" onclick="egitmenDuzenle('${e.id}')">${t('btn_duzenle_kisa')}</button>
+          <button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenDuzenle('${e.id}')">${t('btn_duzenle_kisa')}</button>
           <button class="btn btn-danger btn-sm" onclick="egitmenSil('${e.id}')">${t('btn_sil')}</button>
         </div>
       </div>`).join('')}
-    ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text3);padding:8px 0 4px;">'+t('henuz_egitmen_yok')+'</div>':''}
-    <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>
+    ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text2);padding:8px 0 4px;">'+t('henuz_egitmen_yok')+'</div>':''}
+    <button class="btn btn-sm" style="width:100%;margin-top:8px;background:#a78bfa1c;color:var(--purple);border:1px solid #a78bfa40;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>
     <div style="height:1px;background:var(--border);margin:16px 0;"></div>
-    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('ozel_ders_studyo_kirasi')}</div>
-    <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;">${t('ozel_kira_aciklama')}</div>
+    <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('ozel_ders_studyo_kirasi')}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('ozel_kira_aciklama')}</div>
     <div class="field"><label>${t('aylik_ortak_kira')}</label><input id="ga-kira" type="number" placeholder="10000" value="${ayarlar.kira||''}"/></div>
     <button class="btn btn-accent" style="width:100%;" onclick="egitmenAyarKaydet()">${t('btn_kaydet')}</button>`;
 
@@ -6341,7 +6341,7 @@ async function renderGiderRapor(){
     </div>
 
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--greenbg),transparent);border:1px solid #34d39930;margin-bottom:10px;">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('gelir')}</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('gelir')}</div>
       <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('grup_dersler')}</span><span style="font-weight:600;color:var(--green);">${grupGelir.toLocaleString(LC())} ₺</span></div>
       <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('ozel_dersler')}</span><span style="font-weight:600;color:var(--green);">${ozelGelir.toLocaleString(LC())} ₺</span></div>
       <div class="gider-satir" style="border-top:1px solid #34d39940;margin-top:4px;padding-top:8px;">
@@ -6351,7 +6351,7 @@ async function renderGiderRapor(){
     </div>
 
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--accentbg),transparent);border:1px solid #ff6b6b30;margin-bottom:10px;">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('giderler')}</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('giderler')}</div>
       <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('toplam_kira')}</span><span style="font-weight:600;color:var(--accent);">−${toplamKira.toLocaleString(LC())} ₺</span></div>
       ${toplamAsistanOdeme>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('asistan_odemeleri')}</span><span style="font-weight:600;color:var(--accent);">−${toplamAsistanOdeme.toLocaleString(LC())} ₺</span></div>`:''}
       ${ozelStudyoKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('ozel_ders_studyo_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${ozelStudyoKira.toLocaleString(LC())} ₺</span></div>`:''}
@@ -6366,7 +6366,7 @@ async function renderGiderRapor(){
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:13px;font-weight:600;">⭐ ${be.ad} ${t('kari')}</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px;">${t('kendi_siniflari')}</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">${t('kendi_siniflari')}</div>
         </div>
         <div style="font-size:18px;font-weight:700;color:var(--purple);">${beKar.toLocaleString(LC())} ₺</div>
       </div>
@@ -6377,14 +6377,14 @@ async function renderGiderRapor(){
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:15px;font-weight:700;">${t('net_kar')}</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px;">${t('toplam_gelir_kira_asistan')}</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">${t('toplam_gelir_kira_asistan')}</div>
         </div>
         <div style="font-size:22px;font-weight:700;color:${netKar>=0?'var(--cyan)':'var(--accent)'};">${netKar>=0?'+':''}${netKar.toLocaleString(LC())} ₺</div>
       </div>
     </div>`;
 
   if(sinifDetaylar.length){
-    html+=`<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>`;
+    html+=`<div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>`;
     sinifDetaylar.forEach(d=>{
       const renk=RENK_BAR[d.idx%RENK_BAR.length];
       const karRenk=d.basEgitmenKar>=0?'var(--purple)':'var(--accent)';
@@ -6394,19 +6394,19 @@ async function renderGiderRapor(){
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
           <div>
             <div style="font-size:14px;font-weight:600;">${d.si.ad}</div>
-            ${d.egitmen?`<div style="font-size:11px;color:var(--text3);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}</div>`:''}
+            ${d.egitmen?`<div style="font-size:11px;color:var(--text2);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}</div>`:''}
           </div>
           <span style="font-size:14px;font-weight:700;color:var(--green);">${d.sinifGelir.toLocaleString(LC())} ₺</span>
         </div>
 
         ${isAsistan?`
         <div class="gider-satir" style="font-size:12px;">
-          <span style="color:var(--text3);">👤 ${d.asistanAd} ${t('payi')} (%${d.asistanPct})</span>
+          <span style="color:var(--text2);">👤 ${d.asistanAd} ${t('payi')} (%${d.asistanPct})</span>
           <span style="color:var(--accent);font-weight:600;">−${d.asistanOdeme.toLocaleString(LC())} ₺</span>
         </div>`:''}
 
         <div class="gider-satir" style="font-size:12px;">
-          <span style="color:var(--text3);">${t('kira')}</span>
+          <span style="color:var(--text2);">${t('kira')}</span>
           <span style="color:var(--accent);font-weight:600;">−${d.kira.toLocaleString(LC())} ₺</span>
         </div>
 
@@ -6419,7 +6419,7 @@ async function renderGiderRapor(){
   }
 
   if(!sinifDetaylar.length&&!ozelGelir){
-    html+=`<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px 0;">${t('bu_ay_kayit_yok')}</div>`;
+    html+=`<div style="font-size:13px;color:var(--text2);text-align:center;padding:16px 0;">${t('bu_ay_kayit_yok')}</div>`;
   }
   if(S.egitmenler.length===0){
     html+=`<div style="font-size:12px;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:10px 12px;margin-top:8px;">${t('egitmen_eklenmemis_uyari')}</div>`;
@@ -6436,7 +6436,7 @@ function giderAyDegis(ay){
 function renderRetention(){
   const el=document.getElementById('retention-content');
   if(!el)return;
-  if(!S.siniflar.length){el.innerHTML='<div style="font-size:13px;color:var(--text3);padding:8px 0;">'+t('empty_sinif')+'</div>';return;}
+  if(!S.siniflar.length){el.innerHTML='<div style="font-size:13px;color:var(--text2);padding:8px 0;">'+t('empty_sinif')+'</div>';return;}
 
   // Tüm öğrencileri akif/pasif olarak değerlendir
   // "Bırakmış" = durum==='pasif' veya sınıftan silinmiş
@@ -6456,12 +6456,12 @@ function renderRetention(){
       <div class="reten-bar-wrap">
         <div class="reten-bar-fill" style="width:${genelPct}%;background:${genelRenk};"></div>
       </div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:2px;">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-top:2px;">
         <span>✓ ${toplamAktif} ${t('badge_aktif')}</span>
         <span>✗ ${toplamPasif} ${t('birakmis')}</span>
       </div>
     </div>
-    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('sinif_bazinda')}</div>`;
+    <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('sinif_bazinda')}</div>`;
 
   S.siniflar.forEach((si,idx)=>{
     const kayitlar=si.kayitlar||[];
@@ -6492,11 +6492,11 @@ function renderRetention(){
         <div style="font-size:13px;font-weight:600;">${si.ad}</div>
         <div style="font-size:15px;font-weight:700;color:${barRenk};">${pct}%</div>
       </div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">${si.gun} · ${si.saat}</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:6px;">${si.gun} · ${si.saat}</div>
       <div class="reten-bar-wrap">
         <div class="reten-bar-fill" style="width:${pct}%;background:${barRenk};"></div>
       </div>
-      <div style="display:flex;gap:10px;font-size:11px;color:var(--text3);margin-top:4px;flex-wrap:wrap;">
+      <div style="display:flex;gap:10px;font-size:11px;color:var(--text2);margin-top:4px;flex-wrap:wrap;">
         <span style="color:var(--green);">✓ ${aktifSay} ${t('devam')}</span>
         ${dondurulmus.length?`<span style="color:var(--amber);">❄ ${dondurulmus.length} ${t('donduruldu_kucuk')}</span>`:''}
         ${ayrilanlar.length?`<span style="color:var(--accent);">✗ ${ayrilanlar.length} ${t('ayrilmis')}</span>`:''}
@@ -6569,7 +6569,7 @@ function renderGelirTrend(){
     const y=yPos(val);
     const label=val>=1000?(val/1000).toFixed(val%1000===0?0:1)+'K':val;
     gridLines+=`<line x1="${PAD.left}" y1="${y}" x2="${W-PAD.right}" y2="${y}" stroke="var(--border2)" stroke-dasharray="3,3"/>
-    <text x="${PAD.left-6}" y="${y+4}" text-anchor="end" font-size="9" fill="var(--text3)">${label}</text>`;
+    <text x="${PAD.left-6}" y="${y+4}" text-anchor="end" font-size="9" fill="var(--text2)">${label}</text>`;
   }
 
   // X labels + dots
@@ -6582,11 +6582,11 @@ function renderGelirTrend(){
     dots+=`<circle cx="${x}" cy="${y}" r="${dotR}" fill="${isThis?'var(--cyan)':'var(--purple)'}" stroke="var(--bg)" stroke-width="2"/>`;
     if(a.toplam>0){
       const lbl=a.toplam>=1000?(a.toplam/1000).toFixed(1)+'K':a.toplam;
-      dots+=`<text x="${x}" y="${y-8}" text-anchor="middle" font-size="9" fill="var(--text3)">${lbl}</text>`;
+      dots+=`<text x="${x}" y="${y-8}" text-anchor="middle" font-size="9" fill="var(--text2)">${lbl}</text>`;
     }
     // Her 2 ayda bir label (fazla dolmaması için)
     if(i%2===0||i===aylar.length-1||isThis){
-      xlabels+=`<text x="${x}" y="${H-PAD.bottom+14}" text-anchor="middle" font-size="9" fill="${isThis?'var(--cyan)':'var(--text3)'}" font-weight="${isThis?'600':'400'}">${a.label}</text>`;
+      xlabels+=`<text x="${x}" y="${H-PAD.bottom+14}" text-anchor="middle" font-size="9" fill="${isThis?'var(--cyan)':'var(--text2)'}" font-weight="${isThis?'600':'400'}">${a.label}</text>`;
     }
   });
 
@@ -6598,19 +6598,19 @@ function renderGelirTrend(){
   let html=`
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
       <div style="flex:1;min-width:90px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">${t('bu_ay_brut')}</div>
+        <div style="font-size:10px;color:var(--text2);margin-bottom:2px;">${t('bu_ay_brut')}</div>
         <div style="font-size:15px;font-weight:700;color:var(--purple);">${(buAy?.toplam||0).toLocaleString(LC())} ₺</div>
       </div>
       <div style="flex:1;min-width:90px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">${t('bu_ay_net')}</div>
+        <div style="font-size:10px;color:var(--text2);margin-bottom:2px;">${t('bu_ay_net')}</div>
         <div style="font-size:15px;font-weight:700;color:var(--cyan);">${(buAy?.net||0).toLocaleString(LC())} ₺</div>
       </div>
       <div style="flex:1;min-width:90px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">${t('aylik_ort')}</div>
+        <div style="font-size:10px;color:var(--text2);margin-bottom:2px;">${t('aylik_ort')}</div>
         <div style="font-size:15px;font-weight:700;color:var(--purple);">${aylikOrtalama.toLocaleString(LC())} ₺</div>
       </div>
       <div style="flex:1;min-width:90px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">${t('ay_12_top')}</div>
+        <div style="font-size:10px;color:var(--text2);margin-bottom:2px;">${t('ay_12_top')}</div>
         <div style="font-size:15px;font-weight:700;color:var(--green);">${toplamToplam.toLocaleString(LC())} ₺</div>
       </div>
     </div>
@@ -6641,7 +6641,7 @@ function renderGelirTrend(){
         ${xlabels}
       </svg>
     </div>
-    <div style="font-size:11px;color:var(--text3);margin-top:8px;text-align:center;">${t('son_12_ay_grup_ozel')}</div>`;
+    <div style="font-size:11px;color:var(--text2);margin-top:8px;text-align:center;">${t('son_12_ay_grup_ozel')}</div>`;
 
   el.innerHTML=html;
 }
