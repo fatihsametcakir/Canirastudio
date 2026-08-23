@@ -56,6 +56,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 /* BOTTOM NAV — 5 item */
 .bottom-nav{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:464px;display:flex;align-items:center;z-index:100;background:linear-gradient(180deg,#22212e,#1a1926);border-radius:20px;padding:6px 3px max(6px,env(safe-area-inset-bottom));box-shadow:0 10px 26px -8px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06) inset;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 1px;cursor:pointer;border:none;background:none;color:#8682a3;font-family:'DM Sans',sans-serif;position:relative;transition:transform .3s cubic-bezier(.34,1.56,.64,1),color .25s;}
+.nav-item:not(:last-child)::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:1px;height:22px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.16),transparent);}
 .nav-icon-wrap{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;transition:all .3s cubic-bezier(.34,1.56,.64,1);}
 .nav-icon-wrap svg{width:17px;height:17px;transition:all .25s;}
 .nav-label{font-size:9px;font-weight:700;opacity:0;max-height:0;overflow:hidden;display:block;transition:opacity .2s, max-height .2s;}
