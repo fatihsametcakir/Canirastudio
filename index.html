@@ -23,7 +23,7 @@
 :root{
   --bg:#0d0d14;--surface:#16161f;--surface2:#1e1e2a;
   --border:#ffffff14;--border2:#ffffff22;
-  --text:#f2f0fa;--text2:#c7c4dc;--text3:#9591ac;
+  --text:#f2f0fa;--text2:#d5d3e6;--text3:#c7c4dc;
   --accent:#ff6b6b;--accentbg:#ff6b6b22;
   --purple:#a78bfa;--purplebg:#a78bfa20;
   --cyan:#22d3ee;--cyanbg:#22d3ee18;
@@ -377,8 +377,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .portal-body{padding:16px;max-width:480px;margin:0 auto;width:100%;padding-bottom:40px;}
 .portal-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
 .portal-tab-row{display:flex;gap:6px;margin-bottom:16px;}
-.portal-tab{flex:1;padding:9px 8px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text3);font-size:13px;font-weight:500;cursor:pointer;text-align:center;font-family:'DM Sans',sans-serif;transition:all .15s;}
-.portal-tab.active{background:var(--purplebg);border-color:#a78bfa50;color:var(--purple);}
+.portal-tab{flex:1;padding:9px 8px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;text-align:center;font-family:'DM Sans',sans-serif;transition:all .25s cubic-bezier(.34,1.56,.64,1);}
+.portal-tab:active{transform:scale(.95);}
+.portal-tab.active{background:#a78bfa28;border-color:#a78bfa60;color:var(--purple);font-weight:600;box-shadow:0 3px 10px -3px #a78bfa60;}
 .portal-not-item{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;border:1px solid var(--border);}
 .notif-badge{position:absolute;top:-3px;right:-3px;min-width:16px;height:16px;border-radius:99px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;}
 .notif-btn{position:relative;width:36px;height:36px;border-radius:50%;background:var(--amberbg);border:1px solid #fbbf2435;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
@@ -386,8 +387,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .login-mode-toggle{display:flex;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:20px;}
 .login-mode-btn{flex:1;padding:9px 12px;border:none;background:transparent;color:var(--text3);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
 .login-mode-btn.active{background:var(--surface);color:var(--text);}
-.portal-yoklama-bar{height:6px;border-radius:3px;background:var(--surface2);overflow:hidden;margin-top:6px;}
-.portal-yoklama-fill{height:100%;border-radius:3px;background:var(--purple);transition:width .4s;}
+.portal-yoklama-bar{height:7px;border-radius:4px;background:var(--surface2);overflow:hidden;margin-top:6px;}
+.portal-yoklama-fill{height:100%;border-radius:4px;background:var(--purple);transition:width .4s cubic-bezier(.34,1.2,.64,1);}
 /* Hamburger menü */
 .hamburger{width:36px;height:36px;border-radius:50%;background:var(--accentbg);border:1px solid #ff6b6b35;color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;flex-direction:column;gap:4px;padding:0;transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
 .hamburger:active{transform:scale(.9);}
@@ -599,7 +600,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="portal-header">
     <div class="portal-logo">Can & Irina <span>Studio</span></div>
     <div style="display:flex;align-items:center;gap:8px;">
-      <button id="langBtnPortal" onclick="cycleLang()" title="Dil / Language / Язык" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:5px 10px;font-size:11px;font-weight:600;color:#fff;cursor:pointer;flex-shrink:0;">TR</button>
+      <button id="langBtnPortal" onclick="cycleLang()" title="Dil / Language / Язык" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:5px 10px;font-size:11px;font-weight:600;color:#fff;cursor:pointer;flex-shrink:0;transition:transform .2s cubic-bezier(.34,1.56,.64,1);">TR</button>
       <button class="btn" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-size:12px;padding:7px 13px;border-radius:8px;font-weight:600;" onclick="portalCikis()" data-i18n="cikis">→ Çıkış</button>
     </div>
   </div>
@@ -1450,8 +1451,7 @@ const TRANSLATIONS={
     egitmen_eklenmemis_uyari:'⚠ Eğitmen eklenmemiş. "Eğitmenler & Giderler" bölümünden eğitmen ekleyin ve sınıflara atayın.',
     cikis:'→ Çıkış', bilgilerim:'Bilgilerim', katilim:'Katılım', ogrenci_notlari:'Öğrenci Notları',
     iletisim:'İletişim', kayitli_siniflar_p:'Kayıtlı Sınıflar', tek_ders:'Tek Ders', henuz_sinif_kaydi_yok:'Henüz sınıf kaydı bulunmuyor',
-    ogretmen_notu:'Öğretmen Notu', sifre_degistir:'Şifre Değiştir', yoklama_qr_kodum:'Yoklama QR Kodum',
-    ogretmen_kodu_okutur:'Öğretmen bu kodu okutarak yoklamanızı işaretler.',
+    ogretmen_notu:'Öğretmen Notu', sifre_degistir:'Şifre Değiştir',
     odeme_yapin:'Ödeme Yapın', qr_indir:'QR İndir', kopyala:'Kopyala', kopyalandi:'Kopyalandı', iban_kopyala:'IBAN Kopyala',
     toplam_odeme:'Toplam Ödeme', kayit:'kayıt',
     son_30_gun_katilim:'Son 30 günde katılım', ders_katilimi:'ders katılımı', son_katilimlar:'Son katılımlar',
@@ -1621,8 +1621,7 @@ const TRANSLATIONS={
     egitmen_eklenmemis_uyari:'⚠ No instructors added. Add instructors in "Instructors & Expenses" and assign them to classes.',
     cikis:'→ Log Out', bilgilerim:'My Info', katilim:'Attendance', ogrenci_notlari:'Student Notes',
     iletisim:'Contact', kayitli_siniflar_p:'Enrolled Classes', tek_ders:'Drop-in', henuz_sinif_kaydi_yok:'No class enrollment yet',
-    ogretmen_notu:'Instructor Note', sifre_degistir:'Change Password', yoklama_qr_kodum:'My Attendance QR Code',
-    ogretmen_kodu_okutur:'The instructor scans this code to mark your attendance.',
+    ogretmen_notu:'Instructor Note', sifre_degistir:'Change Password',
     odeme_yapin:'Make a Payment', qr_indir:'Download QR', kopyala:'Copy', kopyalandi:'Copied', iban_kopyala:'Copy IBAN',
     toplam_odeme:'Total Payments', kayit:'records',
     son_30_gun_katilim:'Attendance in last 30 days', ders_katilimi:'lesson attendances', son_katilimlar:'Recent Attendance',
@@ -1792,8 +1791,7 @@ const TRANSLATIONS={
     egitmen_eklenmemis_uyari:'⚠ Преподаватели не добавлены. Добавьте их в разделе "Преподаватели и расходы" и назначьте на группы.',
     cikis:'→ Выйти', bilgilerim:'Мои данные', katilim:'Посещаемость', ogrenci_notlari:'Заметки учеников',
     iletisim:'Контакты', kayitli_siniflar_p:'Записанные группы', tek_ders:'Разовое занятие', henuz_sinif_kaydi_yok:'Записей в группы пока нет',
-    ogretmen_notu:'Заметка преподавателя', sifre_degistir:'Изменить пароль', yoklama_qr_kodum:'Мой QR-код посещаемости',
-    ogretmen_kodu_okutur:'Преподаватель сканирует этот код, чтобы отметить вашу посещаемость.',
+    ogretmen_notu:'Заметка преподавателя', sifre_degistir:'Изменить пароль',
     odeme_yapin:'Совершить платёж', qr_indir:'Скачать QR', kopyala:'Копировать', kopyalandi:'Скопировано', iban_kopyala:'Копировать IBAN',
     toplam_odeme:'Всего платежей', kayit:'записей',
     son_30_gun_katilim:'Посещаемость за 30 дней', ders_katilimi:'посещений занятий', son_katilimlar:'Недавние посещения',
@@ -4594,7 +4592,7 @@ const TEMALAR={
     ad:'Varsayılan',
     bg:'#0d0d14',surface:'#16161f',surface2:'#1e1e2a',
     border:'#ffffff14',border2:'#ffffff22',
-    text:'#f2f0fa',text2:'#c7c4dc',text3:'#9591ac',
+    text:'#f2f0fa',text2:'#d5d3e6',text3:'#c7c4dc',
     accent:'#ff6b6b',
     renkler:['#0d0d14','#16161f','#ff6b6b','#a78bfa']
   },
@@ -4602,7 +4600,7 @@ const TEMALAR={
     ad:'Saf Siyah',
     bg:'#000000',surface:'#111111',surface2:'#1a1a1a',
     border:'#ffffff12',border2:'#ffffff20',
-    text:'#ffffff',text2:'#c8c8c8',text3:'#8f8f8f',
+    text:'#ffffff',text2:'#dcdcdc',text3:'#c8c8c8',
     accent:'#ff6b6b',
     renkler:['#000000','#111111','#ff6b6b','#333333']
   },
@@ -4610,7 +4608,7 @@ const TEMALAR={
     ad:'Beyaz',
     bg:'#f5f5f7',surface:'#ffffff',surface2:'#f0f0f5',
     border:'#00000010',border2:'#00000018',
-    text:'#1a1a2e',text2:'#4a4a6e',text3:'#6b6b8f',
+    text:'#1a1a2e',text2:'#38385a',text3:'#4a4a6e',
     accent:'#ff6b6b',
     renkler:['#f5f5f7','#ffffff','#ff6b6b','#e0e0ea']
   },
@@ -4618,7 +4616,7 @@ const TEMALAR={
     ad:'Okyanus',
     bg:'#0a1628',surface:'#0f2040',surface2:'#162a50',
     border:'#4466aa22',border2:'#4466aa33',
-    text:'#e0eaff',text2:'#a8c4e8',text3:'#6f93c2',
+    text:'#e0eaff',text2:'#c2d6f2',text3:'#a8c4e8',
     accent:'#38bdf8',
     renkler:['#0a1628','#0f2040','#38bdf8','#1e3a6a']
   },
@@ -4626,7 +4624,7 @@ const TEMALAR={
     ad:'Orman',
     bg:'#0a1a0f',surface:'#0f2a18',surface2:'#163622',
     border:'#22dd6622',border2:'#22dd6633',
-    text:'#d4f5e0',text2:'#8ecca8',text3:'#5a9975',
+    text:'#d4f5e0',text2:'#aedcbe',text3:'#8ecca8',
     accent:'#34d399',
     renkler:['#0a1a0f','#0f2a18','#34d399','#1a4428']
   },
@@ -4634,7 +4632,7 @@ const TEMALAR={
     ad:'Gün Batımı',
     bg:'#1a0a00',surface:'#2a1200',surface2:'#3a1a05',
     border:'#ff880022',border2:'#ff880033',
-    text:'#fff0e0',text2:'#e0a868',text3:'#b06f42',
+    text:'#fff0e0',text2:'#eec18c',text3:'#e0a868',
     accent:'#fb923c',
     renkler:['#1a0a00','#2a1200','#fb923c','#ff6600']
   },
@@ -4642,7 +4640,7 @@ const TEMALAR={
     ad:'Lavanta',
     bg:'#120f1f',surface:'#1e1830',surface2:'#281f3f',
     border:'#a78bfa22',border2:'#a78bfa33',
-    text:'#ede0ff',text2:'#bfa3e0',text3:'#9075bf',
+    text:'#ede0ff',text2:'#d4c0ec',text3:'#bfa3e0',
     accent:'#a78bfa',
     renkler:['#120f1f','#1e1830','#a78bfa','#7c3aed']
   },
@@ -4650,7 +4648,7 @@ const TEMALAR={
     ad:'Gece Mavisi',
     bg:'#050d1a',surface:'#0a1628',surface2:'#0f2040',
     border:'#22d3ee22',border2:'#22d3ee33',
-    text:'#e0f7fa',text2:'#7fcce3',text3:'#4a94b8',
+    text:'#e0f7fa',text2:'#a8ddec',text3:'#7fcce3',
     accent:'#22d3ee',
     renkler:['#050d1a','#0a1628','#22d3ee','#0e4d66']
   },
@@ -4658,7 +4656,7 @@ const TEMALAR={
     ad:'Gül',
     bg:'#1a0a10',surface:'#2a1020',surface2:'#3a1530',
     border:'#f472b622',border2:'#f472b633',
-    text:'#ffe0ee',text2:'#e094b8',text3:'#bc7095',
+    text:'#ffe0ee',text2:'#edb5cf',text3:'#e094b8',
     accent:'#f472b6',
     renkler:['#1a0a10','#2a1020','#f472b6','#be185d']
   },
@@ -4666,7 +4664,7 @@ const TEMALAR={
     ad:'Şehir',
     bg:'#0f0f0f',surface:'#1c1c1c',surface2:'#252525',
     border:'#ffffff15',border2:'#ffffff25',
-    text:'#f0f0f0',text2:'#c4c4c4',text3:'#8a8a8a',
+    text:'#f0f0f0',text2:'#dcdcdc',text3:'#c4c4c4',
     accent:'#facc15',
     renkler:['#0f0f0f','#1c1c1c','#facc15','#333333']
   },
@@ -6082,7 +6080,7 @@ function renderPortalTakvim(el,og){
         const geldiMi=S.yoklamalar.some(y=>y.sinifId===si.id&&y.ogrenciId===og.id&&y.tarih===tarih);
 
         html+=`<div class="portal-ders-item">
-          <div style="width:4px;height:40px;border-radius:2px;background:${renk};flex-shrink:0;"></div>
+          <div style="width:4px;height:40px;border-radius:2px;background:${renk};box-shadow:0 0 6px ${renk};flex-shrink:0;"></div>
           <div style="flex:1;min-width:0;">
             <div style="font-size:13px;font-weight:600;">${si.ad}</div>
             <div style="font-size:11px;color:var(--text3);">${i===0?tarihFmt:''} · ${si.saat}</div>
@@ -6853,7 +6851,7 @@ function renderPortalBilgiler(el,og){
         const tip=kayit?.tip==='paket'?t('paket'):t('tek_ders');
         const donduruldu=kayit?.donduruldu;
         return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-          <div style="width:4px;height:40px;border-radius:2px;background:${renk};flex-shrink:0;"></div>
+          <div style="width:4px;height:40px;border-radius:2px;background:${renk};box-shadow:0 0 6px ${renk};flex-shrink:0;"></div>
           <div style="flex:1;min-width:0;">
             <div style="font-size:14px;font-weight:600;">${si.ad}</div>
             <div style="font-size:12px;color:var(--text3);margin-top:2px;">${si.gun} · ${si.saat}</div>
@@ -6878,29 +6876,9 @@ function renderPortalBilgiler(el,og){
     </div>`;
   }
 
-  html+=`<button class="btn" style="width:100%;padding:12px;background:var(--surface2);color:var(--text3);border:1px solid var(--border2);" onclick="portalSifreDegistirModal()">🔑 ${t('sifre_degistir')}</button>`;
-
-  // QR kart — canvas sonradan oluşturulacak
-  html+=`<div class="portal-card" style="margin-top:12px;text-align:center;">
-    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('yoklama_qr_kodum')}</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.5;">${t('ogretmen_kodu_okutur')}</div>
-    <div id="portal-qr-wrap" style="background:#fff;border-radius:12px;padding:12px;display:inline-block;"></div>
-  </div>`;
+  html+=`<button class="btn" style="width:100%;padding:12px;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="portalSifreDegistirModal()">🔑 ${t('sifre_degistir')}</button>`;
 
   el.innerHTML=html;
-
-  // QR canvas'ı oluştur
-  const wrap=document.getElementById('portal-qr-wrap');
-  if(wrap&&typeof QRCode!=='undefined'){
-    try{
-      new QRCode(wrap,{
-        text:location.href.split('?')[0]+'?ogQR='+og.id,
-        width:200,height:200,
-        colorDark:'#000000',colorLight:'#ffffff',
-        correctLevel:QRCode.CorrectLevel.M
-      });
-    }catch(e){wrap.innerHTML='<span style="font-size:12px;color:red;">'+t('qr_olusturulamadi')+'</span>';}
-  }
 }
 
 async function renderPortalOdemeler(el,og){
@@ -6918,7 +6896,7 @@ async function renderPortalOdemeler(el,og){
           <div style="font-size:11px;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em;">${t('odeme_yapin')}</div>
           ${ob.qrBase64?`<div style="text-align:center;margin-bottom:12px;">
             <img src="${ob.qrBase64}" style="max-width:180px;max-height:180px;border-radius:8px;border:1px solid var(--border2);display:block;margin:0 auto 8px;"/>
-            <button onclick="(()=>{const a=document.createElement('a');a.href='${ob.qrBase64}';a.download='odeme-qr.png';a.click()})()" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);border-radius:6px;padding:6px 16px;font-size:11px;font-weight:600;font-family:DM Sans,sans-serif;cursor:pointer;">⬇ ${t('qr_indir')}</button>
+            <button onclick="(()=>{const a=document.createElement('a');a.href='${ob.qrBase64}';a.download='odeme-qr.png';a.click()})()" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;border-radius:6px;padding:6px 16px;font-size:11px;font-weight:600;font-family:DM Sans,sans-serif;cursor:pointer;">⬇ ${t('qr_indir')}</button>
           </div>`:''}
           ${ob.adSoyad?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
             <div style="font-size:14px;font-weight:700;flex:1;">${ob.adSoyad}</div>
@@ -6990,7 +6968,7 @@ function renderPortalYoklama(el,og){
         <div style="font-size:12px;color:var(--text2);">${t('son_30_gun_katilim')}</div>
         <div style="font-size:16px;font-weight:600;color:${renk};">${son30Katilim}/30</div>
       </div>
-      <div class="portal-yoklama-bar"><div class="portal-yoklama-fill" style="width:${pct}%;background:${renk};"></div></div>
+      <div class="portal-yoklama-bar"><div class="portal-yoklama-fill" style="width:${pct}%;background:${renk};box-shadow:0 0 8px ${renk};"></div></div>
       <div style="font-size:12px;color:var(--text3);margin-top:10px;">${t('toplam')} ${tarihler.length} ${t('ders_katilimi')}</div>
       ${tarihler.length?`<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
         <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('son_katilimlar')}</div>
