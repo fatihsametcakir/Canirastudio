@@ -332,21 +332,29 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .takvim-ders-icerik{flex:1;min-width:0;}
 .takvim-ders-saat{font-size:12px;color:var(--text3);margin-bottom:2px;}
 .takvim-ders-ad{font-family:'Fraunces',serif;font-size:16px;font-weight:600;margin-bottom:4px;}
-.ay-grid-wrap{border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;}
+.ay-grid-wrap{border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px -8px rgba(0,0,0,.4);}
 .ay-grid-baslik{display:grid;grid-template-columns:repeat(7,1fr);}
-.ay-grid-gun-baslik{padding:7px 0;text-align:center;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;background:var(--surface2);}
+.ay-grid-gun-baslik{padding:8px 0;text-align:center;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;background:var(--surface2);}
+.ay-grid-gun-baslik.hafta-sonu{color:var(--purple);}
 .ay-grid-body{display:grid;grid-template-columns:repeat(7,1fr);}
-.ay-gun{min-height:56px;padding:4px 3px;border-top:1px solid var(--border);border-right:1px solid var(--border);cursor:pointer;transition:background .2s;position:relative;}
+.ay-gun{min-height:58px;padding:5px 3px;border-top:1px solid var(--border);border-right:1px solid var(--border);cursor:pointer;transition:background .2s;position:relative;}
 .ay-gun:nth-child(7n){border-right:none;}
 .ay-gun:active{background:var(--surface2);}
-.ay-gun.dis-ay{opacity:.25;pointer-events:none;}
-.ay-gun.bugun .ay-gun-sayi-inner{background:var(--accent);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 0 10px #ff6b6b70;transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
-.ay-gun.secili{background:var(--accentbg);}
-.ay-gun.secili:not(.bugun) .ay-gun-sayi-inner{transform:scale(1.1);}
+.ay-gun.dis-ay{opacity:.2;pointer-events:none;}
+.ay-gun.haftasonu-gun{background:#a78bfa08;}
+.ay-gun.dolu-gun::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#22d3ee0c,transparent 70%);pointer-events:none;}
+.ay-gun.tatil-gun{background:linear-gradient(180deg,#fbbf2418,#fbbf2408);}
+.ay-gun-tatil-ikon{position:absolute;top:2px;right:3px;font-size:9px;opacity:.85;}
+.ay-gun.bugun .ay-gun-sayi-inner{background:var(--accent);color:#fff;border-radius:50%;width:23px;height:23px;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 0 10px #ff6b6b70;transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
+.ay-gun.secili{background:var(--accentbg);box-shadow:inset 0 0 0 1.5px #ff6b6b50;}
+.ay-gun.secili:not(.bugun) .ay-gun-sayi-inner{transform:scale(1.1);font-weight:700;}
+.ay-gun.tatil-gun .ay-gun-sayi-inner{color:var(--amber);}
 .ay-gun-sayi{text-align:center;margin-bottom:3px;display:flex;justify-content:center;}
-.ay-gun-sayi-inner{font-size:12px;font-weight:500;line-height:22px;min-width:22px;text-align:center;}
-.ay-gun-dotlar{display:flex;gap:2px;justify-content:center;flex-wrap:wrap;padding:0 2px;}
-.ay-gun-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.ay-gun-sayi-inner{font-size:12px;font-weight:500;line-height:23px;min-width:23px;text-align:center;transition:transform .2s;}
+.ay-gun-dotlar{display:flex;gap:2.5px;justify-content:center;flex-wrap:wrap;padding:0 2px;}
+.ay-gun-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.ay-nav-btn{transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
+.ay-nav-btn:active{transform:scale(.88);}
 .portal-ders-item{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
 .portal-ders-item:last-child{border-bottom:none;}
 /* Portal — öğrenci ekranı */
@@ -1333,7 +1341,7 @@ const TRANSLATIONS={
     haftalik:'Haftalık', aylik:'Aylık', bu_hafta:'Bu Hafta',
     btn_ogrenci_ekle:'＋ Öğrenci Ekle', btn_haftalik_takvim:'📅 Haftalık Takvim',
     btn_sinif_playlist_ekle:'＋ Sınıf / Playlist Ekle',
-    yoklama_once_sinif:'Yoklama tutmak için önce sınıf ekleyin', bugun:'Bugün', qr_tara:'QR Tara',
+    yoklama_once_sinif:'Yoklama tutmak için önce sınıf ekleyin', bugun:'Bugün', qr_tara:'QR Tara', tatil:'Tatil', ders_var:'Ders var',
     gecmis:'Geçmiş', geldi:'Geldi',
     ozel_bos:'Henüz özel ders öğrencisi yok.', ozel_bos_alt:'Yukarıdaki butona bas ekle.',
     saatlik_paket:'saatlik paket', tamamlandi:'Tamamlandı', saat_kaldi:'saat kaldı', saat_yapildi:'saat yapıldı',
@@ -1504,7 +1512,7 @@ const TRANSLATIONS={
     haftalik:'Weekly', aylik:'Monthly', bu_hafta:'This Week',
     btn_ogrenci_ekle:'＋ Add Student', btn_haftalik_takvim:'📅 Weekly Calendar',
     btn_sinif_playlist_ekle:'＋ Add Class / Playlist',
-    yoklama_once_sinif:'Add a class first to take attendance', bugun:'Today', qr_tara:'Scan QR',
+    yoklama_once_sinif:'Add a class first to take attendance', bugun:'Today', qr_tara:'Scan QR', tatil:'Holiday', ders_var:'Has class',
     gecmis:'History', geldi:'Present',
     ozel_bos:'No private lesson students yet.', ozel_bos_alt:'Tap the button above to add one.',
     saatlik_paket:'hour package', tamamlandi:'Completed', saat_kaldi:'hours left', saat_yapildi:'hours done',
@@ -1675,7 +1683,7 @@ const TRANSLATIONS={
     haftalik:'Неделя', aylik:'Месяц', bu_hafta:'Эта неделя',
     btn_ogrenci_ekle:'＋ Добавить ученика', btn_haftalik_takvim:'📅 Недельный календарь',
     btn_sinif_playlist_ekle:'＋ Добавить группу / плейлист',
-    yoklama_once_sinif:'Сначала добавьте группу для отметки посещаемости', bugun:'Сегодня', qr_tara:'Сканировать QR',
+    yoklama_once_sinif:'Сначала добавьте группу для отметки посещаемости', bugun:'Сегодня', qr_tara:'Сканировать QR', tatil:'Праздник', ders_var:'Есть занятие',
     gecmis:'История', geldi:'Пришёл',
     ozel_bos:'Учеников на частные уроки пока нет.', ozel_bos_alt:'Нажмите кнопку выше, чтобы добавить.',
     saatlik_paket:'ч. пакет', tamamlandi:'Завершено', saat_kaldi:'ч. осталось', saat_yapildi:'ч. проведено',
@@ -5875,15 +5883,15 @@ function renderTakvimAy(){
   const ilkGunPzt=ilkGun===0?6:ilkGun-1; // Pzt bazlı offset
   const ayinGunSayisi=new Date(yil,ay+1,0).getDate();
 
-  let html=`<div class="hafta-nav" style="margin-bottom:10px;">
-    <button class="btn btn-ghost btn-sm" onclick="takAyDegis(-1)">‹</button>
-    <div style="font-size:14px;font-weight:600;cursor:pointer;font-family:Fraunces,serif;" onclick="takAyDegis(0)">${ayLabel}</div>
-    <button class="btn btn-ghost btn-sm" onclick="takAyDegis(1)">›</button>
+  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <button class="btn btn-ghost btn-sm ay-nav-btn" onclick="takAyDegis(-1)">‹</button>
+    <div style="font-size:17px;font-weight:600;cursor:pointer;font-family:Fraunces,serif;background:linear-gradient(90deg,var(--accent),var(--purple,#a78bfa));-webkit-background-clip:text;background-clip:text;color:transparent;" onclick="takAyDegis(0)">${ayLabel}</div>
+    <button class="btn btn-ghost btn-sm ay-nav-btn" onclick="takAyDegis(1)">›</button>
   </div>
   <div class="ay-grid-wrap">
     <div class="ay-grid-baslik">`;
 
-  GUN_KISA_PAZ_BASI_F().forEach(g=>{html+=`<div class="ay-grid-gun-baslik">${g}</div>`;});
+  GUN_KISA_PAZ_BASI_F().forEach((g,i)=>{html+=`<div class="ay-grid-gun-baslik${i>=5?' hafta-sonu':''}">${g}</div>`;});
   html+='</div><div class="ay-grid-body">';
 
   // Önceki aydan dolgu
@@ -5896,9 +5904,15 @@ function renderTakvimAy(){
     const dersler=gunDersleri(tarih);
     const isBugun=tarih===bugunStr;
     const isSecili=tarih===TAK_SEL_GUN;
+    const tatil=S.tatiller.find(tt=>tt.tarih===tarih);
+    const gunNoHaftasonu=new Date(tarih+'T00:00:00').getDay();
+    const haftaSonu=gunNoHaftasonu===0||gunNoHaftasonu===6;
     let cls='ay-gun';
     if(isBugun)cls+=' bugun';
     if(isSecili)cls+=' secili';
+    if(tatil)cls+=' tatil-gun';
+    if(haftaSonu&&!tatil)cls+=' haftasonu-gun';
+    if(dersler.length&&!tatil)cls+=' dolu-gun';
 
     const yoklamaDurumu=dersler.map((si,idx)=>{
       const aktifOgSay=(si.kayitlar||[]).filter(k=>{
@@ -5907,10 +5921,11 @@ function renderTakvimAy(){
       }).length;
       const gelenSay=S.yoklamalar.filter(y=>y.sinifId===si.id&&y.tarih===tarih).length;
       const renk=gelenSay>0?RENK_BAR[S.siniflar.indexOf(si)%RENK_BAR.length]:'var(--border2)';
-      return `<div class="ay-gun-dot" style="background:${renk};" title="${si.ad}"></div>`;
+      return `<div class="ay-gun-dot" style="background:${renk};${gelenSay>0?`box-shadow:0 0 4px ${renk};`:''}" title="${si.ad}"></div>`;
     }).join('');
 
-    html+=`<div class="${cls}" onclick="takGunSec('${tarih}')">
+    html+=`<div class="${cls}" onclick="takGunSec('${tarih}')" title="${tatil?'🎌 '+tatil.ad:''}">
+      ${tatil?'<div class="ay-gun-tatil-ikon">🎌</div>':''}
       <div class="ay-gun-sayi"><div class="ay-gun-sayi-inner">${g}</div></div>
       <div class="ay-gun-dotlar">${yoklamaDurumu}</div>
     </div>`;
@@ -5921,7 +5936,13 @@ function renderTakvimAy(){
   const kalanHucre=(7-toplamHucre%7)%7;
   for(let i=0;i<kalanHucre;i++)html+='<div class="ay-gun dis-ay"></div>';
 
-  html+='</div></div><div id="takvim-gun-detay" style="margin-top:14px;"></div>';
+  html+=`</div></div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;padding:0 2px;font-size:10.5px;color:var(--text3);">
+    <div style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--accentbg);border:1px solid #ff6b6b40;display:inline-block;"></span>${t('bugun')||'Bugün'}</div>
+    <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:10px;">🎌</span>${t('tatil')||'Tatil'}</div>
+    <div style="display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--cyan);display:inline-block;box-shadow:0 0 4px var(--cyan);"></span>${t('ders_var')||'Ders var'}</div>
+  </div>
+  <div id="takvim-gun-detay" style="margin-top:14px;"></div>`;
   return html;
 }
 
