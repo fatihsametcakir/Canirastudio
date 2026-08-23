@@ -4093,8 +4093,13 @@ function renderOzel(){
   const el=document.getElementById('ozel-list');
   const liste=ozelDersOgrencileri();
   if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">'+t('ozel_bos')+'<br>'+t('ozel_bos_alt')+'</div></div>';return;}
-  const sirali=[...liste].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
-  el.innerHTML=sirali.map(og=>{
+  // Kayıt sırası: her öğrencinin ilk özel paketinin oluşturulma tarihine göre (en eski önce)
+  const ilkPaketZamani=og=>{
+    const paketleri=S.ozelPaketler.filter(p=>p.ogrenciId===og.id);
+    return paketleri.length?Math.min(...paketleri.map(p=>p.olusturma||0)):Infinity;
+  };
+  const sirali=[...liste].sort((a,b)=>ilkPaketZamani(a)-ilkPaketZamani(b));
+  el.innerHTML=sirali.map((og,ozelSira)=>{
     const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
     const aktifPaket=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
     const ogAcik=OZEL_OG_ACIK.has(og.id);
@@ -4123,7 +4128,10 @@ function renderOzel(){
     }).join(''):`<div style="font-size:13px;color:var(--text3);padding:8px 0;">${t('henuz_paket_yok')}</div>`;
     return `<div class="ozel-og-kart">
       <div class="ozel-og-header" onclick="toggleOzelOgAcik('${og.id}')" style="cursor:pointer;">
-        <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}">${initials(og.ad,og.soyad||'')}</div>
+        <div style="position:relative;flex-shrink:0;">
+          <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}">${initials(og.ad,og.soyad||'')}</div>
+          <div style="position:absolute;bottom:-3px;right:-3px;background:var(--purple);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--surface);">${ozelSira+1}</div>
+        </div>
         <div style="flex:1;min-width:0;">
           <div class="ozel-og-isim" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${og.ad} ${og.soyad||''}</div>
           ${!ogAcik?`<div style="font-size:11px;color:var(--text2);margin-top:2px;">${ozetMetin}</div>`:''}
