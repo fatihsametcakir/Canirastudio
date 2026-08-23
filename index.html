@@ -991,6 +991,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <div id="og-tel-diger-wrap" style="display:none;margin-top:8px;"><input id="og-tel-diger-kod" placeholder="Ülke kodu (örn: 213)" type="tel" inputmode="numeric"/></div>
   </div>
   <div class="field"><label data-i18n="not_istege_bagli">Not (isteğe bağlı)</label><textarea id="og-not" placeholder="Fiziksel özellik, tercih, hatırlatma..." style="resize:none;height:72px;"></textarea></div>
+  <label style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--purplebg);border:1px solid #a78bfa30;border-radius:var(--radius-sm);margin-bottom:16px;cursor:pointer;">
+    <input type="checkbox" id="og-sadece-ozel" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--purple);"/>
+    <span style="font-size:13px;color:var(--purple);">✦ <span data-i18n="sadece_ozel_ders_flag">Sadece özel ders öğrencisi (sınıfa kayıtlı değil, bekleyen ödeme listesine düşmesin)</span></span>
+  </label>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ogrenci')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-og" onclick="saveOgrenci()" data-i18n="btn_kaydet">Kaydet</button></div>
   <div id="og-sil-row" style="display:none;margin-top:8px;"><button class="btn btn-danger" style="width:100%;" onclick="silOgrenci()" data-i18n="bu_ogrenciyi_sil">Bu Öğrenciyi Sil</button></div>
 </div></div>
@@ -1434,6 +1438,7 @@ const TRANSLATIONS={
     nakit:'Nakit', kart:'Kart', havale:'Havale/EFT', kapsanan_aylar:'Kapsanan Aylar', bu_odeme_hangi_ay:'Bu ödeme hangi ay(lar) için?',
     bu_odemeyi_sil:'Bu Ödemeyi Sil', odeme_gecmisi:'Ödeme Geçmişi',
     not_istege_bagli:'Not (isteğe bağlı)', bu_ogrenciyi_sil:'Bu Öğrenciyi Sil',
+    sadece_ozel_ders_flag:'Sadece özel ders öğrencisi (sınıfa kayıtlı değil, bekleyen ödeme listesine düşmesin)',
     sinif_adi:'Sınıf Adı', egitmen:'Eğitmen', secin:'— Seçin —', aylik_kira:'Aylık Kira (₺)',
     asistan_pay_orani:'Asistan Pay Oranı (%)', asistan_pay_aciklama:'O ayın gelirinin bu yüzdesi asistan eğitmene ödenir.',
     gun:'Gün', pazartesi:'Pazartesi', sali:'Salı', carsamba:'Çarşamba', persembe:'Perşembe', cuma:'Cuma', cumartesi:'Cumartesi', pazar:'Pazar',
@@ -1605,6 +1610,7 @@ const TRANSLATIONS={
     nakit:'Cash', kart:'Card', havale:'Bank Transfer', kapsanan_aylar:'Covered Months', bu_odeme_hangi_ay:'Which month(s) is this payment for?',
     bu_odemeyi_sil:'Delete This Payment', odeme_gecmisi:'Payment History',
     not_istege_bagli:'Note (optional)', bu_ogrenciyi_sil:'Delete This Student',
+    sadece_ozel_ders_flag:'Private-lesson-only student (not in a class, exclude from pending payments list)',
     sinif_adi:'Class Name', egitmen:'Instructor', secin:'— Select —', aylik_kira:'Monthly Rent (₺)',
     asistan_pay_orani:'Assistant Share (%)', asistan_pay_aciklama:'This percentage of that month\'s income is paid to the assistant instructor.',
     gun:'Day', pazartesi:'Monday', sali:'Tuesday', carsamba:'Wednesday', persembe:'Thursday', cuma:'Friday', cumartesi:'Saturday', pazar:'Sunday',
@@ -1776,6 +1782,7 @@ const TRANSLATIONS={
     nakit:'Наличные', kart:'Карта', havale:'Банковский перевод', kapsanan_aylar:'Оплаченные месяцы', bu_odeme_hangi_ay:'За какой месяц(ы) этот платёж?',
     bu_odemeyi_sil:'Удалить этот платёж', odeme_gecmisi:'История платежей',
     not_istege_bagli:'Заметка (необязательно)', bu_ogrenciyi_sil:'Удалить этого ученика',
+    sadece_ozel_ders_flag:'Только ученик частных занятий (не состоит в группе, исключить из списка ожидающих оплату)',
     sinif_adi:'Название группы', egitmen:'Преподаватель', secin:'— Выбрать —', aylik_kira:'Аренда в месяц (₺)',
     asistan_pay_orani:'Доля ассистента (%)', asistan_pay_aciklama:'Этот процент от дохода за месяц выплачивается ассистенту-преподавателю.',
     gun:'День', pazartesi:'Понедельник', sali:'Вторник', carsamba:'Среда', persembe:'Четверг', cuma:'Пятница', cumartesi:'Суббота', pazar:'Воскресенье',
@@ -2366,6 +2373,7 @@ function openOgrenciModal(id){
     document.getElementById('og-soyad').value=og.soyad||'';
     telFormuDoldur(og.tel||'');
     document.getElementById('og-not').value=og.not||'';
+    document.getElementById('og-sadece-ozel').checked=!!og.sadeceOzelDers;
     setSeg(og.cinsiyet||'k');
     document.getElementById('m-ogrenci-title').textContent=t('ogrenci_duzenle');
     // Ödemesi yoksa sil butonu göster
@@ -2374,6 +2382,7 @@ function openOgrenciModal(id){
   } else {
     ['og-ad','og-soyad','og-not'].forEach(i=>document.getElementById(i).value='');
     telFormuDoldur('');
+    document.getElementById('og-sadece-ozel').checked=false;
     // Cinsiyet seçili olmasın, kullanıcı seçmek zorunda
     SEG_CINSIYET='';
     document.getElementById('seg-k').classList.remove('active');
@@ -2436,7 +2445,7 @@ async function saveOgrenci(){
   }
   const btn=document.getElementById('btn-save-og');
   if(btn.disabled)return; // Çift tıklamayı önle
-  btn.disabled=true;setSyncing(true);const data={ad,soyad:so,cinsiyet:SEG_CINSIYET,tel,not:document.getElementById('og-not').value.trim()};try{
+  btn.disabled=true;setSyncing(true);const data={ad,soyad:so,cinsiyet:SEG_CINSIYET,tel,not:document.getElementById('og-not').value.trim(),sadeceOzelDers:document.getElementById('og-sadece-ozel').checked};try{
     if(EDIT_OG){
       const eski=S.ogrenciler.find(o=>o.id===EDIT_OG);
       await db.collection('ogrenciler').doc(EDIT_OG).update(data);
@@ -3735,7 +3744,12 @@ function renderAnasayfa(){
   const aktifOgrenciler=S.ogrenciler.filter(o=>(o.durum||'aktif')==='aktif');
   aktifOgrenciler.forEach(og=>{
     const kayitliSiniflar=S.siniflar.filter(si=>(si.kayitlar||[]).some(k=>k.ogrenciId===og.id));
-    if(!kayitliSiniflar.length){bekYeniKayit.push(og);return;}
+    if(!kayitliSiniflar.length){
+      // Sadece özel ders öğrencisiyse (işaretli ya da en az bir özel paketi varsa) bekleyen ödeme listesine düşmesin
+      const ozelDersOgrencisiMi=og.sadeceOzelDers||S.ozelPaketler.some(p=>p.ogrenciId===og.id);
+      if(!ozelDersOgrencisiMi)bekYeniKayit.push(og);
+      return;
+    }
     kayitliSiniflar.forEach(si=>{
       const kayit=(si.kayitlar||[]).find(k=>k.ogrenciId===og.id);
       if(kayit&&kayit.donduruldu)return;
