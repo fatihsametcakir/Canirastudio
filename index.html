@@ -106,9 +106,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .btn:disabled{opacity:.4;cursor:not-allowed;}
 .btn-accent{background:linear-gradient(135deg,#ff6b6b,#ff4757);color:#fff;box-shadow:0 4px 15px #ff6b6b30;}
 .btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);}
-.btn-danger{background:#ff6b6b18;color:var(--accent);border:1px solid #ff6b6b30;}
-.btn-green{background:var(--greenbg);color:var(--green);border:1px solid #34d39930;}
-.btn-purple{background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa30;}
+.btn-danger{background:#ff6b6b22;color:var(--accent);border:1px solid #ff6b6b50;box-shadow:0 2px 8px -3px #ff6b6b40;}
+.btn-green{background:#34d39922;color:var(--green);border:1px solid #34d39950;box-shadow:0 2px 8px -3px #34d39940;}
+.btn-purple{background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa50;box-shadow:0 2px 8px -3px #a78bfa40;}
 .btn-amber{background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2430;}
 .btn-cyan{background:#22d3ee22;color:var(--cyan);border:1px solid #22d3ee50;box-shadow:0 2px 8px -3px #22d3ee40;}
 .btn-sm{padding:6px 12px;font-size:12px;border-radius:8px;transition:background .25s,color .25s,border-color .25s,box-shadow .25s,opacity .15s,transform .15s;}
@@ -184,13 +184,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .pay-alert.urgent{background:linear-gradient(135deg,#ff6b6b18,#ff6b6b08);border:1px solid #ff6b6b30;}
 .pay-alert.soon{background:linear-gradient(135deg,#fbbf2418,#fbbf2408);border:1px solid #fbbf2430;}
 .pay-alert.ok{background:linear-gradient(135deg,#22d3ee18,#22d3ee08);border:1px solid #22d3ee30;}
-.odeme-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;}
-.odeme-sinif-grup{margin-bottom:8px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border2);}
-.odeme-sinif-baslik{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;cursor:pointer;background:var(--surface);user-select:none;transition:transform .15s;}
+.odeme-card{background:linear-gradient(135deg,var(--surface2),var(--surface) 70%);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;}
+.odeme-card:active{transform:scale(.98);}
+.odeme-sinif-grup{margin-bottom:10px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border2);box-shadow:0 4px 14px -8px rgba(0,0,0,.5);}
+.odeme-sinif-baslik{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;cursor:pointer;background:var(--surface);user-select:none;transition:transform .15s;border-left:3px solid var(--grup-renk,var(--border2));}
 .odeme-sinif-baslik:active{transform:scale(.98);}
-.odeme-sinif-baslik:active{background:var(--surface2);}
 .odeme-sinif-adi{font-family:'Fraunces',serif;font-size:15px;font-weight:600;}
-.odeme-sinif-chevron{font-size:18px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+.odeme-sinif-chevron{font-size:18px;color:var(--text2);transition:transform .2s cubic-bezier(.34,1.56,.64,1);flex-shrink:0;}
 .odeme-sinif-chevron.open{transform:rotate(90deg);}
 .odeme-sinif-body{display:none;padding:0 12px 12px;}
 .odeme-sinif-body.open{display:block;}
@@ -238,7 +238,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .empty{text-align:center;padding:40px 20px;color:var(--text3);}
 .empty-icon{font-size:40px;margin-bottom:12px;opacity:.5;}
 .empty-text{font-size:14px;line-height:1.6;}
-.wa-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;background:#25D36618;border:1px solid #25D36635;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:500;color:#25D366;font-family:'DM Sans',sans-serif;}
+.wa-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;background:#25D36622;border:1px solid #25D36655;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:500;color:#25D366;font-family:'DM Sans',sans-serif;box-shadow:0 2px 8px -3px #25D36640;transition:transform .15s;}
+.wa-btn:active{transform:scale(.95);}
 .wa-btn-devre-disi{background:var(--surface2);border-color:var(--border2);color:var(--text3);}
 .wa-btn:active{opacity:.7;}
 .confirm-sheet{background:var(--surface);border-radius:26px 26px 0 0;border-top:1px solid var(--border2);padding:26px 20px 34px;width:100%;max-width:480px;position:relative;}
@@ -4049,9 +4050,10 @@ function renderOdemeler(){
   const el=document.getElementById('odeme-content');
   if(!S.siniflar.length&&!S.ozelPaketler.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('once_sinif_ekle')+'</div></div>';return;}
   const bk=ayKey(new Date().getFullYear(),new Date().getMonth()+1);
-  let html=`<div style="display:flex;gap:8px;justify-content:flex-end;margin:4px 0 12px;"><button class="btn btn-ghost btn-sm" onclick="openSonOdemelerModal()">🕐 ${t('son_odemeler')}</button><button class="btn btn-accent btn-sm" onclick="openOdemeModal()">＋ ${t('odeme_ekle')}</button></div>`;
+  let html=`<div style="display:flex;gap:8px;justify-content:flex-end;margin:4px 0 12px;"><button class="btn btn-sm" style="background:#fbbf2422;color:var(--amber);border:1px solid #fbbf2450;" onclick="openSonOdemelerModal()">🕐 ${t('son_odemeler')}</button><button class="btn btn-accent btn-sm" onclick="openOdemeModal()">＋ ${t('odeme_ekle')}</button></div>`;
   // Grup sınıfları
-  S.siniflar.forEach(si=>{
+  S.siniflar.forEach((si,siIdx)=>{
+    const grupRenk=RENK_BAR[siIdx%RENK_BAR.length];
     const kayitlar=(si.kayitlar||[]).filter(k=>{const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);return og&&(og.durum||'aktif')==='aktif';});
     if(!kayitlar.length)return;
     // Bekleyen: dondurulmamış ve bu ay ödemesi olmayan
@@ -4064,7 +4066,7 @@ function renderOdemeler(){
       return gh<=0;
     }).length;
     const acik=ODEME_ACIK.has(si.id);
-    html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('${si.id}')"><div><div class="odeme-sinif-adi">${si.ad}</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;"><span class="badge badge-green" style="font-size:10px;">${kayitlar.length} ${t('lbl_ogrenci_kucuk')}</span>${bek>0?`<span class="badge badge-red" style="font-size:10px;">${bek} ${t('bekliyor')}</span>`:'<span class="badge badge-green" style="font-size:10px;">'+t('hepsi_odedi')+'</span>'}</div></div><div style="display:flex;align-items:center;gap:7px;"><button class="btn btn-green btn-sm" onclick="event.stopPropagation();openOdemeModal('','${si.id}')">＋</button><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-${si.id}">›</span></div></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-${si.id}">`;
+    html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('${si.id}')" style="--grup-renk:${grupRenk};"><div><div class="odeme-sinif-adi">${si.ad}</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;"><span class="badge badge-green" style="font-size:10px;">${kayitlar.length} ${t('lbl_ogrenci_kucuk')}</span>${bek>0?`<span class="badge badge-red" style="font-size:10px;">${bek} ${t('bekliyor')}</span>`:'<span class="badge badge-green" style="font-size:10px;">'+t('hepsi_odedi')+'</span>'}</div></div><div style="display:flex;align-items:center;gap:7px;"><button class="btn btn-green btn-sm" onclick="event.stopPropagation();openOdemeModal('','${si.id}')">＋</button><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-${si.id}">›</span></div></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-${si.id}">`;
     kayitlar.forEach(k=>{
       const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);if(!og)return;
       const donduruldu=!!k.donduruldu;
@@ -4082,13 +4084,13 @@ function renderOdemeler(){
           <div style="display:flex;align-items:center;gap:8px;min-width:0;">
             <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div>
             <div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div>
-            <div style="font-size:11px;color:var(--text3);">${donduruldu?'🧊 '+t('donduruldu'):k.tip==='paket'?t('paket'):t('tek')} · ${gh} ${t('ders')}${k.tip==='paket'&&h?.bitisTarih?' · '+t('bitis')+': '+formatDate(h.bitisTarih):''}</div></div>
+            <div style="font-size:11px;color:var(--text2);">${donduruldu?'🧊 '+t('donduruldu'):k.tip==='paket'?t('paket'):t('tek')} · ${gh} ${t('ders')}${k.tip==='paket'&&h?.bitisTarih?' · '+t('bitis')+': '+formatDate(h.bitisTarih):''}</div></div>
           </div>
-          <div style="text-align:right;flex-shrink:0;">${statusBadge}<div style="font-size:11px;color:var(--text3);margin-top:2px;">${top.toLocaleString(LC())} ₺</div></div>
+          <div style="text-align:right;flex-shrink:0;">${statusBadge}<div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${top.toLocaleString(LC())} ₺</div></div>
         </div>
         <div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;">
           ${!donduruldu?`<button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOdemeModal('${og.id}','${si.id}')">＋ ${t('odeme_al')}</button>`:''}
-          <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openOdemeDetay('${og.id}','${si.id}')">${t('gecmis')}</button>
+          <button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="openOdemeDetay('${og.id}','${si.id}')">${t('gecmis')}</button>
           ${waBtnG(og.tel,og.ad)}
         </div>
       </div>`;
@@ -4099,12 +4101,12 @@ function renderOdemeler(){
   const ozelListe=ozelDersOgrencileri();
   if(ozelListe.length){
     const acik=ODEME_ACIK.has('_ozel_');
-    html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('_ozel_')"><div><div class="odeme-sinif-adi" style="color:var(--purple);">${t('ozel_dersler')}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">${ozelListe.length} ${t('lbl_ogrenci_kucuk')}</div></div><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-_ozel_">›</span></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-_ozel_">`;
+    html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('_ozel_')" style="--grup-renk:var(--purple);"><div><div class="odeme-sinif-adi" style="color:var(--purple);">${t('ozel_dersler')}</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">${ozelListe.length} ${t('lbl_ogrenci_kucuk')}</div></div><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-_ozel_">›</span></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-_ozel_">`;
     ozelListe.forEach(og=>{
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
       const topOzel=paketler.reduce((s,p)=>s+(p.tutar||0),0);
       const aktif=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
-      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text3);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text3);margin-top:2px;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnG(og.tel,og.ad)}</div></div>`;
+      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text2);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnG(og.tel,og.ad)}</div></div>`;
     });
     html+=`</div></div>`;
   }
