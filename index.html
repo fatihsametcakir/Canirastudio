@@ -959,6 +959,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
         <span class="acc-arrow" id="arr-acc-veri">›</span>
       </div>
       <div class="acc-body" id="acc-veri">
+        <button class="btn btn-cyan" style="width:100%;margin-bottom:10px;" onclick="telNumaralariniTemizle()">📱 Telefon Numaralarını Düzenle</button>
+        <div class="drawer-sep"></div>
         <button class="drawer-btn danger" onclick="silKategori('odemeler')" data-i18n="sil_odemeler">Tüm Ödemeleri Sil</button>
         <button class="drawer-btn danger" onclick="silKategori('ozelPaketler')" data-i18n="sil_ozel_paketler">Tüm Özel Paketleri Sil</button>
         <button class="drawer-btn danger" onclick="silKategori('ozelOgrenciler')" data-i18n="sil_ozel_ogrenciler">Tüm Özel Öğrencileri Sil</button>
@@ -980,7 +982,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="field"><label data-i18n="lbl_ad">Ad</label><input id="og-ad" placeholder="Ad"/></div>
   <div class="field"><label data-i18n="lbl_soyad">Soyad</label><input id="og-soyad" placeholder="Soyad"/></div>
   <div class="field"><label data-i18n="lbl_cinsiyet">Cinsiyet</label><div class="seg"><div class="seg-btn active" id="seg-k" onclick="setSeg('k')" data-i18n="kadin">Kadın</div><div class="seg-btn" id="seg-e" onclick="setSeg('e')" data-i18n="erkek">Erkek</div></div></div>
-  <div class="field"><label data-i18n="lbl_telefon">Telefon</label><input id="og-tel" placeholder="+90 5xx xxx xx xx" type="tel"/></div>
+  <div class="field"><label data-i18n="lbl_telefon">Telefon</label>
+    <div style="display:flex;gap:8px;">
+      <select id="og-tel-ulke" style="flex:0 0 118px;"></select>
+      <input id="og-tel-numara" placeholder="555 444 22 11" type="tel" inputmode="numeric" style="flex:1;"/>
+    </div>
+    <div id="og-tel-diger-wrap" style="display:none;margin-top:8px;"><input id="og-tel-diger-kod" placeholder="Ülke kodu (örn: 213)" type="tel" inputmode="numeric"/></div>
+  </div>
   <div class="field"><label data-i18n="not_istege_bagli">Not (isteğe bağlı)</label><textarea id="og-not" placeholder="Fiziksel özellik, tercih, hatırlatma..." style="resize:none;height:72px;"></textarea></div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ogrenci')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-og" onclick="saveOgrenci()" data-i18n="btn_kaydet">Kaydet</button></div>
   <div id="og-sil-row" style="display:none;margin-top:8px;"><button class="btn btn-danger" style="width:100%;" onclick="silOgrenci()" data-i18n="bu_ogrenciyi_sil">Bu Öğrenciyi Sil</button></div>
@@ -2249,6 +2257,102 @@ function goToAyarlar(){drawerAc();}
 
 // ── GRUP ÖĞRENCİ ──────────────────────────────────────
 function setSeg(v){SEG_CINSIYET=v;document.getElementById('seg-k').classList.toggle('active',v==='k');document.getElementById('seg-e').classList.toggle('active',v==='e');}
+// ── Telefon: ülke kodu + numara ──────────────────────────
+const ULKE_KODLARI=[
+  {kod:'90',ad:'Türkiye',bayrak:'🇹🇷'},
+  {kod:'49',ad:'Almanya',bayrak:'🇩🇪'},
+  {kod:'7',ad:'Rusya',bayrak:'🇷🇺'},
+  {kod:'1',ad:'ABD/Kanada',bayrak:'🇺🇸'},
+  {kod:'44',ad:'İngiltere',bayrak:'🇬🇧'},
+  {kod:'33',ad:'Fransa',bayrak:'🇫🇷'},
+  {kod:'39',ad:'İtalya',bayrak:'🇮🇹'},
+  {kod:'34',ad:'İspanya',bayrak:'🇪🇸'},
+  {kod:'31',ad:'Hollanda',bayrak:'🇳🇱'},
+  {kod:'994',ad:'Azerbaycan',bayrak:'🇦🇿'},
+  {kod:'380',ad:'Ukrayna',bayrak:'🇺🇦'},
+  {kod:'995',ad:'Gürcistan',bayrak:'🇬🇪'},
+  {kod:'30',ad:'Yunanistan',bayrak:'🇬🇷'},
+  {kod:'359',ad:'Bulgaristan',bayrak:'🇧🇬'},
+  {kod:'971',ad:'BAE',bayrak:'🇦🇪'},
+];
+function ulkeSelectDoldur(){
+  const sel=document.getElementById('og-tel-ulke');
+  if(!sel||sel.options.length)return; // zaten dolu
+  sel.innerHTML=ULKE_KODLARI.map(u=>`<option value="${u.kod}">${u.bayrak} +${u.kod}</option>`).join('')+'<option value="diger">🌍 Diğer</option>';
+  sel.onchange=()=>{document.getElementById('og-tel-diger-wrap').style.display=sel.value==='diger'?'block':'none';};
+}
+// Kaydedilmiş tam telefon numarasını (ör. "905554442211") ülke kodu + yerel numara olarak ayırır
+function telAyristir(tamTel){
+  const d=(tamTel||'').replace(/\D/g,'');
+  if(!d)return{ulke:'90',numara:''};
+  // En uzun eşleşen ülke kodunu bul (994, 380 gibi 3 haneli kodlar 90'dan önce denenir çakışmasın diye)
+  const siraliKodlar=[...ULKE_KODLARI].sort((a,b)=>b.kod.length-a.kod.length);
+  for(const u of siraliKodlar){
+    if(d.startsWith(u.kod))return{ulke:u.kod,numara:d.slice(u.kod.length)};
+  }
+  // Bilinen kod yoksa: tamamını "diğer" olarak numara alanına koy
+  return{ulke:'diger',numaraDiger:d,numara:''};
+}
+function telFormuDoldur(tamTel){
+  ulkeSelectDoldur();
+  const{ulke,numara,numaraDiger}=telAyristir(tamTel);
+  const selEl=document.getElementById('og-tel-ulke');
+  const digerWrap=document.getElementById('og-tel-diger-wrap');
+  if(ulke==='diger'){
+    selEl.value='diger';
+    digerWrap.style.display='block';
+    document.getElementById('og-tel-diger-kod').value='';
+    document.getElementById('og-tel-numara').value=numaraDiger||'';
+  }else{
+    selEl.value=ulke;
+    digerWrap.style.display='none';
+    document.getElementById('og-tel-diger-kod').value='';
+    document.getElementById('og-tel-numara').value=numara;
+  }
+}
+// Formdaki ülke kodu + yerel numara alanlarını tek bir temiz telefon dizisine birleştirir
+function telFormuBirlestir(){
+  const selEl=document.getElementById('og-tel-ulke');
+  const ulke=selEl.value==='diger'?(document.getElementById('og-tel-diger-kod').value||'').replace(/\D/g,''):selEl.value;
+  let numara=(document.getElementById('og-tel-numara').value||'').replace(/\D/g,'');
+  if(numara.startsWith('0'))numara=numara.slice(1); // başında 0 kalırsa temizle
+  if(!numara)return '';
+  return ulke+numara;
+}
+
+// ── Telefon numaralarını topluca temizle ─────────────────
+function telNormalizeEt(raw){
+  let d=(raw||'').replace(/\D/g,'');
+  if(!d)return '';
+  // Türk numarası kalıpları: 90+10 hane, 0+10 hane, ya da çıplak 10 hane (5 ile başlayan)
+  if(d.startsWith('90')&&d.length===12)return d;
+  if(d.startsWith('0')&&d.length===11)return '90'+d.slice(1);
+  if(d.length===10&&d.startsWith('5'))return '90'+d;
+  // Tanınmayan/yabancı: sadece biçimlendirmeyi temizle, olduğu gibi bırak
+  return d;
+}
+async function telNumaralariniTemizle(){
+  const onizleme=S.ogrenciler.map(o=>({o,yeni:telNormalizeEt(o.tel)})).filter(x=>x.o.tel&&x.yeni!==x.o.tel);
+  if(!onizleme.length){toastGoster('✓ Tüm numaralar zaten düzenli');return;}
+  confirm_('Telefon Numaralarını Düzenle',
+    onizleme.length+' öğrencinin numarası temizlenecek (boşluk/+ silinip Türk numaraları 90 ile başlayacak şekilde tek tipe getirilecek). Yabancı numaraların ülke koduna dokunulmaz, sadece biçimlendirme temizlenir. Devam edilsin mi?',
+    async()=>{
+      setSyncing(true);
+      let basarili=0;
+      for(const{o,yeni} of onizleme){
+        try{
+          await db.collection('ogrenciler').doc(o.id).update({tel:yeni});
+          const idx=S.ogrenciler.findIndex(x=>x.id===o.id);
+          if(idx>=0)S.ogrenciler[idx]={...S.ogrenciler[idx],tel:yeni};
+          basarili++;
+        }catch(e){/* tek kayıt başarısız olursa devam et */}
+      }
+      _poll('ogrenciler');setSyncing(false);
+      toastGoster('✓ '+basarili+' numara düzenlendi');
+    }
+  );
+}
+
 function openOgrenciModal(id){
   EDIT_OG=id||null;
   const silRow=document.getElementById('og-sil-row');
@@ -2256,7 +2360,7 @@ function openOgrenciModal(id){
     const og=S.ogrenciler.find(o=>o.id===id);
     document.getElementById('og-ad').value=og.ad;
     document.getElementById('og-soyad').value=og.soyad||'';
-    document.getElementById('og-tel').value=og.tel||'';
+    telFormuDoldur(og.tel||'');
     document.getElementById('og-not').value=og.not||'';
     setSeg(og.cinsiyet||'k');
     document.getElementById('m-ogrenci-title').textContent=t('ogrenci_duzenle');
@@ -2264,7 +2368,8 @@ function openOgrenciModal(id){
     const odemeVar=S.odemeler.some(o=>o.ogrenciId===id);
     if(silRow)silRow.style.display=odemeVar?'none':'block';
   } else {
-    ['og-ad','og-soyad','og-tel','og-not'].forEach(i=>document.getElementById(i).value='');
+    ['og-ad','og-soyad','og-not'].forEach(i=>document.getElementById(i).value='');
+    telFormuDoldur('');
     // Cinsiyet seçili olmasın, kullanıcı seçmek zorunda
     SEG_CINSIYET='';
     document.getElementById('seg-k').classList.remove('active');
@@ -2298,7 +2403,7 @@ async function saveOgrenci(){
   // Cinsiyet seçimi kontrolü (sadece yeni kayıtta)
   if(!EDIT_OG&&!SEG_CINSIYET){showToast('Lütfen cinsiyet seçin.','error');return;}
   // Mükerrer kayıt kontrolü (kendisi hariç)
-  const tel=document.getElementById('og-tel').value.trim();
+  const tel=telFormuBirlestir();
   const adSoyadEsles=S.ogrenciler.find(o=>
     o.id!==EDIT_OG&&
     o.ad.toLowerCase()===ad.toLowerCase()&&
@@ -2311,7 +2416,7 @@ async function saveOgrenci(){
   }
   const btn=document.getElementById('btn-save-og');
   if(btn.disabled)return; // Çift tıklamayı önle
-  btn.disabled=true;setSyncing(true);const data={ad,soyad:so,cinsiyet:SEG_CINSIYET,tel:document.getElementById('og-tel').value.trim(),not:document.getElementById('og-not').value.trim()};try{
+  btn.disabled=true;setSyncing(true);const data={ad,soyad:so,cinsiyet:SEG_CINSIYET,tel,not:document.getElementById('og-not').value.trim()};try{
     if(EDIT_OG){
       await db.collection('ogrenciler').doc(EDIT_OG).update(data);
       const idx=S.ogrenciler.findIndex(o=>o.id===EDIT_OG);
