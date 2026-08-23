@@ -110,7 +110,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .btn-green{background:var(--greenbg);color:var(--green);border:1px solid #34d39930;}
 .btn-purple{background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa30;}
 .btn-amber{background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2430;}
-.btn-cyan{background:var(--cyanbg);color:var(--cyan);border:1px solid #22d3ee30;}
+.btn-cyan{background:#22d3ee22;color:var(--cyan);border:1px solid #22d3ee50;box-shadow:0 2px 8px -3px #22d3ee40;}
 .btn-sm{padding:6px 12px;font-size:12px;border-radius:8px;transition:background .25s,color .25s,border-color .25s,box-shadow .25s,opacity .15s,transform .15s;}
 .fab{position:fixed;bottom:88px;right:max(16px,calc(50vw - 224px));width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff6b6b,#ff4757);color:#fff;font-size:22px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px #ff6b6b50;z-index:99;transition:transform .15s;}
 .fab:active{transform:scale(.9);}
@@ -3963,7 +3963,7 @@ function renderOzel(){
       const acik=OG_PAKET_ACIK.has(p.id);
       return `<div class="ozel-paket${p.aktif&&!bitti?' aktif-paket':bitti?' bitti':''}" onclick="togglePaketAcik('${p.id}')">
         <div class="ozel-paket-header">
-          <div><span class="ozel-paket-toplam">${(p.tutar||0).toLocaleString(LC())} ₺</span><span style="font-size:11px;color:var(--text3);margin-left:8px;">${fmtSaat(p.toplamSaat)} ${t('saatlik_paket')}</span></div>
+          <div><span class="ozel-paket-toplam">${(p.tutar||0).toLocaleString(LC())} ₺</span><span style="font-size:11px;color:var(--text2);margin-left:8px;">${fmtSaat(p.toplamSaat)} ${t('saatlik_paket')}</span></div>
           <div style="display:flex;align-items:center;gap:6px;">
             <span class="badge ${bitti?'badge-gray':kalan<=1?'badge-amber':'badge-cyan'}">${bitti?t('tamamlandi'):fmtSaat(kalan)+' '+t('saat_kaldi')}</span>
             <span style="font-size:14px;color:var(--text3);transition:transform .15s;display:inline-block;transform:rotate(${acik?90:0}deg);">›</span>
@@ -3975,7 +3975,7 @@ function renderOzel(){
         <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
           <button class="btn btn-accent btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openOzelSaatModal('${p.id}')">－ ${t('saat_dus_ekle')}</button>
           <button class="btn btn-cyan btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}','${p.id}')">${t('btn_paket_duzenle')}</button>
-          <button class="btn btn-ghost btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openPaketDersler('${p.id}')">📋 ${t('dersler')}</button>
+          <button class="btn btn-sm" style="flex:1;min-width:100px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa50;" onclick="event.stopPropagation();openPaketDersler('${p.id}')">📋 ${t('dersler')}</button>
           <button class="btn btn-danger btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();silOzelPaket('${p.id}')">🗑 ${t('btn_sil')}</button>
         </div>`:''}
       </div>`;
@@ -3985,15 +3985,15 @@ function renderOzel(){
         <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}">${initials(og.ad,og.soyad||'')}</div>
         <div style="flex:1;min-width:0;">
           <div class="ozel-og-isim" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${og.ad} ${og.soyad||''}</div>
-          ${!ogAcik?`<div style="font-size:11px;color:var(--text3);margin-top:2px;">${ozetMetin}</div>`:''}
+          ${!ogAcik?`<div style="font-size:11px;color:var(--text2);margin-top:2px;">${ozetMetin}</div>`:''}
         </div>
         <span style="font-size:16px;color:var(--text3);transition:transform .15s;display:inline-block;transform:rotate(${ogAcik?90:0}deg);flex-shrink:0;">›</span>
       </div>
       ${ogAcik?`
       <div style="display:flex;gap:5px;margin-top:10px;">
-        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="event.stopPropagation();openOgrenciModal('${og.id}')">${t('btn_bilgi_duzenle')}</button>
+        <button class="btn btn-cyan btn-sm" style="flex:1;" onclick="event.stopPropagation();openOgrenciModal('${og.id}')">${t('btn_bilgi_duzenle')}</button>
       </div>
-      ${paketler.length?'<div style="font-size:11px;color:var(--text3);margin:10px 0 4px;">'+t('paket_hint')+'</div>':'<div style="margin-top:10px;"></div>'}
+      ${paketler.length?'<div style="font-size:11px;color:var(--text2);margin:10px 0 4px;">'+t('paket_hint')+'</div>':'<div style="margin-top:10px;"></div>'}
       ${paketHTML}
       <button class="btn btn-cyan btn-sm" style="width:100%;margin-top:8px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button>
       `:''}
