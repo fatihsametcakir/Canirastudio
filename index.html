@@ -218,7 +218,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 #m-kayit-islem-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:18px;}
 .sheet-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .field{margin-bottom:13px;}
-.field label{display:block;font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
+.field label{display:block;font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
 .eg-check-row{display:flex;align-items:center;gap:10px;text-transform:none;letter-spacing:normal;font-size:14px;font-weight:400;color:var(--text);margin-bottom:0;padding:9px 2px;border-bottom:1px solid var(--border);}
 .field .eg-check-row:last-child{border-bottom:none;}
 .eg-check-row input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--accent);}
@@ -226,12 +226,13 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .oog-ara-item:active{opacity:.8;}
 .oog-ara-item span.oai-not{font-size:11px;color:var(--text3);}
 .field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .2s;color-scheme:dark;}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:#ff6b6b70;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#ff6b6b70;box-shadow:0 0 0 3px #ff6b6b1a;}
 .field select option{background:var(--surface2);}
 .field textarea{resize:none;height:72px;}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.seg-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px;text-align:center;cursor:pointer;font-size:14px;color:var(--text2);transition:all .15s;}
-.seg-btn.active{background:var(--accentbg);border-color:#ff6b6b50;color:var(--accent);font-weight:500;}
+.seg-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px;text-align:center;cursor:pointer;font-size:14px;color:var(--text2);transition:all .25s cubic-bezier(.34,1.56,.64,1);}
+.seg-btn:active{transform:scale(.96);}
+.seg-btn.active{background:#ff6b6b28;border-color:#ff6b6b60;color:var(--accent);font-weight:600;box-shadow:0 3px 10px -3px #ff6b6b60;}
 .form-actions{display:flex;gap:10px;margin-top:20px;}
 .form-actions .btn{flex:1;padding:13px;}
 .divider{height:1px;background:var(--border);margin:14px 0;}
@@ -244,14 +245,16 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .wa-btn:active{opacity:.7;}
 .confirm-sheet{background:var(--surface);border-radius:26px 26px 0 0;border-top:1px solid var(--border2);padding:26px 20px 34px;width:100%;max-width:480px;position:relative;}
 .ay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
-.ay-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 5px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s;}
-.ay-btn.active{background:var(--accentbg);border-color:#ff6b6b50;color:var(--accent);font-weight:500;}
-.ay-btn.odendi{background:var(--greenbg);border-color:#34d39930;color:var(--green);}
+.ay-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 5px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all .2s cubic-bezier(.34,1.56,.64,1);}
+.ay-btn:active{transform:scale(.94);}
+.ay-btn.active{background:#ff6b6b28;border-color:#ff6b6b60;color:var(--accent);font-weight:600;box-shadow:0 3px 8px -3px #ff6b6b50;}
+.ay-btn.odendi{background:#34d39928;border-color:#34d39955;color:var(--green);}
 .tab-row{display:flex;gap:7px;margin-bottom:14px;margin-top:4px;}
 .tab-btn{flex:1;padding:7px 10px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text3);font-size:13px;font-weight:500;cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);font-family:'DM Sans',sans-serif;}
 .tab-btn:active{transform:scale(.96);}
 .tab-btn.active{background:var(--accentbg);border-color:#ff6b6b50;color:var(--accent);box-shadow:0 3px 10px -3px #ff6b6b60;}
-.odeme-gecmis-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;}
+.odeme-gecmis-item{background:linear-gradient(135deg,#34d39912,var(--surface2) 65%);border:1px solid #34d39930;border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
+.odeme-gecmis-item:active{transform:scale(.98);}
 
 /* Özel ders öğrenci kartı */
 .ozel-og-kart{background:linear-gradient(135deg,#a78bfa10,var(--surface) 55%);border:1px solid #a78bfa30;border-left:3px solid var(--purple);border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;}
@@ -768,9 +771,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
   <!-- ÖDEMELER -->
   <div class="page" id="pg-odemeler">
-    <div class="tab-row">
-      <button class="tab-btn active" id="tab-odemeler" onclick="setOdemeTab('odemeler')" data-i18n="nav_ogrenciler">Öğrenciler</button>
-    </div>
     <div id="odeme-content"></div>
 
   </div>
@@ -1037,7 +1037,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="field"><label data-i18n="lbl_tutar">Tutar (₺)</label><input id="od-tutar" type="number" placeholder="800"/></div>
   <div class="field"><label data-i18n="odeme_tarihi">Ödeme Tarihi</label><input id="od-tarih" type="date"/></div>
   <div class="field"><label data-i18n="lbl_yontem">Yöntem</label><select id="od-yontem"><option value="nakit" data-i18n="nakit">Nakit</option><option value="kart" data-i18n="kart">Kart</option><option value="havale" data-i18n="havale">Havale/EFT</option></select></div>
-  <div class="field" id="od-ay-alan"><label><span data-i18n="kapsanan_aylar">Kapsanan Aylar</span> <span style="color:var(--accent);">*</span></label><div style="font-size:12px;color:var(--text3);margin-bottom:7px;" data-i18n="bu_odeme_hangi_ay">Bu ödeme hangi ay(lar) için?</div><div class="ay-grid" id="od-ay-grid"></div></div>
+  <div class="field" id="od-ay-alan"><label><span data-i18n="kapsanan_aylar">Kapsanan Aylar</span> <span style="color:var(--accent);">*</span></label><div style="font-size:12px;color:var(--text2);margin-bottom:7px;" data-i18n="bu_odeme_hangi_ay">Bu ödeme hangi ay(lar) için?</div><div class="ay-grid" id="od-ay-grid"></div></div>
   <div class="field"><label data-i18n="lbl_not">Not</label><textarea id="od-not" placeholder="Ek not..."></textarea></div>
   <div id="od-edit-sil-row" style="display:none;margin-top:6px;"><button class="btn btn-danger" style="width:100%;" onclick="silOdeme()" data-i18n="bu_odemeyi_sil">Bu Ödemeyi Sil</button></div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-odeme')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-od" onclick="saveOdeme()" data-i18n="btn_kaydet">Kaydet</button></div>
@@ -2115,7 +2115,6 @@ function toggleOgGrup(ad){
   renderOgrenciler();
 }
 function setOgrenciFilter(f){OG_FILTER=f;['aktif','pasif','hepsi'].forEach(k=>{const b=document.getElementById('filter-'+k);if(k===f){b.style.background='var(--accentbg)';b.style.color='var(--accent)';b.style.border='1px solid #ff6b6b40';b.style.boxShadow='0 3px 10px -3px #ff6b6b70';}else{b.style.background='var(--surface2)';b.style.color='var(--text2)';b.style.border='1px solid var(--border2)';b.style.boxShadow='none';}});renderOgrenciler();}
-function setOdemeTab(t){ODEME_TAB=t;const tabO=document.getElementById('tab-odemeler');if(tabO)tabO.classList.toggle('active',t==='odemeler');document.getElementById('odeme-content').style.display='block';}
 function toggleOdemeSinif(id){if(ODEME_ACIK.has(id))ODEME_ACIK.delete(id);else ODEME_ACIK.add(id);const body=document.getElementById('odeme-body-'+id),chev=document.getElementById('odeme-chev-'+id);if(!body||!chev)return;const a=ODEME_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
 function toggleGelirSinif(id){
   if(GELIR_ACIK.has(id))GELIR_ACIK.delete(id);
@@ -2974,7 +2973,7 @@ async function saveOdeme(){
   btn.disabled=false;setSyncing(false);
 }
 async function silOdeme(){if(!EDIT_ODEME)return;confirm_('Ödemeyi Sil','Bu ödeme kaydı kalıcı olarak silinecek.',async()=>{setSyncing(true);await db.collection('odemeler').doc(EDIT_ODEME).delete();_poll('odemeler');setSyncing(false);closeModal('m-odeme');});}
-function openOdemeDetay(ogId,siId){const og=S.ogrenciler.find(o=>o.id===ogId);const si=S.siniflar.find(s=>s.id===siId);const list=ogSiOd(ogId,siId).sort((a,b)=>b.olusturma-a.olusturma);document.getElementById('m-odeme-detay-title').textContent=(og?og.ad+' '+og.soyad:'')+(si?' · '+si.ad:'');const el=document.getElementById('m-odeme-detay-content');if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">Henüz ödeme kaydı yok</div></div>';openModal('m-odeme-detay');return;}el.innerHTML=list.map(od=>`<div class="odeme-gecmis-item"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--green);font-size:15px;font-weight:600;">${(od.tutar||0).toLocaleString(LC())} ₺</span><div style="display:flex;gap:6px;align-items:center;"><span class="badge badge-amber">${od.yontem||'—'}</span><button class="btn btn-ghost btn-sm" onclick="closeModal('m-odeme-detay');openOdemeModal('${ogId}','${siId}','${od.id}')">Düzenle</button></div></div><div style="font-size:12px;color:var(--text3);">${formatDate(od.tarih)}${od.aylar&&od.aylar.length?' · '+od.aylar.map(a=>ayLabel(a)).join(', '):''}</div>${od.not?`<div style="font-size:12px;color:var(--text3);margin-top:3px;">${od.not}</div>`:''}</div>`).join('');openModal('m-odeme-detay');}
+function openOdemeDetay(ogId,siId){const og=S.ogrenciler.find(o=>o.id===ogId);const si=S.siniflar.find(s=>s.id===siId);const list=ogSiOd(ogId,siId).sort((a,b)=>b.olusturma-a.olusturma);document.getElementById('m-odeme-detay-title').textContent=(og?og.ad+' '+og.soyad:'')+(si?' · '+si.ad:'');const el=document.getElementById('m-odeme-detay-content');if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">Henüz ödeme kaydı yok</div></div>';openModal('m-odeme-detay');return;}el.innerHTML=list.map(od=>`<div class="odeme-gecmis-item"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--green);font-size:15px;font-weight:600;">${(od.tutar||0).toLocaleString(LC())} ₺</span><div style="display:flex;gap:6px;align-items:center;"><span class="badge badge-amber">${od.yontem||'—'}</span><button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="closeModal('m-odeme-detay');openOdemeModal('${ogId}','${siId}','${od.id}')">Düzenle</button></div></div><div style="font-size:12px;color:var(--text2);">${formatDate(od.tarih)}${od.aylar&&od.aylar.length?' · '+od.aylar.map(a=>ayLabel(a)).join(', '):''}</div>${od.not?`<div style="font-size:12px;color:var(--text2);margin-top:3px;">${od.not}</div>`:''}</div>`).join('');openModal('m-odeme-detay');}
 
 // ── ÖZEL DERSE ÖĞRENCİ EKLE (birleşik model) ────────────
 function ozelEkleBaslat(){
