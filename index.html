@@ -16,7 +16,11 @@
 window._cikisOnaylandi=false;
 function geriTusuTamponKur(adet){
   adet=adet||1;
-  try{for(let i=0;i<adet;i++)history.pushState({app:true},'',location.href);}catch(e){}
+  // setTimeout(0) ile ertelendi: mevcut yakalanan geçiş tam otur madan hemen
+  // pushState çağırmak, art arda hızlı basışlarda çakışmaya yol açıyordu.
+  setTimeout(function(){
+    try{for(let i=0;i<adet;i++)history.pushState({app:true},'',location.href);}catch(e){}
+  },0);
 }
 function geriTusuGosterTeshis(mesaj){
   const eski=document.getElementById('_geri_teshis');
