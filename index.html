@@ -2127,52 +2127,63 @@ function startListeners(){
 // Nav
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('pg-'+p).classList.add('active');}
 // ── ANDROID GERİ TUŞU YÖNETİMİ ──────────────────────────
-// Tarayıcı geçmişine (history) her zaman birkaç "tampon" giriş bırakılır (tek değil —
-// bazı Android sürümlerinde "tahmin edilebilir geri" hareketi bir basışta olayı birden
-// fazla tetikleyebiliyor, tek tamponla bu durumda direkt uygulamadan çıkılabiliyordu).
 // Geri tuşuna basılınca uygulamadan çıkmak yerine bu yakalanır:
 //   1) Açık bir popup/modal varsa onu kapatır
 //   2) Hamburger menü açıksa onu kapatır
 //   3) Ana Sayfa'da değilsek Ana Sayfa'ya döner
 //   4) Ana Sayfa'daysak "çıkmak istiyor musun" diye sorar
-function geriTusuTamponKur(adet){
-  adet=adet||1;
-  try{for(let i=0;i<adet;i++)history.pushState({app:true},'',location.href);}catch(e){}
-}
-geriTusuTamponKur(3);
-let _sonPopstateZamani=0;
-window.addEventListener('popstate',function(){
-  // Aynı fiziksel basışın çok kısa sürede birden fazla olay tetiklemesi ihtimaline karşı
-  // (bilinen bir Android "predictive back" kusuru) — tekrar eden olayı görmezden gel
-  const simdi=Date.now();
-  if(simdi-_sonPopstateZamani<120)return;
-  _sonPopstateZamani=simdi;
-
+// Modern Chrome/Android'in "tahmin edilebilir geri" (predictive back) hareketi eski
+// popstate yöntemini güvenilir şekilde yakalayamayabiliyor — bu yüzden destekleniyorsa
+// bunun için özel olarak tasarlanmış Navigation API kullanılıyor, desteklemeyen eski
+// tarayıcılar için popstate yedek olarak duruyor.
+function geriTusuIsle(){
   const acikModal=document.querySelector('.overlay.open');
   if(acikModal){
     closeModal(acikModal.id);
-    geriTusuTamponKur();
     return;
   }
   const drawer=document.getElementById('drawer');
   if(drawer&&drawer.classList.contains('open')){
     drawerKapat();
-    geriTusuTamponKur();
     return;
   }
   if(PAGE!=='anasayfa'){
     goTo('anasayfa',document.querySelector('.nav-item'));
-    geriTusuTamponKur();
     return;
   }
-  // Ana Sayfa'dayız — önce tamponu geri koy (vazgeçerse uygulamada kalsın)
-  geriTusuTamponKur(3);
   confirm_(t('uygulamadan_cik'), t('uygulamadan_cik_soru'), function(){
-    // Onaylandı: kalan tüm tamponu tüketip gerçek çıkışı tetikle.
-    // -10 istemek zararsız: tarayıcı geçmişin başından öteye geçmez, sadece en dibe iner.
-    history.go(-10);
+    _cikisOnaylandi=true;
+    if('navigation' in window)navigation.back();
+    else history.go(-10);
   });
-});
+}
+let _cikisOnaylandi=false;
+
+if('navigation' in window){
+  // Modern yöntem: geri gezinmeyi senkron şekilde yakalayıp, tarayıcı animasyonu
+  // "tamamlandı" saymadan önce kendi mantığımızı çalıştırıyoruz.
+  navigation.addEventListener('navigate',function(e){
+    if(e.navigationType!=='traverse')return;
+    if(_cikisOnaylandi)return; // çıkış onaylandıysa gerçek gezinmeye izin ver
+    e.intercept({handler:async function(){ geriTusuIsle(); }});
+  });
+} else {
+  // Eski tarayıcılar için yedek yöntem
+  function geriTusuTamponKur(adet){
+    adet=adet||1;
+    try{for(let i=0;i<adet;i++)history.pushState({app:true},'',location.href);}catch(e){}
+  }
+  geriTusuTamponKur(3);
+  let _sonPopstateZamani=0;
+  window.addEventListener('popstate',function(){
+    const simdi=Date.now();
+    if(simdi-_sonPopstateZamani<120)return;
+    _sonPopstateZamani=simdi;
+    if(_cikisOnaylandi)return;
+    geriTusuTamponKur();
+    geriTusuIsle();
+  });
+}
 
 // ── SEKMELER ARASI KAYDIRMA (izole özellik — sorun çıkarsa sadece bunu geri al) ──
 // Tüm sekmelerde sağa/sola kaydırma ile bitişik footer sekmesine (döngüsel) geçiş.
