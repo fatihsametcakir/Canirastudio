@@ -832,7 +832,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('yoklama',null)">✓ Yoklama</button>
       <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
-      <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:0;" onclick="window.open('./yarisma.html','_blank')">🏆 Yarışma (Jack & Jill)</button>
+      <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:0;" onclick="yarismayaAc()">🏆 Yarışma (Jack & Jill)</button>
     </div>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
 
@@ -2249,6 +2249,18 @@ function waBR(tel,msg){
 }
 
 // ── DRAWER ────────────────────────────────────────────
+// Yarışma uygulamasına aktif öğrenci listesini "köprü" olarak aktarır (aynı adreste çalıştıkları için localStorage paylaşılabiliyor)
+function yarismayaAc(){
+  try{
+    const liste=S.ogrenciler
+      .filter(o=>(o.durum||'aktif')==='aktif')
+      .map(o=>({isim:(o.ad+' '+(o.soyad||'')).trim(),cinsiyet:o.cinsiyet==='e'?'E':'K'}))
+      .sort((a,b)=>a.isim.localeCompare(b.isim,'tr'));
+    localStorage.setItem('canira_ogrenci_listesi',JSON.stringify(liste));
+  }catch(e){/* köprü veri yazılamazsa sessizce geç, yarışma uygulaması yine de manuel girişle çalışır */}
+  drawerKapat();
+  window.open('./yarisma.html','_blank');
+}
 function drawerAc(){
   document.getElementById('drawer').classList.add('open');
   document.getElementById('drawerOverlay').classList.add('open');

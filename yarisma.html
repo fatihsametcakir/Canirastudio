@@ -587,7 +587,12 @@ function renderCompetitionForm(comp){
 
       <label>Öğrenciler</label>
       <div class="stack" id="f-ogrenciler-list"></div>
-      <button class="btn btn-ghost" style="margin-top:8px;" onclick="addStudentField()">+ Öğrenci Ekle</button>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+        <button class="btn btn-ghost" onclick="addStudentField()">+ Öğrenci Ekle</button>
+        <select id="ogrenci-listesi-sec" style="flex:1;min-width:160px;border-radius:10px;border:1px solid rgba(0,0,0,.15);padding:0 10px;font-family:'Work Sans',sans-serif;" onchange="listedenOgrenciEkle(this)">
+          <option value="">📋 Öğrenci listesinden ekle...</option>
+        </select>
+      </div>
 
       <label>Jüriler</label>
       <div class="stack" id="f-juriler-list"></div>
@@ -613,6 +618,7 @@ function renderCompetitionForm(comp){
     </div>
   `);
   document.getElementById("f-tarih").value = comp?.tarih || new Date().toISOString().slice(0,10);
+  ogrenciListesiDoldur();
   if(comp){
     document.getElementById("f-skala").value = String(comp.maxPuan || 10);
     document.getElementById("f-tur").value = comp.yarismaTuru || "karisik";
@@ -625,6 +631,35 @@ function renderCompetitionForm(comp){
     DEFAULT_CRITERIA.forEach(c=>addCriterionField(c, DEFAULT_CRITERIA_EN[c]));
   }
   refreshAllStudentJuryChips();
+}
+
+// Ana uygulamadan (Can & Irina Studio) localStorage köprüsüyle gelen aktif öğrenci listesi
+function ogrenciListesiDoldur(){
+  const sel = document.getElementById("ogrenci-listesi-sec");
+  if(!sel) return;
+  let liste = [];
+  try{ liste = JSON.parse(localStorage.getItem("canira_ogrenci_listesi") || "[]"); }catch(e){}
+  if(!liste.length){
+    sel.innerHTML = `<option value="">Ana uygulamadan öğrenci listesi bulunamadı</option>`;
+    sel.disabled = true;
+    return;
+  }
+  sel.disabled = false;
+  sel.innerHTML = `<option value="">📋 Öğrenci listesinden ekle... (${liste.length})</option>` +
+    liste.map((o,i)=>`<option value="${i}">${esc(o.isim)}</option>`).join("");
+}
+function listedenOgrenciEkle(sel){
+  const idx = sel.value;
+  if(idx === "") return;
+  let liste = [];
+  try{ liste = JSON.parse(localStorage.getItem("canira_ogrenci_listesi") || "[]"); }catch(e){}
+  const o = liste[idx];
+  sel.value = "";
+  if(!o) return;
+  // Aynı isim zaten eklenmişse tekrar eklemeyelim
+  const mevcutIsimler = Array.from(document.querySelectorAll("#f-ogrenciler-list .stu-name")).map(i=>i.value.trim().toLocaleLowerCase("tr-TR"));
+  if(mevcutIsimler.includes(o.isim.trim().toLocaleLowerCase("tr-TR"))){ toast("Bu öğrenci zaten listede"); return; }
+  addStudentField(undefined, o.isim, o.cinsiyet, undefined);
 }
 
 function addStudentField(numara, isim, cinsiyet, atananJuriler){
