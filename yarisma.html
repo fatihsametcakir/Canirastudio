@@ -187,6 +187,18 @@
   .modal-msg{font-size:13.5px;line-height:1.55;color:rgba(251,244,232,.75);}
   .btn-danger-solid{background:linear-gradient(120deg,var(--rose-500),#c0413f);color:#fff;box-shadow:0 6px 20px -6px rgba(255,95,126,.55);}
 
+  /* öğrenci listesinden çoklu seçim paneli */
+  .stu-pick-toggle{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;background:linear-gradient(120deg,var(--gold-400),var(--gold-500));color:var(--ink);border:none;border-radius:14px;padding:13px 16px;font-family:'Work Sans',sans-serif;font-weight:700;font-size:14.5px;cursor:pointer;box-shadow:var(--glow-gold);}
+  .stu-pick-panel{margin-top:10px;background:rgba(255,255,255,.55);border:1px solid rgba(43,7,20,.12);border-radius:16px;padding:12px;display:none;}
+  .stu-pick-panel.open{display:block;}
+  .stu-pick-search{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(43,7,20,.13);font-family:'Work Sans',sans-serif;font-size:14px;margin-bottom:8px;}
+  .stu-pick-list{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
+  .stu-pick-row{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:8px;cursor:pointer;font-size:14px;color:var(--ink);}
+  .stu-pick-row:active{background:rgba(43,7,20,.06);}
+  .stu-pick-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--wine-700);flex-shrink:0;}
+  .stu-pick-empty{font-size:13px;color:var(--ink-soft);padding:10px 4px;}
+  .stu-pick-actions{display:flex;gap:8px;margin-top:10px;}
+
   /* jury scoring */
   .crit-block{margin-bottom:16px;}
   .crit-name{font-family:'Playfair Display',serif;font-weight:700;font-size:15px;margin-bottom:8px;}
@@ -586,13 +598,19 @@ function renderCompetitionForm(comp){
       </select>
 
       <label>Öğrenciler</label>
-      <div class="stack" id="f-ogrenciler-list"></div>
-      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
-        <button class="btn btn-ghost" onclick="addStudentField()">+ Öğrenci Ekle</button>
-        <select id="ogrenci-listesi-sec" style="flex:1;min-width:160px;border-radius:10px;border:1px solid rgba(0,0,0,.15);padding:0 10px;font-family:'Work Sans',sans-serif;" onchange="listedenOgrenciEkle(this)">
-          <option value="">📋 Öğrenci listesinden ekle...</option>
-        </select>
+      <button type="button" class="stu-pick-toggle" onclick="toggleStuPickPanel()">
+        <span>📋 Öğrenci Listesinden Ekle</span><span id="stu-pick-toggle-arrow">▾</span>
+      </button>
+      <div class="stu-pick-panel" id="stu-pick-panel">
+        <input type="text" class="stu-pick-search" id="stu-pick-search" placeholder="İsim ara..." oninput="stuPickRender()">
+        <div class="stu-pick-list" id="stu-pick-list"></div>
+        <div class="stu-pick-actions">
+          <button type="button" class="btn btn-ghost" style="flex:1;" onclick="toggleStuPickPanel(false)">Kapat</button>
+          <button type="button" class="btn btn-gold" style="flex:1;" id="stu-pick-add-btn" onclick="stuPickEkle()">Ekle</button>
+        </div>
       </div>
+      <div class="stack" id="f-ogrenciler-list" style="margin-top:12px;"></div>
+      <button class="btn btn-ghost" style="margin-top:8px;" onclick="addStudentField()">+ Öğrenci Ekle</button>
 
       <label>Jüriler</label>
       <div class="stack" id="f-juriler-list"></div>
@@ -618,7 +636,6 @@ function renderCompetitionForm(comp){
     </div>
   `);
   document.getElementById("f-tarih").value = comp?.tarih || new Date().toISOString().slice(0,10);
-  ogrenciListesiDoldur();
   if(comp){
     document.getElementById("f-skala").value = String(comp.maxPuan || 10);
     document.getElementById("f-tur").value = comp.yarismaTuru || "karisik";
@@ -626,7 +643,7 @@ function renderCompetitionForm(comp){
     (comp.juriler||[]).forEach(j=>addJuryField(j.isim, j.id, j.bitirdi));
     (comp.kriterler||[]).forEach((k,i)=>addCriterionField(k, (comp.kriterlerEN||[])[i]));
   } else {
-    [1,2,3,4].forEach(n=>addStudentField(String(n)));
+    addStudentField("1");
     [1,2].forEach(()=>addJuryField());
     DEFAULT_CRITERIA.forEach(c=>addCriterionField(c, DEFAULT_CRITERIA_EN[c]));
   }
@@ -634,32 +651,57 @@ function renderCompetitionForm(comp){
 }
 
 // Ana uygulamadan (Can & Irina Studio) localStorage köprüsüyle gelen aktif öğrenci listesi
-function ogrenciListesiDoldur(){
-  const sel = document.getElementById("ogrenci-listesi-sec");
-  if(!sel) return;
-  let liste = [];
-  try{ liste = JSON.parse(localStorage.getItem("canira_ogrenci_listesi") || "[]"); }catch(e){}
-  if(!liste.length){
-    sel.innerHTML = `<option value="">Ana uygulamadan öğrenci listesi bulunamadı</option>`;
-    sel.disabled = true;
+let stuPickListesi = [];
+function toggleStuPickPanel(force){
+  const panel = document.getElementById("stu-pick-panel");
+  const arrow = document.getElementById("stu-pick-toggle-arrow");
+  const acik = force !== undefined ? force : !panel.classList.contains("open");
+  panel.classList.toggle("open", acik);
+  if(arrow) arrow.textContent = acik ? "▴" : "▾";
+  if(acik){
+    try{ stuPickListesi = JSON.parse(localStorage.getItem("canira_ogrenci_listesi") || "[]"); }catch(e){ stuPickListesi = []; }
+    document.getElementById("stu-pick-search").value = "";
+    stuPickRender();
+  }
+}
+function stuPickMevcutIsimler(){
+  return Array.from(document.querySelectorAll("#f-ogrenciler-list .stu-name")).map(i=>i.value.trim().toLocaleLowerCase("tr-TR")).filter(Boolean);
+}
+function stuPickRender(){
+  const list = document.getElementById("stu-pick-list");
+  const q = (document.getElementById("stu-pick-search").value || "").trim().toLocaleLowerCase("tr-TR");
+  const mevcut = stuPickMevcutIsimler();
+  const uygun = stuPickListesi.filter(o=>!mevcut.includes(o.isim.trim().toLocaleLowerCase("tr-TR")));
+  const filtreli = q ? uygun.filter(o=>o.isim.toLocaleLowerCase("tr-TR").includes(q)) : uygun;
+  if(!stuPickListesi.length){
+    list.innerHTML = `<div class="stu-pick-empty">Ana uygulamadan öğrenci listesi bulunamadı. Ana uygulamada "Yarışma" butonuna tekrar basıp buraya geri dön.</div>`;
     return;
   }
-  sel.disabled = false;
-  sel.innerHTML = `<option value="">📋 Öğrenci listesinden ekle... (${liste.length})</option>` +
-    liste.map((o,i)=>`<option value="${i}">${esc(o.isim)}</option>`).join("");
+  if(!filtreli.length){
+    list.innerHTML = `<div class="stu-pick-empty">${uygun.length ? "Eşleşen öğrenci yok" : "Tüm öğrenciler zaten eklendi"}</div>`;
+    return;
+  }
+  list.innerHTML = filtreli.map(o=>`
+    <label class="stu-pick-row">
+      <input type="checkbox" value="${esc(o.isim)}" data-cinsiyet="${o.cinsiyet}">
+      <span>${esc(o.isim)}</span>
+    </label>`).join("");
 }
-function listedenOgrenciEkle(sel){
-  const idx = sel.value;
-  if(idx === "") return;
-  let liste = [];
-  try{ liste = JSON.parse(localStorage.getItem("canira_ogrenci_listesi") || "[]"); }catch(e){}
-  const o = liste[idx];
-  sel.value = "";
-  if(!o) return;
-  // Aynı isim zaten eklenmişse tekrar eklemeyelim
-  const mevcutIsimler = Array.from(document.querySelectorAll("#f-ogrenciler-list .stu-name")).map(i=>i.value.trim().toLocaleLowerCase("tr-TR"));
-  if(mevcutIsimler.includes(o.isim.trim().toLocaleLowerCase("tr-TR"))){ toast("Bu öğrenci zaten listede"); return; }
-  addStudentField(undefined, o.isim, o.cinsiyet, undefined);
+function stuPickEkle(){
+  const secili = Array.from(document.querySelectorAll("#stu-pick-list input:checked"));
+  if(!secili.length){ toast("Önce en az bir öğrenci seç"); return; }
+  secili.forEach(cb=>addStudentField(undefined, cb.value, cb.dataset.cinsiyet, undefined));
+  reorderStudentRows();
+  toggleStuPickPanel(false);
+  toast(`${secili.length} öğrenci eklendi`);
+}
+// Ad/soyad girilmiş satırları üstte, boş olanları altta toplar
+function reorderStudentRows(){
+  const wrap = document.getElementById("f-ogrenciler-list");
+  const rows = Array.from(wrap.children);
+  const dolu = rows.filter(r=>r.querySelector(".stu-name")?.value.trim());
+  const bos = rows.filter(r=>!r.querySelector(".stu-name")?.value.trim());
+  [...dolu, ...bos].forEach(r=>wrap.appendChild(r));
 }
 
 function addStudentField(numara, isim, cinsiyet, atananJuriler){

@@ -1408,6 +1408,7 @@ const TRANSLATIONS={
     acc_tema:'Tema', acc_guvenlik:'Güvenlik', acc_wa:'WhatsApp Şablonları', acc_yedek:'Yedekleme',
     acc_excel:'Excel\'e Aktar', acc_pwa:'Uygulamayı Yükle', acc_veri:'Veri Yönetimi',
     cikis_yap:'→ Çıkış Yap',
+    uygulamadan_cik:'Uygulamadan Çık', uygulamadan_cik_soru:'Uygulamayı kapatmak istiyor musunuz?',
     lbl_ad:'Ad', lbl_soyad:'Soyad', lbl_telefon:'Telefon', lbl_not:'Not', lbl_yontem:'Yöntem', lbl_cinsiyet:'Cinsiyet',
     kadin:'Kadın', erkek:'Erkek',
     sifre_aciklama:'Şifre tüm cihazlarda geçerli olur. Varsayılan: dans2024',
@@ -1581,6 +1582,7 @@ const TRANSLATIONS={
     acc_tema:'Theme', acc_guvenlik:'Security', acc_wa:'WhatsApp Templates', acc_yedek:'Backup',
     acc_excel:'Export to Excel', acc_pwa:'Install App', acc_veri:'Data Management',
     cikis_yap:'→ Log Out',
+    uygulamadan_cik:'Exit App', uygulamadan_cik_soru:'Do you want to close the app?',
     lbl_ad:'First Name', lbl_soyad:'Last Name', lbl_telefon:'Phone', lbl_not:'Note', lbl_yontem:'Method', lbl_cinsiyet:'Gender',
     kadin:'Female', erkek:'Male',
     sifre_aciklama:'The password applies on all devices. Default: dans2024',
@@ -1754,6 +1756,7 @@ const TRANSLATIONS={
     acc_tema:'Тема', acc_guvenlik:'Безопасность', acc_wa:'Шаблоны WhatsApp', acc_yedek:'Резервная копия',
     acc_excel:'Экспорт в Excel', acc_pwa:'Установить приложение', acc_veri:'Управление данными',
     cikis_yap:'→ Выйти',
+    uygulamadan_cik:'Выйти из приложения', uygulamadan_cik_soru:'Вы хотите закрыть приложение?',
     lbl_ad:'Имя', lbl_soyad:'Фамилия', lbl_telefon:'Телефон', lbl_not:'Заметка', lbl_yontem:'Способ', lbl_cinsiyet:'Пол',
     kadin:'Женский', erkek:'Мужской',
     sifre_aciklama:'Пароль действует на всех устройствах. По умолчанию: dans2024',
@@ -2084,6 +2087,43 @@ function startListeners(){
 
 // Nav
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('pg-'+p).classList.add('active');}
+// ── ANDROID GERİ TUŞU YÖNETİMİ ──────────────────────────
+// Tarayıcı geçmişine (history) her zaman bir "tampon" giriş bırakılır.
+// Geri tuşuna basılınca uygulamadan çıkmak yerine bu yakalanır:
+//   1) Açık bir popup/modal varsa onu kapatır
+//   2) Hamburger menü açıksa onu kapatır
+//   3) Ana Sayfa'da değilsek Ana Sayfa'ya döner
+//   4) Ana Sayfa'daysak "çıkmak istiyor musun" diye sorar
+function geriTusuTamponKur(){
+  try{history.pushState({app:true},'',location.href);}catch(e){}
+}
+geriTusuTamponKur();
+window.addEventListener('popstate',function(){
+  const acikModal=document.querySelector('.overlay.open');
+  if(acikModal){
+    closeModal(acikModal.id);
+    geriTusuTamponKur();
+    return;
+  }
+  const drawer=document.getElementById('drawer');
+  if(drawer&&drawer.classList.contains('open')){
+    drawerKapat();
+    geriTusuTamponKur();
+    return;
+  }
+  if(PAGE!=='anasayfa'){
+    goTo('anasayfa',document.querySelector('.nav-item'));
+    geriTusuTamponKur();
+    return;
+  }
+  // Ana Sayfa'dayız — önce tamponu geri koy (vazgeçerse uygulamada kalsın)
+  geriTusuTamponKur();
+  confirm_(t('uygulamadan_cik'), t('uygulamadan_cik_soru'), function(){
+    // Onaylandı: tamponu ve bir öncekini birlikte tüketip gerçek çıkışı tetikle
+    history.go(-2);
+  });
+});
+
 function goTo(p,btn){
   PREV_PAGE=PAGE;PAGE=p;showPage(p);
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
