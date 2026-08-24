@@ -2136,21 +2136,32 @@ function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.r
 // popstate yöntemini güvenilir şekilde yakalayamayabiliyor — bu yüzden destekleniyorsa
 // bunun için özel olarak tasarlanmış Navigation API kullanılıyor, desteklemeyen eski
 // tarayıcılar için popstate yedek olarak duruyor.
+// ÖNEMLİ: Navigation API'de bile her "yakalama", geçmişteki konumu gerçekten bir
+// geri kaydırıyor (sadece sayfa yenilenmesini engelliyor) — bu yüzden her yakalamadan
+// sonra tamponu tazelemek şart, yoksa birkaç basıştan sonra tampon tükenir.
+function geriTusuTamponKur(adet){
+  adet=adet||1;
+  try{for(let i=0;i<adet;i++)history.pushState({app:true},'',location.href);}catch(e){}
+}
 function geriTusuIsle(){
   const acikModal=document.querySelector('.overlay.open');
   if(acikModal){
     closeModal(acikModal.id);
+    geriTusuTamponKur();
     return;
   }
   const drawer=document.getElementById('drawer');
   if(drawer&&drawer.classList.contains('open')){
     drawerKapat();
+    geriTusuTamponKur();
     return;
   }
   if(PAGE!=='anasayfa'){
     goTo('anasayfa',document.querySelector('.nav-item'));
+    geriTusuTamponKur();
     return;
   }
+  geriTusuTamponKur(3);
   confirm_(t('uygulamadan_cik'), t('uygulamadan_cik_soru'), function(){
     _cikisOnaylandi=true;
     if('navigation' in window)navigation.back();
@@ -2158,6 +2169,7 @@ function geriTusuIsle(){
   });
 }
 let _cikisOnaylandi=false;
+geriTusuTamponKur(3);
 
 if('navigation' in window){
   // Modern yöntem: geri gezinmeyi senkron şekilde yakalayıp, tarayıcı animasyonu
@@ -2169,18 +2181,12 @@ if('navigation' in window){
   });
 } else {
   // Eski tarayıcılar için yedek yöntem
-  function geriTusuTamponKur(adet){
-    adet=adet||1;
-    try{for(let i=0;i<adet;i++)history.pushState({app:true},'',location.href);}catch(e){}
-  }
-  geriTusuTamponKur(3);
   let _sonPopstateZamani=0;
   window.addEventListener('popstate',function(){
     const simdi=Date.now();
     if(simdi-_sonPopstateZamani<120)return;
     _sonPopstateZamani=simdi;
     if(_cikisOnaylandi)return;
-    geriTusuTamponKur();
     geriTusuIsle();
   });
 }
