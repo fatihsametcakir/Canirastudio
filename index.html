@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+<script>
+// Geri tuşu güvenlik tamponu — sayfa henüz yüklenmeye başlarken, her şeyden önce
+// çalışması için buraya, en başa kondu. Aşağıdaki asıl uygulama script'i (900+ satır
+// sonra) yüklenip çalışana kadar kullanıcı çok hızlı geri tuşuna basarsa, tampon
+// hazır olmadığı için uygulama direkt kapanıyordu — bu satır bunu önlüyor.
+try{
+  for(let i=0;i<3;i++)history.pushState({app:true},'',location.href);
+}catch(e){}
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
