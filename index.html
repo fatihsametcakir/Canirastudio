@@ -19,12 +19,6 @@ function geriTusuTamponKur(adet){
   try{for(let i=0;i<adet;i++)history.pushState({app:true},'',location.href);}catch(e){}
 }
 function geriTusuIsle(){
-  document.body.style.background='#ff0000';
-  document.title='YAKALANDI '+Date.now();
-  const teshisDiv=document.createElement('div');
-  teshisDiv.textContent='GERİ TUŞU YAKALANDI: '+Date.now();
-  teshisDiv.style.cssText='position:fixed;top:0;left:0;right:0;z-index:999999;background:yellow;color:black;font-size:20px;font-weight:bold;padding:20px;text-align:center;';
-  document.body.appendChild(teshisDiv);
   try{
     if(typeof closeModal!=='function'||typeof PAGE==='undefined'){
       // Uygulama henüz tam yüklenmedi — güvenli tarafta kal, sadece tamponu tazele
