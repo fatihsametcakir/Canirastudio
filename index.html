@@ -780,7 +780,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button class="btn btn-ghost btn-sm" style="width:40px;padding:0;" onclick="otHaftaDegistir(1)">›</button>
     </div>
     <div id="ot-legend" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"></div>
-    <div style="overflow-x:auto;">
+    <div class="yatay-kaydirma-alani" style="overflow-x:auto;">
       <div id="ot-grid" style="min-width:600px;"></div>
     </div>
   </div>
@@ -2164,23 +2164,30 @@ window.addEventListener('popstate',function(){
   });
 });
 
-// Ana Sayfa'da sağa/sola kaydırma ile bitişik footer sekmesine geçiş
+// Tüm sekmelerde sağa/sola kaydırma ile bitişik footer sekmesine (döngüsel) geçiş.
+// Sonda sola kaydırınca başa, başta sağa kaydırınca sona döner.
 (function(){
-  let bx=0,by=0,bt=0;
-  const anaSayfa=document.getElementById('pg-anasayfa');
-  if(!anaSayfa)return;
-  anaSayfa.addEventListener('touchstart',function(e){
+  let bx=0,by=0,bt=0,yatayKaydirmaIcinde=false;
+  const appEl=document.querySelector('.app');
+  if(!appEl)return;
+  appEl.addEventListener('touchstart',function(e){
     bx=e.touches[0].clientX;by=e.touches[0].clientY;bt=Date.now();
+    // Dokunuş, zaten yana kaydırılabilen bilinen bir alanda (haftalık takvim ızgarası,
+    // gün seçici, gelir grafiği) mı başladı? Öyleyse sekme değiştirmeyelim, o içerik kaysın.
+    // (Hafif bir kontrol — DOM'da tırmanıp stil hesaplamak yerine tek closest() çağrısı)
+    yatayKaydirmaIcinde=!!e.target.closest('.hafta-gunler,.gelir-chart-wrap,.yatay-kaydirma-alani');
   },{passive:true});
-  anaSayfa.addEventListener('touchend',function(e){
+  appEl.addEventListener('touchend',function(e){
+    if(yatayKaydirmaIcinde)return;
     const dx=e.changedTouches[0].clientX-bx;
     const dy=e.changedTouches[0].clientY-by;
     const sure=Date.now()-bt;
-    // Yeterince yatay, yeterince hızlı ve yeterince uzun değilse yoksay (dikey kaydırmayla karışmasın)
     if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.4||sure>600)return;
-    const navItems=document.querySelectorAll('.nav-item');
-    if(dx<0&&navItems[1])navItems[1].click(); // sola kaydır → sonraki sekme (Öğrenciler)
-    // sağa kaydırma: Ana Sayfa zaten ilk sekme, gidilecek önceki sekme yok
+    const navItems=Array.from(document.querySelectorAll('.nav-item'));
+    const suankiIdx=navItems.findIndex(b=>b.classList.contains('active'));
+    if(suankiIdx===-1)return;
+    const hedefIdx=dx<0?(suankiIdx+1)%navItems.length:(suankiIdx-1+navItems.length)%navItems.length;
+    navItems[hedefIdx].click();
   },{passive:true});
 })();
 
