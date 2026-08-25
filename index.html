@@ -14,7 +14,7 @@
 // hızlı basış bile bunu tüketemez — ve tampon seviyesi zamanla azalırsa arka
 // planda, basış anlarından tamamen bağımsız bir zamanlayıcıyla dolduruluyor.
 window._cikisOnaylandi=false;
-const GERI_TAMPON_HEDEF=50;
+const GERI_TAMPON_HEDEF=8;
 function geriTusuTamponDoldur(){
   try{
     const eksik=GERI_TAMPON_HEDEF-history.length;
@@ -43,17 +43,19 @@ function geriTusuIsle(){
     }
     confirm_(t('uygulamadan_cik'), t('uygulamadan_cik_soru'), function(){
       window._cikisOnaylandi=true;
-      // Tek seferde büyük bir history.go(-N) isteği, N mevcut giriş sayısını
-      // aşarsa bazı tarayıcılarda sessizce hiçbir şey yapmıyor (dibe kadar
-      // gitmiyor). Bunun yerine tek tek, gerçekten tükenene kadar geri gidiliyor.
-      let kalanAdim=history.length+5;
+      // Önce doğrudan pencere/uygulamayı kapatmayı dene (bazı TWA ortamlarında işe yarayabilir)
+      try{window.close();}catch(e){}
+      // Olmadıysa: tek seferde büyük bir history.go(-N) isteği bazı tarayıcılarda
+      // sessizce hiçbir şey yapmıyordu. Bunun yerine tek tek, gerçekten tükenene
+      // kadar geri gidiliyor. Tampon artık küçük (8) olduğu için bu hızlı biter.
+      let kalanAdim=history.length+3;
       const geriYuru=function(){
         if(kalanAdim<=0)return;
         kalanAdim--;
         history.back();
-        setTimeout(geriYuru,30);
+        setTimeout(geriYuru,50);
       };
-      geriYuru();
+      setTimeout(geriYuru,100);
     });
   }catch(e){/* sessizce geç, tampon zaten geniş, uygulama kapanmaz */}
 }
