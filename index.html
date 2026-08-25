@@ -8,90 +8,65 @@
 //   2) Hamburger menü açıksa onu kapatır
 //   3) Ana Sayfa'da değilsek Ana Sayfa'ya döner
 //   4) Ana Sayfa'daysak "çıkmak istiyor musun" diye sorar
-// Bu kod bilerek dosyanın en başına kondu (asıl uygulama script'inden 900+ satır
-// önce) — dinleyicinin kayıt anındaki en ufak gecikme bile, kullanıcı çok hızlı
-// geri basarsa uygulamanın direkt kapanmasına yol açıyordu.
-// Uygulamanın kendi fonksiyonları (closeModal, goTo, vb.) henüz yüklenmediyse
-// sadece tamponu tazeleyip bekler, hata vermez.
+// STRATEJİ: Her basıştan sonra küçük bir tampon eklemek, çok hızlı art arda
+// basışlarda yetişemiyordu (tampon eklenmeden sonraki basış geliyordu). Bunun
+// yerine baştan ÇOK BÜYÜK bir tampon (50 giriş) kuruluyor — art arda onlarca
+// hızlı basış bile bunu tüketemez — ve tampon seviyesi zamanla azalırsa arka
+// planda, basış anlarından tamamen bağımsız bir zamanlayıcıyla dolduruluyor.
 window._cikisOnaylandi=false;
-function geriTusuTamponKur(adet){
-  adet=adet||1;
-  try{for(let i=0;i<adet;i++)history.pushState({app:true},'',location.href);}catch(e){}
-}
-function geriTusuGosterTeshis(mesaj){
-  const eski=document.getElementById('_geri_teshis');
-  if(eski)eski.remove();
-  const div=document.createElement('div');
-  div.id='_geri_teshis';
-  div.textContent=mesaj;
-  div.style.cssText='position:fixed;top:0;left:0;right:0;z-index:999999;background:lime;color:black;font-size:16px;font-weight:bold;padding:14px;text-align:center;';
-  document.body.appendChild(div);
-  setTimeout(()=>{if(div.parentNode)div.remove();},4000);
+const GERI_TAMPON_HEDEF=50;
+function geriTusuTamponDoldur(){
+  try{
+    const eksik=GERI_TAMPON_HEDEF-history.length;
+    for(let i=0;i<eksik;i++)history.pushState({app:true},'',location.href);
+  }catch(e){}
 }
 function geriTusuIsle(){
   try{
     if(typeof closeModal!=='function'||typeof PAGE==='undefined'){
-      geriTusuGosterTeshis('DAL: uygulama henüz hazır değil');
-      // Uygulama henüz tam yüklenmedi — güvenli tarafta kal, sadece tamponu tazele
-      geriTusuTamponKur();
+      // Uygulama henüz tam yüklenmedi — güvenli tarafta kal
       return;
     }
     const acikModal=document.querySelector('.overlay.open');
     if(acikModal){
-      geriTusuGosterTeshis('DAL: modal kapatılıyor ('+acikModal.id+')');
       closeModal(acikModal.id);
-      geriTusuTamponKur();
       return;
     }
     const drawer=document.getElementById('drawer');
     if(drawer&&drawer.classList.contains('open')){
-      geriTusuGosterTeshis('DAL: menü kapatılıyor');
       drawerKapat();
-      geriTusuTamponKur();
       return;
     }
     if(PAGE!=='anasayfa'){
-      geriTusuGosterTeshis('DAL: anasayfaya dönülüyor (şu an: '+PAGE+')');
       goTo('anasayfa',document.querySelector('.nav-item'));
-      geriTusuTamponKur();
       return;
     }
-    geriTusuGosterTeshis('DAL: çıkış onayı gösteriliyor');
-    geriTusuTamponKur(3);
     confirm_(t('uygulamadan_cik'), t('uygulamadan_cik_soru'), function(){
       window._cikisOnaylandi=true;
       if('navigation' in window)navigation.back();
-      else history.go(-10);
+      else history.go(-(GERI_TAMPON_HEDEF+5));
     });
-  }catch(e){
-    geriTusuGosterTeshis('HATA: '+e.message);
-    // Beklenmedik bir hata olsa bile uygulamadan aniden çıkılmasın diye tamponu tazele
-    geriTusuTamponKur();
-  }
+  }catch(e){/* sessizce geç, tampon zaten geniş, uygulama kapanmaz */}
 }
-geriTusuTamponKur(3);
+geriTusuTamponDoldur();
+// Basış anlarından tamamen bağımsız, arka planda periyodik bakım
+setInterval(function(){if(!window._cikisOnaylandi)geriTusuTamponDoldur();},3000);
+
 if('navigation' in window){
   // Modern yöntem: geri gezinmeyi senkron şekilde yakalayıp, tarayıcı animasyonu
   // "tamamlandı" saymadan önce kendi mantığımızı çalıştırıyoruz. Android/Chrome'un
   // "tahmin edilebilir geri" hareketiyle güvenilir çalışan yöntem budur.
   navigation.addEventListener('navigate',function(e){
-    try{
-      const d=document.createElement('div');
-      d.textContent='NAVIGATE olayı: tür='+e.navigationType+' cikisOnaylandi='+window._cikisOnaylandi;
-      d.style.cssText='position:fixed;top:44px;left:0;right:0;z-index:999999;background:cyan;color:black;font-size:13px;font-weight:bold;padding:8px;text-align:center;';
-      document.body.appendChild(d);
-      setTimeout(()=>{if(d.parentNode)d.remove();},4000);
-    }catch(err){}
     if(e.navigationType!=='traverse')return;
     if(window._cikisOnaylandi)return; // çıkış onaylandıysa gerçek gezinmeye izin ver
-    e.intercept({handler:function(){ setTimeout(geriTusuIsle,0); return Promise.resolve(); }});
+    e.intercept({handler:function(){ geriTusuIsle(); return Promise.resolve(); }});
   });
 } else {
   // Eski tarayıcılar için yedek yöntem
   let _sonPopstateZamani=0;
   window.addEventListener('popstate',function(){
     const simdi=Date.now();
-    if(simdi-_sonPopstateZamani<120)return;
+    if(simdi-_sonPopstateZamani<80)return;
     _sonPopstateZamani=simdi;
     if(window._cikisOnaylandi)return;
     geriTusuIsle();
