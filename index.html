@@ -49,6 +49,12 @@ function geriTusuIsle(){
   }catch(e){/* sessizce geç, tampon zaten geniş, uygulama kapanmaz */}
 }
 geriTusuTamponDoldur();
+// Sayfa daha tam yüklenmeden yapılan ilk pushState patlaması bazı tarayıcılarda
+// tam oturmayabiliyor — sayfa gerçekten hazır olduğunda tekrar deneniyor.
+document.addEventListener('DOMContentLoaded',geriTusuTamponDoldur);
+window.addEventListener('load',geriTusuTamponDoldur);
+setTimeout(geriTusuTamponDoldur,300);
+setTimeout(geriTusuTamponDoldur,1000);
 // Basış anlarından tamamen bağımsız, arka planda periyodik bakım
 setInterval(function(){if(!window._cikisOnaylandi)geriTusuTamponDoldur();},3000);
 
@@ -897,7 +903,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <div class="drawer-logo">Can & Irina <span>Studio</span></div>
     <button class="drawer-close" onclick="drawerKapat()">✕</button>
   </div>
-  <div style="text-align:center;font-size:10px;color:var(--text3);padding:2px 0 8px;letter-spacing:.05em;">sürüm: 2026-08-24-GERI-TUSU-D</div>
   <div class="drawer-body">
 
     <!-- Hızlı Erişim -->
@@ -2189,9 +2194,6 @@ function startListeners(){
 
 // Nav
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('pg-'+p).classList.add('active');}
-// ── ANDROID GERİ TUŞU YÖNETİMİ ──────────────────────────
-// Bu özelliğin kurulumu artık dosyanın en başına (head içine) taşındı —
-// dinleyicinin en erken anda kaydolması gerekiyordu. Ayrıntı için oraya bakın.
 
 // ── SEKMELER ARASI KAYDIRMA (izole özellik — sorun çıkarsa sadece bunu geri al) ──
 // Tüm sekmelerde sağa/sola kaydırma ile bitişik footer sekmesine (döngüsel) geçiş.
