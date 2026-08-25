@@ -3,80 +3,35 @@
 <head>
 <script>
 // ── ANDROID GERİ TUŞU YÖNETİMİ (en başta, en erken kaydolması için) ──
-// Geri tuşuna basılınca uygulamadan çıkmak yerine bu yakalanır:
-//   1) Açık bir popup/modal varsa onu kapatır
-//   2) Hamburger menü açıksa onu kapatır
-//   3) Ana Sayfa'da değilsek Ana Sayfa'ya döner
-//   4) Ana Sayfa'daysak "çıkmak istiyor musun" diye sorar
-// STRATEJİ: Her basıştan sonra küçük bir tampon eklemek, çok hızlı art arda
-// basışlarda yetişemiyordu (tampon eklenmeden sonraki basış geliyordu). Bunun
-// yerine baştan ÇOK BÜYÜK bir tampon (50 giriş) kuruluyor — art arda onlarca
-// hızlı basış bile bunu tüketemez — ve tampon seviyesi zamanla azalırsa arka
-// planda, basış anlarından tamamen bağımsız bir zamanlayıcıyla dolduruluyor.
-window._cikisOnaylandi=false;
-const GERI_TAMPON_HEDEF=8;
-function geriTusuTamponDoldur(){
-  try{
-    const eksik=GERI_TAMPON_HEDEF-history.length;
-    for(let i=0;i<eksik;i++)history.pushState({app:true},'',location.href);
-  }catch(e){}
+// Geri tuşuna basılınca:
+//   1) Açık bir popup/modal varsa onu kapatır (uygulamadan çıkmaz)
+//   2) Hamburger menü açıksa onu kapatır (uygulamadan çıkmaz)
+//   3) Ana Sayfa'da değilsek Ana Sayfa'ya döner (uygulamadan çıkmaz)
+//   4) Ana Sayfa'dayken ve hiçbir şey açık değilken: hiç müdahale edilmez,
+//      doğal davranışa bırakılır — yani direkt kapanır. Bu bilerek böyle:
+//      uzun uğraşlar sonucunda "çıkmadan önce sor" kısmı güvenilir şekilde
+//      çalıştırılamadı, kullanıcı isteğiyle bu davranış kaldırıldı.
+function geriTusuTamponDoldur(adet){
+  try{for(let i=0;i<(adet||2);i++)history.pushState({app:true},'',location.href);}catch(e){}
 }
-function geriTusuIsle(){
-  try{
-    if(typeof closeModal!=='function'||typeof PAGE==='undefined'){
-      // Uygulama henüz tam yüklenmedi — güvenli tarafta kal
-      return;
-    }
-    const acikModal=document.querySelector('.overlay.open');
-    if(acikModal){
-      closeModal(acikModal.id);
-      return;
-    }
-    const drawer=document.getElementById('drawer');
-    if(drawer&&drawer.classList.contains('open')){
-      drawerKapat();
-      return;
-    }
-    if(PAGE!=='anasayfa'){
-      goTo('anasayfa',document.querySelector('.nav-item'));
-      return;
-    }
-    confirm_(t('uygulamadan_cik'), t('uygulamadan_cik_soru'), function(){
-      window._cikisOnaylandi=true;
-      // Önce doğrudan pencere/uygulamayı kapatmayı dene (bazı TWA ortamlarında işe yarayabilir)
-      try{window.close();}catch(e){}
-      // Olmadıysa: tek seferde büyük bir history.go(-N) isteği bazı tarayıcılarda
-      // sessizce hiçbir şey yapmıyordu. Bunun yerine tek tek, gerçekten tükenene
-      // kadar geri gidiliyor. Tampon artık küçük (8) olduğu için bu hızlı biter.
-      let kalanAdim=history.length+3;
-      const geriYuru=function(){
-        if(kalanAdim<=0)return;
-        kalanAdim--;
-        history.back();
-        setTimeout(geriYuru,50);
-      };
-      setTimeout(geriYuru,100);
-    });
-  }catch(e){/* sessizce geç, tampon zaten geniş, uygulama kapanmaz */}
-}
-geriTusuTamponDoldur();
-// Sayfa daha tam yüklenmeden yapılan ilk pushState patlaması bazı tarayıcılarda
-// tam oturmayabiliyor — sayfa gerçekten hazır olduğunda tekrar deneniyor.
-document.addEventListener('DOMContentLoaded',geriTusuTamponDoldur);
-window.addEventListener('load',geriTusuTamponDoldur);
-setTimeout(geriTusuTamponDoldur,300);
-setTimeout(geriTusuTamponDoldur,1000);
-// Basış anlarından tamamen bağımsız, arka planda periyodik bakım
-setInterval(function(){if(!window._cikisOnaylandi)geriTusuTamponDoldur();},3000);
+geriTusuTamponDoldur(2);
 
 if('navigation' in window){
-  // Modern yöntem: geri gezinmeyi senkron şekilde yakalayıp, tarayıcı animasyonu
-  // "tamamlandı" saymadan önce kendi mantığımızı çalıştırıyoruz. Android/Chrome'un
-  // "tahmin edilebilir geri" hareketiyle güvenilir çalışan yöntem budur.
   navigation.addEventListener('navigate',function(e){
     if(e.navigationType!=='traverse')return;
-    if(window._cikisOnaylandi)return; // çıkış onaylandıysa gerçek gezinmeye izin ver
-    e.intercept({handler:function(){ geriTusuIsle(); return Promise.resolve(); }});
+    if(typeof closeModal!=='function'||typeof PAGE==='undefined')return;
+    const acikModal=document.querySelector('.overlay.open');
+    const drawer=document.getElementById('drawer');
+    const drawerAcik=drawer&&drawer.classList.contains('open');
+    const mudahaleGerekli=acikModal||drawerAcik||PAGE!=='anasayfa';
+    if(!mudahaleGerekli)return; // Ana Sayfa'da, hiçbir şey açık değil — doğal davranış: kapanır
+    e.intercept({handler:function(){
+      if(acikModal)closeModal(acikModal.id);
+      else if(drawerAcik)drawerKapat();
+      else if(PAGE!=='anasayfa')goTo('anasayfa',document.querySelector('.nav-item'));
+      geriTusuTamponDoldur(1);
+      return Promise.resolve();
+    }});
   });
 } else {
   // Eski tarayıcılar için yedek yöntem
@@ -85,8 +40,13 @@ if('navigation' in window){
     const simdi=Date.now();
     if(simdi-_sonPopstateZamani<80)return;
     _sonPopstateZamani=simdi;
-    if(window._cikisOnaylandi)return;
-    geriTusuIsle();
+    if(typeof closeModal!=='function'||typeof PAGE==='undefined')return;
+    const acikModal=document.querySelector('.overlay.open');
+    if(acikModal){closeModal(acikModal.id);geriTusuTamponDoldur(1);return;}
+    const drawer=document.getElementById('drawer');
+    if(drawer&&drawer.classList.contains('open')){drawerKapat();geriTusuTamponDoldur(1);return;}
+    if(PAGE!=='anasayfa'){goTo('anasayfa',document.querySelector('.nav-item'));geriTusuTamponDoldur(1);return;}
+    // Ana Sayfa'da, hiçbir şey açık değil — hiç müdahale etme, doğal kapanış
   });
 }
 </script>
