@@ -43,8 +43,9 @@ function geriTusuIsle(){
     }
     confirm_(t('uygulamadan_cik'), t('uygulamadan_cik_soru'), function(){
       window._cikisOnaylandi=true;
-      if('navigation' in window)navigation.back();
-      else history.go(-(GERI_TAMPON_HEDEF+5));
+      // navigation.back() sadece 1 adım gider — 50'lik tamponu tüketmez.
+      // history.go() her koşulda (Navigation API olsa da olmasa da) doğru çalışıyor.
+      history.go(-(GERI_TAMPON_HEDEF+5));
     });
   }catch(e){/* sessizce geç, tampon zaten geniş, uygulama kapanmaz */}
 }
