@@ -43,9 +43,17 @@ function geriTusuIsle(){
     }
     confirm_(t('uygulamadan_cik'), t('uygulamadan_cik_soru'), function(){
       window._cikisOnaylandi=true;
-      // navigation.back() sadece 1 adım gider — 50'lik tamponu tüketmez.
-      // history.go() her koşulda (Navigation API olsa da olmasa da) doğru çalışıyor.
-      history.go(-(GERI_TAMPON_HEDEF+5));
+      // Tek seferde büyük bir history.go(-N) isteği, N mevcut giriş sayısını
+      // aşarsa bazı tarayıcılarda sessizce hiçbir şey yapmıyor (dibe kadar
+      // gitmiyor). Bunun yerine tek tek, gerçekten tükenene kadar geri gidiliyor.
+      let kalanAdim=history.length+5;
+      const geriYuru=function(){
+        if(kalanAdim<=0)return;
+        kalanAdim--;
+        history.back();
+        setTimeout(geriYuru,30);
+      };
+      geriYuru();
     });
   }catch(e){/* sessizce geç, tampon zaten geniş, uygulama kapanmaz */}
 }
