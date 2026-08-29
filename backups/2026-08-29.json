@@ -1,0 +1,6447 @@
+{
+  "tarih": "2026-08-29T07:29:15.358811",
+  "versiyon": 1,
+  "ogrenciler": [
+    {
+      "id": "0BMfZos9xvjPXBy4PSTf",
+      "cinsiyet": "e",
+      "durum": "pasif",
+      "not": "",
+      "ad": "Altuğ",
+      "soyad": "Yüksel",
+      "tel": "+90 535 783 24 77"
+    },
+    {
+      "id": "0ioMH0KL4bFnL03xRmiN",
+      "cinsiyet": "e",
+      "soyad": "Çağıl",
+      "durum": "pasif",
+      "ad": "Serhat",
+      "tel": "+90 530 447 12 59",
+      "not": "28 nisan ödeme terihi"
+    },
+    {
+      "id": "14SH2HH3CEh2VHy3Gitb",
+      "cinsiyet": "k",
+      "not": "",
+      "soyad": "Şancı",
+      "tel": "+90 532 286 51 04",
+      "durum": "aktif",
+      "ad": "Orkide"
+    },
+    {
+      "id": "1tRUXhDwPW9YIfZZjONC",
+      "durum": "aktif",
+      "soyad": "Algün",
+      "cinsiyet": "e",
+      "not": "",
+      "ad": "Çalkan",
+      "tel": "905063990405"
+    },
+    {
+      "id": "20I8BM2lXuIAmylWCBBT",
+      "cinsiyet": "e",
+      "tel": "+90 533 414 38 03",
+      "not": "",
+      "ad": "Murat",
+      "soyad": "Erkan",
+      "durum": "aktif"
+    },
+    {
+      "id": "21yeHopjDg5lNUDt3a7h",
+      "not": "",
+      "soyad": "Altınbaş",
+      "tel": "05416961116",
+      "cinsiyet": "e",
+      "durum": "pasif",
+      "ad": "Doğan"
+    },
+    {
+      "id": "2JR7QmpyararRhzRSSSV",
+      "cinsiyet": "e",
+      "ad": "Arda",
+      "durum": "pasif",
+      "tel": "+90 533 501 64 33",
+      "soyad": "Sarpkaya",
+      "not": ""
+    },
+    {
+      "id": "2TWF3u4RmelG9Rg5wMQR",
+      "tel": "+90 507 032 98 10",
+      "cinsiyet": "e",
+      "soyad": "Cebeci",
+      "ad": "Kubilay",
+      "not": "",
+      "durum": "pasif"
+    },
+    {
+      "id": "31WeBFFNdvTq73Ezijq4",
+      "not": "",
+      "cinsiyet": "e",
+      "tel": "05425182078",
+      "ad": "Ozan",
+      "durum": "pasif",
+      "soyad": "Yıldız"
+    },
+    {
+      "id": "3bBpbeTJwqEzFyTcXGna",
+      "not": "",
+      "soyad": "Altıparmak",
+      "durum": "pasif",
+      "ad": "Hakan",
+      "tel": "05070213841",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "3l0BW1GxbjIO7nwT3juu",
+      "not": "",
+      "durum": "pasif",
+      "tel": "905399509190",
+      "soyad": "Yıldızlı",
+      "ad": "Nilüfer",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "4kAWFEd9SBBBtOxVBS6G",
+      "tel": "05304331323",
+      "soyad": "Duran",
+      "ad": "Sibel",
+      "not": "",
+      "cinsiyet": "k",
+      "durum": "pasif"
+    },
+    {
+      "id": "5F6SyNhOGG78Y1xG6F2U",
+      "not": "",
+      "tel": "+90 506 204 00 74",
+      "soyad": "Nezirova",
+      "ad": "Gunel",
+      "cinsiyet": "k",
+      "durum": "pasif"
+    },
+    {
+      "id": "5VVr3p39qUDpvUFmuEXs",
+      "durum": "aktif",
+      "soyad": "Göncüoğlu",
+      "ad": "Yeliz",
+      "cinsiyet": "k",
+      "tel": "+90 530 223 79 39",
+      "not": "Ödeme tarihi 28 mayıs"
+    },
+    {
+      "id": "5Wl86qfEgodE9IHn1M30",
+      "ad": "Emin akbay",
+      "cinsiyet": "e",
+      "durum": "aktif",
+      "tel": "",
+      "soyad": "",
+      "not": ""
+    },
+    {
+      "id": "5t6Wm3RloLY9aWP9VjCm",
+      "not": "",
+      "durum": "aktif",
+      "tel": "+90 532 468 49 02",
+      "soyad": "Ulaş",
+      "ad": "Selçuk",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "67WCU25wB7RgOo2r9Ot1",
+      "soyad": "Uçtu",
+      "ad": "Seçkin",
+      "durum": "pasif",
+      "cinsiyet": "e",
+      "tel": "+90 533 308 30 50",
+      "not": ""
+    },
+    {
+      "id": "6ZxVyQN9t7YeippmfqjI",
+      "ad": "Kubilay",
+      "durum": "aktif",
+      "tel": "+90 530 594 34 12",
+      "soyad": "Özaltun",
+      "not": "",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "6ttvZaYQK6TiTPhUM4pY",
+      "cinsiyet": "e",
+      "soyad": "Baymaz",
+      "durum": "aktif",
+      "ad": "Murat",
+      "tel": "+90 533 304 64 08",
+      "not": ""
+    },
+    {
+      "id": "8b8ll9mz2Uq7feeS2fgx",
+      "soyad": "Erdikli",
+      "durum": "aktif",
+      "ad": "Selin",
+      "cinsiyet": "k",
+      "sadeceOzelDers": false,
+      "tel": "905051264797",
+      "not": ""
+    },
+    {
+      "id": "8wACOinjl3nuSa9OIUof",
+      "cinsiyet": "e",
+      "ad": "İhsan",
+      "soyad": "Kureşi",
+      "tel": "+90 533 488 61 23",
+      "not": "",
+      "durum": "pasif"
+    },
+    {
+      "id": "9n6S0pZuOB0FEneRJsXS",
+      "not": "",
+      "cinsiyet": "e",
+      "tel": "905058045018",
+      "soyad": "Bey",
+      "ad": "Hasan",
+      "durum": "pasif"
+    },
+    {
+      "id": "9wrBFy5E7gVgnPHsuJiy",
+      "ad": "Oğuz",
+      "tel": "+90 555 868 48 14",
+      "cinsiyet": "e",
+      "not": "",
+      "durum": "aktif",
+      "soyad": "Acar"
+    },
+    {
+      "id": "AB4g0sn5EgECkMW3Juic",
+      "durum": "aktif",
+      "not": "",
+      "sadeceOzelDers": false,
+      "cinsiyet": "e",
+      "soyad": "Yurtal",
+      "tel": "905416455551",
+      "ad": "Berkant"
+    },
+    {
+      "id": "AJ4rWj9GAxvfQjkQ8Qea",
+      "ad": "rahşan",
+      "tel": "+90 532 208 21 03",
+      "cinsiyet": "k",
+      "not": "",
+      "soyad": "Bozkurt",
+      "durum": "pasif"
+    },
+    {
+      "id": "AMO4bljGuxvBp3tPjgVk",
+      "not": "",
+      "soyad": "Arsalan",
+      "cinsiyet": "e",
+      "tel": "+90 537 562 30 10",
+      "durum": "pasif",
+      "ad": "Omar"
+    },
+    {
+      "id": "BTqoblEIMrVmPYa6TocF",
+      "cinsiyet": "k",
+      "not": "",
+      "durum": "aktif",
+      "tel": "+79818120276",
+      "soyad": "",
+      "ad": "Nastasya"
+    },
+    {
+      "id": "Be2fsI5XP6r5MMyf3dfm",
+      "cinsiyet": "e",
+      "durum": "aktif",
+      "ad": "Sedat",
+      "not": "",
+      "soyad": "Erdoğan",
+      "tel": "+90 533 452 91 43"
+    },
+    {
+      "id": "Bf5VeTXfCjmIrZYWQLEC",
+      "not": "",
+      "tel": "05056746922",
+      "soyad": "Yeşil",
+      "cinsiyet": "k",
+      "ad": "Dilay",
+      "durum": "aktif"
+    },
+    {
+      "id": "CHOWxthvzQcgebpwU5dg",
+      "sadeceOzelDers": true,
+      "not": "",
+      "soyad": "",
+      "tel": "",
+      "cinsiyet": "e",
+      "ad": "Karaali"
+    },
+    {
+      "id": "CdLlYZ8YTXv1j84GiK5Z",
+      "not": "",
+      "tel": "905520988289",
+      "cinsiyet": "k",
+      "ad": "Gülçin",
+      "soyad": "Akyapı",
+      "durum": "pasif"
+    },
+    {
+      "id": "CofQDtlXnsMhskkKHAO2",
+      "durum": "pasif",
+      "soyad": "Marin",
+      "ad": "Larisa",
+      "tel": "+90 532 632 18 10",
+      "cinsiyet": "k",
+      "not": ""
+    },
+    {
+      "id": "E1VmdhnKLhZxqBBjniyr",
+      "soyad": "Şahin",
+      "durum": "aktif",
+      "ad": "Erkan",
+      "not": "",
+      "cinsiyet": "e",
+      "tel": "+90 536 693 42 13"
+    },
+    {
+      "id": "E6tbP5LerjdtKJbFH9B6",
+      "not": "",
+      "soyad": "Kaya",
+      "durum": "aktif",
+      "tel": "+90 542 648 28 22",
+      "ad": "Filiz",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "EjeJiUOg0WlWlmiPB9Za",
+      "tel": "905353978497",
+      "ad": "Özden",
+      "not": "",
+      "cinsiyet": "e",
+      "sadeceOzelDers": false,
+      "durum": "aktif",
+      "soyad": "Gidelim"
+    },
+    {
+      "id": "FFmM8ig1y7746LJR7re2",
+      "not": "",
+      "cinsiyet": "e",
+      "tel": "+90 535 201 59 94",
+      "ad": "Onur",
+      "soyad": "Koşalay",
+      "durum": "pasif"
+    },
+    {
+      "id": "G6XJX4mtIpdFOH7APj4q",
+      "not": "",
+      "durum": "pasif",
+      "cinsiyet": "e",
+      "ad": "Mikail",
+      "tel": "+90 541 553 47 19",
+      "soyad": ""
+    },
+    {
+      "id": "GAvNHVOLyf5Wcn6eIjCt",
+      "ad": "Ata",
+      "cinsiyet": "e",
+      "durum": "pasif",
+      "tel": "905380482320",
+      "soyad": "Kaleli",
+      "not": "Ödeme tarihi 26 mayıs"
+    },
+    {
+      "id": "GzsZohUV8e4Eu60Dtg8E",
+      "ad": "Benay",
+      "soyad": "İlaldı",
+      "durum": "pasif",
+      "cinsiyet": "k",
+      "tel": "05304268498",
+      "not": ""
+    },
+    {
+      "id": "H2w6vIF2pHhLyYe7P5uy",
+      "ad": "Işılay",
+      "tel": "+90 536 288 44 02",
+      "cinsiyet": "k",
+      "soyad": "Mutlu",
+      "not": "",
+      "durum": "aktif"
+    },
+    {
+      "id": "HRsB9PmLAdlnO7u22WTp",
+      "soyad": "Erol",
+      "durum": "pasif",
+      "not": "",
+      "tel": "+90 542 375 84 25",
+      "ad": "Fulya",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "HVMypzzMjuMZ1dl7VUmi",
+      "ad": "Gülperi",
+      "cinsiyet": "k",
+      "soyad": "Tanrıkulu",
+      "tel": "0 (535) 798 19 95",
+      "durum": "pasif",
+      "not": ""
+    },
+    {
+      "id": "HagdXgwECoINSZAILXkN",
+      "tel": "0 (543) 463 16 04",
+      "durum": "pasif",
+      "not": "",
+      "ad": "Harun",
+      "soyad": "Kaya",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "HpeESIGwU3ig9cIDLP0z",
+      "ad": "Salim",
+      "cinsiyet": "e",
+      "tel": "",
+      "soyad": "Koç",
+      "not": "",
+      "durum": "aktif"
+    },
+    {
+      "id": "IxEDj7WsgpzOnYAn3cKD",
+      "durum": "aktif",
+      "cinsiyet": "e",
+      "ad": "Akın taylan",
+      "soyad": "Alkan",
+      "tel": "+90 532 508 13 45",
+      "not": ""
+    },
+    {
+      "id": "KIIk06ZGD0zXKyUhqlkt",
+      "not": "",
+      "tel": "+90 505 052 12 12",
+      "soyad": "Özaltun",
+      "cinsiyet": "e",
+      "ad": "Ali can",
+      "durum": "pasif"
+    },
+    {
+      "id": "L2ofv0w1Rtt0eh9h5AZB",
+      "cinsiyet": "k",
+      "ad": "Aslıhan",
+      "soyad": "Aytekin",
+      "tel": "0 (554) 726 67 10",
+      "durum": "pasif",
+      "not": ""
+    },
+    {
+      "id": "L6QVBBRanJbc9W0sL9kD",
+      "tel": "+90 505 798 97 54",
+      "soyad": "Özgör",
+      "not": "",
+      "cinsiyet": "k",
+      "durum": "aktif",
+      "ad": "İnci"
+    },
+    {
+      "id": "LejsdtPdiPLYpmkAOqit",
+      "tel": "+90 532 273 41 84",
+      "soyad": "Vural",
+      "not": "",
+      "ad": "Yeşim",
+      "durum": "aktif",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "MbWAZdpd1sESaSx2u98m",
+      "tel": "+90 543 440 54 79",
+      "soyad": "Özşerbetçi",
+      "ad": "Uğur",
+      "not": "",
+      "cinsiyet": "e",
+      "durum": "pasif"
+    },
+    {
+      "id": "MybdPsxNTzL1sMi9QzYJ",
+      "soyad": "Ekinci",
+      "durum": "pasif",
+      "ad": "Sinem Büşra",
+      "tel": "05454771507",
+      "not": "",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "Ovc8ZWhQfmz7spvHFjMM",
+      "cinsiyet": "e",
+      "durum": "aktif",
+      "soyad": "Kanan",
+      "not": "",
+      "tel": "+90 546 557 32 49",
+      "ad": "Murat"
+    },
+    {
+      "id": "P5t8g5oI1Itk7J376nvp",
+      "tel": "+90 536 797 31 06",
+      "durum": "pasif",
+      "not": "",
+      "soyad": "Bülbül",
+      "ad": "Oğuzhan",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "PBWr9fCKHt4sPZ5tEuVc",
+      "tel": "+98 912 026 6084",
+      "durum": "pasif",
+      "not": "",
+      "ad": "Mahgol",
+      "soyad": "",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "PGXfvysujEnv5WFEkd6s",
+      "not": "",
+      "cinsiyet": "k",
+      "tel": "",
+      "soyad": "",
+      "sadeceOzelDers": false,
+      "durum": "aktif",
+      "ad": "Yıldız"
+    },
+    {
+      "id": "PKYzt4WzhnMl64ApapgY",
+      "not": "",
+      "durum": "aktif",
+      "tel": "+380 93 074 9965",
+      "soyad": "Elkamali",
+      "cinsiyet": "k",
+      "ad": "Iya"
+    },
+    {
+      "id": "Pgs7oofmvmJIdR9A00Wo",
+      "ad": "Sidoş",
+      "soyad": "",
+      "sadeceOzelDers": true,
+      "durum": "aktif",
+      "tel": "",
+      "cinsiyet": "k",
+      "not": "Çok güzel"
+    },
+    {
+      "id": "PmO0nWRFQZldKCpR8Lxc",
+      "not": "",
+      "tel": "+90 537 664 86 03",
+      "cinsiyet": "k",
+      "ad": "İlke",
+      "soyad": "Yaldır",
+      "durum": "pasif"
+    },
+    {
+      "id": "Q2xR6ZpTgVINzkZmScCI",
+      "ad": "Gökhan",
+      "durum": "pasif",
+      "not": "",
+      "soyad": "Erkan",
+      "cinsiyet": "e",
+      "tel": "+90 543 257 97 61"
+    },
+    {
+      "id": "Q3sAO0VmcCX0XEzDPC8z",
+      "ad": "Emir",
+      "cinsiyet": "e",
+      "tel": "05327168890",
+      "durum": "pasif",
+      "not": "",
+      "soyad": "Özdemir"
+    },
+    {
+      "id": "Qfv91Hft88OGTIx01eIH",
+      "soyad": "Arslanbaş",
+      "cinsiyet": "k",
+      "durum": "pasif",
+      "ad": "Ebru",
+      "tel": "+90 542 898 80 34",
+      "not": ""
+    },
+    {
+      "id": "R3Kuqcuo2ga4k4Ffk0K9",
+      "not": "",
+      "durum": "aktif",
+      "tel": "905437864861",
+      "soyad": "Yıldırım",
+      "cinsiyet": "e",
+      "ad": "Yasin"
+    },
+    {
+      "id": "ReZwkYlErWAlQE9AXAnU",
+      "not": "",
+      "tel": "905326633927",
+      "durum": "aktif",
+      "cinsiyet": "k",
+      "ad": "Zeliha",
+      "soyad": ""
+    },
+    {
+      "id": "SKSrurnnsLnSV5DJzH7A",
+      "durum": "pasif",
+      "cinsiyet": "e",
+      "soyad": "Arslan",
+      "ad": "Remzi",
+      "tel": "+90 532 273 41 84",
+      "not": ""
+    },
+    {
+      "id": "TQm6Ea9WMb8L0CrAbQ36",
+      "durum": "aktif",
+      "not": "",
+      "soyad": "Usta",
+      "tel": "+90 542 423 43 77",
+      "ad": "Harika",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "Tz5EngvsakHX9OozFxeK",
+      "not": "",
+      "tel": "905369706759",
+      "ad": "Volkan",
+      "durum": "aktif",
+      "cinsiyet": "e",
+      "soyad": "İlgen"
+    },
+    {
+      "id": "UNw22Qag2RCvE9itMZWU",
+      "tel": "05364946014",
+      "cinsiyet": "k",
+      "soyad": "Körükçü",
+      "ad": "Canan",
+      "not": "",
+      "durum": "pasif"
+    },
+    {
+      "id": "UqqN7EePjvtriJPqo8UC",
+      "soyad": "Küçük kız",
+      "not": "",
+      "cinsiyet": "k",
+      "durum": "pasif",
+      "tel": "+90 530 399 57 05",
+      "ad": "Efsun"
+    },
+    {
+      "id": "VPVDT62AQBfW8xCuifgz",
+      "tel": "+90 545 591 19 95",
+      "not": "",
+      "cinsiyet": "e",
+      "ad": "Ömer",
+      "soyad": "Sel",
+      "durum": "aktif"
+    },
+    {
+      "id": "VZbNTw6EmTrlN7eZsnLU",
+      "cinsiyet": "e",
+      "not": "",
+      "soyad": "Yücedağ",
+      "durum": "aktif",
+      "tel": "+90 501 222 30 00",
+      "ad": "Burak"
+    },
+    {
+      "id": "WEuoh2YUzRzDZSx24vgs",
+      "not": "",
+      "tel": "+90 554 135 07 41",
+      "durum": "pasif",
+      "cinsiyet": "e",
+      "soyad": "İbiş",
+      "ad": "Öznur"
+    },
+    {
+      "id": "WoEVGlnA80yiNi2tqM9m",
+      "not": "",
+      "cinsiyet": "e",
+      "sadeceOzelDers": false,
+      "tel": "905335036832",
+      "durum": "aktif",
+      "ad": "Ateş",
+      "soyad": "Yaylıoğlu"
+    },
+    {
+      "id": "XTCHtVKqV6Tr69gFvYiP",
+      "tel": "05456953586",
+      "not": "",
+      "ad": "Buse",
+      "durum": "pasif",
+      "cinsiyet": "k",
+      "soyad": "Yılmaz"
+    },
+    {
+      "id": "XgvIp6NEtIhxfkp6vHrr",
+      "ad": "Julia",
+      "cinsiyet": "k",
+      "soyad": "Hanım",
+      "tel": "+79051073118",
+      "durum": "aktif",
+      "not": ""
+    },
+    {
+      "id": "YBNRTojiZJr9I1087SOv",
+      "soyad": "Ceylan",
+      "durum": "pasif",
+      "ad": "Mustafa murat",
+      "not": "",
+      "cinsiyet": "e",
+      "tel": "+90 530 411 90 70"
+    },
+    {
+      "id": "YK3gaX9kq3Fn3WnHuLZ1",
+      "cinsiyet": "k",
+      "not": "",
+      "soyad": "",
+      "durum": "aktif",
+      "tel": "+90 555 488 81 58",
+      "ad": "Müberra"
+    },
+    {
+      "id": "YVuQNWpXg99WYpEyicmf",
+      "soyad": "Yıldırım",
+      "ad": "Ayşe",
+      "durum": "pasif",
+      "tel": "+90 532 293 53 25",
+      "cinsiyet": "k",
+      "not": ""
+    },
+    {
+      "id": "ZSD70InEUxRNPrOpdAZV",
+      "ad": "Ahmet",
+      "tel": "+90 532 627 93 88",
+      "not": "",
+      "cinsiyet": "e",
+      "durum": "pasif",
+      "soyad": "Turgan"
+    },
+    {
+      "id": "Zs5pyjNfMZYtbcwU5Nuc",
+      "soyad": "Boğmalık",
+      "durum": "pasif",
+      "ad": "Hamza",
+      "tel": "+90 542 102 52 52",
+      "cinsiyet": "e",
+      "not": ""
+    },
+    {
+      "id": "awRdeG3cdmY0n6In9TID",
+      "soyad": "Kıyak",
+      "durum": "aktif",
+      "ad": "Durmuş",
+      "not": "",
+      "cinsiyet": "e",
+      "tel": "+90 539 324 13 21"
+    },
+    {
+      "id": "bQFacSrJMuXpMrxyYkwe",
+      "not": "",
+      "durum": "pasif",
+      "tel": "+90 533 708 40 34",
+      "soyad": "Gökgöz",
+      "cinsiyet": "k",
+      "ad": "Çiğdem"
+    },
+    {
+      "id": "cBQXJEa7fgCU48XXyjp8",
+      "ad": "Çiğdem",
+      "durum": "pasif",
+      "not": "",
+      "cinsiyet": "k",
+      "soyad": "Kara",
+      "tel": "+90 553 215 43 73"
+    },
+    {
+      "id": "cCN6Ki5emK9LgBIc4o7e",
+      "soyad": "Bey",
+      "ad": "Şenol",
+      "durum": "aktif",
+      "cinsiyet": "e",
+      "tel": "905323181811",
+      "not": ""
+    },
+    {
+      "id": "cHphKELvAZfLNsYH9QRz",
+      "not": "",
+      "tel": "+90 507 080 37 90",
+      "ad": "Emre",
+      "soyad": "Gökgöz",
+      "durum": "aktif",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "cUgUp2eRTPc0wdnib7Cw",
+      "durum": "aktif",
+      "soyad": "Güneş",
+      "ad": "Gökhan",
+      "tel": "905335936160",
+      "cinsiyet": "e",
+      "not": "",
+      "sadeceOzelDers": false
+    },
+    {
+      "id": "cuceMvmsSb047YFUaDef",
+      "not": "",
+      "soyad": "Altay",
+      "tel": "05446490165",
+      "durum": "pasif",
+      "cinsiyet": "e",
+      "ad": "Halil buğra"
+    },
+    {
+      "id": "d8KY85QuLjNBhRie3yWF",
+      "durum": "pasif",
+      "soyad": "Kabul",
+      "ad": "Nisa",
+      "tel": "+90 553 090 74 42",
+      "not": "",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "dDns2s0PIvWweOHZGQa8",
+      "cinsiyet": "e",
+      "soyad": "Sarı",
+      "durum": "pasif",
+      "ad": "Adem",
+      "tel": "05336526772",
+      "not": ""
+    },
+    {
+      "id": "dWC6TXFHKzoimxkeDkN7",
+      "durum": "pasif",
+      "cinsiyet": "k",
+      "soyad": "Hüseinova",
+      "not": "",
+      "ad": "Züleyha",
+      "tel": "+90 552 259 70 38"
+    },
+    {
+      "id": "e8SbcknxDZMIG8jIhw03",
+      "durum": "pasif",
+      "soyad": "Erol",
+      "ad": "Emre",
+      "tel": "+90 535 448 95 21",
+      "not": "",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "eNktD6soDO46ojUvVwHI",
+      "not": "",
+      "soyad": "Atikler",
+      "tel": "+90 532 432 09 71",
+      "durum": "pasif",
+      "ad": "Aylin",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "fVHhrrzU4lxoYvnMyY1i",
+      "cinsiyet": "k",
+      "tel": "905513547520",
+      "soyad": "Hanım",
+      "not": "",
+      "durum": "pasif",
+      "ad": "Yıldız"
+    },
+    {
+      "id": "fYtBkyERfyhAKOta1gDZ",
+      "cinsiyet": "k",
+      "ad": "Nergiz",
+      "soyad": "Nezirova",
+      "tel": "+90 536 503 18 87",
+      "not": "",
+      "durum": "pasif"
+    },
+    {
+      "id": "gfPl02U3QZYkEVzsTFxa",
+      "not": "",
+      "soyad": "Özdemir",
+      "tel": "+90 507 095 12 44",
+      "durum": "aktif",
+      "cinsiyet": "k",
+      "ad": "Sonnur"
+    },
+    {
+      "id": "hDEw0uSctEqWPvHMlr0K",
+      "durum": "pasif",
+      "ad": "Burak",
+      "cinsiyet": "e",
+      "soyad": "Vardar",
+      "tel": "+90 532 497 32 72",
+      "not": ""
+    },
+    {
+      "id": "hImEKtWi4Izi2Nby0Qoy",
+      "soyad": "Yüksel",
+      "durum": "aktif",
+      "ad": "Taha",
+      "cinsiyet": "e",
+      "tel": "+90 532 625 18 36",
+      "not": ""
+    },
+    {
+      "id": "hdBzIWGW6WOqPMfgTk2o",
+      "durum": "aktif",
+      "cinsiyet": "e",
+      "soyad": "Tan",
+      "ad": "Yiğit",
+      "tel": "+90 505 099 44 24",
+      "not": ""
+    },
+    {
+      "id": "hep7Spd8lwc2O8jRuqUP",
+      "sadeceOzelDers": true,
+      "ad": "Ömer",
+      "tel": "",
+      "not": "",
+      "soyad": "Kahraman",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "iGDqPH2WMgXWOne17pvW",
+      "cinsiyet": "e",
+      "soyad": "Başarık",
+      "not": "",
+      "ad": "Ünal",
+      "durum": "pasif",
+      "tel": "05446107823"
+    },
+    {
+      "id": "ieZ7RGU3kTKLv9E0xUB9",
+      "ad": "Nihal",
+      "durum": "aktif",
+      "not": "",
+      "cinsiyet": "k",
+      "soyad": "Durmuş",
+      "tel": ""
+    },
+    {
+      "id": "jS360vSav3GbWPKoSFjh",
+      "sadeceOzelDers": true,
+      "ad": "Fatma",
+      "soyad": "",
+      "not": "",
+      "cinsiyet": "k",
+      "tel": ""
+    },
+    {
+      "id": "jaqFemaevxYEFLKBOQOQ",
+      "durum": "pasif",
+      "not": "",
+      "tel": "+90 538 415 62 43",
+      "soyad": "Kuzu",
+      "ad": "Çiğse",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "jllaBHCFVLA3aIuYr7xT",
+      "not": "",
+      "tel": "+90 533 422 96 36",
+      "cinsiyet": "e",
+      "soyad": "Yılmaz",
+      "ad": "Yavuz",
+      "durum": "aktif"
+    },
+    {
+      "id": "jmrVtzjvN7XzoFcnEWp3",
+      "cinsiyet": "k",
+      "ad": "Deniz",
+      "soyad": "Çay",
+      "not": "",
+      "durum": "pasif",
+      "tel": "+90 530 263 88 03"
+    },
+    {
+      "id": "jsysoj4KHOZxO8yjvd6H",
+      "ad": "Öznur",
+      "durum": "pasif",
+      "not": "",
+      "cinsiyet": "k",
+      "soyad": "Şahin",
+      "tel": "+90 535 379 88 11"
+    },
+    {
+      "id": "k0Upnqq85y9HgqyWX929",
+      "tel": "905360167520",
+      "ad": "Yasemin",
+      "soyad": "Tahbaz",
+      "sadeceOzelDers": false,
+      "not": "",
+      "durum": "aktif",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "kOrNLlkDKYDPh4eWe8bN",
+      "cinsiyet": "e",
+      "not": "",
+      "tel": "+90 506 101 82 16",
+      "durum": "pasif",
+      "ad": "Yücel",
+      "soyad": "Kulaksız"
+    },
+    {
+      "id": "kjDlxMH5d95pEaSGmNZU",
+      "cinsiyet": "e",
+      "ad": "Yuşa",
+      "tel": "05340523249",
+      "not": "",
+      "durum": "pasif",
+      "soyad": "Sağlam"
+    },
+    {
+      "id": "lbPiDFoYMfY2bt5XBl3T",
+      "durum": "pasif",
+      "soyad": "",
+      "ad": "Ülker",
+      "tel": "+90 531 662 93 47",
+      "cinsiyet": "k",
+      "not": ""
+    },
+    {
+      "id": "nSU1f5dJ8celkFAfDEEB",
+      "cinsiyet": "e",
+      "ad": "Savaş",
+      "durum": "pasif",
+      "tel": "+90 534 705 18 81",
+      "soyad": "Koç",
+      "not": ""
+    },
+    {
+      "id": "np2JW7BRgDn4j8cahGEi",
+      "durum": "pasif",
+      "cinsiyet": "e",
+      "not": "",
+      "ad": "Emre",
+      "soyad": "Gündüzhev",
+      "tel": "+90 537 501 25 34"
+    },
+    {
+      "id": "orxQ03jQmZXsSjUWTZ0s",
+      "soyad": "Arslan",
+      "cinsiyet": "k",
+      "durum": "pasif",
+      "ad": "Gizem",
+      "tel": "+90 532 356 66 82",
+      "not": ""
+    },
+    {
+      "id": "q2sCbeK4o6JhhpqrpSDq",
+      "not": "",
+      "tel": "+90 531 864 47 68",
+      "cinsiyet": "e",
+      "soyad": "Karabacak",
+      "durum": "pasif",
+      "ad": "Celil"
+    },
+    {
+      "id": "q57MeYcNKnosw8Dia9Rv",
+      "soyad": "Hamurcu",
+      "durum": "aktif",
+      "not": "",
+      "tel": "+90 507 650 60 55",
+      "ad": "Pınar",
+      "cinsiyet": "k"
+    },
+    {
+      "id": "q63MxgJrLN9KQB8yIOht",
+      "ad": "Yavuz emre",
+      "soyad": "Soykan",
+      "tel": "+90 545 826 39 19",
+      "not": "",
+      "durum": "pasif",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "qi5VpdT9NAxdyOG0vwkF",
+      "cinsiyet": "k",
+      "tel": "Cansu Kandemir 🩷",
+      "soyad": "Kandemir",
+      "ad": "Cansu",
+      "not": "",
+      "durum": "pasif"
+    },
+    {
+      "id": "s5L5wOigMqfdr8b1Gxvb",
+      "not": "",
+      "durum": "aktif",
+      "tel": "905421743487",
+      "sadeceOzelDers": false,
+      "soyad": "Öztürk",
+      "cinsiyet": "k",
+      "ad": "Yeşim"
+    },
+    {
+      "id": "tIQPfL4AovRD1Y7GAyhp",
+      "ad": "Filiz",
+      "tel": "+90 542 648 28 22",
+      "soyad": "Kaya",
+      "cinsiyet": "k",
+      "durum": "pasif",
+      "not": ""
+    },
+    {
+      "id": "tMVABFOlG2en3mCwKCF4",
+      "not": "",
+      "tel": "05350179058",
+      "cinsiyet": "e",
+      "durum": "pasif",
+      "ad": "Mohsen",
+      "soyad": "Zadeh"
+    },
+    {
+      "id": "uQXHItzjmi86olyc5bsA",
+      "ad": "Ghazaleh",
+      "durum": "pasif",
+      "tel": "+49 178 9249533",
+      "cinsiyet": "k",
+      "soyad": "",
+      "not": ""
+    },
+    {
+      "id": "vklV98KiJ4oH7cxz4WpT",
+      "sadeceOzelDers": true,
+      "soyad": "",
+      "cinsiyet": "e",
+      "not": "",
+      "tel": "",
+      "ad": "Sina salsa"
+    },
+    {
+      "id": "vpSQh4or1Lxjz3lleiZk",
+      "cinsiyet": "e",
+      "ad": "Yasir",
+      "soyad": "Men",
+      "not": "",
+      "durum": "pasif",
+      "tel": "+90 535 437 38 90"
+    },
+    {
+      "id": "w33ZIaRVmxYceZZteMAx",
+      "ad": "Cihad",
+      "tel": "05444339979",
+      "durum": "pasif",
+      "cinsiyet": "e",
+      "not": "",
+      "soyad": "Keskin"
+    },
+    {
+      "id": "xtp9ujnDSoz6esCO1JU8",
+      "soyad": "Şakar",
+      "durum": "pasif",
+      "ad": "Jülide",
+      "cinsiyet": "k",
+      "not": "",
+      "tel": "+90 532 410 53 17"
+    }
+  ],
+  "siniflar": [
+    {
+      "id": "9UEgzLhfPNvlHO8oc7EQ",
+      "tekders": 1000,
+      "gun": "Çarşamba",
+      "ad": "Can Ira çarşamba 21:00",
+      "egitmenId": "tt3Srbc1JdSyWeR6PiFf",
+      "kayitlar": [
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "q57MeYcNKnosw8Dia9Rv"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "id": {
+              "stringValue": "k1774727197310"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "vpSQh4or1Lxjz3lleiZk"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "id": {
+              "stringValue": "k1774727609957"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "id": {
+              "stringValue": "k1774727613242"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "ogrenciId": {
+              "stringValue": "0ioMH0KL4bFnL03xRmiN"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1774727628398"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "Be2fsI5XP6r5MMyf3dfm"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "AMO4bljGuxvBp3tPjgVk"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "id": {
+              "stringValue": "k1774727635316"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "bQFacSrJMuXpMrxyYkwe"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "id": {
+              "stringValue": "k1774727648701"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "tMVABFOlG2en3mCwKCF4"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "id": {
+              "stringValue": "k1774727657900"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "WEuoh2YUzRzDZSx24vgs"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "id": {
+              "stringValue": "k1774727666205"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "qi5VpdT9NAxdyOG0vwkF"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774727704149"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "jmrVtzjvN7XzoFcnEWp3"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "id": {
+              "stringValue": "k1774727709941"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1774727715659"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "ogrenciId": {
+              "stringValue": "L6QVBBRanJbc9W0sL9kD"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1774727739296"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "q2sCbeK4o6JhhpqrpSDq"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "fYtBkyERfyhAKOta1gDZ"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1774727748497"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "gfPl02U3QZYkEVzsTFxa"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1774727767068"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "e8SbcknxDZMIG8jIhw03"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-31"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774985853699"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-27"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-03-31"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "Q2xR6ZpTgVINzkZmScCI"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-27"
+            },
+            "id": {
+              "stringValue": "k1774985860513"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-07"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "21yeHopjDg5lNUDt3a7h"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-05-04"
+            },
+            "id": {
+              "stringValue": "k1775581793520"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-07"
+            },
+            "ogrenciId": {
+              "stringValue": "HagdXgwECoINSZAILXkN"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-05-04"
+            },
+            "id": {
+              "stringValue": "k1775584608295"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-05-11"
+            },
+            "id": {
+              "stringValue": "k1776242478736"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-14"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "lbPiDFoYMfY2bt5XBl3T"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-05-17"
+            },
+            "id": {
+              "stringValue": "k1776718676794"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-20"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "jaqFemaevxYEFLKBOQOQ"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-06-01"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "kOrNLlkDKYDPh4eWe8bN"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-06-28"
+            },
+            "id": {
+              "stringValue": "k1780323059696"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "tIQPfL4AovRD1Y7GAyhp"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "id": {
+              "stringValue": "k1780323329144"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1780423948056"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-06-29"
+            },
+            "ogrenciId": {
+              "stringValue": "hDEw0uSctEqWPvHMlr0K"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-02"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "AB4g0sn5EgECkMW3Juic"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-30"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k17851650911010"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-27"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-07"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "ieZ7RGU3kTKLv9E0xUB9"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-03"
+            },
+            "id": {
+              "stringValue": "k17851651004890"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-07"
+            },
+            "ogrenciId": {
+              "stringValue": "3bBpbeTJwqEzFyTcXGna"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-03"
+            },
+            "id": {
+              "stringValue": "k17851652054740"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-07"
+            },
+            "ogrenciId": {
+              "stringValue": "dDns2s0PIvWweOHZGQa8"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-03"
+            },
+            "id": {
+              "stringValue": "k17851652054741"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-08-03"
+            },
+            "id": {
+              "stringValue": "k17851652163380"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-07"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "EjeJiUOg0WlWlmiPB9Za"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-08-04"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "PBWr9fCKHt4sPZ5tEuVc"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-31"
+            },
+            "id": {
+              "stringValue": "k1785843322307"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "id": {
+              "stringValue": "k1785854948414"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "IxEDj7WsgpzOnYAn3cKD"
+            }
+          }
+        }
+      ],
+      "saat": "20:00",
+      "asistanPct": 0,
+      "kira": 14000,
+      "paket": 3500
+    },
+    {
+      "id": "AbNsfSxEsFFmSIhxMQRt",
+      "kayitlar": [
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1774117425810"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-21"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-17"
+            },
+            "ogrenciId": {
+              "stringValue": "kxV3LjyyZ3aWTpCtLSjU"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-03-22"
+            },
+            "ogrenciId": {
+              "stringValue": "M8q1XEASfQrfYlwrlXKH"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-18"
+            },
+            "id": {
+              "stringValue": "k1774163490918"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "V30l2yAxejw9aflrufa6"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-18"
+            },
+            "id": {
+              "stringValue": "k1774175166384"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-22"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774724876579"
+            },
+            "ogrenciId": {
+              "stringValue": "GAvNHVOLyf5Wcn6eIjCt"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "ogrenciId": {
+              "stringValue": "w33ZIaRVmxYceZZteMAx"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774724883197"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1774724889761"
+            },
+            "ogrenciId": {
+              "stringValue": "GzsZohUV8e4Eu60Dtg8E"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774724983475"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "donduruldu": {
+              "booleanValue": false
+            },
+            "ogrenciId": {
+              "stringValue": "HRsB9PmLAdlnO7u22WTp"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "orxQ03jQmZXsSjUWTZ0s"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-22"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-26"
+            },
+            "id": {
+              "stringValue": "k1774725066420"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774725144208"
+            },
+            "ogrenciId": {
+              "stringValue": "5F6SyNhOGG78Y1xG6F2U"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1774725206747"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-26"
+            },
+            "ogrenciId": {
+              "stringValue": "8wACOinjl3nuSa9OIUof"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-22"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "xtp9ujnDSoz6esCO1JU8"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774725322742"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "id": {
+              "stringValue": "k1774725398918"
+            },
+            "ogrenciId": {
+              "stringValue": "6ttvZaYQK6TiTPhUM4pY"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "ogrenciId": {
+              "stringValue": "d8KY85QuLjNBhRie3yWF"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "id": {
+              "stringValue": "k1774725436291"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1774725528856"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "14SH2HH3CEh2VHy3Gitb"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1774725533556"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "jsysoj4KHOZxO8yjvd6H"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "Ovc8ZWhQfmz7spvHFjMM"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774725628188"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774725654004"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "ogrenciId": {
+              "stringValue": "FFmM8ig1y7746LJR7re2"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "id": {
+              "stringValue": "k1774726076421"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "SKSrurnnsLnSV5DJzH7A"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "LejsdtPdiPLYpmkAOqit"
+            },
+            "donduruldu": {
+              "booleanValue": true
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "id": {
+              "stringValue": "k1774726086823"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1775581674747"
+            },
+            "ogrenciId": {
+              "stringValue": "cUgUp2eRTPc0wdnib7Cw"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-07"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-05-04"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1775755186778"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "ogrenciId": {
+              "stringValue": "KIIk06ZGD0zXKyUhqlkt"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1776363300454"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-16"
+            },
+            "ogrenciId": {
+              "stringValue": "nSU1f5dJ8celkFAfDEEB"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-05-13"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1776930299360"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "Qfv91Hft88OGTIx01eIH"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-05-20"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-23"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1777358769304"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "6ZxVyQN9t7YeippmfqjI"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "id": {
+              "stringValue": "k1777358777621"
+            },
+            "manuelHak": {
+              "integerValue": "2"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "5VVr3p39qUDpvUFmuEXs"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1780323319223"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "ogrenciId": {
+              "stringValue": "np2JW7BRgDn4j8cahGEi"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1780323323167"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "ogrenciId": {
+              "stringValue": "UqqN7EePjvtriJPqo8UC"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-22"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-26"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1785162566571"
+            },
+            "ogrenciId": {
+              "stringValue": "MybdPsxNTzL1sMi9QzYJ"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-22"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-26"
+            },
+            "id": {
+              "stringValue": "k1785162580538"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "XTCHtVKqV6Tr69gFvYiP"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "UNw22Qag2RCvE9itMZWU"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-26"
+            },
+            "id": {
+              "stringValue": "k1785162590942"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-22"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "31WeBFFNdvTq73Ezijq4"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-26"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1785162602637"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-29"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-02"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1785162608607"
+            },
+            "ogrenciId": {
+              "stringValue": "Zs5pyjNfMZYtbcwU5Nuc"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "VZbNTw6EmTrlN7eZsnLU"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-03"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-30"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1785162615515"
+            },
+            "manuelHak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-29"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-02"
+            },
+            "ogrenciId": {
+              "stringValue": "0BMfZos9xvjPXBy4PSTf"
+            },
+            "id": {
+              "stringValue": "k1785162621490"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1785162625980"
+            },
+            "ogrenciId": {
+              "stringValue": "ZSD70InEUxRNPrOpdAZV"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-09"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-05-06"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "ogrenciId": {
+              "stringValue": "AJ4rWj9GAxvfQjkQ8Qea"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1785162631598"
+            }
+          }
+        },
+        {
+          "fields": {
+            "donduruldu": {
+              "booleanValue": true
+            },
+            "ogrenciId": {
+              "stringValue": "cHphKELvAZfLNsYH9QRz"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-05-06"
+            },
+            "id": {
+              "stringValue": "k1785162636584"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-09"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1785162642289"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "ogrenciId": {
+              "stringValue": "MbWAZdpd1sESaSx2u98m"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "WoEVGlnA80yiNi2tqM9m"
+            },
+            "id": {
+              "stringValue": "k17851636654640"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-09"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-05"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-07-16"
+            },
+            "ogrenciId": {
+              "stringValue": "hdBzIWGW6WOqPMfgTk2o"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k17851637126160"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-12"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-08-12"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-16"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "8b8ll9mz2Uq7feeS2fgx"
+            },
+            "id": {
+              "stringValue": "k17851638141910"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k17851654359600"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "cuceMvmsSb047YFUaDef"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-19"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-23"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "s5L5wOigMqfdr8b1Gxvb"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-29"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-25"
+            },
+            "id": {
+              "stringValue": "k1785330074674"
+            }
+          }
+        }
+      ],
+      "paket": 3500,
+      "egitmenId": "tt3Srbc1JdSyWeR6PiFf",
+      "ad": "Can Ira Perşembe 20:00",
+      "tekders": 1000,
+      "saat": "20:00",
+      "gun": "Perşembe",
+      "kira": 14000
+    },
+    {
+      "id": "Hy4B8kSrefDDjg0hbaZK",
+      "tekders": 1000,
+      "ad": "Can Yiğit Men Styling",
+      "asistanPct": 0,
+      "saat": "19:00",
+      "kira": 14000,
+      "egitmenId": "tt3Srbc1JdSyWeR6PiFf",
+      "paket": 3500,
+      "kayitlar": [
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "Ovc8ZWhQfmz7spvHFjMM"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-14"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-10"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k17851664481201"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k17851664481202"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-10"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-14"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "Be2fsI5XP6r5MMyf3dfm"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-08-10"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k17851664481203"
+            },
+            "donduruldu": {
+              "booleanValue": true
+            },
+            "basTarih": {
+              "stringValue": "2026-07-14"
+            },
+            "ogrenciId": {
+              "stringValue": "R3Kuqcuo2ga4k4Ffk0K9"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-07-14"
+            },
+            "ogrenciId": {
+              "stringValue": "Tz5EngvsakHX9OozFxeK"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-10"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k17851664481204"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k17851664827120"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-10"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "cCN6Ki5emK9LgBIc4o7e"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-14"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-08-25"
+            },
+            "ogrenciId": {
+              "stringValue": "20I8BM2lXuIAmylWCBBT"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-29"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1785311939735"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-08-29"
+            },
+            "ogrenciId": {
+              "stringValue": "cHphKELvAZfLNsYH9QRz"
+            },
+            "basTarih": {
+              "stringValue": "2026-08-02"
+            },
+            "donduruldu": {
+              "booleanValue": true
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1785662812593"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-08-31"
+            },
+            "ogrenciId": {
+              "stringValue": "jllaBHCFVLA3aIuYr7xT"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1785852127194"
+            },
+            "manuelHak": {
+              "integerValue": "-9"
+            },
+            "basTarih": {
+              "stringValue": "2026-08-04"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "IxEDj7WsgpzOnYAn3cKD"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-31"
+            },
+            "id": {
+              "stringValue": "k1785864306844"
+            },
+            "basTarih": {
+              "stringValue": "2026-08-04"
+            }
+          }
+        }
+      ],
+      "gun": "Çarşamba"
+    },
+    {
+      "id": "PEVRz10r8lhYz5NpmTI6",
+      "ad": "Can Ira Perşembe 21:00",
+      "kira": 14000,
+      "saat": "20:00",
+      "durum": "aktif",
+      "paket": 3500,
+      "kayitlar": [
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-04"
+            },
+            "ogrenciId": {
+              "stringValue": "L2ofv0w1Rtt0eh9h5AZB"
+            },
+            "manuelHak": {
+              "integerValue": "0"
+            },
+            "id": {
+              "stringValue": "k1780323411078"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-01"
+            },
+            "hak": {
+              "integerValue": "5"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1780586086493"
+            },
+            "ogrenciId": {
+              "stringValue": "dWC6TXFHKzoimxkeDkN7"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "id": {
+              "stringValue": "k1780586146807"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "2JR7QmpyararRhzRSSSV"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "eNktD6soDO46ojUvVwHI"
+            },
+            "id": {
+              "stringValue": "k1780586151316"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1780586167368"
+            },
+            "ogrenciId": {
+              "stringValue": "HVMypzzMjuMZ1dl7VUmi"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            },
+            "ogrenciId": {
+              "stringValue": "PmO0nWRFQZldKCpR8Lxc"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1780586178026"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "id": {
+              "stringValue": "k1780586187789"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "cBQXJEa7fgCU48XXyjp8"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "G6XJX4mtIpdFOH7APj4q"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "id": {
+              "stringValue": "k1780586234693"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1780586266090"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "YVuQNWpXg99WYpEyicmf"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1780586364252"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "5t6Wm3RloLY9aWP9VjCm"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "ogrenciId": {
+              "stringValue": "KIIk06ZGD0zXKyUhqlkt"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1780587084212"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k17851657281120"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-15"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-18"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "Q3sAO0VmcCX0XEzDPC8z"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "R3Kuqcuo2ga4k4Ffk0K9"
+            },
+            "id": {
+              "stringValue": "k17851658685310"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-02"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-29"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-26"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-30"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "awRdeG3cdmY0n6In9TID"
+            },
+            "id": {
+              "stringValue": "k1785437503863"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "YK3gaX9kq3Fn3WnHuLZ1"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1787768271724"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "E1VmdhnKLhZxqBBjniyr"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-04"
+            },
+            "id": {
+              "stringValue": "k1787768333907"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-01"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-08-06"
+            },
+            "ogrenciId": {
+              "stringValue": "5Wl86qfEgodE9IHn1M30"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-09-02"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1787768339055"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-09-02"
+            },
+            "id": {
+              "stringValue": "k1787768346724"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "HpeESIGwU3ig9cIDLP0z"
+            },
+            "basTarih": {
+              "stringValue": "2026-08-06"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1787858186750"
+            },
+            "ogrenciId": {
+              "stringValue": "PGXfvysujEnv5WFEkd6s"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-08-27"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-09-24"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "1tRUXhDwPW9YIfZZjONC"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "id": {
+              "stringValue": "k1787900970625"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        }
+      ],
+      "gun": "Perşembe",
+      "tekders": 1000,
+      "egitmenId": "tt3Srbc1JdSyWeR6PiFf"
+    },
+    {
+      "id": "sOcwUu34YUNIeC5A7OCr",
+      "paket": 3500,
+      "kayitlar": [
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "ogrenciId": {
+              "stringValue": "uQXHItzjmi86olyc5bsA"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1774726959670"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1774726964135"
+            },
+            "ogrenciId": {
+              "stringValue": "AMO4bljGuxvBp3tPjgVk"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "9wrBFy5E7gVgnPHsuJiy"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774726969782"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "manuelHak": {
+              "integerValue": "3"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1774726973916"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "ogrenciId": {
+              "stringValue": "67WCU25wB7RgOo2r9Ot1"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1774726990055"
+            },
+            "ogrenciId": {
+              "stringValue": "hImEKtWi4Izi2Nby0Qoy"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "ogrenciId": {
+              "stringValue": "2TWF3u4RmelG9Rg5wMQR"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1774727041677"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "PKYzt4WzhnMl64ApapgY"
+            },
+            "id": {
+              "stringValue": "k1774727061031"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "manuelHak": {
+              "integerValue": "0"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "VPVDT62AQBfW8xCuifgz"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1774727097943"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k1774727117566"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-28"
+            },
+            "ogrenciId": {
+              "stringValue": "WEuoh2YUzRzDZSx24vgs"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-04-24"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-05-04"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-04-07"
+            },
+            "ogrenciId": {
+              "stringValue": "H2w6vIF2pHhLyYe7P5uy"
+            },
+            "id": {
+              "stringValue": "k1775582147183"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-05-06"
+            },
+            "ogrenciId": {
+              "stringValue": "YBNRTojiZJr9I1087SOv"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-06-02"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1778063061141"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k17851642104260"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-30"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-27"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "iGDqPH2WMgXWOne17pvW"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "4kAWFEd9SBBBtOxVBS6G"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-27"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k17851644995230"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-30"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-08-03"
+            },
+            "id": {
+              "stringValue": "k17851645527050"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-07"
+            },
+            "ogrenciId": {
+              "stringValue": "kjDlxMH5d95pEaSGmNZU"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-27"
+            },
+            "ogrenciId": {
+              "stringValue": "Tz5EngvsakHX9OozFxeK"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "id": {
+              "stringValue": "k17851646642400"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-30"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "d8KY85QuLjNBhRie3yWF"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k17851667299120"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-30"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-27"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-08-10"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "ReZwkYlErWAlQE9AXAnU"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-09-06"
+            },
+            "id": {
+              "stringValue": "k1786375189269"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-04-22"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-03-26"
+            },
+            "id": {
+              "stringValue": "k1787739350128"
+            },
+            "ogrenciId": {
+              "stringValue": "Bf5VeTXfCjmIrZYWQLEC"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        }
+      ],
+      "saat": "20:00",
+      "kira": 14000,
+      "tekders": 1000,
+      "asistanPct": 0,
+      "gun": "Çarşamba",
+      "egitmenId": "tt3Srbc1JdSyWeR6PiFf",
+      "ad": "Can Ira çarşamba 20:00"
+    },
+    {
+      "id": "z7CtHUxjXTmwCXYO57Gp",
+      "gun": "Perşembe",
+      "kayitlar": [
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-06-29"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-02"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "MybdPsxNTzL1sMi9QzYJ"
+            },
+            "id": {
+              "stringValue": "k1780420641841"
+            }
+          }
+        },
+        {
+          "fields": {
+            "basTarih": {
+              "stringValue": "2026-06-02"
+            },
+            "id": {
+              "stringValue": "k1780420647235"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "WEuoh2YUzRzDZSx24vgs"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-06-29"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "gfPl02U3QZYkEVzsTFxa"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-06-29"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1780420661579"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-02"
+            },
+            "hak": {
+              "integerValue": "4"
+            }
+          }
+        },
+        {
+          "fields": {
+            "ogrenciId": {
+              "stringValue": "E6tbP5LerjdtKJbFH9B6"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-06-29"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-02"
+            },
+            "id": {
+              "stringValue": "k1780420728793"
+            },
+            "manuelHak": {
+              "integerValue": "3"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "TQm6Ea9WMb8L0CrAbQ36"
+            },
+            "id": {
+              "stringValue": "k17809153977730"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-05"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-08"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k17851659576630"
+            },
+            "ogrenciId": {
+              "stringValue": "L6QVBBRanJbc9W0sL9kD"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-30"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-27"
+            },
+            "tip": {
+              "stringValue": "paket"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "ogrenciId": {
+              "stringValue": "fVHhrrzU4lxoYvnMyY1i"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-30"
+            },
+            "id": {
+              "stringValue": "k17851661696720"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-27"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k17851662145370"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-03"
+            },
+            "ogrenciId": {
+              "stringValue": "XgvIp6NEtIhxfkp6vHrr"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "basTarih": {
+              "stringValue": "2026-07-07"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "tekders"
+            },
+            "id": {
+              "stringValue": "k17851662687720"
+            },
+            "basTarih": {
+              "stringValue": "2026-05-12"
+            },
+            "ogrenciId": {
+              "stringValue": "BTqoblEIMrVmPYa6TocF"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-05-18"
+            },
+            "hak": {
+              "integerValue": "1"
+            }
+          }
+        },
+        {
+          "fields": {
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-06-30"
+            },
+            "ogrenciId": {
+              "stringValue": "ReZwkYlErWAlQE9AXAnU"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-07-27"
+            },
+            "id": {
+              "stringValue": "k17851663127110"
+            }
+          }
+        },
+        {
+          "fields": {
+            "tip": {
+              "stringValue": "paket"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-08-31"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "CofQDtlXnsMhskkKHAO2"
+            },
+            "basTarih": {
+              "stringValue": "2026-08-04"
+            },
+            "id": {
+              "stringValue": "k1785864609448"
+            }
+          }
+        },
+        {
+          "fields": {
+            "bitisTarih": {
+              "stringValue": "2026-09-05"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "ogrenciId": {
+              "stringValue": "k0Upnqq85y9HgqyWX929"
+            },
+            "basTarih": {
+              "stringValue": "2026-08-09"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "id": {
+              "stringValue": "k1786267172956"
+            }
+          }
+        },
+        {
+          "fields": {
+            "id": {
+              "stringValue": "k1787170332087"
+            },
+            "ogrenciId": {
+              "stringValue": "q57MeYcNKnosw8Dia9Rv"
+            },
+            "tip": {
+              "stringValue": "paket"
+            },
+            "hak": {
+              "integerValue": "4"
+            },
+            "basTarih": {
+              "stringValue": "2026-08-19"
+            },
+            "bitisTarih": {
+              "stringValue": "2026-09-15"
+            }
+          }
+        }
+      ],
+      "egitmenId": "JV5AZapttTOtMf0tZt7A",
+      "kira": 14000,
+      "saat": "19:00",
+      "tekders": 1000,
+      "ad": "İra ladies",
+      "asistanPct": 0,
+      "paket": 3500
+    }
+  ],
+  "odemeler": [
+    {
+      "id": "0BiMzylpHZliqjy9upX3",
+      "tip": "grup",
+      "yontem": "nakit",
+      "tarih": "2026-07-23",
+      "not": "",
+      "ogrenciId": "cuceMvmsSb047YFUaDef",
+      "aylar": [
+        "2026-07"
+      ],
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "tutar": 3500,
+      "olusturma": 1785166991232
+    },
+    {
+      "id": "0EXaZ5m8huzjfTOYHxIF",
+      "tutar": 3500,
+      "not": "",
+      "aylar": [
+        "2026-07"
+      ],
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "yontem": "nakit",
+      "tip": "grup",
+      "tarih": "2026-07-07",
+      "ogrenciId": "EjeJiUOg0WlWlmiPB9Za",
+      "odTip": "aylik",
+      "olusturma": 1785268639288
+    },
+    {
+      "id": "1G9xD5V5a0vwrkGG77oo",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "tarih": "2026-07-07",
+      "olusturma": 1785268623778,
+      "not": "",
+      "odTip": "aylik",
+      "ogrenciId": "dDns2s0PIvWweOHZGQa8",
+      "tutar": 3500,
+      "yontem": "nakit",
+      "aylar": [
+        "2026-07"
+      ],
+      "tip": "grup"
+    },
+    {
+      "id": "1IA0J5xHSkNuyhcDH1e4",
+      "tip": "grup",
+      "yontem": "nakit",
+      "ogrenciId": "Be2fsI5XP6r5MMyf3dfm",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "olusturma": 1785166558118,
+      "tarih": "2026-07-14",
+      "not": "",
+      "aylar": [
+        "2026-07"
+      ],
+      "tutar": 3500
+    },
+    {
+      "id": "1WwZgdaIou83oE4Tnsyx",
+      "aylar": [
+        "2026-08"
+      ],
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tutar": 3000,
+      "tip": "grup",
+      "odTip": "aylik",
+      "ogrenciId": "Tz5EngvsakHX9OozFxeK",
+      "yontem": "nakit",
+      "tarih": "2026-08-11",
+      "olusturma": 1786471681575,
+      "not": ""
+    },
+    {
+      "id": "1XV7zO4kFFnHSNYN5bI8",
+      "tip": "grup",
+      "tutar": 3500,
+      "yontem": "nakit",
+      "aylar": [
+        "2026-07"
+      ],
+      "olusturma": 1785167533593,
+      "not": "",
+      "tarih": "2026-07-02",
+      "ogrenciId": "dWC6TXFHKzoimxkeDkN7",
+      "sinifId": "PEVRz10r8lhYz5NpmTI6"
+    },
+    {
+      "id": "2G5xvTKMUjbHKHZZleW5",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "tarih": "2026-08-04",
+      "not": "",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "aylar": [
+        "2026-08"
+      ],
+      "ogrenciId": "TQm6Ea9WMb8L0CrAbQ36",
+      "tutar": 3500,
+      "tip": "grup",
+      "olusturma": 1785167711016
+    },
+    {
+      "id": "3LZ90ppPk0QWZ9jridpz",
+      "tutar": 9000,
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "not": "",
+      "tarih": "2026-08-06",
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "ogrenciId": "E1VmdhnKLhZxqBBjniyr",
+      "odTip": "aylik",
+      "tip": "grup",
+      "yontem": "nakit",
+      "olusturma": 1787839048270
+    },
+    {
+      "id": "3xfXhOC8GwKdbnzWf0mS",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "tip": "grup",
+      "tarih": "2026-08-04",
+      "aylar": [
+        "2026-08"
+      ],
+      "olusturma": 1785863785702,
+      "not": "",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tutar": 3500,
+      "ogrenciId": "jllaBHCFVLA3aIuYr7xT"
+    },
+    {
+      "id": "43GcBos1fXMn2Ihq67Pd",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "yontem": "nakit",
+      "not": "",
+      "tutar": 9000,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "odTip": "aylik",
+      "ogrenciId": "14SH2HH3CEh2VHy3Gitb",
+      "tarih": "2026-08-06",
+      "tip": "grup",
+      "olusturma": 1786035749877
+    },
+    {
+      "id": "4fSM56WBrHqazxz61JuP",
+      "tarih": "2026-07-14",
+      "yontem": "nakit",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tip": "grup",
+      "tutar": 3500,
+      "ogrenciId": "cCN6Ki5emK9LgBIc4o7e",
+      "aylar": [
+        "2026-07"
+      ],
+      "olusturma": 1785166580790,
+      "not": ""
+    },
+    {
+      "id": "54b7R6n4kVBAN2MqElLi",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "tip": "grup",
+      "tarih": "2026-06-30",
+      "not": "",
+      "olusturma": 1785166664548,
+      "yontem": "nakit",
+      "tutar": 2000,
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "d8KY85QuLjNBhRie3yWF"
+    },
+    {
+      "id": "5Msc0t2YvbpDB0Rtlswk",
+      "ogrenciId": "9wrBFy5E7gVgnPHsuJiy",
+      "tutar": 3500,
+      "tip": "grup",
+      "olusturma": 1785166574872,
+      "aylar": [
+        "2026-07"
+      ],
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tarih": "2026-07-14",
+      "not": "",
+      "yontem": "nakit"
+    },
+    {
+      "id": "6EziGIwKAfp1WqTDzQGd",
+      "tip": "grup",
+      "tutar": 3500,
+      "aylar": [
+        "2026-08"
+      ],
+      "not": "",
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "olusturma": 1786041452241,
+      "tarih": "2026-08-06",
+      "odTip": "aylik",
+      "ogrenciId": "R3Kuqcuo2ga4k4Ffk0K9",
+      "yontem": "nakit"
+    },
+    {
+      "id": "6g5M1LwEM9G8JBKHFTvL",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "ogrenciId": "PKYzt4WzhnMl64ApapgY",
+      "not": "",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "olusturma": 1785853207787,
+      "tutar": 9000,
+      "odTip": "aylik",
+      "tip": "grup",
+      "yontem": "nakit",
+      "tarih": "2026-08-11"
+    },
+    {
+      "id": "70I9N6P2OvNSKs7JSNuw",
+      "tutar": 9000,
+      "ogrenciId": "cUgUp2eRTPc0wdnib7Cw",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "olusturma": 1786035738639,
+      "yontem": "nakit",
+      "not": "",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "tarih": "2026-08-06",
+      "odTip": "aylik",
+      "tip": "grup"
+    },
+    {
+      "id": "781IVcnrnzw0frpJyUqD",
+      "tutar": 3000,
+      "not": "",
+      "ogrenciId": "gfPl02U3QZYkEVzsTFxa",
+      "aylar": [
+        "2026-06"
+      ],
+      "olusturma": 1785167674081,
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "yontem": "nakit",
+      "tip": "grup",
+      "tarih": "2026-06-30",
+      "odTip": "aylik"
+    },
+    {
+      "id": "7K8wO3sH6T6NePPMaziP",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tarih": "2026-08-11",
+      "tip": "grup",
+      "odTip": "aylik",
+      "olusturma": 1786471691333,
+      "tutar": 3000,
+      "yontem": "nakit",
+      "aylar": [
+        "2026-08"
+      ],
+      "ogrenciId": "9wrBFy5E7gVgnPHsuJiy",
+      "not": ""
+    },
+    {
+      "id": "97rC3jaSiN8sjdfptAD0",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "not": "",
+      "ogrenciId": "Be2fsI5XP6r5MMyf3dfm",
+      "tarih": "2026-06-30",
+      "olusturma": 1785330792937,
+      "aylar": [
+        "2026-06"
+      ],
+      "tip": "grup",
+      "tutar": 3500,
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ"
+    },
+    {
+      "id": "9KxNWAHzuiiyPgOqkbr6",
+      "tip": "grup",
+      "yontem": "nakit",
+      "ogrenciId": "Tz5EngvsakHX9OozFxeK",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tarih": "2026-07-14",
+      "olusturma": 1785166569841,
+      "not": "",
+      "aylar": [
+        "2026-07"
+      ],
+      "tutar": 3500
+    },
+    {
+      "id": "9eGNZHgxnLMqZvyNuBfP",
+      "ogrenciId": "ieZ7RGU3kTKLv9E0xUB9",
+      "tip": "grup",
+      "tutar": 3500,
+      "olusturma": 1785311657590,
+      "aylar": [
+        "2026-07"
+      ],
+      "yontem": "nakit",
+      "not": "",
+      "tarih": "2026-07-07",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "odTip": "aylik"
+    },
+    {
+      "id": "Ax76hhkv3H83wxRiD1Pd",
+      "tutar": 3500,
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "not": "",
+      "aylar": [
+        "2026-08"
+      ],
+      "tarih": "2026-08-04",
+      "tip": "grup",
+      "olusturma": 1786471712895,
+      "odTip": "aylik",
+      "yontem": "nakit",
+      "ogrenciId": "hImEKtWi4Izi2Nby0Qoy"
+    },
+    {
+      "id": "CDEVM0uJUXZvS4SPGXlC",
+      "tip": "grup",
+      "yontem": "nakit",
+      "tarih": "2026-08-20",
+      "odTip": "aylik",
+      "ogrenciId": "8b8ll9mz2Uq7feeS2fgx",
+      "not": "",
+      "tutar": 9000,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "olusturma": 1787245517891,
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ]
+    },
+    {
+      "id": "CdrpyWCOdWvY6GQ78plT",
+      "aylar": [
+        "2026-07"
+      ],
+      "yontem": "nakit",
+      "tutar": 3500,
+      "tip": "grup",
+      "ogrenciId": "kjDlxMH5d95pEaSGmNZU",
+      "odTip": "aylik",
+      "tarih": "2026-07-07",
+      "not": "",
+      "olusturma": 1785311439294,
+      "sinifId": "sOcwUu34YUNIeC5A7OCr"
+    },
+    {
+      "id": "CnRz07zjtXKySj8KdLZ8",
+      "aylar": [
+        "2026-07"
+      ],
+      "olusturma": 1785662829679,
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tutar": 3500,
+      "not": "",
+      "ogrenciId": "cHphKELvAZfLNsYH9QRz",
+      "odTip": "aylik",
+      "yontem": "nakit",
+      "tarih": "2026-07-14",
+      "tip": "grup"
+    },
+    {
+      "id": "CpaiIqu6iaEOvBUr3oH2",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "tip": "grup",
+      "tarih": "2026-07-07",
+      "odTip": "aylik",
+      "not": "",
+      "olusturma": 1785311330995,
+      "tutar": 3500,
+      "yontem": "nakit",
+      "ogrenciId": "hImEKtWi4Izi2Nby0Qoy",
+      "aylar": [
+        "2026-07"
+      ]
+    },
+    {
+      "id": "DKrBYJnRU0UgbMmMdZu7",
+      "tip": "grup",
+      "tarih": "2026-06-30",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "ogrenciId": "e8SbcknxDZMIG8jIhw03",
+      "not": "",
+      "tutar": 3500,
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "olusturma": 1785330720564,
+      "aylar": [
+        "2026-06"
+      ]
+    },
+    {
+      "id": "DrmBcYQN8qgMPeiyqa8t",
+      "not": "",
+      "aylar": [
+        "2026-06"
+      ],
+      "yontem": "nakit",
+      "tutar": 3500,
+      "tip": "grup",
+      "olusturma": 1785167833041,
+      "tarih": "2026-06-30",
+      "ogrenciId": "P5t8g5oI1Itk7J376nvp",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr"
+    },
+    {
+      "id": "EAAtOSsFvsMDBjA5UIfx",
+      "tarih": "2026-07-28",
+      "not": "",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "tutar": 3500,
+      "tip": "grup",
+      "olusturma": 1786375206192,
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "ReZwkYlErWAlQE9AXAnU"
+    },
+    {
+      "id": "EvFO0jzBW7xlyjLd40zD",
+      "tutar": 9000,
+      "tip": "grup",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-07",
+        "2026-10"
+      ],
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "yontem": "nakit",
+      "tarih": "2026-07-28",
+      "ogrenciId": "vpSQh4or1Lxjz3lleiZk",
+      "not": "",
+      "odTip": "aylik",
+      "olusturma": 1785583203639
+    },
+    {
+      "id": "FrHqaUjzqlsTcvdnKLLc",
+      "tarih": "2026-07-23",
+      "yontem": "nakit",
+      "not": "",
+      "tutar": 3800,
+      "olusturma": 1785166930109,
+      "tip": "grup",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "ogrenciId": "UqqN7EePjvtriJPqo8UC",
+      "aylar": [
+        "2026-07"
+      ]
+    },
+    {
+      "id": "G13Qlql8onhGiIIsF9Wk",
+      "olusturma": 1785330822558,
+      "tarih": "2026-05-05",
+      "yontem": "nakit",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "tip": "grup",
+      "odTip": "aylik",
+      "ogrenciId": "vpSQh4or1Lxjz3lleiZk",
+      "tutar": 9000,
+      "not": "",
+      "aylar": [
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ]
+    },
+    {
+      "id": "HFLsUYaRNWFONhAn7ZcK",
+      "odTip": "aylik",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "not": "",
+      "tarih": "2026-06-25",
+      "yontem": "nakit",
+      "aylar": [
+        "2026-06",
+        "2026-07",
+        "2026-08"
+      ],
+      "olusturma": 1785166814154,
+      "tip": "grup",
+      "ogrenciId": "6ZxVyQN9t7YeippmfqjI",
+      "tutar": 9000
+    },
+    {
+      "id": "HeEg4dnX7rFMMuQUW8Cu",
+      "ogrenciId": "Ovc8ZWhQfmz7spvHFjMM",
+      "tarih": "2026-07-14",
+      "yontem": "nakit",
+      "tip": "grup",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "olusturma": 1785166544038,
+      "not": "",
+      "tutar": 3500,
+      "aylar": [
+        "2026-07"
+      ]
+    },
+    {
+      "id": "IOFIpyGesiRueKgyXlSg",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "tarih": "2026-07-14",
+      "tip": "grup",
+      "odTip": "aylik",
+      "tutar": 3500,
+      "olusturma": 1785843338638,
+      "yontem": "nakit",
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "PBWr9fCKHt4sPZ5tEuVc",
+      "not": ""
+    },
+    {
+      "id": "ISDsXZpkjmpIHPSqvo20",
+      "tutar": 9000,
+      "tip": "grup",
+      "aylar": [
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "yontem": "nakit",
+      "tarih": "2026-05-12",
+      "olusturma": 1785852514338,
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "ogrenciId": "PKYzt4WzhnMl64ApapgY",
+      "not": "",
+      "odTip": "aylik"
+    },
+    {
+      "id": "Ia5zRwPpxTjvlXLVvSL2",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "olusturma": 1785583602730,
+      "tarih": "2026-07-30",
+      "not": "",
+      "ogrenciId": "1tRUXhDwPW9YIfZZjONC",
+      "aylar": [
+        "2026-07"
+      ],
+      "tip": "grup",
+      "tutar": 3500,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt"
+    },
+    {
+      "id": "JC1hiu0j6MTUu55DjWHn",
+      "olusturma": 1785167631896,
+      "not": "",
+      "tutar": 3500,
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "R3Kuqcuo2ga4k4Ffk0K9",
+      "tip": "grup",
+      "tarih": "2026-07-02",
+      "yontem": "nakit"
+    },
+    {
+      "id": "JxLe6BPVm6KnxpLGVMgd",
+      "olusturma": 1785855514233,
+      "aylar": [
+        "2026-08"
+      ],
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "tip": "grup",
+      "tutar": 3500,
+      "ogrenciId": "kjDlxMH5d95pEaSGmNZU",
+      "odTip": "aylik",
+      "yontem": "nakit",
+      "not": "",
+      "tarih": "2026-08-04"
+    },
+    {
+      "id": "K2KRX1LyTyyhC3gZ40G0",
+      "olusturma": 1785838079103,
+      "tutar": 3500,
+      "tip": "grup",
+      "ogrenciId": "WoEVGlnA80yiNi2tqM9m",
+      "aylar": [
+        "2026-08"
+      ],
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "tarih": "2026-08-06",
+      "not": "",
+      "odTip": "aylik",
+      "yontem": "nakit"
+    },
+    {
+      "id": "K3OHbos0XsA9Yk8gKghI",
+      "tarih": "2026-07-14",
+      "yontem": "nakit",
+      "not": "",
+      "tutar": 3500,
+      "tip": "grup",
+      "olusturma": 1785166969634,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "hImEKtWi4Izi2Nby0Qoy"
+    },
+    {
+      "id": "KPBDd7pmTv8oXNccKQ1A",
+      "ogrenciId": "VZbNTw6EmTrlN7eZsnLU",
+      "tutar": 3500,
+      "tip": "grup",
+      "olusturma": 1787245495543,
+      "aylar": [
+        "2026-08"
+      ],
+      "yontem": "nakit",
+      "tarih": "2026-08-20",
+      "not": "",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "odTip": "aylik"
+    },
+    {
+      "id": "KQt4r0Lc1Qd8bIUFv4oy",
+      "tip": "grup",
+      "tutar": 3800,
+      "aylar": [
+        "2026-06"
+      ],
+      "ogrenciId": "UqqN7EePjvtriJPqo8UC",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "tarih": "2026-06-25",
+      "not": "",
+      "olusturma": 1785166840752,
+      "yontem": "nakit"
+    },
+    {
+      "id": "KX8QZlGZHj3HwcfBnBy1",
+      "tutar": 3500,
+      "not": "",
+      "aylar": [
+        "2026-07"
+      ],
+      "yontem": "nakit",
+      "tip": "grup",
+      "tarih": "2026-07-09",
+      "ogrenciId": "WoEVGlnA80yiNi2tqM9m",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "olusturma": 1785166962487
+    },
+    {
+      "id": "KgufOvN1ACffuf3FPpM5",
+      "aylar": [
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "tutar": 9000,
+      "not": "",
+      "ogrenciId": "5t6Wm3RloLY9aWP9VjCm",
+      "odTip": "aylik",
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "yontem": "nakit",
+      "tarih": "2026-05-14",
+      "tip": "grup",
+      "olusturma": 1785167601938
+    },
+    {
+      "id": "Kt34PRGMTHx6813c32QF",
+      "tarih": "2026-08-04",
+      "olusturma": 1785864622024,
+      "not": "",
+      "odTip": "aylik",
+      "ogrenciId": "CofQDtlXnsMhskkKHAO2",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "tutar": 3500,
+      "yontem": "nakit",
+      "aylar": [
+        "2026-08"
+      ],
+      "tip": "grup"
+    },
+    {
+      "id": "MN0yVwvfW4vin6UjyXXG",
+      "tip": "grup",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "tarih": "2026-07-28",
+      "not": "",
+      "ogrenciId": "gfPl02U3QZYkEVzsTFxa",
+      "aylar": [
+        "2026-07"
+      ],
+      "olusturma": 1785863365122,
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "tutar": 3000
+    },
+    {
+      "id": "MwqWFRJejJWaeaKQOcWp",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "tarih": "2026-07-07",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "not": "",
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "3bBpbeTJwqEzFyTcXGna",
+      "tutar": 3500,
+      "olusturma": 1785268629626,
+      "tip": "grup"
+    },
+    {
+      "id": "MzX6LlRQ4tYvlLd7rAsW",
+      "tip": "grup",
+      "yontem": "nakit",
+      "tarih": "2026-08-06",
+      "odTip": "aylik",
+      "ogrenciId": "HpeESIGwU3ig9cIDLP0z",
+      "not": "",
+      "tutar": 9000,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "olusturma": 1786041498025,
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ]
+    },
+    {
+      "id": "NGARz26QBvyAjHtE6XOv",
+      "aylar": [
+        "2026-07"
+      ],
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "tutar": 3500,
+      "not": "",
+      "odTip": "aylik",
+      "olusturma": 1785311418090,
+      "tarih": "2026-07-07",
+      "yontem": "nakit",
+      "tip": "grup",
+      "ogrenciId": "TQm6Ea9WMb8L0CrAbQ36"
+    },
+    {
+      "id": "NQd8AFZrbxX6LrEbQa1X",
+      "not": "",
+      "tarih": "2026-08-11",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "olusturma": 1787901109742,
+      "tutar": 4900,
+      "tip": "grup",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "ogrenciId": "Be2fsI5XP6r5MMyf3dfm",
+      "aylar": [
+        "2026-08"
+      ]
+    },
+    {
+      "id": "Na994Q4Z8u9JoxraWcsi",
+      "tutar": 3500,
+      "tip": "grup",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "aylar": [
+        "2026-08"
+      ],
+      "yontem": "nakit",
+      "ogrenciId": "VPVDT62AQBfW8xCuifgz",
+      "not": "",
+      "tarih": "2026-08-04",
+      "olusturma": 1785864653421,
+      "odTip": "aylik"
+    },
+    {
+      "id": "O6z0PjKKmpByExo0JfLI",
+      "aylar": [
+        "2026-07"
+      ],
+      "tutar": 3500,
+      "tip": "grup",
+      "olusturma": 1785166642564,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "yontem": "nakit",
+      "not": "",
+      "tarih": "2026-07-02",
+      "ogrenciId": "6ttvZaYQK6TiTPhUM4pY"
+    },
+    {
+      "id": "OaUHyswZ5MBP3Bwcqb6j",
+      "tip": "grup",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tutar": 3500,
+      "aylar": [
+        "2026-07"
+      ],
+      "not": "",
+      "olusturma": 1785312020118,
+      "tarih": "2026-07-14",
+      "ogrenciId": "20I8BM2lXuIAmylWCBBT",
+      "odTip": "aylik",
+      "yontem": "nakit"
+    },
+    {
+      "id": "Oj6e447VcrSlXH1hpiMJ",
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "tarih": "2026-08-06",
+      "odTip": "aylik",
+      "not": "",
+      "tutar": 9000,
+      "ogrenciId": "5Wl86qfEgodE9IHn1M30",
+      "yontem": "nakit",
+      "aylar": [
+        "2026-08",
+        "2026-10",
+        "2026-09"
+      ],
+      "tip": "grup",
+      "olusturma": 1787839852521
+    },
+    {
+      "id": "Otuok4uO1ZKkQwd3t8uY",
+      "tarih": "2026-08-06",
+      "yontem": "nakit",
+      "tip": "grup",
+      "odTip": "aylik",
+      "tutar": 9000,
+      "olusturma": 1787839861203,
+      "not": "",
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "ogrenciId": "HpeESIGwU3ig9cIDLP0z",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ]
+    },
+    {
+      "id": "PEg9jl858MSuISF9z4HL",
+      "ogrenciId": "IxEDj7WsgpzOnYAn3cKD",
+      "aylar": [
+        "2026-08"
+      ],
+      "tutar": 3000,
+      "olusturma": 1785864359383,
+      "not": "",
+      "odTip": "aylik",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "tarih": "2026-08-04",
+      "yontem": "nakit",
+      "tip": "grup"
+    },
+    {
+      "id": "PlZX3mbB2fcIzx9K81GC",
+      "ogrenciId": "YK3gaX9kq3Fn3WnHuLZ1",
+      "tutar": 9000,
+      "not": "",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "olusturma": 1787839026084,
+      "yontem": "nakit",
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "tarih": "2026-08-06",
+      "tip": "grup",
+      "odTip": "aylik"
+    },
+    {
+      "id": "PljswrJztPVPpU6KeT3e",
+      "odTip": "aylik",
+      "not": "",
+      "tarih": "2026-08-27",
+      "yontem": "nakit",
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "aylar": [
+        "2026-08"
+      ],
+      "ogrenciId": "PGXfvysujEnv5WFEkd6s",
+      "tip": "grup",
+      "tutar": 4900,
+      "olusturma": 1787858204729
+    },
+    {
+      "id": "PqAUU1kB7X2UR3oPSdwE",
+      "olusturma": 1785167770126,
+      "aylar": [
+        "2026-06"
+      ],
+      "ogrenciId": "ReZwkYlErWAlQE9AXAnU",
+      "tip": "grup",
+      "tutar": 3000,
+      "odTip": "aylik",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "yontem": "nakit",
+      "tarih": "2026-06-30",
+      "not": ""
+    },
+    {
+      "id": "PtYWzHWjhbW8lFxAIWa0",
+      "ogrenciId": "q57MeYcNKnosw8Dia9Rv",
+      "aylar": [
+        "2026-07"
+      ],
+      "yontem": "nakit",
+      "tutar": 3000,
+      "olusturma": 1785311738007,
+      "not": "",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "odTip": "aylik",
+      "tarih": "2026-07-21",
+      "tip": "grup"
+    },
+    {
+      "id": "QjtK64BlGf3iFCdTDCGh",
+      "tip": "grup",
+      "yontem": "nakit",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "tarih": "2026-06-30",
+      "not": "",
+      "ogrenciId": "XgvIp6NEtIhxfkp6vHrr",
+      "aylar": [
+        "2026-06"
+      ],
+      "olusturma": 1785167751705,
+      "tutar": 3500
+    },
+    {
+      "id": "QogQ8KpmKnYGpUkRzyj7",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "ogrenciId": "q57MeYcNKnosw8Dia9Rv",
+      "tip": "grup",
+      "tarih": "2026-07-21",
+      "odTip": "aylik",
+      "olusturma": 1785311340552,
+      "tutar": 3500,
+      "not": "",
+      "yontem": "nakit",
+      "aylar": [
+        "2026-07"
+      ]
+    },
+    {
+      "id": "RHi6e5msArq6PnnqCYnF",
+      "tip": "grup",
+      "olusturma": 1785862762739,
+      "tutar": 3500,
+      "ogrenciId": "H2w6vIF2pHhLyYe7P5uy",
+      "aylar": [
+        "2026-08"
+      ],
+      "not": "",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "tarih": "2026-08-04",
+      "odTip": "aylik",
+      "yontem": "nakit"
+    },
+    {
+      "id": "S7xqCLdTwf4dFUsHhucF",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "ogrenciId": "TQm6Ea9WMb8L0CrAbQ36",
+      "not": "",
+      "olusturma": 1787845775831,
+      "tarih": "2026-08-27",
+      "aylar": [
+        "2026-09",
+        "2026-10",
+        "2026-11"
+      ],
+      "tip": "grup",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "tutar": 9000
+    },
+    {
+      "id": "Shn2p43tqsx5Tmtr4bNz",
+      "tip": "grup",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "olusturma": 1787170348654,
+      "tutar": 9000,
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "ogrenciId": "q57MeYcNKnosw8Dia9Rv",
+      "not": "",
+      "tarih": "2026-08-19",
+      "odTip": "aylik",
+      "yontem": "nakit"
+    },
+    {
+      "id": "SmriOjAhY1wuv7k0Vk24",
+      "tutar": 3500,
+      "olusturma": 1785311452514,
+      "aylar": [
+        "2026-07"
+      ],
+      "not": "",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "ogrenciId": "4kAWFEd9SBBBtOxVBS6G",
+      "yontem": "nakit",
+      "tarih": "2026-07-14",
+      "tip": "grup",
+      "odTip": "aylik"
+    },
+    {
+      "id": "SxWFR4r02rMiCTPGCZ4s",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "tip": "grup",
+      "tutar": 3500,
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "E6tbP5LerjdtKJbFH9B6",
+      "not": "",
+      "tarih": "2026-07-28",
+      "odTip": "aylik",
+      "olusturma": 1785268240391,
+      "yontem": "nakit"
+    },
+    {
+      "id": "SzmietG9EPnMfk5sXHRB",
+      "aylar": [
+        "2026-07"
+      ],
+      "yontem": "nakit",
+      "tutar": 3500,
+      "not": "",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "ogrenciId": "9wrBFy5E7gVgnPHsuJiy",
+      "odTip": "aylik",
+      "tarih": "2026-07-28",
+      "olusturma": 1785268576125,
+      "tip": "grup"
+    },
+    {
+      "id": "TQtvN1LUFeyBDA5rXW1j",
+      "tip": "grup",
+      "olusturma": 1786640567788,
+      "tutar": 9000,
+      "ogrenciId": "6ttvZaYQK6TiTPhUM4pY",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "not": "",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "tarih": "2026-08-13",
+      "odTip": "aylik",
+      "yontem": "nakit"
+    },
+    {
+      "id": "WC85UXrR1yps80uI3VQv",
+      "tutar": 3500,
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "not": "",
+      "aylar": [
+        "2026-06"
+      ],
+      "tarih": "2026-06-30",
+      "olusturma": 1785330756538,
+      "ogrenciId": "gfPl02U3QZYkEVzsTFxa",
+      "odTip": "aylik",
+      "tip": "grup",
+      "yontem": "nakit"
+    },
+    {
+      "id": "WQGSzNlIjLw9SviCokXE",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "not": "",
+      "tarih": "2026-08-04",
+      "odTip": "aylik",
+      "tip": "grup",
+      "tutar": 3500,
+      "ogrenciId": "IxEDj7WsgpzOnYAn3cKD",
+      "yontem": "nakit",
+      "olusturma": 1785864341616,
+      "aylar": [
+        "2026-08"
+      ]
+    },
+    {
+      "id": "WUrzMI2roeqpA4ecR0QS",
+      "tip": "grup",
+      "ogrenciId": "Tz5EngvsakHX9OozFxeK",
+      "aylar": [
+        "2026-06"
+      ],
+      "olusturma": 1785167868991,
+      "tutar": 3500,
+      "not": "",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "yontem": "nakit",
+      "tarih": "2026-06-30"
+    },
+    {
+      "id": "Wml9KaJMCjwsqV2rUiHo",
+      "aylar": [
+        "2026-06"
+      ],
+      "tip": "grup",
+      "yontem": "nakit",
+      "tutar": 3000,
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "ogrenciId": "L6QVBBRanJbc9W0sL9kD",
+      "odTip": "aylik",
+      "not": "",
+      "tarih": "2026-06-30",
+      "olusturma": 1785167717287
+    },
+    {
+      "id": "Y3twfc8F5WEnFWh84ogB",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "odTip": "aylik",
+      "tip": "grup",
+      "ogrenciId": "s5L5wOigMqfdr8b1Gxvb",
+      "olusturma": 1785437439353,
+      "tarih": "2026-07-28",
+      "yontem": "nakit",
+      "aylar": [
+        "2026-07"
+      ],
+      "not": "",
+      "tutar": 3500
+    },
+    {
+      "id": "YEVHLGa5uDpKADQhcS6m",
+      "ogrenciId": "IxEDj7WsgpzOnYAn3cKD",
+      "aylar": [
+        "2026-07"
+      ],
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "tutar": 3500,
+      "tip": "grup",
+      "olusturma": 1785329910210,
+      "odTip": "aylik",
+      "yontem": "nakit",
+      "not": "",
+      "tarih": "2026-07-02"
+    },
+    {
+      "id": "YilBmnEHPmMsHvfHNhPN",
+      "tutar": 3500,
+      "tip": "grup",
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "gfPl02U3QZYkEVzsTFxa",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "not": "",
+      "tarih": "2026-07-28",
+      "olusturma": 1785863322562,
+      "odTip": "aylik",
+      "yontem": "nakit"
+    },
+    {
+      "id": "YtK9a1bitaexoW6XYwZg",
+      "tutar": 3500,
+      "aylar": [
+        "2026-07"
+      ],
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "not": "",
+      "yontem": "nakit",
+      "tarih": "2026-07-02",
+      "olusturma": 1785330093874,
+      "odTip": "aylik",
+      "ogrenciId": "s5L5wOigMqfdr8b1Gxvb",
+      "tip": "grup"
+    },
+    {
+      "id": "Z3rJ76WQE7URZEAg1TO6",
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "R3Kuqcuo2ga4k4Ffk0K9",
+      "tutar": 3500,
+      "yontem": "nakit",
+      "not": "",
+      "olusturma": 1785166563841,
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tarih": "2026-07-14",
+      "tip": "grup"
+    },
+    {
+      "id": "a0yYIjWIxL7kuLU0h9Iy",
+      "tip": "grup",
+      "tutar": 3500,
+      "yontem": "nakit",
+      "aylar": [
+        "2026-08"
+      ],
+      "ogrenciId": "k0Upnqq85y9HgqyWX929",
+      "not": "",
+      "tarih": "2026-08-04",
+      "olusturma": 1786267199981,
+      "odTip": "aylik",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp"
+    },
+    {
+      "id": "aXebev8i15zOhS3s3LOe",
+      "ogrenciId": "L6QVBBRanJbc9W0sL9kD",
+      "aylar": [
+        "2026-07"
+      ],
+      "not": "",
+      "yontem": "nakit",
+      "olusturma": 1785312441989,
+      "tutar": 3000,
+      "odTip": "aylik",
+      "tip": "grup",
+      "tarih": "2026-07-28",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp"
+    },
+    {
+      "id": "amAxde4vYLTtNxw9yKAj",
+      "tip": "grup",
+      "tutar": 9000,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "yontem": "nakit",
+      "not": "",
+      "olusturma": 1786633508585,
+      "tarih": "2026-08-13",
+      "odTip": "aylik",
+      "ogrenciId": "E1VmdhnKLhZxqBBjniyr"
+    },
+    {
+      "id": "bNVyefg8pjBTTKwrDDg8",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "tip": "grup",
+      "yontem": "nakit",
+      "tutar": 9000,
+      "ogrenciId": "5t6Wm3RloLY9aWP9VjCm",
+      "odTip": "aylik",
+      "not": "",
+      "tarih": "2026-08-06",
+      "olusturma": 1786044650715,
+      "sinifId": "PEVRz10r8lhYz5NpmTI6"
+    },
+    {
+      "id": "bRDWBSLaRk38gxd5sUTF",
+      "not": "",
+      "aylar": [
+        "2026-07"
+      ],
+      "yontem": "nakit",
+      "tutar": 3500,
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tip": "grup",
+      "ogrenciId": "hImEKtWi4Izi2Nby0Qoy",
+      "tarih": "2026-07-14",
+      "olusturma": 1785166552986
+    },
+    {
+      "id": "bunAPJEoVhMuo2S80zDP",
+      "tarih": "2026-06-30",
+      "not": "",
+      "aylar": [
+        "2026-06"
+      ],
+      "yontem": "nakit",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "ogrenciId": "9wrBFy5E7gVgnPHsuJiy",
+      "tutar": 3500,
+      "tip": "grup",
+      "olusturma": 1785167794504
+    },
+    {
+      "id": "c54IXka2qfdLMvcC3Hcl",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "odTip": "aylik",
+      "tarih": "2026-07-28",
+      "not": "",
+      "aylar": [
+        "2026-07",
+        "2026-08",
+        "2026-09"
+      ],
+      "yontem": "nakit",
+      "olusturma": 1785420378867,
+      "tutar": 9000,
+      "ogrenciId": "Be2fsI5XP6r5MMyf3dfm",
+      "tip": "grup"
+    },
+    {
+      "id": "cEzlMrs5yZ9eHRGTxmvj",
+      "aylar": [
+        "2026-07"
+      ],
+      "olusturma": 1785838107743,
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "tutar": 3500,
+      "ogrenciId": "Tz5EngvsakHX9OozFxeK",
+      "not": "",
+      "odTip": "aylik",
+      "tarih": "2026-07-28",
+      "yontem": "nakit",
+      "tip": "grup"
+    },
+    {
+      "id": "eMfOUG83C4sdSbLb2CmF",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10",
+        "2026-11"
+      ],
+      "yontem": "nakit",
+      "tutar": 12000,
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "not": "",
+      "odTip": "aylik",
+      "olusturma": 1785851902590,
+      "tarih": "2026-08-04",
+      "tip": "grup",
+      "ogrenciId": "EjeJiUOg0WlWlmiPB9Za"
+    },
+    {
+      "id": "gYqVl5epeTL39o4mYJeU",
+      "odTip": "aylik",
+      "ogrenciId": "5VVr3p39qUDpvUFmuEXs",
+      "tarih": "2026-06-11",
+      "not": "",
+      "olusturma": 1785166826353,
+      "yontem": "nakit",
+      "aylar": [
+        "2026-06",
+        "2026-07",
+        "2026-08"
+      ],
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "tutar": 9000,
+      "tip": "grup"
+    },
+    {
+      "id": "hWOqHKuEru8cLfGfrlPV",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "tip": "grup",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "tarih": "2026-07-21",
+      "ogrenciId": "q57MeYcNKnosw8Dia9Rv",
+      "not": "",
+      "aylar": [
+        "2026-07"
+      ],
+      "olusturma": 1785311095385,
+      "tutar": 3000
+    },
+    {
+      "id": "i0hiPZNnTh7wBj2gggz7",
+      "tip": "grup",
+      "odTip": "aylik",
+      "tarih": "2026-06-01",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "yontem": "nakit",
+      "olusturma": 1785166631551,
+      "aylar": [
+        "2026-06",
+        "2026-07",
+        "2026-08"
+      ],
+      "not": "",
+      "ogrenciId": "GAvNHVOLyf5Wcn6eIjCt",
+      "tutar": 10000
+    },
+    {
+      "id": "ifMfh4YL1Is5oTQ3kQ3K",
+      "tutar": 9000,
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "not": "",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "tarih": "2026-08-12",
+      "ogrenciId": "Bf5VeTXfCjmIrZYWQLEC",
+      "tip": "grup",
+      "odTip": "aylik",
+      "olusturma": 1787765512091,
+      "yontem": "nakit"
+    },
+    {
+      "id": "im1aTNvEjyKizGVC7cf9",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "olusturma": 1787768079780,
+      "tarih": "2026-08-27",
+      "tip": "grup",
+      "ogrenciId": "gfPl02U3QZYkEVzsTFxa",
+      "odTip": "aylik",
+      "tutar": 4100,
+      "yontem": "nakit",
+      "not": "",
+      "aylar": [
+        "2026-08"
+      ]
+    },
+    {
+      "id": "jlmZnhBBpOsTX87uLL4y",
+      "not": "",
+      "tarih": "2026-07-23",
+      "tip": "grup",
+      "yontem": "nakit",
+      "olusturma": 1785167616360,
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "9n6S0pZuOB0FEneRJsXS",
+      "tutar": 3500
+    },
+    {
+      "id": "kHG2Zbmcewa0CbHp3LCg",
+      "ogrenciId": "q57MeYcNKnosw8Dia9Rv",
+      "tarih": "2026-08-19",
+      "yontem": "nakit",
+      "olusturma": 1787170315834,
+      "odTip": "aylik",
+      "not": "",
+      "tutar": 9000,
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "tip": "grup"
+    },
+    {
+      "id": "kj4FH8EkrXI9tcVqS094",
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "ogrenciId": "CdLlYZ8YTXv1j84GiK5Z",
+      "tarih": "2026-07-14",
+      "olusturma": 1785167725088,
+      "tip": "grup",
+      "tutar": 3500,
+      "yontem": "nakit",
+      "not": "",
+      "aylar": [
+        "2026-06"
+      ]
+    },
+    {
+      "id": "l5zkvdrcwR747hax9yi2",
+      "tip": "grup",
+      "ogrenciId": "fVHhrrzU4lxoYvnMyY1i",
+      "tarih": "2026-07-28",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "olusturma": 1785268260580,
+      "not": "",
+      "tutar": 3000,
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "aylar": [
+        "2026-07"
+      ]
+    },
+    {
+      "id": "lXvTP9ziqpBVr81EYRoB",
+      "tarih": "2026-06-30",
+      "not": "",
+      "yontem": "nakit",
+      "aylar": [
+        "2026-06"
+      ],
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "ogrenciId": "d8KY85QuLjNBhRie3yWF",
+      "olusturma": 1785167883373,
+      "tip": "grup",
+      "tutar": 2000
+    },
+    {
+      "id": "laKdpBG2o09WIKm2BuqU",
+      "tip": "grup",
+      "odTip": "aylik",
+      "ogrenciId": "5Wl86qfEgodE9IHn1M30",
+      "olusturma": 1786041500192,
+      "tarih": "2026-08-06",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "yontem": "nakit",
+      "not": "",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "tutar": 9000
+    },
+    {
+      "id": "m4yJPjzaeyip3XX7r3dO",
+      "ogrenciId": "YK3gaX9kq3Fn3WnHuLZ1",
+      "not": "",
+      "tutar": 9000,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "olusturma": 1786633535940,
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "tip": "grup",
+      "tarih": "2026-08-13",
+      "odTip": "aylik",
+      "yontem": "nakit"
+    },
+    {
+      "id": "m5rATzw97rV2Ld2GopFb",
+      "not": "",
+      "aylar": [
+        "2026-08"
+      ],
+      "olusturma": 1787765477312,
+      "ogrenciId": "20I8BM2lXuIAmylWCBBT",
+      "tutar": 4900,
+      "tip": "grup",
+      "odTip": "aylik",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "yontem": "nakit",
+      "tarih": "2026-08-11"
+    },
+    {
+      "id": "mwYG6RtyQvSDhce2lVzc",
+      "ogrenciId": "cCN6Ki5emK9LgBIc4o7e",
+      "odTip": "aylik",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "not": "",
+      "tarih": "2026-08-11",
+      "olusturma": 1787765448855,
+      "yontem": "nakit",
+      "aylar": [
+        "2026-08"
+      ],
+      "tip": "grup",
+      "tutar": 4900
+    },
+    {
+      "id": "nv1XnsCFbSxk0Zqp8dzX",
+      "yontem": "nakit",
+      "not": "",
+      "olusturma": 1785166984201,
+      "tarih": "2026-07-16",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "ogrenciId": "8b8ll9mz2Uq7feeS2fgx",
+      "tip": "grup",
+      "aylar": [
+        "2026-07"
+      ],
+      "tutar": 3500
+    },
+    {
+      "id": "oJB9inXPl2ag4qkDnkKe",
+      "tip": "grup",
+      "aylar": [
+        "2026-07",
+        "2026-06"
+      ],
+      "tutar": 3500,
+      "olusturma": 1785577803145,
+      "odTip": "aylik",
+      "not": "",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "yontem": "nakit",
+      "ogrenciId": "1tRUXhDwPW9YIfZZjONC",
+      "tarih": "2026-06-11"
+    },
+    {
+      "id": "plnxkBfbAER3XvRpiWqc",
+      "olusturma": 1785864758822,
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "tutar": 9000,
+      "ogrenciId": "ieZ7RGU3kTKLv9E0xUB9",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "tip": "grup",
+      "tarih": "2026-08-04",
+      "not": "",
+      "odTip": "aylik",
+      "yontem": "nakit"
+    },
+    {
+      "id": "rx90opDgTWnWXymuPbmP",
+      "tutar": 2500,
+      "tip": "grup",
+      "yontem": "nakit",
+      "aylar": [
+        "2026-07"
+      ],
+      "not": "",
+      "ogrenciId": "hdBzIWGW6WOqPMfgTk2o",
+      "tarih": "2026-07-16",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "odTip": "aylik",
+      "olusturma": 1785166976994
+    },
+    {
+      "id": "suNroWBnoyifzgwTx68f",
+      "tutar": 3500,
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "aylar": [
+        "2026-07"
+      ],
+      "not": "",
+      "tarih": "2026-07-02",
+      "olusturma": 1785167592096,
+      "tip": "grup",
+      "yontem": "nakit",
+      "ogrenciId": "PmO0nWRFQZldKCpR8Lxc"
+    },
+    {
+      "id": "swyURgaCNSTVrS4qyyjS",
+      "olusturma": 1785166942705,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "tip": "grup",
+      "tutar": 3500,
+      "ogrenciId": "VZbNTw6EmTrlN7eZsnLU",
+      "aylar": [
+        "2026-07"
+      ],
+      "not": "",
+      "tarih": "2026-07-09",
+      "yontem": "nakit"
+    },
+    {
+      "id": "tAlV5tLPTEDQ6dO7wKHA",
+      "tarih": "2026-07-28",
+      "olusturma": 1785268588672,
+      "yontem": "nakit",
+      "ogrenciId": "AB4g0sn5EgECkMW3Juic",
+      "not": "",
+      "odTip": "aylik",
+      "tutar": 3500,
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "aylar": [
+        "2026-07"
+      ],
+      "tip": "grup"
+    },
+    {
+      "id": "tHXddFaEs5jMOYqejDZm",
+      "aylar": [
+        "2026-07"
+      ],
+      "not": "",
+      "tutar": 3500,
+      "olusturma": 1785311447729,
+      "odTip": "aylik",
+      "tip": "grup",
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "yontem": "nakit",
+      "tarih": "2026-07-14",
+      "ogrenciId": "iGDqPH2WMgXWOne17pvW"
+    },
+    {
+      "id": "tRQFdcK34SaDrNLOXrUN",
+      "tip": "grup",
+      "ogrenciId": "ReZwkYlErWAlQE9AXAnU",
+      "yontem": "nakit",
+      "tarih": "2026-07-28",
+      "odTip": "aylik",
+      "olusturma": 1785268303643,
+      "not": "",
+      "tutar": 3000,
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "aylar": [
+        "2026-07"
+      ]
+    },
+    {
+      "id": "uAHj7e9gWSXuGjz74om0",
+      "ogrenciId": "14SH2HH3CEh2VHy3Gitb",
+      "yontem": "nakit",
+      "tarih": "2026-07-02",
+      "olusturma": 1785166749122,
+      "not": "",
+      "aylar": [
+        "2026-07"
+      ],
+      "tutar": 3500,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "tip": "grup"
+    },
+    {
+      "id": "uRDaWRj9l9XY6FgWq6AW",
+      "aylar": [
+        "2026-07"
+      ],
+      "yontem": "nakit",
+      "tutar": 3500,
+      "tip": "grup",
+      "ogrenciId": "LejsdtPdiPLYpmkAOqit",
+      "tarih": "2026-07-09",
+      "not": "",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "olusturma": 1785166790445
+    },
+    {
+      "id": "uZ0yCDsjxFCu60bcA6zE",
+      "ogrenciId": "gfPl02U3QZYkEVzsTFxa",
+      "odTip": "aylik",
+      "tip": "grup",
+      "tarih": "2026-08-26",
+      "olusturma": 1787768114083,
+      "yontem": "nakit",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "aylar": [
+        "2026-08"
+      ],
+      "not": "",
+      "tutar": 4900
+    },
+    {
+      "id": "ufnFZv75ongTjMtfD9OA",
+      "ogrenciId": "jllaBHCFVLA3aIuYr7xT",
+      "tutar": 9000,
+      "olusturma": 1787765539625,
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "aylar": [
+        "2026-09",
+        "2026-10",
+        "2026-11"
+      ],
+      "tip": "grup",
+      "yontem": "nakit",
+      "tarih": "2026-08-26",
+      "not": "",
+      "odTip": "aylik"
+    },
+    {
+      "id": "ufpEnQ6Y411gSsBe67ha",
+      "olusturma": 1780430703351,
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "tip": "grup",
+      "ogrenciId": "VPVDT62AQBfW8xCuifgz",
+      "tarih": "2026-06-30",
+      "yontem": "nakit",
+      "not": "",
+      "aylar": [
+        "2026-06"
+      ],
+      "tutar": 3500
+    },
+    {
+      "id": "viQABh0IwYCXyJpsFptr",
+      "tarih": "2026-07-28",
+      "ogrenciId": "XgvIp6NEtIhxfkp6vHrr",
+      "yontem": "nakit",
+      "not": "",
+      "odTip": "aylik",
+      "olusturma": 1785268286499,
+      "tutar": 3500,
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "tip": "grup",
+      "aylar": [
+        "2026-07"
+      ]
+    },
+    {
+      "id": "wS3ip1QTgN9JkJqyek9D",
+      "odTip": "aylik",
+      "not": "",
+      "tarih": "2026-07-02",
+      "ogrenciId": "Ovc8ZWhQfmz7spvHFjMM",
+      "yontem": "nakit",
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "aylar": [
+        "2026-07",
+        "2026-08"
+      ],
+      "tip": "grup",
+      "tutar": 6000,
+      "olusturma": 1786009447877
+    },
+    {
+      "id": "wSCNHxvqNLUczJKY1kOy",
+      "ogrenciId": "hdBzIWGW6WOqPMfgTk2o",
+      "not": "",
+      "aylar": [
+        "2026-08",
+        "2026-09",
+        "2026-10"
+      ],
+      "yontem": "nakit",
+      "tutar": 7500,
+      "olusturma": 1786640239843,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "odTip": "aylik",
+      "tip": "grup",
+      "tarih": "2026-08-13"
+    },
+    {
+      "id": "x7s54zCGCIhgGWw05Eje",
+      "yontem": "nakit",
+      "tip": "grup",
+      "odTip": "aylik",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ",
+      "tarih": "2026-07-28",
+      "not": "",
+      "olusturma": 1785312421159,
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "L6QVBBRanJbc9W0sL9kD",
+      "tutar": 3500
+    },
+    {
+      "id": "xPVYvYr4rPaysVIXaIhg",
+      "aylar": [
+        "2026-06"
+      ],
+      "tip": "grup",
+      "yontem": "nakit",
+      "tutar": 3500,
+      "ogrenciId": "TQm6Ea9WMb8L0CrAbQ36",
+      "not": "",
+      "olusturma": 1780420464125,
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "tarih": "2026-06-30"
+    },
+    {
+      "id": "xf7dV9YDjRuT23s7Fu44",
+      "tip": "grup",
+      "aylar": [
+        "2026-06"
+      ],
+      "yontem": "nakit",
+      "tutar": 3500,
+      "ogrenciId": "L6QVBBRanJbc9W0sL9kD",
+      "not": "",
+      "olusturma": 1780578962469,
+      "tarih": "2026-06-02",
+      "sinifId": "9UEgzLhfPNvlHO8oc7EQ"
+    },
+    {
+      "id": "xsLCmknnoGkcs1F625Km",
+      "tutar": 3500,
+      "not": "",
+      "aylar": [
+        "2026-07"
+      ],
+      "sinifId": "sOcwUu34YUNIeC5A7OCr",
+      "yontem": "nakit",
+      "tarih": "2026-07-07",
+      "olusturma": 1785311428067,
+      "tip": "grup",
+      "odTip": "aylik",
+      "ogrenciId": "jllaBHCFVLA3aIuYr7xT"
+    },
+    {
+      "id": "y7kRFHvNWCW9yd9vtVzA",
+      "yontem": "nakit",
+      "odTip": "aylik",
+      "not": "",
+      "ogrenciId": "awRdeG3cdmY0n6In9TID",
+      "tarih": "2026-07-23",
+      "olusturma": 1785437526963,
+      "tip": "grup",
+      "aylar": [
+        "2026-07",
+        "2026-08",
+        "2026-09"
+      ],
+      "tutar": 9000,
+      "sinifId": "PEVRz10r8lhYz5NpmTI6"
+    },
+    {
+      "id": "y9VI3cl5iK2Ay3CCGcgW",
+      "not": "",
+      "tutar": 3500,
+      "aylar": [
+        "2026-07"
+      ],
+      "yontem": "nakit",
+      "ogrenciId": "3l0BW1GxbjIO7nwT3juu",
+      "tip": "grup",
+      "tarih": "2026-07-23",
+      "olusturma": 1785167609541,
+      "sinifId": "PEVRz10r8lhYz5NpmTI6"
+    },
+    {
+      "id": "yPfNZbyN5mx1caDtYVr6",
+      "tip": "grup",
+      "ogrenciId": "HVMypzzMjuMZ1dl7VUmi",
+      "aylar": [
+        "2026-06"
+      ],
+      "olusturma": 1780911134888,
+      "tutar": 3500,
+      "not": "",
+      "sinifId": "PEVRz10r8lhYz5NpmTI6",
+      "yontem": "nakit",
+      "tarih": "2026-06-04"
+    },
+    {
+      "id": "yq53hzoch7gXaVHOqVVo",
+      "tarih": "2026-07-09",
+      "not": "",
+      "tutar": 3500,
+      "sinifId": "AbNsfSxEsFFmSIhxMQRt",
+      "olusturma": 1785166797560,
+      "yontem": "nakit",
+      "aylar": [
+        "2026-07"
+      ],
+      "ogrenciId": "cHphKELvAZfLNsYH9QRz",
+      "tip": "grup"
+    },
+    {
+      "id": "zOo4tSnYNMgCHE05GO0V",
+      "tip": "grup",
+      "ogrenciId": "fVHhrrzU4lxoYvnMyY1i",
+      "yontem": "nakit",
+      "tarih": "2026-06-30",
+      "odTip": "aylik",
+      "olusturma": 1785167743540,
+      "not": "",
+      "tutar": 3000,
+      "sinifId": "z7CtHUxjXTmwCXYO57Gp",
+      "aylar": [
+        "2026-06"
+      ]
+    },
+    {
+      "id": "zcTTSTGeQNdjXpW576X6",
+      "odTip": "aylik",
+      "yontem": "nakit",
+      "not": "",
+      "olusturma": 1786797852413,
+      "tarih": "2026-08-11",
+      "ogrenciId": "Ovc8ZWhQfmz7spvHFjMM",
+      "aylar": [
+        "2026-08"
+      ],
+      "tip": "grup",
+      "sinifId": "Hy4B8kSrefDDjg0hbaZK",
+      "tutar": 2500
+    }
+  ],
+  "ozelOgrenciler": [
+    {
+      "id": "0LngRs6kqh713IljiNjm",
+      "migrasyonHedefId": "ReZwkYlErWAlQE9AXAnU",
+      "tel": "05326633927",
+      "migrasyonTamamlandi": true,
+      "soyad": "",
+      "cinsiyet": "k",
+      "ad": "Zeliha"
+    },
+    {
+      "id": "E6n9BnwqqsiNfKK3TYHc",
+      "tel": "05335036832",
+      "egitmenId": "tt3Srbc1JdSyWeR6PiFf",
+      "migrasyonHedefId": "WoEVGlnA80yiNi2tqM9m",
+      "migrasyonTamamlandi": true,
+      "soyad": "Yaylıoğlu",
+      "ad": "Ateş",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "JMLuDt5yKqdzzSCRBQNW",
+      "migrasyonTamamlandi": true,
+      "migrasyonHedefId": "Be2fsI5XP6r5MMyf3dfm",
+      "cinsiyet": "e",
+      "tel": "+90 533 452 91 43",
+      "ad": "Sedat",
+      "soyad": "Erdoğan"
+    },
+    {
+      "id": "MnHyQkLEdDhWAzzyMI6b",
+      "ad": "Sina salsa",
+      "cinsiyet": "e",
+      "soyad": "",
+      "migrasyonTamamlandi": true,
+      "migrasyonHedefId": "vklV98KiJ4oH7cxz4WpT",
+      "tel": ""
+    },
+    {
+      "id": "NlOdeEjiAgSKWEoXpdyq",
+      "ad": "Fatma",
+      "migrasyonTamamlandi": true,
+      "migrasyonHedefId": "jS360vSav3GbWPKoSFjh",
+      "cinsiyet": "k",
+      "soyad": "",
+      "tel": ""
+    },
+    {
+      "id": "azxVpFcCusfwMstlIA9J",
+      "ad": "Ata",
+      "migrasyonTamamlandi": true,
+      "tel": "05380482320",
+      "soyad": "Kaleli",
+      "egitmenId": "tt3Srbc1JdSyWeR6PiFf",
+      "migrasyonHedefId": "GAvNHVOLyf5Wcn6eIjCt",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "dC52i3CeVdFHrjSGmw8R",
+      "tel": "",
+      "soyad": "",
+      "migrasyonHedefId": "CHOWxthvzQcgebpwU5dg",
+      "cinsiyet": "e",
+      "ad": "Karaali",
+      "migrasyonTamamlandi": true
+    },
+    {
+      "id": "dw3kYFm1epwLR9dYfUaT",
+      "migrasyonHedefId": "hep7Spd8lwc2O8jRuqUP",
+      "migrasyonTamamlandi": true,
+      "soyad": "Kahraman",
+      "tel": "",
+      "ad": "Ömer",
+      "cinsiyet": "e"
+    },
+    {
+      "id": "hGVwjiF2oHTKXh0zHLcK",
+      "migrasyonTamamlandi": true,
+      "ad": "İnci",
+      "soyad": "Özgör",
+      "tel": "+90 505 798 97 54",
+      "cinsiyet": "k",
+      "migrasyonHedefId": "L6QVBBRanJbc9W0sL9kD"
+    },
+    {
+      "id": "kQHNXRt0hbJpg3HUq450",
+      "ad": "Oğuz",
+      "migrasyonTamamlandi": true,
+      "soyad": "Acar",
+      "tel": "+90 555 868 48 14",
+      "cinsiyet": "e",
+      "migrasyonHedefId": "9wrBFy5E7gVgnPHsuJiy"
+    },
+    {
+      "id": "pDvaWhfCrFrIfIhs9cc6",
+      "tel": "+90 536 288 44 02",
+      "migrasyonHedefId": "H2w6vIF2pHhLyYe7P5uy",
+      "soyad": "Mutlu",
+      "cinsiyet": "k",
+      "ad": "Işılay",
+      "migrasyonTamamlandi": true
+    }
+  ],
+  "ozelPaketler": [
+    {
+      "id": "7TjsqLoVpgpBT6hUGJOD",
+      "yontem": "nakit",
+      "tutar": 25000,
+      "aktif": true,
+      "yapilanSaat": 6.5,
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "tarih": "2026-08-13",
+      "olusturma": 1786634052661,
+      "ogrenciId": "Be2fsI5XP6r5MMyf3dfm",
+      "toplamSaat": 10,
+      "not": ""
+    },
+    {
+      "id": "CXN0tO9Zd1XMjGdvs0qW",
+      "yontem": "nakit",
+      "olusturma": 1786633865960,
+      "ogrenciId": "L6QVBBRanJbc9W0sL9kD",
+      "egitmenIds": [
+        "JV5AZapttTOtMf0tZt7A",
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "not": "",
+      "aktif": true,
+      "tutar": 12500,
+      "yapilanSaat": 1,
+      "toplamSaat": 5,
+      "tarih": "2026-07-21"
+    },
+    {
+      "id": "H9SkMbppbzNIK2Pt1WYB",
+      "yontem": "nakit",
+      "aktif": true,
+      "tutar": 25000,
+      "yapilanSaat": 1,
+      "toplamSaat": 10,
+      "olusturma": 1786634140902,
+      "ogrenciId": "ReZwkYlErWAlQE9AXAnU",
+      "tarih": "2026-08-13",
+      "not": "",
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ]
+    },
+    {
+      "id": "XAXt63sMdshtPQuKsUZ1",
+      "toplamSaat": 10,
+      "not": "",
+      "ogrenciId": "hep7Spd8lwc2O8jRuqUP",
+      "olusturma": 1787240715530,
+      "yontem": "nakit",
+      "tarih": "2026-08-20",
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "tutar": 25000,
+      "yapilanSaat": 0,
+      "aktif": true
+    },
+    {
+      "id": "Z805qx2Mpq0YbsQtMEVm",
+      "toplamSaat": 10,
+      "tutar": 25000,
+      "aktif": true,
+      "tarih": "2026-08-04",
+      "yontem": "nakit",
+      "olusturma": 1786633994885,
+      "ogrenciId": "H2w6vIF2pHhLyYe7P5uy",
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "not": "",
+      "yapilanSaat": 7
+    },
+    {
+      "id": "cDnqCMGGC0Tg4jzQjACE",
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "not": "",
+      "tarih": "2026-08-13",
+      "aktif": true,
+      "tutar": 25000,
+      "toplamSaat": 10,
+      "yapilanSaat": 9,
+      "yontem": "nakit",
+      "olusturma": 1786634173294,
+      "ogrenciId": "GAvNHVOLyf5Wcn6eIjCt"
+    },
+    {
+      "id": "eERiA1vmQBgcE9Tvg4Ki",
+      "toplamSaat": 50,
+      "not": "",
+      "yontem": "nakit",
+      "yapilanSaat": 0,
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "tarih": "2026-08-24",
+      "aktif": true,
+      "tutar": 1,
+      "ogrenciId": "Pgs7oofmvmJIdR9A00Wo",
+      "olusturma": 1787561118814
+    },
+    {
+      "id": "ejBlCdvCXpoWOPKlkM4N",
+      "yapilanSaat": 8,
+      "toplamSaat": 10,
+      "yontem": "nakit",
+      "aktif": true,
+      "not": "",
+      "tutar": 30000,
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "tarih": "2026-08-13",
+      "ogrenciId": "vklV98KiJ4oH7cxz4WpT",
+      "olusturma": 1786634268668
+    },
+    {
+      "id": "fpPPOcPgaRj6LWaf7wAd",
+      "yontem": "nakit",
+      "aktif": true,
+      "tutar": 25000,
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "tarih": "2026-07-17",
+      "olusturma": 1786633643908,
+      "ogrenciId": "hep7Spd8lwc2O8jRuqUP",
+      "not": "",
+      "yapilanSaat": 5,
+      "toplamSaat": 10.5,
+      "sonDersTarihi": "2026-08-20"
+    },
+    {
+      "id": "hWY7wsyLjcPE6Nlh5nKK",
+      "tarih": "2026-08-13",
+      "toplamSaat": 10,
+      "not": "",
+      "aktif": true,
+      "tutar": 25000,
+      "yontem": "nakit",
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "yapilanSaat": 9.5,
+      "ogrenciId": "CHOWxthvzQcgebpwU5dg",
+      "olusturma": 1786634201928,
+      "sonDersTarihi": "2026-08-15"
+    },
+    {
+      "id": "htMas3ppScbUGWtX62N4",
+      "yontem": "nakit",
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "tutar": 25000,
+      "aktif": true,
+      "sonDersTarihi": "2026-08-04",
+      "tarih": "2026-08-01",
+      "toplamSaat": 10,
+      "olusturma": 1787516084738,
+      "ogrenciId": "WoEVGlnA80yiNi2tqM9m",
+      "yapilanSaat": 5,
+      "not": ""
+    },
+    {
+      "id": "oi0XwdddieorBDSEVMD0",
+      "not": "",
+      "tarih": "2026-08-13",
+      "yapilanSaat": 9,
+      "aktif": true,
+      "tutar": 25000,
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "yontem": "nakit",
+      "ogrenciId": "jS360vSav3GbWPKoSFjh",
+      "olusturma": 1786634228419,
+      "sonDersTarihi": "2026-08-15",
+      "toplamSaat": 10
+    },
+    {
+      "id": "xNjJ8IZmh5PwIqT1r2E6",
+      "olusturma": 1786634315830,
+      "ogrenciId": "9wrBFy5E7gVgnPHsuJiy",
+      "toplamSaat": 10,
+      "not": "",
+      "tutar": 25000,
+      "aktif": true,
+      "sonDersTarihi": "2026-08-15",
+      "yapilanSaat": 4,
+      "egitmenIds": [
+        "tt3Srbc1JdSyWeR6PiFf"
+      ],
+      "tarih": "2026-08-13",
+      "yontem": "nakit"
+    }
+  ]
+}
