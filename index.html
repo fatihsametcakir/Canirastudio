@@ -103,6 +103,18 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 
 /* BOTTOM NAV — 5 item */
+/* Dokunuşları izleyen sevimli robot */
+.robot-widget{position:fixed;top:80px;right:14px;z-index:150;width:52px;height:52px;cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+.robot-widget:active{transform:scale(.92);}
+.robot-kafa{width:100%;height:100%;background:linear-gradient(145deg,#a78bfa,#7c6ce0);border-radius:16px;position:relative;box-shadow:0 6px 18px -4px rgba(167,139,250,.6),inset 0 -3px 6px rgba(0,0,0,.15);}
+.robot-anten{position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:3px;height:9px;background:#7c6ce0;border-radius:2px;}
+.robot-anten::after{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:7px;height:7px;background:#fbbf24;border-radius:50%;box-shadow:0 0 6px #fbbf24;}
+.robot-gozler{position:absolute;top:16px;left:0;right:0;display:flex;justify-content:center;gap:8px;}
+.robot-goz{width:14px;height:14px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.robot-goz-bebek{width:6px;height:6px;background:#2d2a45;border-radius:50%;transition:transform .08s linear;}
+.robot-agiz{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:16px;height:3px;background:rgba(45,42,69,.5);border-radius:2px;}
+.robot-kapat{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.4);}
+
 .bottom-nav{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:464px;display:flex;align-items:center;z-index:100;background:linear-gradient(180deg,#22212e,#1a1926);border-radius:20px;padding:6px 3px max(6px,env(safe-area-inset-bottom));box-shadow:0 10px 26px -8px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06) inset;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 1px;cursor:pointer;border:none;background:none;color:#8682a3;font-family:'DM Sans',sans-serif;position:relative;transition:transform .3s cubic-bezier(.34,1.56,.64,1),color .25s;-webkit-touch-callout:none;}
 .nav-item:not(:last-child)::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:1px;height:22px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.16),transparent);}
@@ -853,6 +865,20 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
   <div id="toast-container"></div>
   <div id="toast-container"></div>
+
+  <!-- Dokunuşları izleyen sevimli robot -->
+  <div class="robot-widget" id="robot-widget" style="display:none;">
+    <div class="robot-kafa">
+      <div class="robot-anten"></div>
+      <div class="robot-gozler">
+        <div class="robot-goz"><div class="robot-goz-bebek" id="robot-bebek-sol"></div></div>
+        <div class="robot-goz"><div class="robot-goz-bebek" id="robot-bebek-sag"></div></div>
+      </div>
+      <div class="robot-agiz"></div>
+    </div>
+    <div class="robot-kapat" onclick="event.stopPropagation();robotKapat()">✕</div>
+  </div>
+
   <nav class="bottom-nav">
     <button class="nav-item active c-home" onclick="goTo('anasayfa',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5l8-7 8 7"/><path d="M6 10v9a1 1 0 001 1h10a1 1 0 001-1v-9"/><path d="M10 20v-5.5h4V20"/></svg></div><span class="nav-label" id="navlbl-anasayfa">Ana Sayfa</span></button>
     <button class="nav-item c-og" onclick="goTo('ogrenciler',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.5" r="1.8"/><circle cx="16" cy="5.5" r="1.8"/><path d="M8 9c-1.5 1-2 2.5-1.5 5l1 6"/><path d="M16 9c1.5 1 2 2.5 1.5 5l-1 6"/><path d="M8 9c1.5 1.5 4.5 1.5 6 0"/><path d="M9.5 13.5h3"/></svg></div><span class="nav-label" id="navlbl-ogrenciler">Öğrenciler</span></button>
@@ -883,6 +909,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
       <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:0;" onclick="yarismayaAc()">🏆 Yarışma (Jack & Jill)</button>
     </div>
+    <label style="display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;">
+      <input type="checkbox" id="robot-ayar-toggle" onchange="robotAyarDegisti(this)" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--purple);cursor:pointer;"/>
+      <span style="font-size:13px;color:var(--text2);">🤖 Ekranı izleyen robot</span>
+    </label>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
 
     <!-- Tema -->
@@ -1513,7 +1543,8 @@ const TRANSLATIONS={
     egitmeni_sil:'Eğitmeni Sil', egitmen_silinecek:'silinecek. Sınıflardan bağlantısı kaldırılmaz.',
     gelir:'Gelir', grup_dersler:'Grup Dersler', ozel_dersler:'Özel Dersler', toplam_gelir:'Toplam Gelir',
     giderler:'Giderler', toplam_kira:'Toplam Kira', asistan_odemeleri:'Asistan Ödemeleri', toplam_gider:'Toplam Gider',
-    kari:'Kârı', kendi_siniflari:'Kendi sınıfları: Gelir − Kira − Asistan',
+    kari:'Kârı', stuydo_kari:'Stüdyo Kârı', kendi_siniflari:'Kendi sınıfları: Gelir − Kira − Asistan',
+    kira_yetmedi_uyari:'⚠ Kira karşılanamadığı için bu ay asistana ödeme yapılmadı',
     net_kar:'Net Kâr', toplam_gelir_kira_asistan:'Toplam Gelir − Kira − Asistan',
     payi:'payı', kira:'Kira', bu_ay_kayit_yok:'Bu ay için kayıt bulunamadı.',
     egitmen_eklenmemis_uyari:'⚠ Eğitmen eklenmemiş. "Eğitmenler & Giderler" bölümünden eğitmen ekleyin ve sınıflara atayın.',
@@ -1688,7 +1719,8 @@ const TRANSLATIONS={
     egitmeni_sil:'Delete Instructor', egitmen_silinecek:'will be deleted. Their link to classes will not be removed.',
     gelir:'Income', grup_dersler:'Group Classes', ozel_dersler:'Private Lessons', toplam_gelir:'Total Income',
     giderler:'Expenses', toplam_kira:'Total Rent', asistan_odemeleri:'Assistant Payments', toplam_gider:'Total Expense',
-    kari:'Profit', kendi_siniflari:'Own classes: Income − Rent − Assistant',
+    kari:'Profit', stuydo_kari:'Studio Profit', kendi_siniflari:'Own classes: Income − Rent − Assistant',
+    kira_yetmedi_uyari:'⚠ Assistant was not paid this month because rent could not be covered',
     net_kar:'Net Profit', toplam_gelir_kira_asistan:'Total Income − Rent − Assistant',
     payi:'share', kira:'Rent', bu_ay_kayit_yok:'No records for this month.',
     egitmen_eklenmemis_uyari:'⚠ No instructors added. Add instructors in "Instructors & Expenses" and assign them to classes.',
@@ -1863,7 +1895,8 @@ const TRANSLATIONS={
     egitmeni_sil:'Удалить преподавателя', egitmen_silinecek:'будет удалён. Связь с группами не удаляется.',
     gelir:'Доход', grup_dersler:'Групповые занятия', ozel_dersler:'Частные уроки', toplam_gelir:'Общий доход',
     giderler:'Расходы', toplam_kira:'Общая аренда', asistan_odemeleri:'Выплаты ассистентам', toplam_gider:'Общий расход',
-    kari:'Прибыль', kendi_siniflari:'Свои группы: Доход − Аренда − Ассистент',
+    kari:'Прибыль', stuydo_kari:'Прибыль студии', kendi_siniflari:'Свои группы: Доход − Аренда − Ассистент',
+    kira_yetmedi_uyari:'⚠ Ассистенту не выплачено в этом месяце, так как аренда не была покрыта',
     net_kar:'Чистая прибыль', toplam_gelir_kira_asistan:'Общий доход − Аренда − Ассистент',
     payi:'доля', kira:'Аренда', bu_ay_kayit_yok:'Записей за этот месяц нет.',
     egitmen_eklenmemis_uyari:'⚠ Преподаватели не добавлены. Добавьте их в разделе "Преподаватели и расходы" и назначьте на группы.',
@@ -2131,6 +2164,7 @@ function startListeners(){
     document.getElementById('loading').style.display='none';
     document.getElementById('app').style.display='flex';
     renderAll();
+    robotDurumGuncelle();
     setTimeout(iosInstallBanneriGoster,1500);
   },12000);
   const check=()=>{
@@ -2138,6 +2172,7 @@ function startListeners(){
       clearTimeout(timeout);
       document.getElementById('loading').style.display='none';
       document.getElementById('app').style.display='flex';
+      robotDurumGuncelle();
       setTimeout(iosInstallBanneriGoster,1500);
     }
   };
@@ -2370,6 +2405,35 @@ function yarismayaAc(){
   drawerKapat();
   window.open('./yarisma.html','_blank');
 }
+// ── Dokunuşları izleyen robot ────────────────────────────
+function robotDurumGuncelle(){
+  const w=document.getElementById('robot-widget');
+  const acik=localStorage.getItem('robot_kapali')!=='true';
+  if(w)w.style.display=acik?'block':'none';
+  const toggle=document.getElementById('robot-ayar-toggle');
+  if(toggle)toggle.checked=acik;
+}
+function robotKapat(){localStorage.setItem('robot_kapali','true');robotDurumGuncelle();}
+function robotAc(){localStorage.setItem('robot_kapali','false');robotDurumGuncelle();}
+function robotAyarDegisti(cb){cb.checked?robotAc():robotKapat();}
+(function(){
+  function gozleriYonlendir(x,y){
+    const widget=document.getElementById('robot-widget');
+    if(!widget||widget.style.display==='none')return;
+    const rect=widget.getBoundingClientRect();
+    const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+    const aci=Math.atan2(y-cy,x-cx);
+    const dx=Math.cos(aci)*2.5, dy=Math.sin(aci)*2.5;
+    const sol=document.getElementById('robot-bebek-sol'), sag=document.getElementById('robot-bebek-sag');
+    if(sol)sol.style.transform=`translate(${dx}px,${dy}px)`;
+    if(sag)sag.style.transform=`translate(${dx}px,${dy}px)`;
+  }
+  // Sadece passive dinleyiciler — preventDefault asla çağrılmıyor, kaydırmayı etkilemez
+  document.addEventListener('touchstart',function(e){if(e.touches&&e.touches[0])gozleriYonlendir(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+  document.addEventListener('touchmove',function(e){if(e.touches&&e.touches[0])gozleriYonlendir(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+  document.addEventListener('mousemove',function(e){gozleriYonlendir(e.clientX,e.clientY);},{passive:true});
+})();
+
 function drawerAc(){
   document.getElementById('drawer').classList.add('open');
   document.getElementById('drawerOverlay').classList.add('open');
@@ -2377,6 +2441,7 @@ function drawerAc(){
   waSablonYukle();
   renderTemaGrid();
   odemeBilgiYukle();
+  robotDurumGuncelle();
 }
 function drawerKapat(){
   document.getElementById('drawer').classList.remove('open');
@@ -6560,10 +6625,14 @@ async function renderGiderRapor(){
     let basEgitmenKar=0;
 
     if(egitmen&&!egitmen.basEgitmen){
-      // Asistan ders veriyor
-      asistanOdeme=Math.round(sinifGelir*asistanPct);
+      // Asistan ders veriyor — KİRA ÖNCELİKLİDİR.
+      // Önce kira toplam gelirden düşülür; asistana ödenecek pay, normal yüzdesini
+      // aşmayacak ama kira sonrası kalan tutarı da geçmeyecek şekilde sınırlanır.
+      const kalanKiraSonrasi=Math.max(0,sinifGelir-kira);
+      const denenenOdeme=Math.round(sinifGelir*asistanPct);
+      asistanOdeme=Math.min(denenenOdeme,kalanKiraSonrasi);
       asistanAd=egitmen.ad;
-      basEgitmenKar=sinifGelir-asistanOdeme-kira;
+      basEgitmenKar=kalanKiraSonrasi-asistanOdeme;
     } else {
       // Baş eğitmen veya eğitmen atanmamış
       basEgitmenKar=sinifGelir-kira;
@@ -6572,7 +6641,7 @@ async function renderGiderRapor(){
     sinifDetaylar.push({
       si, idx, egitmen, sinifGelir, kira,
       asistanOdeme, asistanAd, asistanPct: si.asistanPct||0,
-      basEgitmenKar: Math.max(0, basEgitmenKar)
+      basEgitmenKar: basEgitmenKar
     });
   });
 
@@ -6687,8 +6756,9 @@ async function renderGiderRapor(){
         ${isAsistan?`
         <div class="gider-satir" style="font-size:12px;">
           <span style="color:var(--text2);">👤 ${d.asistanAd} ${t('payi')} (%${d.asistanPct})</span>
-          <span style="color:var(--accent);font-weight:600;">−${d.asistanOdeme.toLocaleString(LC())} ₺</span>
-        </div>`:''}
+          <span style="color:${d.asistanOdeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistanOdeme>0?'−'+d.asistanOdeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>
+        </div>
+        ${d.asistanOdeme===0&&d.asistanPct<100?`<div style="font-size:10.5px;color:var(--amber);margin:-4px 0 4px;">${t('kira_yetmedi_uyari')}</div>`:''}`:''}
 
         <div class="gider-satir" style="font-size:12px;">
           <span style="color:var(--text2);">${t('kira')}</span>
@@ -6696,7 +6766,7 @@ async function renderGiderRapor(){
         </div>
 
         <div class="gider-satir" style="font-size:13px;font-weight:700;border-top:1px solid var(--border2);margin-top:4px;padding-top:8px;">
-          <span style="color:var(--text2);">⭐ ${isAsistan?(basEgitmen?.ad||t('bas_egitmen')):(d.egitmen?.ad||basEgitmen?.ad||t('bas_egitmen'))} ${t('kari')}</span>
+          <span style="color:var(--text2);">⭐ ${isAsistan?t('stuydo_kari'):(d.egitmen?.ad||basEgitmen?.ad||t('bas_egitmen'))} ${isAsistan?'':t('kari')}</span>
           <span style="color:${karRenk};">${d.basEgitmenKar.toLocaleString(LC())} ₺</span>
         </div>
       </div>`;
