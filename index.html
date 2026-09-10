@@ -1999,6 +1999,7 @@ function cycleLang(){
 let OG_FILTER='aktif', OG_GRUPLU=true, OG_SIRALAMA='ad', ODEME_TAB='odemeler';
 let OD_AYLAR=[], OD_ONCEKI=new Set();
 let ODEME_ACIK=new Set(), GELIR_ACIK=new Set();
+let ODEME_ARAMA='';
 let BEK_GRUPLAMA='sure', BEK_ACIK=new Set();
 let YEN_GRUPLAMA='sinif', YEN_ACIK=new Set();
 let GIDER_AY=null;
@@ -4434,15 +4435,28 @@ async function dersKaydiSil(id){
   });
 }
 
+function odemeAramaDegisti(val){
+  ODEME_ARAMA=val;
+  renderOdemeler();
+  const inp=document.getElementById('odeme-arama-input');
+  if(inp){inp.focus();inp.setSelectionRange(inp.value.length,inp.value.length);}
+}
+function odemeAramaTemizle(){ODEME_ARAMA='';renderOdemeler();}
 function renderOdemeler(){
   const el=document.getElementById('odeme-content');
   if(!S.siniflar.length&&!S.ozelPaketler.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('once_sinif_ekle')+'</div></div>';return;}
   const bk=ayKey(new Date().getFullYear(),new Date().getMonth()+1);
-  let html=`<div style="display:flex;gap:8px;justify-content:flex-end;margin:4px 0 12px;"><button class="btn btn-sm" style="background:#fbbf2422;color:var(--amber);border:1px solid #fbbf2450;" onclick="openSonOdemelerModal()">🕐 ${t('son_odemeler')}</button><button class="btn btn-accent btn-sm" onclick="openOdemeModal()">＋ ${t('odeme_ekle')}</button></div>`;
+  let html=`<div style="display:flex;gap:8px;justify-content:flex-end;margin:4px 0 12px;"><button class="btn btn-sm" style="background:#fbbf2422;color:var(--amber);border:1px solid #fbbf2450;" onclick="openSonOdemelerModal()">🕐 ${t('son_odemeler')}</button><button class="btn btn-accent btn-sm" onclick="openOdemeModal()">＋ ${t('odeme_ekle')}</button></div>
+  <div style="position:relative;margin-bottom:12px;">
+    <input type="text" id="odeme-arama-input" value="${ODEME_ARAMA.replace(/"/g,'&quot;')}" placeholder="🔍 Öğrenci ara..." oninput="odemeAramaDegisti(this.value)" style="width:100%;padding:10px 36px 10px 14px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:14px;">
+    ${ODEME_ARAMA?`<button onclick="odemeAramaTemizle()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:4px;">✕</button>`:''}
+  </div>`;
+  const aramaKucuk=ODEME_ARAMA.trim().toLocaleLowerCase('tr');
+  const aramaEslesir=(ad,soyad)=>!aramaKucuk||(ad+' '+(soyad||'')).toLocaleLowerCase('tr').includes(aramaKucuk);
   // Grup sınıfları
   S.siniflar.forEach((si,siIdx)=>{
     const grupRenk=RENK_BAR[siIdx%RENK_BAR.length];
-    const kayitlar=(si.kayitlar||[]).filter(k=>{const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);return og&&(og.durum||'aktif')==='aktif';});
+    const kayitlar=(si.kayitlar||[]).filter(k=>{const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);return og&&(og.durum||'aktif')==='aktif'&&aramaEslesir(og.ad,og.soyad);});
     if(!kayitlar.length)return;
     // Bekleyen: dondurulmamış ve bu ay ödemesi olmayan
     const bek=kayitlar.filter(k=>{
@@ -4453,7 +4467,7 @@ function renderOdemeler(){
       const h=hesaplaKayit(og.id,si.id);const gh=h?h.hak:k.hak;
       return gh<=0;
     }).length;
-    const acik=ODEME_ACIK.has(si.id);
+    const acik=aramaKucuk?true:ODEME_ACIK.has(si.id);
     html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('${si.id}')" style="--grup-renk:${grupRenk};"><div><div class="odeme-sinif-adi">${si.ad}</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;"><span class="badge badge-green" style="font-size:10px;">${kayitlar.length} ${t('lbl_ogrenci_kucuk')}</span>${bek>0?`<span class="badge badge-red" style="font-size:10px;">${bek} ${t('bekliyor')}</span>`:'<span class="badge badge-green" style="font-size:10px;">'+t('hepsi_odedi')+'</span>'}</div></div><div style="display:flex;align-items:center;gap:7px;"><button class="btn btn-green btn-sm" onclick="event.stopPropagation();openOdemeModal('','${si.id}')">＋</button><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-${si.id}">›</span></div></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-${si.id}">`;
     kayitlar.forEach(k=>{
       const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);if(!og)return;
@@ -4486,9 +4500,9 @@ function renderOdemeler(){
     html+=`</div></div>`;
   });
   // Özel dersler grubu
-  const ozelListe=ozelDersOgrencileri();
+  const ozelListe=ozelDersOgrencileri().filter(og=>aramaEslesir(og.ad,og.soyad));
   if(ozelListe.length){
-    const acik=ODEME_ACIK.has('_ozel_');
+    const acik=aramaKucuk?true:ODEME_ACIK.has('_ozel_');
     html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('_ozel_')" style="--grup-renk:var(--purple);"><div><div class="odeme-sinif-adi" style="color:var(--purple);">${t('ozel_dersler')}</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">${ozelListe.length} ${t('lbl_ogrenci_kucuk')}</div></div><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-_ozel_">›</span></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-_ozel_">`;
     ozelListe.forEach(og=>{
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
@@ -4497,6 +4511,9 @@ function renderOdemeler(){
       html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text2);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnG(og.tel,og.ad)}</div></div>`;
     });
     html+=`</div></div>`;
+  }
+  if(aramaKucuk&&!S.siniflar.some(si=>(si.kayitlar||[]).some(k=>{const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);return og&&(og.durum||'aktif')==='aktif'&&aramaEslesir(og.ad,og.soyad);}))&&!ozelListe.length){
+    html+=`<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">"${ODEME_ARAMA}" ile eşleşen öğrenci bulunamadı.</div></div>`;
   }
   el.innerHTML=html;
 }
