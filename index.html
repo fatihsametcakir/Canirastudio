@@ -3188,7 +3188,33 @@ async function hakEkle(n){
   openKayitIslem(CUR_SINIF,CUR_KAYIT);
 }
 async function silKayit(){confirm_('Sınıftan Çıkar','Öğrenci bu sınıftan silinecek.',async()=>{const si=S.siniflar.find(s=>s.id===CUR_SINIF);const k=si.kayitlar.find(x=>x.id===CUR_KAYIT);const kayitlar=si.kayitlar.filter(x=>x.id!==CUR_KAYIT);setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});if(k)await kayitGecmisineEkle(CUR_SINIF,k.ogrenciId,'cikis');_poll('siniflar');setSyncing(false);closeModal('m-kayit-islem');});}
-async function tasiKayit(){const hId=document.getElementById('ki-sinif').value;if(!hId)return;const k=S.siniflar.find(s=>s.id===CUR_SINIF);const h=S.siniflar.find(s=>s.id===hId);const kayit=k.kayitlar.find(x=>x.id===CUR_KAYIT);if(!kayit||!h)return;setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar:k.kayitlar.filter(x=>x.id!==CUR_KAYIT)});await db.collection('siniflar').doc(hId).update({kayitlar:[...(h.kayitlar||[]),{...kayit,id:'k'+Date.now()}]});await ogrenciOlayEkle(kayit.ogrenciId,CUR_SINIF,k.ad,'cikis');await ogrenciOlayEkle(kayit.ogrenciId,hId,h.ad,'giris');_poll('siniflar');setSyncing(false);closeModal('m-kayit-islem');}
+async function tasiKayit(){
+  const hId=document.getElementById('ki-sinif').value;
+  if(!hId)return;
+  const k=S.siniflar.find(s=>s.id===CUR_SINIF);
+  const h=S.siniflar.find(s=>s.id===hId);
+  const kayit=k.kayitlar.find(x=>x.id===CUR_KAYIT);
+  if(!kayit||!h)return;
+  setSyncing(true);
+  try{
+    await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar:k.kayitlar.filter(x=>x.id!==CUR_KAYIT)});
+    await db.collection('siniflar').doc(hId).update({kayitlar:[...(h.kayitlar||[]),{...kayit,id:'k'+Date.now()}]});
+    await ogrenciOlayEkle(kayit.ogrenciId,CUR_SINIF,k.ad,'cikis');
+    await ogrenciOlayEkle(kayit.ogrenciId,hId,h.ad,'giris');
+    // Öğrencinin bu sınıftaki ödeme kayıtları da, kendisiyle birlikte yeni sınıfa taşınır
+    const tasinacakOdemeler=S.odemeler.filter(o=>o.ogrenciId===kayit.ogrenciId&&o.sinifId===CUR_SINIF);
+    for(const od of tasinacakOdemeler){
+      await db.collection('odemeler').doc(od.id).update({sinifId:hId});
+      od.sinifId=hId;
+    }
+    _poll('siniflar');_poll('odemeler');
+    showToast(tasinacakOdemeler.length?`Öğrenci taşındı, ${tasinacakOdemeler.length} ödeme kaydı da birlikte taşındı ✓`:'Öğrenci taşındı ✓','success');
+  }catch(e){
+    showToast('Taşıma işlemi tamamlanamadı: '+e.message,'error');
+  }
+  setSyncing(false);
+  closeModal('m-kayit-islem');
+}
 
 // ── GRUP ÖDEME ─────────────────────────────────────────
 function ogSiOd(ogId,siId){return S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);}
@@ -3322,6 +3348,25 @@ async function saveOdeme(){
     if(grid){grid.style.outline='2px solid var(--accent)';grid.style.borderRadius='8px';setTimeout(()=>{grid.style.outline='';},2000);}
     showToast('Lütfen en az bir dönem seçin.','error');return;
   }
+  // Güvenlik: bir ödeme düzenlenirken öğrenci beklenmedik şekilde değişmişse
+  // (örn. sınıf değiştirilirken listenin sessizce başka birine kayması gibi
+  // eski bir hata bir daha yaşanırsa) kaydetmeden önce açıkça sorulur.
+  if(EDIT_ODEME){
+    const orijinal=S.odemeler.find(o=>o.id===EDIT_ODEME);
+    if(orijinal&&orijinal.ogrenciId!==ogId){
+      const eskiOg=S.ogrenciler.find(o=>o.id===orijinal.ogrenciId);
+      const yeniOg=S.ogrenciler.find(o=>o.id===ogId);
+      confirm_(
+        'Öğrenci Değişti',
+        `Bu ödeme "${eskiOg?eskiOg.ad+' '+(eskiOg.soyad||''):'?'}" için kayıtlıydı, şimdi "${yeniOg?yeniOg.ad+' '+(yeniOg.soyad||''):'?'}" için kaydedilecek. Emin misiniz?`,
+        ()=>saveOdemeDevam(siId,ogId,tutar)
+      );
+      return;
+    }
+  }
+  saveOdemeDevam(siId,ogId,tutar);
+}
+async function saveOdemeDevam(siId,ogId,tutar){
   const btn=document.getElementById('btn-save-od');btn.disabled=true;setSyncing(true);
   const data={ogrenciId:ogId,sinifId:siId,tutar,tarih:document.getElementById('od-tarih').value,yontem:document.getElementById('od-yontem').value,odTip:OD_TIP,aylar:OD_TIP==='aylik'?OD_AYLAR:[],not:document.getElementById('od-not').value,olusturma:EDIT_ODEME?(S.odemeler.find(o=>o.id===EDIT_ODEME)?.olusturma||Date.now()):Date.now(),tip:'grup'};
   try{
