@@ -577,6 +577,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button id="so-ay-btn" class="btn btn-ghost btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('ay')" data-i18n="son_1_ay">Son 1 Ay</button>
       <button id="so-tumü-btn" class="btn btn-ghost btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('tumu')" data-i18n="tumu">Tümü</button>
     </div>
+    <div style="position:relative;margin-bottom:12px;">
+      <input type="text" id="so-arama-input" placeholder="🔍 Öğrenci ara..." oninput="soAramaDegisti(this.value)" style="width:100%;padding:10px 36px 10px 14px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:14px;">
+      <button id="so-arama-temizle" onclick="soAramaTemizle()" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:4px;">✕</button>
+    </div>
     <div id="son-odemeler-liste" style="overflow-y:auto;max-height:calc(85vh - 140px);"></div>
   </div>
 </div>
@@ -7715,17 +7719,35 @@ function demoAra(q){
   }).join('');
   liste.innerHTML=html;
 }
-function openSonOdemelerModal(){sonOdemelerFiltre('hafta');openModal('m-son-odemeler');}
+let SO_TIP='hafta', SO_ARAMA='';
+function openSonOdemelerModal(){SO_ARAMA='';sonOdemelerFiltre('hafta');openModal('m-son-odemeler');}
+function soAramaDegisti(val){
+  SO_ARAMA=val;
+  sonOdemelerFiltre(SO_TIP);
+  const inp=document.getElementById('so-arama-input');
+  if(inp){inp.focus();inp.setSelectionRange(inp.value.length,inp.value.length);}
+}
+function soAramaTemizle(){SO_ARAMA='';sonOdemelerFiltre(SO_TIP);}
 function sonOdemelerFiltre(tip){
+  SO_TIP=tip;
   ['hafta','ay','tumu'].forEach(t=>{
     const b=document.getElementById('so-'+t+(t==='tumu'?'ü':'')+'-btn');
     if(b){b.className='btn btn-'+(tip===t?'accent':'ghost')+' btn-sm';b.style.flex='1';}
   });
+  const temizleBtn=document.getElementById('so-arama-temizle');
+  if(temizleBtn)temizleBtn.style.display=SO_ARAMA?'block':'none';
   const simdi=Date.now();
   const limit=tip==='hafta'?7*24*60*60*1000:tip==='ay'?30*24*60*60*1000:null;
-  const liste=limit?S.odemeler.filter(o=>o.olusturma&&(simdi-o.olusturma)<=limit).sort((a,b)=>b.olusturma-a.olusturma):S.odemeler.slice().sort((a,b)=>b.olusturma-a.olusturma);
+  let liste=limit?S.odemeler.filter(o=>o.olusturma&&(simdi-o.olusturma)<=limit).sort((a,b)=>b.olusturma-a.olusturma):S.odemeler.slice().sort((a,b)=>b.olusturma-a.olusturma);
+  const aramaKucuk=SO_ARAMA.trim().toLocaleLowerCase('tr');
+  if(aramaKucuk){
+    liste=liste.filter(od=>{
+      const og=S.ogrenciler.find(o=>o.id===od.ogrenciId);
+      return og&&(og.ad+' '+(og.soyad||'')).toLocaleLowerCase('tr').includes(aramaKucuk);
+    });
+  }
   const el=document.getElementById('son-odemeler-liste');
-  if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('bu_donemde_odeme_yok')+'</div></div>';return;}
+  if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+(aramaKucuk?`"${SO_ARAMA}" ile eşleşen ödeme bulunamadı.`:t('bu_donemde_odeme_yok'))+'</div></div>';return;}
   el.innerHTML=liste.map(od=>{
     const og=S.ogrenciler.find(o=>o.id===od.ogrenciId);
     const si=S.siniflar.find(s=>s.id===od.sinifId);
