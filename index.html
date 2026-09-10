@@ -3826,7 +3826,14 @@ function renderAnasayfa(){
   const total=grupToplam+ozelToplam;
   const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
   const toplamKira=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
-  const asistanGider=aktifSiniflar.reduce((s,si)=>{const eg=S.egitmenler.find(e=>e.id===si.egitmenId);if(!eg||eg.basEgitmen)return s;const siGelir=S.odemeler.filter(o=>o.sinifId===si.id&&(o.aylar||[]).includes(bk)).reduce((t,o)=>t+(o.tutar||0),0);return s+siGelir*(si.asistanPct||0)/100;},0);
+  const asistanGider=aktifSiniflar.reduce((s,si)=>{
+    const eg=S.egitmenler.find(e=>e.id===si.egitmenId);
+    if(!eg||eg.basEgitmen)return s;
+    const siGelir=S.odemeler.filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===bk;}).reduce((t,o)=>t+(o.tutar||0),0);
+    const kalanKiraSonrasi=Math.max(0,siGelir-(si.kira||0));
+    const denenenOdeme=Math.round(siGelir*(si.asistanPct||0)/100);
+    return s+Math.min(denenenOdeme,kalanKiraSonrasi);
+  },0);
   const netTotal=total-toplamKira-asistanGider-(GIDER_AYARLARI.kira||0);
   const fmt=v=>v>=1000?Math.round(v/1000)+'K':(Math.round(v)||'0');
   document.getElementById('st-odeme').textContent=fmt(total);
@@ -6890,8 +6897,10 @@ function renderGelirTrend(){
     const asistanGider=aktifSiniflar.reduce((s,si)=>{
       const eg=S.egitmenler.find(e=>e.id===si.egitmenId);
       if(!eg||eg.basEgitmen)return s;
-      const siGelir=S.odemeler.filter(o=>o.sinifId===si.id&&(o.aylar||[]).includes(key)).reduce((t,o)=>t+(o.tutar||0),0);
-      return s+siGelir*(si.asistanPct||0)/100;
+      const siGelir=S.odemeler.filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;}).reduce((t,o)=>t+(o.tutar||0),0);
+      const kalanKiraSonrasi=Math.max(0,siGelir-(si.kira||0));
+      const denenenOdeme=Math.round(siGelir*(si.asistanPct||0)/100);
+      return s+Math.min(denenenOdeme,kalanKiraSonrasi);
     },0);
     const net=(grup+ozel)-kiraToplam-asistanGider-(GIDER_AYARLARI.kira||0);
     aylar.push({key,label,toplam:grup+ozel,grup,ozel,net:Math.max(0,net)});
