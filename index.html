@@ -3154,12 +3154,34 @@ async function toggleDondur(){
   const yeniDurum=!k.donduruldu;
   const kayitlar=si.kayitlar.map(x=>x.id!==CUR_KAYIT?x:{...x,donduruldu:yeniDurum});
   setSyncing(true);
-  await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});
-  await kayitGecmisineEkle(CUR_SINIF,k.ogrenciId,yeniDurum?'dondur':'coz');
-  _poll('siniflar');setSyncing(false);
-  setTimeout(()=>openKayitIslem(CUR_SINIF,CUR_KAYIT),300);
+  try{
+    await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});
+    await kayitGecmisineEkle(CUR_SINIF,k.ogrenciId,yeniDurum?'dondur':'coz');
+    si.kayitlar=kayitlar;
+    _poll('siniflar');
+  }catch(e){
+    showToast('İşlem tamamlanamadı: '+e.message,'error');
+  }
+  setSyncing(false);
+  openKayitIslem(CUR_SINIF,CUR_KAYIT);
 }
-async function hakEkle(n){const si=S.siniflar.find(s=>s.id===CUR_SINIF);const kayitlar=si.kayitlar.map(k=>k.id!==CUR_KAYIT?k:{...k,manuelHak:(k.manuelHak||0)+n});setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});_poll('siniflar');setSyncing(false);setTimeout(()=>openKayitIslem(CUR_SINIF,CUR_KAYIT),300);}
+async function hakEkle(n){
+  const si=S.siniflar.find(s=>s.id===CUR_SINIF);
+  const kayitlar=si.kayitlar.map(k=>k.id!==CUR_KAYIT?k:{...k,manuelHak:(k.manuelHak||0)+n});
+  setSyncing(true);
+  try{
+    await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});
+    // Poll'un (arka plan senkronizasyonu) ne zaman biteceği belirsiz olduğu için
+    // ekranı ona güvenip beklemek yerine, az önce kaydettiğimiz veriyi yerel
+    // state'e hemen yansıtıyoruz — böylece "+1/-1 Hak" tıklar tıklamaz güncellenir.
+    si.kayitlar=kayitlar;
+    _poll('siniflar');
+  }catch(e){
+    showToast('Hak güncellenemedi: '+e.message,'error');
+  }
+  setSyncing(false);
+  openKayitIslem(CUR_SINIF,CUR_KAYIT);
+}
 async function silKayit(){confirm_('Sınıftan Çıkar','Öğrenci bu sınıftan silinecek.',async()=>{const si=S.siniflar.find(s=>s.id===CUR_SINIF);const k=si.kayitlar.find(x=>x.id===CUR_KAYIT);const kayitlar=si.kayitlar.filter(x=>x.id!==CUR_KAYIT);setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});if(k)await kayitGecmisineEkle(CUR_SINIF,k.ogrenciId,'cikis');_poll('siniflar');setSyncing(false);closeModal('m-kayit-islem');});}
 async function tasiKayit(){const hId=document.getElementById('ki-sinif').value;if(!hId)return;const k=S.siniflar.find(s=>s.id===CUR_SINIF);const h=S.siniflar.find(s=>s.id===hId);const kayit=k.kayitlar.find(x=>x.id===CUR_KAYIT);if(!kayit||!h)return;setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar:k.kayitlar.filter(x=>x.id!==CUR_KAYIT)});await db.collection('siniflar').doc(hId).update({kayitlar:[...(h.kayitlar||[]),{...kayit,id:'k'+Date.now()}]});await ogrenciOlayEkle(kayit.ogrenciId,CUR_SINIF,k.ad,'cikis');await ogrenciOlayEkle(kayit.ogrenciId,hId,h.ad,'giris');_poll('siniflar');setSyncing(false);closeModal('m-kayit-islem');}
 
