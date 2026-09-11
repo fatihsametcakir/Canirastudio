@@ -3012,6 +3012,55 @@ async function saveSinifOgrenci(){
 }
 
 // ── KAYIT İŞLEM ────────────────────────────────────────
+// Bir öğrencinin bir sınıftaki ödemelerinden, GÜNCEL TARİHİ GERÇEKTEN KAPSAYAN
+// (süresi henüz dolmamış) ödemeyi bulur. Süresi geçmiş ödemeler döndürülmez.
+function guncelDonemOdemesiBul(ogId,siId){
+  const si=S.siniflar.find(s=>s.id===siId);
+  if(!si)return null;
+  const k=(si.kayitlar||[]).find(x=>x.ogrenciId===ogId);
+  if(!k)return null;
+  const ods=S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);
+  const bugunStr=(()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})();
+  // Önce aylık tip ödemelerde, güncel ayı doğrudan kapsayan var mı bak
+  const aylikEslesen=ods.find(o=>o.odTip==='aylik'&&(o.aylar||[]).includes(bugunStr));
+  if(aylikEslesen)return aylikEslesen;
+  if(k.tip!=='paket')return null;
+  // Paket tipi kayıt: hesaplaKayit ile aynı zincir mantığını, hangi ödemenin
+  // dönem aralığının bugünü kapsadığını bulmak için ödeme bazında tekrar kuruyoruz.
+  const gunNoTespit=sinifGunNo(si);
+  const dersGunu=gunNoTespit>=0?gunNoTespit:1;
+  const bugun=new Date();bugun.setHours(0,0,0,0);
+  const tatilSet=new Set((S.tatiller||[]).map(t=>t.tarih));
+  function dateStr(t){const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');return y+'-'+m+'-'+d;}
+  function ilkDersGunu(tarihStr){const parts=tarihStr.split('-');const t=new Date(+parts[0],+parts[1]-1,+parts[2]);const fark=(dersGunu-t.getDay()+7)%7;t.setDate(t.getDate()+fark);return t;}
+  function nDersSonra(bas,n){const t=new Date(bas.getFullYear(),bas.getMonth(),bas.getDate());let sayac=1;while(tatilSet.has(dateStr(t))){t.setDate(t.getDate()+7);}while(sayac<n){t.setDate(t.getDate()+7);if(!tatilSet.has(dateStr(t)))sayac++;}return t;}
+  const siraliOd=ods.filter(o=>o.tarih).sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  if(!siraliOd.length)return null;
+  let zincirBitis=null;
+  for(const od of siraliOd){
+    const aySayisi=(od.aylar||[]).length>0?od.aylar.length:1;
+    const dersSayisi=aySayisi*4;
+    let donemBas;
+    if(!zincirBitis){
+      donemBas=ilkDersGunu(od.tarih);
+    } else {
+      const odemeIlkDers=ilkDersGunu(od.tarih);
+      if(odemeIlkDers.getTime()===zincirBitis.getTime()){
+        donemBas=new Date(zincirBitis);
+      } else if(odemeIlkDers<zincirBitis){
+        donemBas=new Date(zincirBitis.getFullYear(),zincirBitis.getMonth(),zincirBitis.getDate());
+        donemBas.setDate(donemBas.getDate()+7);
+        while(tatilSet.has(dateStr(donemBas)))donemBas.setDate(donemBas.getDate()+7);
+      } else {
+        donemBas=odemeIlkDers;
+      }
+    }
+    const donemBitis=nDersSonra(donemBas,dersSayisi);
+    if(donemBas<=bugun&&bugun<=donemBitis)return od;
+    zincirBitis=donemBitis;
+  }
+  return null;
+}
 function hesaplaKayit(ogId,siId){
   const si=S.siniflar.find(s=>s.id===siId);
   if(!si)return null;
@@ -3201,14 +3250,17 @@ async function tasiKayit(){
     await db.collection('siniflar').doc(hId).update({kayitlar:[...(h.kayitlar||[]),{...kayit,id:'k'+Date.now()}]});
     await ogrenciOlayEkle(kayit.ogrenciId,CUR_SINIF,k.ad,'cikis');
     await ogrenciOlayEkle(kayit.ogrenciId,hId,h.ad,'giris');
-    // Öğrencinin bu sınıftaki ödeme kayıtları da, kendisiyle birlikte yeni sınıfa taşınır
-    const tasinacakOdemeler=S.odemeler.filter(o=>o.ogrenciId===kayit.ogrenciId&&o.sinifId===CUR_SINIF);
-    for(const od of tasinacakOdemeler){
-      await db.collection('odemeler').doc(od.id).update({sinifId:hId});
-      od.sinifId=hId;
+    // Öğrencinin bu sınıftaki ödemelerinden, GÜNCEL TARİHİ GERÇEKTEN KAPSAYAN
+    // (süresi henüz dolmamış) ödemesi varsa, sadece o yeni sınıfa taşınır.
+    // Süresi geçmiş ödemeler eski sınıfta kalır — öğrenci o dönemlerde
+    // gerçekten o sınıfa gidiyordu.
+    const sonOdeme=guncelDonemOdemesiBul(kayit.ogrenciId,CUR_SINIF);
+    if(sonOdeme){
+      await db.collection('odemeler').doc(sonOdeme.id).update({sinifId:hId});
+      sonOdeme.sinifId=hId;
     }
     _poll('siniflar');_poll('odemeler');
-    showToast(tasinacakOdemeler.length?`Öğrenci taşındı, ${tasinacakOdemeler.length} ödeme kaydı da birlikte taşındı ✓`:'Öğrenci taşındı ✓','success');
+    showToast(sonOdeme?'Öğrenci taşındı, güncel dönem ödemesi de birlikte taşındı ✓':'Öğrenci taşındı ✓','success');
   }catch(e){
     showToast('Taşıma işlemi tamamlanamadı: '+e.message,'error');
   }
