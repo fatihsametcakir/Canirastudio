@@ -231,6 +231,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .ot-hucre{border-top:1px solid var(--border);border-left:1px solid var(--border);cursor:pointer;}
 .ot-hucre:active{background:var(--surface2);}
 .ot-block{position:relative;border-radius:6px;margin:1px 2px;padding:2px 3px;cursor:pointer;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.1;z-index:2;color:#0d0d14;font-weight:700;box-sizing:border-box;transition:transform .15s;}
+.ot-ekle-ipucu{position:relative;z-index:3;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:13px;font-weight:700;cursor:pointer;border-radius:4px;opacity:.55;transition:opacity .15s,background .15s;}
+.ot-ekle-ipucu:active{opacity:1;background:rgba(255,255,255,.08);}
 .ot-block:active{transform:scale(.94);}
 .ot-block-adsoyad{font-size:9.5px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word;max-width:100%;}
 .ot-block:active{opacity:.85;}
@@ -3676,6 +3678,10 @@ function otSlotIndex(saatStr){
   return Math.round(((h*60+m)-(OT_BASLANGIC*60))/30);
 }
 function otSureSlot(sure){return Math.max(1,Math.round((sure||1)/0.5));}
+function saatFromSlot(slotIdx){
+  const dk=OT_BASLANGIC*60+slotIdx*30;
+  return String(Math.floor(dk/60)).padStart(2,'0')+':'+String(dk%60).padStart(2,'0');
+}
 
 function renderOzelTakvim(){
   const gridEl=document.getElementById('ot-grid');
@@ -3735,9 +3741,10 @@ function renderOzelTakvim(){
       if(!atandi){s._kol=kolonBitis.length;kolonBitis.push(s._start+s._span);}
     });
     const toplamKolon=Math.max(1,kolonBitis.length);
+    const REZERV_YUZDE=16; // hücrenin bir kısmı her zaman boş/tıklanabilir kalsın — yeni ders eklenebilsin diye
     seanslar.forEach(s=>{
       const og=S.ogrenciler.find(o=>o.id===s.ogrenciId);
-      const genislikYuzde=100/toplamKolon;
+      const genislikYuzde=(100-REZERV_YUZDE)/toplamKolon;
       const solYuzde=genislikYuzde*s._kol;
       const span=Math.min(s._span,OT_TOPLAM_SLOT-s._start);
       const etiket=(og?og.ad+' '+(og.soyad||''):'')+' · '+s.saat+' · '+fmtSaat(s.sure||1)+' saat'+(s.dusuldu?' · düşüldü':'');
@@ -3745,6 +3752,14 @@ function renderOzelTakvim(){
       html+=`<div class="ot-block" style="grid-column:${dayIdx+2};grid-row:${s._start+2} / span ${span};left:${solYuzde}%;width:${genislikYuzde}%;background:${egitmenRenk(s.egitmenId)};${s.dusuldu?'opacity:.55;':''}" onclick="event.stopPropagation();otSeansDetay('${s.id}')" title="${etiket}">
         <span class="ot-block-adsoyad">${adSoyad}</span>
       </div>`;
+    });
+    // Dolu saatlere de yeni ders ekleyebilmek için, boş bırakılan kenar şeride
+    // küçük bir "+" ipucu — her benzersiz başlangıç saatinde bir kez
+    const gosterilenBaslangic=new Set();
+    seanslar.forEach(s=>{
+      if(gosterilenBaslangic.has(s._start))return;
+      gosterilenBaslangic.add(s._start);
+      html+=`<div class="ot-ekle-ipucu" style="grid-column:${dayIdx+2};grid-row:${s._start+2};margin-left:auto;width:${REZERV_YUZDE}%;" onclick="event.stopPropagation();otHucreTikla('${tarih}','${saatFromSlot(s._start)}')" title="Bu saate başka bir ders ekle">+</div>`;
     });
   });
 
