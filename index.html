@@ -3682,6 +3682,17 @@ function saatFromSlot(slotIdx){
   const dk=OT_BASLANGIC*60+slotIdx*30;
   return String(Math.floor(dk/60)).padStart(2,'0')+':'+String(dk%60).padStart(2,'0');
 }
+let OT_LP_TIMER=null,OT_LP_TETIKLENDI=false;
+function otLpBaslat(tarih,saat){
+  OT_LP_TETIKLENDI=false;
+  clearTimeout(OT_LP_TIMER);
+  OT_LP_TIMER=setTimeout(()=>{
+    OT_LP_TETIKLENDI=true;
+    if(navigator.vibrate)try{navigator.vibrate(15);}catch(e){}
+    otHucreTikla(tarih,saat);
+  },480);
+}
+function otLpBitir(){clearTimeout(OT_LP_TIMER);}
 
 function renderOzelTakvim(){
   const gridEl=document.getElementById('ot-grid');
@@ -3749,7 +3760,11 @@ function renderOzelTakvim(){
       const span=Math.min(s._span,OT_TOPLAM_SLOT-s._start);
       const etiket=(og?og.ad+' '+(og.soyad||''):'')+' · '+s.saat+' · '+fmtSaat(s.sure||1)+' saat'+(s.dusuldu?' · düşüldü':'');
       const adSoyad=og?(og.ad+' '+(og.soyad||'')).trim():'';
-      html+=`<div class="ot-block" style="grid-column:${dayIdx+2};grid-row:${s._start+2} / span ${span};left:${solYuzde}%;width:${genislikYuzde}%;background:${egitmenRenk(s.egitmenId)};${s.dusuldu?'opacity:.55;':''}" onclick="event.stopPropagation();otSeansDetay('${s.id}')" title="${etiket}">
+      html+=`<div class="ot-block" style="grid-column:${dayIdx+2};grid-row:${s._start+2} / span ${span};left:${solYuzde}%;width:${genislikYuzde}%;background:${egitmenRenk(s.egitmenId)};${s.dusuldu?'opacity:.55;':''}"
+        onmousedown="otLpBaslat('${tarih}','${s.saat}')" onmouseup="otLpBitir()" onmouseleave="otLpBitir()"
+        ontouchstart="otLpBaslat('${tarih}','${s.saat}')" ontouchend="otLpBitir()" ontouchmove="otLpBitir()"
+        onclick="event.stopPropagation();if(!OT_LP_TETIKLENDI)otSeansDetay('${s.id}')"
+        title="${etiket} — uzun basarak bu saate yeni ders ekleyebilirsiniz">
         <span class="ot-block-adsoyad">${adSoyad}</span>
       </div>`;
     });
