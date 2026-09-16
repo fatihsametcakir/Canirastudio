@@ -587,6 +587,17 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
 </div>
 
+<!-- ÇAKIŞAN ÖDEMELER MODAL -->
+<div class="overlay" id="m-cakisan-odemeler">
+  <div class="sheet" style="max-height:85vh;">
+    <div class="sheet-handle"></div>
+    <button class="sheet-close" onclick="closeModal('m-cakisan-odemeler')">✕</button>
+    <div class="sheet-title">🔍 Çakışan Ödemeler</div>
+    <div style="font-size:12.5px;color:var(--text2);margin-bottom:14px;line-height:1.5;">Aynı öğrencinin, farklı sınıflarda kapsadığı ayları çakışan ödemeleri listelenir — genelde bir öğrenci sınıf değiştirdiğinde eski ödemenin yanlışlıkla iki yerde de kalmasından olur. Hangisinin doğru olduğuna siz karar verip diğerini silebilirsiniz.</div>
+    <div id="cakisan-odemeler-liste" style="overflow-y:auto;max-height:calc(85vh - 160px);"></div>
+  </div>
+</div>
+
 
 <!-- TUTMA ORANI MODAL -->
 <div class="overlay" id="m-tutma-orani"><div class="sheet" style="max-height:90vh;">
@@ -1048,6 +1059,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       </div>
       <div class="acc-body" id="acc-veri">
         <button class="btn btn-cyan" style="width:100%;margin-bottom:10px;" onclick="telNumaralariniTemizle()">📱 Telefon Numaralarını Düzenle</button>
+        <button class="btn" style="width:100%;margin-bottom:10px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa45;" onclick="openCakisanOdemelerModal()">🔍 Çakışan Ödemeleri Bul</button>
         <div class="drawer-sep"></div>
         <button class="drawer-btn danger" onclick="silKategori('odemeler')" data-i18n="sil_odemeler">Tüm Ödemeleri Sil</button>
         <button class="drawer-btn danger" onclick="silKategori('ozelPaketler')" data-i18n="sil_ozel_paketler">Tüm Özel Paketleri Sil</button>
@@ -7845,6 +7857,72 @@ function demoAra(q){
     </div>`;
   }).join('');
   liste.innerHTML=html;
+}
+// ── ÇAKIŞAN ÖDEMELER (aynı öğrenci, farklı sınıf, çakışan aylar) ────────
+function cakisanOdemeleriBul(){
+  const gruplar={};
+  S.odemeler.forEach(o=>{
+    if(!o.ogrenciId||!(o.aylar||[]).length)return;
+    (gruplar[o.ogrenciId]=gruplar[o.ogrenciId]||[]).push(o);
+  });
+  const sonuc=[];
+  Object.values(gruplar).forEach(ods=>{
+    if(ods.length<2)return;
+    for(let i=0;i<ods.length;i++){
+      for(let j=i+1;j<ods.length;j++){
+        const a=ods[i],b=ods[j];
+        if(a.sinifId===b.sinifId)continue;
+        const bAy=new Set(b.aylar||[]);
+        const ortak=(a.aylar||[]).filter(x=>bAy.has(x));
+        if(ortak.length>0)sonuc.push({a,b,ortak});
+      }
+    }
+  });
+  return sonuc;
+}
+function openCakisanOdemelerModal(){
+  drawerKapat();
+  const cakisanlar=cakisanOdemeleriBul();
+  const el=document.getElementById('cakisan-odemeler-liste');
+  if(!cakisanlar.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">Çakışan ödeme bulunamadı.</div></div>';
+  } else {
+    el.innerHTML=cakisanlar.map((c,idx)=>{
+      const og=S.ogrenciler.find(o=>o.id===c.a.ogrenciId);
+      const siA=S.siniflar.find(s=>s.id===c.a.sinifId),siB=S.siniflar.find(s=>s.id===c.b.sinifId);
+      const kartHtml=(od,si)=>`<div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px;margin-top:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <span style="font-weight:600;">${si?si.ad:'?'}</span>
+          <span style="color:var(--green);font-weight:600;">${(od.tutar||0).toLocaleString(LC())} ₺</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2);">${(od.aylar||[]).map(a=>ayLabel(a)).join(', ')}</div>
+        <div style="font-size:11.5px;color:var(--text3);margin-top:2px;">${formatDate(od.tarih)} · ${od.yontem||'—'}</div>
+        <button class="btn btn-sm" style="width:100%;margin-top:8px;background:#ef444422;color:var(--red);border:1px solid #ef444440;" onclick="cakisanOdemeSil('${od.id}',${idx})">Bu Ödemeyi Sil</button>
+      </div>`;
+      return `<div style="border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px;">
+        <div style="font-weight:700;margin-bottom:2px;">${og?og.ad+' '+(og.soyad||''):'?'}</div>
+        <div style="font-size:12px;color:var(--amber);">Ortak aylar: ${c.ortak.map(a=>ayLabel(a)).join(', ')}</div>
+        ${kartHtml(c.a,siA)}
+        ${kartHtml(c.b,siB)}
+      </div>`;
+    }).join('');
+  }
+  openModal('m-cakisan-odemeler');
+}
+async function cakisanOdemeSil(odemeId,idx){
+  confirm_('Ödemeyi Sil','Bu ödeme kaydı kalıcı olarak silinecek. Emin misiniz?',async()=>{
+    setSyncing(true);
+    try{
+      await db.collection('odemeler').doc(odemeId).delete();
+      S.odemeler=S.odemeler.filter(o=>o.id!==odemeId);
+      _poll('odemeler');
+      showToast('Ödeme silindi ✓','success');
+      openCakisanOdemelerModal();
+    }catch(e){
+      showToast('Silinemedi: '+e.message,'error');
+    }
+    setSyncing(false);
+  });
 }
 let SO_TIP='hafta', SO_ARAMA='';
 function openSonOdemelerModal(){SO_ARAMA='';sonOdemelerFiltre('hafta');openModal('m-son-odemeler');}
