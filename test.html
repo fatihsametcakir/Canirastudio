@@ -7026,8 +7026,9 @@ async function renderGiderRapor(){
         asistanAd=egitmen.ad;
         basEgitmenKar=kalanKiraSonrasi-asistanOdeme;
       } else {
-        // Baş eğitmen veya eğitmen atanmamış
-        basEgitmenKar=sinifGelir-kira;
+        // Baş eğitmen veya eğitmen atanmamış — gelir kirayı karşılamıyorsa kâr 0 gösterilir
+        // (stüdyonun zararı eğitmene eksi kâr olarak yansıtılmaz).
+        basEgitmenKar=Math.max(0,sinifGelir-kira);
       }
       // İkinci eğitmen (asistan tarzı) — sabit yüzde alır, kalan havuzu aşamaz.
       if(egitmen2&&asistan2Pct>0){
