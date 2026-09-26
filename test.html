@@ -2736,8 +2736,10 @@ function openSinifModal(id){
   };
   egSel.onchange=guncelleSinifAlani;
   const guncelleSinif2Alani=()=>{
+    const eg2=S.egitmenler.find(e=>e.id===egSel2.value);
     const asistan2Alan=document.getElementById('si-asistan2-alan');
-    if(asistan2Alan) asistan2Alan.style.display=egSel2.value?'block':'none';
+    // İki eğitmen de baş eğitmense yüzde sorulmaz — kira sonrası kalan otomatik %50-%50 bölünür.
+    if(asistan2Alan) asistan2Alan.style.display=(eg2&&!eg2.basEgitmen)?'block':'none';
   };
   egSel2.onchange=guncelleSinif2Alani;
 
@@ -6963,15 +6965,11 @@ async function renderGiderRapor(){
     const ikiBasEgitmen=!!(egitmen&&egitmen.basEgitmen&&egitmen2&&egitmen2.basEgitmen);
 
     if(ikiBasEgitmen){
-      // İki baş eğitmen birlikte atanmış — asistan gideri yok, kira düştükten
-      // sonra kalan TAMAMI ikisi arasında paylaşılır. Yüzdeler girilmemişse
-      // (ikisi de 0) %50-%50 varsayılır; girilmişse kendi aralarındaki orana
-      // göre bölünür (toplamları 100 olmak zorunda değil, oran esas alınır).
+      // İki baş eğitmen birlikte atanmış — form bu durumda yüzde sormaz,
+      // kira düştükten sonra kalan TAMAMI ikisi arasında her zaman %50-%50
+      // bölünür (tek baş eğitmende olduğu gibi, burada da yüzde girilmez).
       const kalanKiraSonrasi=Math.max(0,sinifGelir-kira);
-      let p1=si.asistanPct||0,p2=si.asistan2Pct||0;
-      if(p1===0&&p2===0){p1=50;p2=50;}
-      const toplamPct=(p1+p2)||1;
-      const pay1=Math.round(kalanKiraSonrasi*p1/toplamPct);
+      const pay1=Math.round(kalanKiraSonrasi/2);
       const pay2=kalanKiraSonrasi-pay1;
       karPaylari=[{egitmenId:egitmen.id,ad:egitmen.ad,tutar:pay1},{egitmenId:egitmen2.id,ad:egitmen2.ad,tutar:pay2}];
       basEgitmenKar=kalanKiraSonrasi;
