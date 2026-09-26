@@ -60,7 +60,7 @@ if('navigation' in window){
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Can & Irina Studio</title>
+<title>🧪 TEST — Can & Irina Studio</title>
 <!-- PWA Manifest (gerçek dosya - PWABuilder/APK üretimi için gerekli) -->
 <link rel="manifest" href="./manifest.json">
 <!-- iOS splash / icon -->
@@ -514,7 +514,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 </style>
 </head>
 <body>
-<div id="login-screen">
+<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#f59e0b;color:#000;text-align:center;font-weight:700;font-size:13px;padding:4px 0;font-family:sans-serif;">🧪 TEST ORTAMI — bu gerçek veriler değil</div>
+<div id="login-screen" style="padding-top:24px;">
   <div class="login-logo">Can & Irina<br><span>Studio</span></div>
   <div class="login-sub" id="login-sub-text" data-i18n="yonetim_paneli">Yönetim Paneli</div>
   <div class="login-box">
@@ -925,7 +926,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
       <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()">🏆 Yarışma (Jack & Jill)</button>
-      <a class="drawer-btn" href="https://fatihsametcakir.github.io/Canirastudio/test.html" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none;background:#f59e0b1c;color:#f59e0b;border:1px solid #f59e0b40;border-radius:var(--radius-sm);width:100%;margin-bottom:0;box-sizing:border-box;">🧪 Test Ortamına Git</a>
+      <a class="drawer-btn" href="https://fatihsametcakir.github.io/Canirastudio/index.html" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none;background:#f59e0b1c;color:#f59e0b;border:1px solid #f59e0b40;border-radius:var(--radius-sm);width:100%;margin-bottom:0;box-sizing:border-box;">🟢 Canlı Ortama Git</a>
     </div>
     <label style="display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;">
       <input type="checkbox" id="robot-ayar-toggle" onchange="robotAyarDegisti(this)" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--purple);cursor:pointer;"/>
@@ -1110,6 +1111,12 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <label data-i18n="asistan_pay_orani">Asistan Pay Oranı (%)</label>
     <input id="si-asistan-pct" type="number" placeholder="40" min="0" max="100"/>
     <div style="font-size:11px;color:var(--text3);margin-top:4px;" data-i18n="asistan_pay_aciklama">O ayın gelirinin bu yüzdesi asistan eğitmene ödenir.</div>
+  </div>
+  <div class="field"><label>İkinci Eğitmen (opsiyonel)</label><select id="si-egitmen2"><option value="">— Yok —</option></select></div>
+  <div class="field" id="si-asistan2-alan" style="display:none;">
+    <label>2. Eğitmen Pay Oranı (%)</label>
+    <input id="si-asistan2-pct" type="number" placeholder="20" min="0" max="100"/>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px;">O ayın gelirinin bu yüzdesi bu eğitmene ödenir (kira ve 1. eğitmenin payı düşüldükten sonra kalan tutarı geçmez).</div>
   </div>
   <div class="field"><label data-i18n="gun">Gün</label><select id="si-gun"><option value="Pazartesi" data-i18n="pazartesi">Pazartesi</option><option value="Salı" data-i18n="sali">Salı</option><option value="Çarşamba" data-i18n="carsamba">Çarşamba</option><option value="Perşembe" data-i18n="persembe">Perşembe</option><option value="Cuma" data-i18n="cuma">Cuma</option><option value="Cumartesi" data-i18n="cumartesi">Cumartesi</option><option value="Pazar" data-i18n="pazar">Pazar</option></select></div>
   <div class="field"><label data-i18n="saat">Saat</label><input id="si-saat" type="time" value="19:00"/></div>
@@ -1325,9 +1332,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <script>
 // ── Firestore REST API — harici CDN yok, iOS dahil her yerde çalışır ──
-const FS_PROJECT='canirinastudio';
+const FS_PROJECT='caniratest';
 const FS_API=`https://firestore.googleapis.com/v1/projects/${FS_PROJECT}/databases/(default)/documents`;
-const FS_KEY='AIzaSyCzk-_5P70Xd6wBgOVZwkfQO8zn6_Vk2gY';
+const FS_KEY='AIzaSyBRiPIkZfgrZ7OiKNrZ8y3QrMHi763I7B8';
 
 // ── YouTube Data API (Ders Videoları için) ──
 const YT_API_KEY='AIzaSyBZYwTKXPhvaetOj8qMCuMbbrqbKyWt0BE';
@@ -2061,6 +2068,30 @@ let CONFIRM_CB=null;
 
 // helpers
 function ayKey(y,m){return y+'-'+(m<10?'0':'')+m;}
+
+// Bir sınıfın (ham) gelirinden, atanmış eğitmen(ler)e gidecek toplam payı hesaplar.
+// 1. eğitmen "asistan" (baş eğitmen değil) ise kendi yüzdesini alır, baş eğitmense
+// kalanı aldığı için burada bir gider oluşturmaz. 2. eğitmen (varsa) her zaman
+// sabit yüzdesini alır. İkisi de kira düştükten sonraki havuzu aşamaz.
+// Not: bu hızlı özet kartlarında (Ana Sayfa, Gelir Trendi) HAM ödeme tutarı
+// kullanılır — ders bazlı ay dağılımı (sinifGelirAyProrated) sadece Gider
+// Raporu'ndaki detaylı sınıf bazlı hesaplamada kullanılır.
+function sinifAsistanGideriHesapla(si,siGelir){
+  const eg1=S.egitmenler.find(e=>e.id===si.egitmenId);
+  const eg2=S.egitmenler.find(e=>e.id===si.egitmen2Id);
+  const kira=si.kira||0;
+  let odeme1=0;
+  let kalan=Math.max(0,siGelir-kira);
+  if(eg1&&!eg1.basEgitmen){
+    odeme1=Math.min(Math.round(siGelir*(si.asistanPct||0)/100),kalan);
+    kalan-=odeme1;
+  }
+  let odeme2=0;
+  if(eg2&&(si.asistan2Pct||0)>0){
+    odeme2=Math.min(Math.round(siGelir*(si.asistan2Pct||0)/100),Math.max(0,kalan));
+  }
+  return odeme1+odeme2;
+}
 function ayLabel(k){if(!k)return'';const[y,m]=k.split('-');const d=new Date(parseInt(y),parseInt(m)-1,1);return d.toLocaleDateString(LC(),{month:'long'})+' '+y;}
 function addDays(s,d){const dt=new Date(s+'T00:00:00');dt.setDate(dt.getDate()+d);return otTarihStr(dt);}
 function formatDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short'});}catch(e){return d;}}
@@ -2693,6 +2724,9 @@ function openSinifModal(id){
   const egSel=document.getElementById('si-egitmen');
   egSel.innerHTML='<option value="">— Seçin —</option>'+
     S.egitmenler.map(e=>`<option value="${e.id}">${e.ad}${e.basEgitmen?' ⭐':''}</option>`).join('');
+  const egSel2=document.getElementById('si-egitmen2');
+  egSel2.innerHTML='<option value="">— Yok —</option>'+
+    S.egitmenler.map(e=>`<option value="${e.id}">${e.ad}${e.basEgitmen?' ⭐':''}</option>`).join('');
 
   const guncelleSinifAlani=()=>{
     const seciliId=egSel.value;
@@ -2701,6 +2735,11 @@ function openSinifModal(id){
     if(asistanAlan) asistanAlan.style.display=(eg&&!eg.basEgitmen)?'block':'none';
   };
   egSel.onchange=guncelleSinifAlani;
+  const guncelleSinif2Alani=()=>{
+    const asistan2Alan=document.getElementById('si-asistan2-alan');
+    if(asistan2Alan) asistan2Alan.style.display=egSel2.value?'block':'none';
+  };
+  egSel2.onchange=guncelleSinif2Alani;
 
   if(id){
     const si=S.siniflar.find(s=>s.id===id);
@@ -2712,20 +2751,24 @@ function openSinifModal(id){
     document.getElementById('si-kira').value=si.kira||'';
     document.getElementById('si-asistan-pct').value=si.asistanPct||'';
     egSel.value=si.egitmenId||'';
+    document.getElementById('si-asistan2-pct').value=si.asistan2Pct||'';
+    egSel2.value=si.egitmen2Id||'';
     document.getElementById('m-sinif-title').textContent=t('sinifi_duzenle');
   } else {
-    ['si-ad','si-paket','si-tekders','si-kira','si-asistan-pct'].forEach(i=>document.getElementById(i).value='');
+    ['si-ad','si-paket','si-tekders','si-kira','si-asistan-pct','si-asistan2-pct'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('si-saat').value='19:00';
     egSel.value='';
+    egSel2.value='';
     document.getElementById('m-sinif-title').textContent=t('yeni_sinif');
   }
   guncelleSinifAlani();
+  guncelleSinif2Alani();
   openModal('m-sinif');
 }
 async function saveSinif(){
   const ad=document.getElementById('si-ad').value.trim();if(!ad)return;
   const btn=document.getElementById('btn-save-si');btn.disabled=true;setSyncing(true);
-  const data={ad,gun:document.getElementById('si-gun').value,saat:document.getElementById('si-saat').value,paket:parseFloat(document.getElementById('si-paket').value)||0,tekders:parseFloat(document.getElementById('si-tekders').value)||0,kira:parseFloat(document.getElementById('si-kira').value)||0,asistanPct:parseFloat(document.getElementById('si-asistan-pct').value)||0,egitmenId:document.getElementById('si-egitmen').value||null};
+  const data={ad,gun:document.getElementById('si-gun').value,saat:document.getElementById('si-saat').value,paket:parseFloat(document.getElementById('si-paket').value)||0,tekders:parseFloat(document.getElementById('si-tekders').value)||0,kira:parseFloat(document.getElementById('si-kira').value)||0,asistanPct:parseFloat(document.getElementById('si-asistan-pct').value)||0,egitmenId:document.getElementById('si-egitmen').value||null,egitmen2Id:document.getElementById('si-egitmen2').value||null,asistan2Pct:parseFloat(document.getElementById('si-asistan2-pct').value)||0};
   try{
     if(EDIT_SINIF){
       const eski=S.siniflar.find(s=>s.id===EDIT_SINIF);
@@ -3160,6 +3203,113 @@ function hesaplaKayit(ogId,siId){
     bitisTarihSonuc=dateStr(bt);
   }
   return{hak:hakSonuc,bitisTarih:bitisTarihSonuc};
+}
+
+// ── EĞİTMEN ÖDEMESİ: AY BAZLI DERS DAĞILIMI ────────────────────────────
+// Bir öğrencinin bir sınıftaki TÜM ödemelerini, hesaplaKayit ile AYNI zincir
+// mantığıyla (hangi ödeme hangi tarihten başlayıp kaç ders sürüyor) işler,
+// ama sonuçta sadece "kaç ders kaldı" değil, her ödemenin kapsadığı GERÇEK
+// ders tarihlerinin tam listesini döndürür. Böylece bir ödeme takvimde iki
+// aya yayılıyorsa (örn. ayın ortasında başlayan bir paket), o ödemenin hangi
+// dersinin hangi aya düştüğünü, dolayısıyla tutarının aylar arasında nasıl
+// bölüneceğini hesaplayabiliriz. Eğitmene "bu ay kaç ders verildiyse o kadar
+// öde" mantığı bunun üzerine kurulu.
+function hesaplaOdemeDersTarihleri(ogId,siId){
+  const si=S.siniflar.find(s=>s.id===siId);
+  if(!si)return[];
+  const k=(si.kayitlar||[]).find(x=>x.ogrenciId===ogId);
+  if(!k||k.tip!=='paket')return[]; // paket dışı kayıtlarda ders bazlı tarih takibi yok
+
+  const ods=S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);
+  const siraliOd=ods.filter(o=>o.tarih).sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  if(!siraliOd.length)return[];
+
+  const gunNoTespit=sinifGunNo(si);
+  const dersGunu=gunNoTespit>=0?gunNoTespit:1;
+  const tatilSet=new Set((S.tatiller||[]).map(t=>t.tarih));
+
+  function dateStr(t){
+    const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');
+    return y+'-'+m+'-'+d;
+  }
+  function ilkDersGunu(tarihStr){
+    const parts=tarihStr.split('-');
+    const t=new Date(+parts[0],+parts[1]-1,+parts[2]);
+    const fark=(dersGunu-t.getDay()+7)%7;
+    t.setDate(t.getDate()+fark);
+    return t;
+  }
+  // nDersSonra ile birebir aynı ilerleme mantığı, ama sadece son tarihi değil
+  // yol boyunca geçtiği TÜM geçerli (tatil olmayan) ders tarihlerini toplar.
+  function nDersTarihleri(bas,n){
+    const liste=[];
+    const t=new Date(bas.getFullYear(),bas.getMonth(),bas.getDate());
+    while(tatilSet.has(dateStr(t))){t.setDate(t.getDate()+7);}
+    liste.push(dateStr(t));
+    let sayac=1;
+    while(sayac<n){
+      t.setDate(t.getDate()+7);
+      if(!tatilSet.has(dateStr(t))){sayac++;liste.push(dateStr(t));}
+    }
+    return{liste,sonTarih:new Date(t.getFullYear(),t.getMonth(),t.getDate())};
+  }
+
+  const sonuc=[];
+  let zincirBitis=null;
+  for(const od of siraliOd){
+    const aySayisi=(od.aylar||[]).length>0?od.aylar.length:1;
+    const dersSayisi=aySayisi*4;
+    let donemBas;
+    if(!zincirBitis){
+      donemBas=ilkDersGunu(od.tarih);
+    } else {
+      const odemeIlkDers=ilkDersGunu(od.tarih);
+      if(odemeIlkDers.getTime()===zincirBitis.getTime()){
+        donemBas=new Date(zincirBitis);
+      } else if(odemeIlkDers<zincirBitis){
+        donemBas=new Date(zincirBitis.getFullYear(),zincirBitis.getMonth(),zincirBitis.getDate());
+        donemBas.setDate(donemBas.getDate()+7);
+        while(tatilSet.has(dateStr(donemBas)))donemBas.setDate(donemBas.getDate()+7);
+      } else {
+        donemBas=odemeIlkDers;
+      }
+    }
+    const{liste,sonTarih}=nDersTarihleri(donemBas,dersSayisi);
+    sonuc.push({od,tarihler:liste});
+    zincirBitis=sonTarih;
+  }
+  return sonuc;
+}
+
+// Bir sınıfın belirli bir takvim ayındaki gelirini, o ay içinde GERÇEKTEN
+// verilen derslere göre böler (ham ödeme tutarını değil). Bir öğrencinin
+// ödemesi iki aya yayılıyorsa (örn. ayın 3. haftasında kaydolan öğrencinin
+// 4 derslik paketinin 2 dersi bu ay, 2 dersi gelecek ay düşüyorsa), tutar
+// da aynı oranda bölünür. Eğitmen ödemesi bu bölünmüş tutar üzerinden
+// hesaplanır — böylece bir öğrencinin henüz verilmemiş derslerinin parası
+// bu ay eğitmene ödenmez, dersler verildiği ay ödenir.
+function sinifGelirAyProrated(si,ayKeyHedef){
+  let toplam=0;
+  (si.kayitlar||[]).forEach(k=>{
+    const ods=S.odemeler.filter(o=>o.ogrenciId===k.ogrenciId&&o.sinifId===si.id);
+    if(k.tip!=='paket'){
+      // Paket dışı (ders bazlı takibi olmayan) kayıtlarda eski davranış:
+      // ödeme hangi takvim ayında girildiyse tamamı o aya sayılır.
+      ods.forEach(o=>{
+        if(!o.tarih)return;
+        const d=new Date(o.tarih+'T00:00:00');
+        if(ayKey(d.getFullYear(),d.getMonth()+1)===ayKeyHedef)toplam+=(o.tutar||0);
+      });
+      return;
+    }
+    const dagilim=hesaplaOdemeDersTarihleri(k.ogrenciId,si.id);
+    dagilim.forEach(({od,tarihler})=>{
+      if(!tarihler.length)return;
+      const buAySayisi=tarihler.filter(d=>d.slice(0,7)===ayKeyHedef).length;
+      if(buAySayisi>0)toplam+=(od.tutar||0)*(buAySayisi/tarihler.length);
+    });
+  });
+  return Math.round(toplam);
 }
 function openKayitIslem(siId,kayitId){
   CUR_SINIF=siId;CUR_KAYIT=kayitId;
@@ -3994,12 +4144,8 @@ function renderAnasayfa(){
   const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
   const toplamKira=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
   const asistanGider=aktifSiniflar.reduce((s,si)=>{
-    const eg=S.egitmenler.find(e=>e.id===si.egitmenId);
-    if(!eg||eg.basEgitmen)return s;
     const siGelir=S.odemeler.filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===bk;}).reduce((t,o)=>t+(o.tutar||0),0);
-    const kalanKiraSonrasi=Math.max(0,siGelir-(si.kira||0));
-    const denenenOdeme=Math.round(siGelir*(si.asistanPct||0)/100);
-    return s+Math.min(denenenOdeme,kalanKiraSonrasi);
+    return s+sinifAsistanGideriHesapla(si,siGelir);
   },0);
   const netTotal=total-toplamKira-asistanGider-(GIDER_AYARLARI.kira||0);
   const fmt=v=>v>=1000?Math.round(v/1000)+'K':(Math.round(v)||'0');
@@ -4700,10 +4846,8 @@ function renderGelir(){
   const aySayisi=sirali.length||1;
   const kiraToplam=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0)*aySayisi;
   const asistanToplam=aktifSiniflar.reduce((s,si)=>{
-    const eg=S.egitmenler.find(e=>e.id===si.egitmenId);
-    if(!eg||eg.basEgitmen)return s;
     const siGelir=S.odemeler.filter(o=>o.sinifId===si.id).reduce((t,o)=>t+(o.tutar||0),0);
-    return s+siGelir*(si.asistanPct||0)/100;
+    return s+sinifAsistanGideriHesapla(si,siGelir);
   },0);
   const netToplam=toplamToplam-kiraToplam-asistanToplam;
   const aylikKira=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
@@ -4712,13 +4856,11 @@ function renderGelir(){
     const acik=GELIR_ACIK.has(key);
     // Bu ay net: brüt - aylık kira - bu ayın asistan gideri
     const buAyAsistan=aktifSiniflar.reduce((s,si)=>{
-      const eg=S.egitmenler.find(e=>e.id===si.egitmenId);
-      if(!eg||eg.basEgitmen)return s;
       const siGelir=S.odemeler.filter(o=>{
         const t=o.tarih;if(!t||o.sinifId!==si.id)return false;
         return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;
       }).reduce((t,o)=>t+(o.tutar||0),0);
-      return s+siGelir*(si.asistanPct||0)/100;
+      return s+sinifAsistanGideriHesapla(si,siGelir);
     },0);
     const ayNet=v.toplam-aylikKira-buAyAsistan-(GIDER_AYARLARI.kira||0);
     const gruplar=v.gruplar||{};
@@ -6801,12 +6943,14 @@ async function renderGiderRapor(){
 
   S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').forEach((si,idx)=>{
     const egitmen=S.egitmenler.find(e=>e.id===si.egitmenId);
+    const egitmen2=S.egitmenler.find(e=>e.id===si.egitmen2Id);
     const kira=si.kira||0;
     const asistanPct=(si.asistanPct||0)/100;
+    const asistan2Pct=(si.asistan2Pct||0)/100;
 
-    const sinifGelir=S.odemeler
-      .filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===buAyKey;})
-      .reduce((s,o)=>s+(o.tutar||0),0);
+    // Eğitmen payı hesaplaması, o ay GERÇEKTEN verilen derslere göre yapılır
+    // (ham ödeme tutarına göre değil) — bkz. sinifGelirAyProrated.
+    const sinifGelir=sinifGelirAyProrated(si,buAyKey);
 
     if(!sinifGelir&&!kira)return;
 
@@ -6828,15 +6972,30 @@ async function renderGiderRapor(){
       basEgitmenKar=sinifGelir-kira;
     }
 
+    // İkinci eğitmen (varsa) — her zaman sabit yüzde alır (baş eğitmen olsa
+    // bile "kalanı alan" değil, kendi yüzdesi kadar). Kalan havuzu (kira ve
+    // 1. eğitmenin payı düşüldükten sonra) aşamaz. Kalan kısım her durumda
+    // stüdyo/baş eğitmen kârı olarak basEgitmenKar'da kalır.
+    let asistan2Odeme=0;
+    let asistan2Ad=null;
+    if(egitmen2&&asistan2Pct>0){
+      const kalanIkinciIcin=Math.max(0,basEgitmenKar);
+      const denenenOdeme2=Math.round(sinifGelir*asistan2Pct);
+      asistan2Odeme=Math.min(denenenOdeme2,kalanIkinciIcin);
+      asistan2Ad=egitmen2.ad;
+      basEgitmenKar-=asistan2Odeme;
+    }
+
     sinifDetaylar.push({
       si, idx, egitmen, sinifGelir, kira,
       asistanOdeme, asistanAd, asistanPct: si.asistanPct||0,
+      asistan2Odeme, asistan2Ad, asistan2Pct: si.asistan2Pct||0,
       basEgitmenKar: basEgitmenKar
     });
   });
 
   const toplamKira=sinifDetaylar.reduce((s,d)=>s+d.kira,0);
-  const toplamAsistanOdeme=sinifDetaylar.reduce((s,d)=>s+d.asistanOdeme,0);
+  const toplamAsistanOdeme=sinifDetaylar.reduce((s,d)=>s+d.asistanOdeme+d.asistan2Odeme,0);
   const toplamBasEgitmenKar=sinifDetaylar.reduce((s,d)=>s+d.basEgitmenKar,0);
   // Her baş eğitmen için kendi sınıflarının kârı
   // Sınıfın egitmenId'si olan baş eğitmene yaz, yoksa toplamı eşit böl
@@ -6928,7 +7087,8 @@ async function renderGiderRapor(){
     </div>`;
 
   if(sinifDetaylar.length){
-    html+=`<div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>`;
+    html+=`<div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>
+    <div style="font-size:11px;color:var(--text3);background:var(--surface2);border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.5;">ℹ Buradaki sınıf gelirleri, o ay <b>gerçekten verilen derslere</b> göre bölünür. Ayın ortasında kaydolan bir öğrencinin ödemesi varsa, henüz verilmemiş derslerin payı bu ayda değil, dersin verildiği ayda sayılır. Bu yüzden bu tutar, o ay alınan ham ödeme toplamından farklı olabilir.</div>`;
     sinifDetaylar.forEach(d=>{
       const renk=RENK_BAR[d.idx%RENK_BAR.length];
       const karRenk=d.basEgitmenKar>=0?'var(--purple)':'var(--accent)';
@@ -6949,6 +7109,13 @@ async function renderGiderRapor(){
           <span style="color:${d.asistanOdeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistanOdeme>0?'−'+d.asistanOdeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>
         </div>
         ${d.asistanOdeme===0&&d.asistanPct<100?`<div style="font-size:10.5px;color:var(--amber);margin:-4px 0 4px;">${t('kira_yetmedi_uyari')}</div>`:''}`:''}
+
+        ${d.asistan2Ad?`
+        <div class="gider-satir" style="font-size:12px;">
+          <span style="color:var(--text2);">👤 ${d.asistan2Ad} payı (%${d.asistan2Pct})</span>
+          <span style="color:${d.asistan2Odeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistan2Odeme>0?'−'+d.asistan2Odeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>
+        </div>
+        ${d.asistan2Odeme===0&&d.asistan2Pct<100?`<div style="font-size:10.5px;color:var(--amber);margin:-4px 0 4px;">Kalan tutar bu payı karşılamadı</div>`:''}`:''}
 
         <div class="gider-satir" style="font-size:12px;">
           <span style="color:var(--text2);">${t('kira')}</span>
@@ -7078,12 +7245,8 @@ function renderGelirTrend(){
     const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
     const kiraToplam=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
     const asistanGider=aktifSiniflar.reduce((s,si)=>{
-      const eg=S.egitmenler.find(e=>e.id===si.egitmenId);
-      if(!eg||eg.basEgitmen)return s;
       const siGelir=S.odemeler.filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;}).reduce((t,o)=>t+(o.tutar||0),0);
-      const kalanKiraSonrasi=Math.max(0,siGelir-(si.kira||0));
-      const denenenOdeme=Math.round(siGelir*(si.asistanPct||0)/100);
-      return s+Math.min(denenenOdeme,kalanKiraSonrasi);
+      return s+sinifAsistanGideriHesapla(si,siGelir);
     },0);
     const net=(grup+ozel)-kiraToplam-asistanGider-(GIDER_AYARLARI.kira||0);
     aylar.push({key,label,toplam:grup+ozel,grup,ozel,net:Math.max(0,net)});
