@@ -6956,40 +6956,55 @@ async function renderGiderRapor(){
 
     let asistanOdeme=0;
     let asistanAd=null;
-    let basEgitmenKar=0;
-
-    if(egitmen&&!egitmen.basEgitmen){
-      // Asistan ders veriyor — KİRA ÖNCELİKLİDİR.
-      // Önce kira toplam gelirden düşülür; asistana ödenecek pay, normal yüzdesini
-      // aşmayacak ama kira sonrası kalan tutarı da geçmeyecek şekilde sınırlanır.
-      const kalanKiraSonrasi=Math.max(0,sinifGelir-kira);
-      const denenenOdeme=Math.round(sinifGelir*asistanPct);
-      asistanOdeme=Math.min(denenenOdeme,kalanKiraSonrasi);
-      asistanAd=egitmen.ad;
-      basEgitmenKar=kalanKiraSonrasi-asistanOdeme;
-    } else {
-      // Baş eğitmen veya eğitmen atanmamış
-      basEgitmenKar=sinifGelir-kira;
-    }
-
-    // İkinci eğitmen (varsa) — her zaman sabit yüzde alır (baş eğitmen olsa
-    // bile "kalanı alan" değil, kendi yüzdesi kadar). Kalan havuzu (kira ve
-    // 1. eğitmenin payı düşüldükten sonra) aşamaz. Kalan kısım her durumda
-    // stüdyo/baş eğitmen kârı olarak basEgitmenKar'da kalır.
     let asistan2Odeme=0;
     let asistan2Ad=null;
-    if(egitmen2&&asistan2Pct>0){
-      const kalanIkinciIcin=Math.max(0,basEgitmenKar);
-      const denenenOdeme2=Math.round(sinifGelir*asistan2Pct);
-      asistan2Odeme=Math.min(denenenOdeme2,kalanIkinciIcin);
-      asistan2Ad=egitmen2.ad;
-      basEgitmenKar-=asistan2Odeme;
+    let basEgitmenKar=0;
+    let karPaylari=[]; // [{egitmenId, ad, tutar}] — bu sınıfın kâr/kalan tutarının kime ne kadar gittiği
+    const ikiBasEgitmen=!!(egitmen&&egitmen.basEgitmen&&egitmen2&&egitmen2.basEgitmen);
+
+    if(ikiBasEgitmen){
+      // İki baş eğitmen birlikte atanmış — asistan gideri yok, kira düştükten
+      // sonra kalan TAMAMI ikisi arasında paylaşılır. Yüzdeler girilmemişse
+      // (ikisi de 0) %50-%50 varsayılır; girilmişse kendi aralarındaki orana
+      // göre bölünür (toplamları 100 olmak zorunda değil, oran esas alınır).
+      const kalanKiraSonrasi=Math.max(0,sinifGelir-kira);
+      let p1=si.asistanPct||0,p2=si.asistan2Pct||0;
+      if(p1===0&&p2===0){p1=50;p2=50;}
+      const toplamPct=(p1+p2)||1;
+      const pay1=Math.round(kalanKiraSonrasi*p1/toplamPct);
+      const pay2=kalanKiraSonrasi-pay1;
+      karPaylari=[{egitmenId:egitmen.id,ad:egitmen.ad,tutar:pay1},{egitmenId:egitmen2.id,ad:egitmen2.ad,tutar:pay2}];
+      basEgitmenKar=kalanKiraSonrasi;
+    } else {
+      if(egitmen&&!egitmen.basEgitmen){
+        // Asistan ders veriyor — KİRA ÖNCELİKLİDİR.
+        // Önce kira toplam gelirden düşülür; asistana ödenecek pay, normal yüzdesini
+        // aşmayacak ama kira sonrası kalan tutarı da geçmeyecek şekilde sınırlanır.
+        const kalanKiraSonrasi=Math.max(0,sinifGelir-kira);
+        const denenenOdeme=Math.round(sinifGelir*asistanPct);
+        asistanOdeme=Math.min(denenenOdeme,kalanKiraSonrasi);
+        asistanAd=egitmen.ad;
+        basEgitmenKar=kalanKiraSonrasi-asistanOdeme;
+      } else {
+        // Baş eğitmen veya eğitmen atanmamış
+        basEgitmenKar=sinifGelir-kira;
+      }
+      // İkinci eğitmen (asistan tarzı) — sabit yüzde alır, kalan havuzu aşamaz.
+      if(egitmen2&&asistan2Pct>0){
+        const kalanIkinciIcin=Math.max(0,basEgitmenKar);
+        const denenenOdeme2=Math.round(sinifGelir*asistan2Pct);
+        asistan2Odeme=Math.min(denenenOdeme2,kalanIkinciIcin);
+        asistan2Ad=egitmen2.ad;
+        basEgitmenKar-=asistan2Odeme;
+      }
+      karPaylari=[{egitmenId:(egitmen&&egitmen.basEgitmen)?egitmen.id:null,ad:(egitmen&&egitmen.basEgitmen)?egitmen.ad:null,tutar:basEgitmenKar}];
     }
 
     sinifDetaylar.push({
-      si, idx, egitmen, sinifGelir, kira,
+      si, idx, egitmen, egitmen2, sinifGelir, kira,
       asistanOdeme, asistanAd, asistanPct: si.asistanPct||0,
       asistan2Odeme, asistan2Ad, asistan2Pct: si.asistan2Pct||0,
+      ikiBasEgitmen, karPaylari,
       basEgitmenKar: basEgitmenKar
     });
   });
@@ -6997,19 +7012,21 @@ async function renderGiderRapor(){
   const toplamKira=sinifDetaylar.reduce((s,d)=>s+d.kira,0);
   const toplamAsistanOdeme=sinifDetaylar.reduce((s,d)=>s+d.asistanOdeme+d.asistan2Odeme,0);
   const toplamBasEgitmenKar=sinifDetaylar.reduce((s,d)=>s+d.basEgitmenKar,0);
-  // Her baş eğitmen için kendi sınıflarının kârı
-  // Sınıfın egitmenId'si olan baş eğitmene yaz, yoksa toplamı eşit böl
+  // Her baş eğitmen için kendi sınıflarının kârı — artık her sınıfın karPaylari
+  // listesi üzerinden dağıtılıyor, böylece iki baş eğitmenli sınıflarda ikisi
+  // de kendi payını alıyor (eskiden sadece 1. eğitmen slotuna yazılıyordu).
   const basEgitmenKarMap={};
   basEgitmenler.forEach(be=>{basEgitmenKarMap[be.id]=0;});
   let atanamamisKar=0;
   sinifDetaylar.forEach(d=>{
-    const egitmen=d.egitmen;
-    if(egitmen&&egitmen.basEgitmen&&basEgitmenKarMap.hasOwnProperty(egitmen.id)){
-      basEgitmenKarMap[egitmen.id]+=d.basEgitmenKar;
-    } else {
-      // Eğitmeni yok veya asistan — kârı tüm baş eğitmenlere eşit böl
-      atanamamisKar+=d.basEgitmenKar;
-    }
+    d.karPaylari.forEach(kp=>{
+      if(kp.egitmenId&&basEgitmenKarMap.hasOwnProperty(kp.egitmenId)){
+        basEgitmenKarMap[kp.egitmenId]+=kp.tutar;
+      } else {
+        // Eğitmeni yok veya baş eğitmen değil — kârı tüm baş eğitmenlere eşit böl
+        atanamamisKar+=kp.tutar;
+      }
+    });
   });
   if(basEgitmenler.length>0){
     const payBasina=Math.round(atanamamisKar/basEgitmenler.length);
@@ -7098,7 +7115,7 @@ async function renderGiderRapor(){
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
           <div>
             <div style="font-size:14px;font-weight:600;">${d.si.ad}</div>
-            ${d.egitmen?`<div style="font-size:11px;color:var(--text2);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}</div>`:''}
+            ${d.egitmen?`<div style="font-size:11px;color:var(--text2);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}${d.egitmen2?` · ${d.egitmen2.basEgitmen?'⭐':'👤'} ${d.egitmen2.ad}`:''}</div>`:''}
           </div>
           <span style="font-size:14px;font-weight:700;color:var(--green);">${d.sinifGelir.toLocaleString(LC())} ₺</span>
         </div>
@@ -7122,10 +7139,15 @@ async function renderGiderRapor(){
           <span style="color:var(--accent);font-weight:600;">−${d.kira.toLocaleString(LC())} ₺</span>
         </div>
 
+        ${d.ikiBasEgitmen?d.karPaylari.map(kp=>`
+        <div class="gider-satir" style="font-size:13px;font-weight:700;border-top:1px solid var(--border2);margin-top:4px;padding-top:8px;">
+          <span style="color:var(--text2);">⭐ ${kp.ad} ${t('kari')}</span>
+          <span style="color:${kp.tutar>=0?'var(--purple)':'var(--accent)'};">${kp.tutar.toLocaleString(LC())} ₺</span>
+        </div>`).join(''):`
         <div class="gider-satir" style="font-size:13px;font-weight:700;border-top:1px solid var(--border2);margin-top:4px;padding-top:8px;">
           <span style="color:var(--text2);">⭐ ${isAsistan?t('stuydo_kari'):(d.egitmen?.ad||basEgitmen?.ad||t('bas_egitmen'))} ${isAsistan?'':t('kari')}</span>
           <span style="color:${karRenk};">${d.basEgitmenKar.toLocaleString(LC())} ₺</span>
-        </div>
+        </div>`}
       </div>`;
     });
   }
