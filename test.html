@@ -7332,8 +7332,17 @@ async function renderGiderRapor(){
     // varsa) — kira sonradan artmışsa eski dönemler eski tutarla hesaplanır.
     const donemBasStr=donemAralik.bas.getFullYear()+'-'+String(donemAralik.bas.getMonth()+1).padStart(2,'0')+'-'+String(donemAralik.bas.getDate()).padStart(2,'0');
     const kira=sinifKiraTarihte(si,donemBasStr);
+    // Cumartesi pratik kirası — STÜDYO KİRASIYLA TAMAMEN AYNI MANTIK: bu da
+    // önceliklidir, eğitmenlere pay dağıtılmadan ÖNCE toplam gelirden düşülür.
+    // 28 günlük dönem = tam 4 hafta = tam 4 Cumartesi, bu yüzden sabit ×4.
+    // Dönemin GEÇERLİ tarihindeki (kira geçmişiyle aynı mantık) saat×saatlik
+    // ücret tutarı, aktif tüm grup sınıfları arasında eşit bölünür.
+    const pratikBilgi=pratikKiraTarihte(donemBasStr);
+    const pratikDonemTutari=(pratikBilgi.saat||0)*(pratikBilgi.saatlikUcret||0)*4;
+    const pratikPay=aktifSinifSayisi>0?Math.round(pratikDonemTutari/aktifSinifSayisi):0;
+    const kiraToplam=kira+pratikPay;
 
-    if(!sinifGelir&&!kira)return;
+    if(!sinifGelir&&!kiraToplam)return;
 
     let asistanOdeme=0;
     let asistanAd=null;
@@ -7345,27 +7354,29 @@ async function renderGiderRapor(){
 
     if(ikiBasEgitmen){
       // İki baş eğitmen birlikte atanmış — form bu durumda yüzde sormaz,
-      // kira düştükten sonra kalan TAMAMI ikisi arasında her zaman %50-%50
-      // bölünür (tek baş eğitmende olduğu gibi, burada da yüzde girilmez).
-      const kalanKiraSonrasi=Math.max(0,sinifGelir-kira);
+      // kira (+ pratik kirası) düştükten sonra kalan TAMAMI ikisi arasında
+      // her zaman %50-%50 bölünür (tek baş eğitmende olduğu gibi, burada da
+      // yüzde girilmez).
+      const kalanKiraSonrasi=Math.max(0,sinifGelir-kiraToplam);
       const pay1=Math.round(kalanKiraSonrasi/2);
       const pay2=kalanKiraSonrasi-pay1;
       karPaylari=[{egitmenId:egitmen.id,ad:egitmen.ad,tutar:pay1},{egitmenId:egitmen2.id,ad:egitmen2.ad,tutar:pay2}];
       basEgitmenKar=kalanKiraSonrasi;
     } else {
       if(egitmen&&!egitmen.basEgitmen){
-        // Asistan ders veriyor — KİRA ÖNCELİKLİDİR.
+        // Asistan ders veriyor — KİRA (+ PRATİK KİRASI) ÖNCELİKLİDİR.
         // Önce kira toplam gelirden düşülür; asistana ödenecek pay, normal yüzdesini
         // aşmayacak ama kira sonrası kalan tutarı da geçmeyecek şekilde sınırlanır.
-        const kalanKiraSonrasi=Math.max(0,sinifGelir-kira);
+        const kalanKiraSonrasi=Math.max(0,sinifGelir-kiraToplam);
         const denenenOdeme=Math.round(sinifGelir*asistanPct);
         asistanOdeme=Math.min(denenenOdeme,kalanKiraSonrasi);
         asistanAd=egitmen.ad;
         basEgitmenKar=kalanKiraSonrasi-asistanOdeme;
       } else {
-        // Baş eğitmen veya eğitmen atanmamış — gelir kirayı karşılamıyorsa kâr 0 gösterilir
-        // (stüdyonun zararı eğitmene eksi kâr olarak yansıtılmaz).
-        basEgitmenKar=Math.max(0,sinifGelir-kira);
+        // Baş eğitmen veya eğitmen atanmamış — gelir kirayı (+ pratik kirasını)
+        // karşılamıyorsa kâr 0 gösterilir (stüdyonun zararı eğitmene eksi kâr
+        // olarak yansıtılmaz).
+        basEgitmenKar=Math.max(0,sinifGelir-kiraToplam);
       }
       // İkinci eğitmen (asistan tarzı) — sabit yüzde alır, kalan havuzu aşamaz.
       if(egitmen2&&asistan2Pct>0){
@@ -7376,33 +7387,6 @@ async function renderGiderRapor(){
         basEgitmenKar-=asistan2Odeme;
       }
       karPaylari=[{egitmenId:(egitmen&&egitmen.basEgitmen)?egitmen.id:null,ad:(egitmen&&egitmen.basEgitmen)?egitmen.ad:null,tutar:basEgitmenKar}];
-    }
-
-    // ── Cumartesi pratik kirası payı ───────────────────────
-    // 28 günlük dönem = tam 4 hafta = tam 4 Cumartesi, bu yüzden sabit ×4.
-    // Dönemin GEÇERLİ tarihindeki (kira geçmişiyle aynı mantık) saat×saatlik
-    // ücret tutarı, aktif tüm grup sınıfları arasında eşit bölünür. Bir sınıfta
-    // birden fazla eğitmen payı varsa (iki baş eğitmen, ya da baş eğitmen+asistan)
-    // HER BİRİ kendi payından bu tutarı öder.
-    const pratikBilgi=pratikKiraTarihte(donemBasStr);
-    const pratikDonemTutari=(pratikBilgi.saat||0)*(pratikBilgi.saatlikUcret||0)*4;
-    const pratikPay=aktifSinifSayisi>0?Math.round(pratikDonemTutari/aktifSinifSayisi):0;
-    if(pratikPay>0){
-      if(ikiBasEgitmen){
-        karPaylari=karPaylari.map(kp=>({...kp,tutar:Math.max(0,kp.tutar-pratikPay)}));
-        basEgitmenKar=karPaylari.reduce((s,kp)=>s+kp.tutar,0);
-      } else {
-        const isAsistanSadece=!!(egitmen&&!egitmen.basEgitmen);
-        if(!isAsistanSadece){
-          basEgitmenKar=Math.max(0,basEgitmenKar-pratikPay);
-          karPaylari=[{egitmenId:(egitmen&&egitmen.basEgitmen)?egitmen.id:null,ad:(egitmen&&egitmen.basEgitmen)?egitmen.ad:null,tutar:basEgitmenKar}];
-        } else if(asistanAd){
-          asistanOdeme=Math.max(0,asistanOdeme-pratikPay);
-        }
-        if(asistan2Ad){
-          asistan2Odeme=Math.max(0,asistan2Odeme-pratikPay);
-        }
-      }
     }
 
     sinifDetaylar.push({
@@ -7573,7 +7557,7 @@ async function renderGiderRapor(){
           <span style="color:var(--text2);">⭐ ${isAsistan?t('stuydo_kari'):(d.egitmen?.ad||basEgitmen?.ad||t('bas_egitmen'))} ${isAsistan?'':t('kari')}</span>
           <span style="color:${karRenk};">${d.basEgitmenKar.toLocaleString(LC())} ₺</span>
         </div>`}
-        ${(d.sinifGelir>0&&d.kira>=d.sinifGelir&&(d.ikiBasEgitmen||!isAsistan))?`<div style="font-size:10.5px;color:var(--text3);margin:2px 0 0;">${t('kira_oncelik_notu').replace('{tutar}',d.sinifGelir.toLocaleString(LC()))}</div>`:''}
+        ${(d.sinifGelir>0&&(d.kira+d.pratikPay)>=d.sinifGelir&&(d.ikiBasEgitmen||!isAsistan))?`<div style="font-size:10.5px;color:var(--text3);margin:2px 0 0;">${t('kira_oncelik_notu').replace('{tutar}',d.sinifGelir.toLocaleString(LC()))}</div>`:''}
       </div>`;
     });
   }
