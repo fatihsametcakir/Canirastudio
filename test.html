@@ -1189,7 +1189,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="field"><label data-i18n="lbl_tutar">Tutar (₺)</label><input id="od-tutar" type="number" placeholder="800"/></div>
   <div class="field"><label data-i18n="odeme_tarihi">Ödeme Tarihi</label><input id="od-tarih" type="date"/></div>
   <div class="field"><label data-i18n="lbl_yontem">Yöntem</label><select id="od-yontem"><option value="nakit" data-i18n="nakit">Nakit</option><option value="kart" data-i18n="kart">Kart</option><option value="havale" data-i18n="havale">Havale/EFT</option></select></div>
-  <div class="field" id="od-ay-alan"><label><span data-i18n="kapsanan_aylar">Kapsanan Aylar</span> <span style="color:var(--accent);">*</span></label><div style="font-size:12px;color:var(--text2);margin-bottom:7px;" data-i18n="bu_odeme_hangi_ay">Bu ödeme hangi ay(lar) için?</div><div class="ay-grid" id="od-ay-grid"></div></div>
+  <div class="field" id="od-ay-alan"><label><span data-i18n="kapsanan_aylar">Kapsanan Aylar</span> <span style="color:var(--accent);">*</span></label><div style="font-size:12px;color:var(--text2);margin-bottom:7px;" data-i18n="bu_odeme_hangi_ay">Bu ödeme hangi ay(lar) için?</div><div id="od-ay-eski-uyari" style="display:none;font-size:11px;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:7px 9px;margin-bottom:7px;">⚠ Bu ödeme, dönem sistemi öncesinde eski "ay" formatıyla kaydedilmiş. Ders sayısı korunuyor ama aşağıda hangi dönem(ler) olduğu otomatik işaretlenemiyor — istersen doğru dönem(ler)i elle seçip eskisinin yerine geçirebilirsin.</div><div class="ay-grid" id="od-ay-grid"></div></div>
   <div class="field"><label data-i18n="lbl_not">Not</label><textarea id="od-not" placeholder="Ek not..."></textarea></div>
   <div id="od-edit-sil-row" style="display:none;margin-top:6px;"><button class="btn btn-danger" style="width:100%;" onclick="silOdeme()" data-i18n="bu_odemeyi_sil">Bu Ödemeyi Sil</button></div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-odeme')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-od" onclick="saveOdeme()" data-i18n="btn_kaydet">Kaydet</button></div>
@@ -3549,17 +3549,31 @@ function buildAyGrid(ogId,siId,editId){
   const si=S.siniflar.find(s=>s.id===siId);
   const grid=document.getElementById('od-ay-grid');
   if(!si){grid.innerHTML='';return;}
+  const donemKeyRegex=/^d\d+$/;
   const odenenDonemler=new Set();
-  ogSiOd(ogId,siId).forEach(o=>{if(o.id===editId)return;(o.aylar||[]).forEach(a=>odenenDonemler.add(a));});
-  if(editId){const ed=S.odemeler.find(o=>o.id===editId);(ed?.aylar||[]).forEach(a=>{OD_AYLAR.push(a);OD_ONCEKI.add(a);});}
+  ogSiOd(ogId,siId).forEach(o=>{if(o.id===editId)return;(o.aylar||[]).filter(a=>donemKeyRegex.test(a)).forEach(a=>odenenDonemler.add(a));});
+  let eskiFormatliUyari=false;
+  if(editId){
+    const ed=S.odemeler.find(o=>o.id===editId);
+    // Eski (dönem sistemi öncesi) takvim-ayı formatındaki değerler de OD_AYLAR'a
+    // eklenir ki kaydederken ders sayısı (aylar.length) yanlışlıkla küçülmesin —
+    // sadece ızgarada "seçili" olarak GÖSTERİLEMEZLER (hangi döneme denk
+    // geldiklerini otomatik bilemiyoruz), bu yüzden kullanıcıya uyarı gösteriyoruz.
+    (ed?.aylar||[]).forEach(a=>{
+      OD_AYLAR.push(a);OD_ONCEKI.add(a);
+      if(!donemKeyRegex.test(a))eskiFormatliUyari=true;
+    });
+  }
   // Takvim ayı yerine sınıfın KENDİ dönemleri (Dönem Başlangıç Tarihi'nden itibaren
   // 4'er haftalık bloklar) gösterilir — bkz. sinifDonemAraligi/sinifGuncelDonemIndex.
   const guncelIdx=sinifGuncelDonemIndex(si);
   const donemFmt=dt=>dt.toLocaleDateString(LC(),{day:'numeric',month:'short'});
+  // Sınıfın 1. döneminden başlayıp güncel dönemin birkaç ötesine kadar TÜM
+  // dönemler listelenir — geçmiş bir dönemi düzenlerken (örn. sınıfın açıldığı
+  // ilk dönem) o dönem her zaman görünür kalsın diye "güncele göre son 2 dönem"
+  // gibi bir pencereleme yapılmıyor.
   const donemler=[];
-  for(let i=-2;i<=7;i++){
-    const idx=guncelIdx+i;
-    if(idx<0)continue;
+  for(let idx=0;idx<=guncelIdx+7;idx++){
     const aralik=sinifDonemAraligi(si,idx);
     donemler.push({key:'d'+idx,label:(idx+1)+'. Dönem',altLabel:donemFmt(aralik.bas)+'–'+donemFmt(aralik.bitis)});
   }
@@ -3572,6 +3586,8 @@ function buildAyGrid(ogId,siId,editId){
     else if(odendi)cls+=' odendi';
     return `<div class="${cls}" onclick="toggleAy(this,'${d.key}')" title="${odendi&&!sec?'Bu dönem zaten ödendi — yine de seçebilirsiniz':''}">${d.label}${odendi&&!sec?'✓':''}<div style="font-size:9px;opacity:.75;margin-top:1px;">${d.altLabel}</div></div>`;
   }).join('');
+  const uyariEl=document.getElementById('od-ay-eski-uyari');
+  if(uyariEl)uyariEl.style.display=eskiFormatliUyari?'block':'none';
 }
 function toggleAy(el,k){el.classList.toggle('active');if(OD_AYLAR.includes(k))OD_AYLAR=OD_AYLAR.filter(x=>x!==k);else OD_AYLAR.push(k);}
 function openOdemeModal(preOg,preSi,editId){EDIT_ODEME=editId||null;document.getElementById('m-odeme-title').textContent=editId?t('odeme_duzenle'):t('odeme_ekle');document.getElementById('od-edit-sil-row').style.display=editId?'block':'none';const ss=document.getElementById('od-sinif');ss.innerHTML=S.siniflar.map(s=>`<option value="${s.id}">${s.ad}</option>`).join('');if(editId){const od=S.odemeler.find(o=>o.id===editId);if(od){ss.value=od.sinifId;odSinifChange();document.getElementById('od-ogrenci').value=od.ogrenciId;document.getElementById('od-tutar').value=od.tutar||'';document.getElementById('od-tarih').value=od.tarih||'';document.getElementById('od-yontem').value=od.yontem||'nakit';document.getElementById('od-not').value=od.not||'';buildAyGrid(od.ogrenciId,od.sinifId,editId);}}else{if(preSi)ss.value=preSi;odSinifChange(true);if(preOg)document.getElementById('od-ogrenci').value=preOg;odOgrenciChange();document.getElementById('od-tarih').value=bugunTarih();document.getElementById('od-not').value='';const s=S.siniflar.find(x=>x.id===ss.value);if(s)document.getElementById('od-tutar').value=s.paket||'';}openModal('m-odeme');}
