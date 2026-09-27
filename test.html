@@ -1120,9 +1120,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="sheet-title" id="m-sinif-title">Yeni Sınıf</div>
   <div class="field"><label data-i18n="sinif_adi">Sınıf Adı</label><input id="si-ad" placeholder="örn. Salsa Başlangıç"/></div>
   <div class="field"><label data-i18n="egitmen">Eğitmen</label><select id="si-egitmen"><option value="" data-i18n="secin">— Seçin —</option></select></div>
-  <div class="field"><label data-i18n="aylik_kira">Aylık Kira (₺)</label><input id="si-kira" type="number" placeholder="5000"/>
-    <div style="font-size:11px;color:var(--text3);margin-top:4px;">Sadece bu sınıf diğerlerinden FARKLI bir kira ödüyorsa doldur. Genelde boş bırak — o zaman "Eğitmenler & Giderler" bölümündeki ortak "Grup Dersleri Kirası" geçmişini kullanır.</div>
-  </div>
   <div class="field" id="si-asistan-alan" style="display:none;">
     <label data-i18n="asistan_pay_orani">Asistan Pay Oranı (%)</label>
     <input id="si-asistan-pct" type="number" placeholder="40" min="0" max="100"/>
@@ -2830,7 +2827,6 @@ function openSinifModal(id){
     document.getElementById('si-saat').value=si.saat;
     document.getElementById('si-paket').value=si.paket||'';
     document.getElementById('si-tekders').value=si.tekders||'';
-    document.getElementById('si-kira').value=si.kira||'';
     document.getElementById('si-asistan-pct').value=si.asistanPct||'';
     egSel.value=si.egitmenId||'';
     document.getElementById('si-asistan2-pct').value=si.asistan2Pct||'';
@@ -2838,7 +2834,7 @@ function openSinifModal(id){
     document.getElementById('si-donem-baslangic').value=si.donemBaslangic||'';
     document.getElementById('m-sinif-title').textContent=t('sinifi_duzenle');
   } else {
-    ['si-ad','si-paket','si-tekders','si-kira','si-asistan-pct','si-asistan2-pct'].forEach(i=>document.getElementById(i).value='');
+    ['si-ad','si-paket','si-tekders','si-asistan-pct','si-asistan2-pct'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('si-saat').value='19:00';
     document.getElementById('si-donem-baslangic').value=bugunTarih();
     egSel.value='';
@@ -2852,7 +2848,11 @@ function openSinifModal(id){
 async function saveSinif(){
   const ad=document.getElementById('si-ad').value.trim();if(!ad)return;
   const btn=document.getElementById('btn-save-si');btn.disabled=true;setSyncing(true);
-  const data={ad,gun:document.getElementById('si-gun').value,saat:document.getElementById('si-saat').value,paket:parseFloat(document.getElementById('si-paket').value)||0,tekders:parseFloat(document.getElementById('si-tekders').value)||0,kira:parseFloat(document.getElementById('si-kira').value)||0,asistanPct:parseFloat(document.getElementById('si-asistan-pct').value)||0,egitmenId:document.getElementById('si-egitmen').value||null,egitmen2Id:document.getElementById('si-egitmen2').value||null,asistan2Pct:parseFloat(document.getElementById('si-asistan2-pct').value)||0,donemBaslangic:document.getElementById('si-donem-baslangic').value||bugunTarih()};
+  // Not: "kira" alanı artık bu formda yok — sınıf bazlı kira, "Eğitmenler & Giderler"
+  // panelindeki ortak "Grup Dersleri Kirası" geçmişinden geliyor. Burada göndermediğimiz
+  // için .update() eski (varsa) legacy si.kira değerine dokunmaz, sadece bu formdan
+  // kaldırılmış olur — sinifKiraTarihte() hâlâ varsa onu geçersiz kılma olarak kullanır.
+  const data={ad,gun:document.getElementById('si-gun').value,saat:document.getElementById('si-saat').value,paket:parseFloat(document.getElementById('si-paket').value)||0,tekders:parseFloat(document.getElementById('si-tekders').value)||0,asistanPct:parseFloat(document.getElementById('si-asistan-pct').value)||0,egitmenId:document.getElementById('si-egitmen').value||null,egitmen2Id:document.getElementById('si-egitmen2').value||null,asistan2Pct:parseFloat(document.getElementById('si-asistan2-pct').value)||0,donemBaslangic:document.getElementById('si-donem-baslangic').value||bugunTarih()};
   try{
     if(EDIT_SINIF){
       const eski=S.siniflar.find(s=>s.id===EDIT_SINIF);
@@ -2875,7 +2875,6 @@ async function sinifDegisiklikleriGunlukle(sinifId,eski,yeni){
     {key:'gun',olay:'gun_degisti',fmt:v=>v},
     {key:'saat',olay:'saat_degisti',fmt:v=>v},
     {key:'egitmenId',olay:'egitmen_degisti',fmt:v=>egAd(v)},
-    {key:'kira',olay:'kira_degisti',fmt:v=>(v||0).toLocaleString(LC())+' ₺'},
     {key:'paket',olay:'paket_ucreti_degisti',fmt:v=>(v||0).toLocaleString(LC())+' ₺'},
     {key:'tekders',olay:'tekders_ucreti_degisti',fmt:v=>(v||0).toLocaleString(LC())+' ₺'},
   ];
@@ -3398,8 +3397,9 @@ function sinifGelirAyProrated(si,ayKeyHedef){
 
 // Sınıfın verilen bir tarihte GEÇERLİ OLAN kira tutarını döndürür.
 // Öncelik sırası:
-//  1) Sınıfın kendi "Aylık Kira" alanı doluysa (bu sınıf diğerlerinden farklı
-//     bir kira ödüyorsa) — sabit, tarihsiz bir geçersiz kılma olarak kullanılır.
+//  1) Sınıfın kendi veritabanı kaydında (artık sınıf formunda alanı yok, ama
+//     eski/legacy bir kayıtta hâlâ doluysa) si.kira set edilmişse — sabit,
+//     tarihsiz bir geçersiz kılma olarak kullanılır.
 //  2) Değilse, TÜM grup sınıfları için ortak olan "Grup Dersleri Kirası"
 //     geçmişine bakılır (Eğitmenler & Giderler bölümünde tek yerden yönetilir):
 //     sorgulanan tarihe kadarki (o tarih dahil) en güncel değişiklik kullanılır;
@@ -7067,7 +7067,7 @@ async function renderEgitmenPanel(){
     <button class="btn btn-sm" style="width:100%;margin-top:8px;background:#a78bfa1c;color:var(--purple);border:1px solid #a78bfa40;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>
     <div style="height:1px;background:var(--border);margin:16px 0;"></div>
     <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Grup Dersleri Kirası (Tüm Sınıflar İçin Ortak)</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bütün grup sınıflarının aynı kirayı ödediği tek bir yer — tek tek sınıf sınıf girmene gerek yok. Kira değiştiğinde buraya bir kayıt ekle, geçmiş dönemler eski tutarla, yeni dönemler yeni tutarla hesaplanmaya devam eder. (Bir sınıf gerçekten farklı bir kira ödüyorsa, sadece o sınıfın kendi "Aylık Kira" alanını doldurup bunu geçersiz kılabilirsin.)</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bütün grup sınıflarının aynı kirayı ödediği tek bir yer — tek tek sınıf sınıf girmene gerek yok. Kira değiştiğinde buraya bir kayıt ekle, geçmiş dönemler eski tutarla, yeni dönemler yeni tutarla hesaplanmaya devam eder.</div>
     <div id="ga-grup-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
     <button class="btn btn-ghost" style="width:100%;margin-bottom:16px;" onclick="gaGrupKiraEkle()">+ Kira Değişikliği Ekle</button>
     <div style="height:1px;background:var(--border);margin:16px 0;"></div>
@@ -7090,7 +7090,7 @@ function renderGaGrupKiraListe(){
   const el=document.getElementById('ga-grup-kira-liste');
   if(!el)return;
   const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).map((x,i)=>({...x,_i:i})).sort((a,b)=>a.tarih.localeCompare(b.tarih));
-  if(!liste.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);">Henüz eklenmedi — kira hiç değişmediyse sınıfların kendi "Aylık Kira" alanları kullanılır.</div>';return;}
+  if(!liste.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);">Henüz eklenmedi — hiçbir sınıfın kirası hesaba katılmaz.</div>';return;}
   el.innerHTML=liste.map(x=>`
     <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12.5px;">
       <span style="cursor:pointer;" onclick="gaGrupKiraDuzenle(${x._i})">${formatDateTamYil(x.tarih)} itibarıyla → <b>${(x.tutar||0).toLocaleString(LC())} ₺</b></span>
