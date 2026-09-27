@@ -1136,6 +1136,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="field"><label data-i18n="saat">Saat</label><input id="si-saat" type="time" value="19:00"/></div>
   <div class="field"><label data-i18n="paket_ucreti_4h">4 Haftalık Paket Ücreti (₺)</label><input id="si-paket" type="number" placeholder="800"/></div>
   <div class="field"><label data-i18n="tek_ders_ucreti">Tek Ders Ücreti (₺)</label><input id="si-tekders" type="number" placeholder="250"/></div>
+  <div class="field"><label>Dönem Başlangıç Tarihi</label><input id="si-donem-baslangic" type="date"/>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px;">Eğitmen ödeme dönemleri (Gider Raporu'ndaki "1. Dönem, 2. Dönem...") bu tarihten itibaren 4'er haftalık bloklar halinde ilerler — takvim ayı değil.</div>
+  </div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-sinif')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-si" onclick="saveSinif()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
 
@@ -2074,6 +2077,7 @@ let ODEME_ARAMA='';
 let BEK_GRUPLAMA='sure', BEK_ACIK=new Set();
 let YEN_GRUPLAMA='sinif', YEN_ACIK=new Set();
 let GIDER_AY=null;
+let GIDER_DONEM_IDX={}; // sinifId -> seçili dönem index (yoksa güncel dönem kullanılır)
 let PORTAL_OG_ID=null, PORTAL_TAB='bilgiler';
 let _adminNotifUnsub=null;
 
@@ -2800,10 +2804,12 @@ function openSinifModal(id){
     egSel.value=si.egitmenId||'';
     document.getElementById('si-asistan2-pct').value=si.asistan2Pct||'';
     egSel2.value=si.egitmen2Id||'';
+    document.getElementById('si-donem-baslangic').value=si.donemBaslangic||'';
     document.getElementById('m-sinif-title').textContent=t('sinifi_duzenle');
   } else {
     ['si-ad','si-paket','si-tekders','si-kira','si-asistan-pct','si-asistan2-pct'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('si-saat').value='19:00';
+    document.getElementById('si-donem-baslangic').value=bugunTarih();
     egSel.value='';
     egSel2.value='';
     document.getElementById('m-sinif-title').textContent=t('yeni_sinif');
@@ -2815,7 +2821,7 @@ function openSinifModal(id){
 async function saveSinif(){
   const ad=document.getElementById('si-ad').value.trim();if(!ad)return;
   const btn=document.getElementById('btn-save-si');btn.disabled=true;setSyncing(true);
-  const data={ad,gun:document.getElementById('si-gun').value,saat:document.getElementById('si-saat').value,paket:parseFloat(document.getElementById('si-paket').value)||0,tekders:parseFloat(document.getElementById('si-tekders').value)||0,kira:parseFloat(document.getElementById('si-kira').value)||0,asistanPct:parseFloat(document.getElementById('si-asistan-pct').value)||0,egitmenId:document.getElementById('si-egitmen').value||null,egitmen2Id:document.getElementById('si-egitmen2').value||null,asistan2Pct:parseFloat(document.getElementById('si-asistan2-pct').value)||0};
+  const data={ad,gun:document.getElementById('si-gun').value,saat:document.getElementById('si-saat').value,paket:parseFloat(document.getElementById('si-paket').value)||0,tekders:parseFloat(document.getElementById('si-tekders').value)||0,kira:parseFloat(document.getElementById('si-kira').value)||0,asistanPct:parseFloat(document.getElementById('si-asistan-pct').value)||0,egitmenId:document.getElementById('si-egitmen').value||null,egitmen2Id:document.getElementById('si-egitmen2').value||null,asistan2Pct:parseFloat(document.getElementById('si-asistan2-pct').value)||0,donemBaslangic:document.getElementById('si-donem-baslangic').value||bugunTarih()};
   try{
     if(EDIT_SINIF){
       const eski=S.siniflar.find(s=>s.id===EDIT_SINIF);
@@ -3358,6 +3364,62 @@ function sinifGelirAyProrated(si,ayKeyHedef){
   });
   return Math.round(toplam);
 }
+
+// ── Sınıfın KENDİ dönemi (takvim ayı değil) ─────────────────────────
+// Eğitmen ödeme dönemleri, sınıfın "Dönem Başlangıç Tarihi" alanından itibaren
+// 4'er haftalık (28 gün) bloklar halinde ilerler. Böylece ayın sonunda açılan
+// bir sınıfın ilk paketi "takvim ayı sona erdi" diye yapay şekilde bölünmez —
+// sınıfın kendi 1. dönemi, açıldığı günden itibaren tam 4 hafta sürer.
+const DONEM_GUN=28;
+function sinifDonemBaslangic(si){
+  if(si.donemBaslangic)return si.donemBaslangic;
+  // Alan boşsa (eski sınıflar), sabit bir tarihe ihtiyaç var — her seferinde
+  // "bugün" kullanırsak dönemler her gün kayar. Onun yerine o sınıfın en eski
+  // ödeme tarihini kullanıyoruz; hiç ödeme yoksa bugünün tarihine düşüyoruz.
+  const ods=S.odemeler.filter(o=>o.sinifId===si.id&&o.tarih);
+  if(ods.length){
+    return ods.reduce((min,o)=>o.tarih<min?o.tarih:min,ods[0].tarih);
+  }
+  return bugunTarih();
+}
+function sinifDonemIndex(si,tarihStr){
+  const bas=new Date(sinifDonemBaslangic(si)+'T00:00:00');
+  const t=new Date(tarihStr+'T00:00:00');
+  const gunFarki=Math.floor((t-bas)/864e5);
+  return Math.floor(gunFarki/DONEM_GUN);
+}
+function sinifDonemAraligi(si,idx){
+  const bas=new Date(sinifDonemBaslangic(si)+'T00:00:00');
+  const donemBas=new Date(bas);donemBas.setDate(donemBas.getDate()+idx*DONEM_GUN);
+  const donemBitis=new Date(donemBas);donemBitis.setDate(donemBitis.getDate()+DONEM_GUN-1);
+  return{bas:donemBas,bitis:donemBitis};
+}
+function sinifGuncelDonemIndex(si){
+  const simdi=simdikiZaman();
+  const s=simdi.getFullYear()+'-'+String(simdi.getMonth()+1).padStart(2,'0')+'-'+String(simdi.getDate()).padStart(2,'0');
+  return sinifDonemIndex(si,s);
+}
+function sinifGelirDonemProrated(si,donemIdx){
+  let toplam=0;
+  (si.kayitlar||[]).forEach(k=>{
+    const ods=S.odemeler.filter(o=>o.ogrenciId===k.ogrenciId&&o.sinifId===si.id);
+    if(k.tip!=='paket'){
+      ods.forEach(o=>{
+        if(!o.tarih)return;
+        if(sinifDonemIndex(si,o.tarih)===donemIdx)toplam+=(o.tutar||0);
+      });
+      return;
+    }
+    const dagilim=hesaplaOdemeDersTarihleri(k.ogrenciId,si.id);
+    dagilim.forEach(({od,tarihler})=>{
+      if(!tarihler.length)return;
+      const buDonemSayisi=tarihler.filter(d=>sinifDonemIndex(si,d)===donemIdx).length;
+      if(buDonemSayisi>0)toplam+=(od.tutar||0)*(buDonemSayisi/tarihler.length);
+    });
+  });
+  return Math.round(toplam);
+}
+
 function openKayitIslem(siId,kayitId){
   CUR_SINIF=siId;CUR_KAYIT=kayitId;
   const si=S.siniflar.find(s=>s.id===siId);
@@ -6954,6 +7016,13 @@ async function egitmenSil(id){
 }
 
 // ── GİDER RAPORU ───────────────────────────────────────
+function sinifDonemDegistir(siId,delta){
+  const si=S.siniflar.find(s=>s.id===siId);
+  if(!si)return;
+  const guncel=GIDER_DONEM_IDX[siId]??sinifGuncelDonemIndex(si);
+  GIDER_DONEM_IDX[siId]=Math.max(0,guncel+delta);
+  renderGiderRapor();
+}
 async function renderGiderRapor(){
   const el=document.getElementById('gider-rapor-content');
   if(!el)return;
@@ -6995,9 +7064,12 @@ async function renderGiderRapor(){
     const asistanPct=(si.asistanPct||0)/100;
     const asistan2Pct=(si.asistan2Pct||0)/100;
 
-    // Eğitmen payı hesaplaması, o ay GERÇEKTEN verilen derslere göre yapılır
-    // (ham ödeme tutarına göre değil) — bkz. sinifGelirAyProrated.
-    const sinifGelir=sinifGelirAyProrated(si,buAyKey);
+    // Eğitmen payı hesaplaması, TAKVİM AYINA göre değil sınıfın KENDİ döneminin
+    // (Dönem Başlangıç Tarihi'nden itibaren 4 haftalık bloklar) hangi bloğu
+    // gösteriliyorsa ona göre, o dönemde GERÇEKTEN verilen derslere göre yapılır.
+    const donemIdx=GIDER_DONEM_IDX[si.id]??sinifGuncelDonemIndex(si);
+    const donemAralik=sinifDonemAraligi(si,donemIdx);
+    const sinifGelir=sinifGelirDonemProrated(si,donemIdx);
 
     if(!sinifGelir&&!kira)return;
 
@@ -7049,7 +7121,8 @@ async function renderGiderRapor(){
       asistanOdeme, asistanAd, asistanPct: si.asistanPct||0,
       asistan2Odeme, asistan2Ad, asistan2Pct: si.asistan2Pct||0,
       ikiBasEgitmen, karPaylari,
-      basEgitmenKar: basEgitmenKar
+      basEgitmenKar: basEgitmenKar,
+      donemIdx, donemAralik
     });
   });
 
@@ -7149,20 +7222,32 @@ async function renderGiderRapor(){
 
   if(sinifDetaylar.length){
     html+=`<div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>
-    <div style="font-size:11px;color:var(--text3);background:var(--surface2);border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.5;">ℹ Buradaki sınıf gelirleri, o ay <b>gerçekten verilen derslere</b> göre bölünür. Ayın ortasında kaydolan bir öğrencinin ödemesi varsa, henüz verilmemiş derslerin payı bu ayda değil, dersin verildiği ayda sayılır. Bu yüzden bu tutar, o ay alınan ham ödeme toplamından farklı olabilir.</div>`;
+    <div style="font-size:11px;color:var(--text3);background:var(--surface2);border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.5;">ℹ Buradaki sınıf gelirleri <b>takvim ayına göre değil</b>, her sınıfın kendi "Dönem Başlangıç Tarihi"nden itibaren ilerleyen 4 haftalık dönemlere göre, o dönemde <b>gerçekten verilen derslere</b> göre bölünür. Henüz verilmemiş derslerin payı, dersin verileceği döneme sayılır. Her sınıfın altındaki ‹ › okları ile o sınıfın dönemleri arasında gezebilirsin.</div>`;
     sinifDetaylar.forEach(d=>{
       const renk=RENK_BAR[d.idx%RENK_BAR.length];
       const karRenk=d.basEgitmenKar>=0?'var(--purple)':'var(--accent)';
       const isAsistan=d.egitmen&&!d.egitmen.basEgitmen;
+      const donemFmt=dt=>dt.toLocaleDateString(LC(),{day:'numeric',month:'short'});
+      const donemAyEtiketi=(bas,bitis)=>{
+        const ay1=bas.toLocaleDateString(LC(),{month:'long',year:'numeric'});
+        const ay2=bitis.toLocaleDateString(LC(),{month:'long',year:'numeric'});
+        return ay1===ay2?ay1:(ay1+' – '+ay2);
+      };
 
       html+=`<div class="egitmen-pay-kart" style="border-left:3px solid ${renk};margin-bottom:8px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
           <div>
             <div style="font-size:14px;font-weight:600;">${d.si.ad}</div>
             ${d.egitmen?`<div style="font-size:11px;color:var(--text2);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}${d.egitmen2?` · ${d.egitmen2.basEgitmen?'⭐':'👤'} ${d.egitmen2.ad}`:''}</div>`:''}
           </div>
           <span style="font-size:14px;font-weight:700;color:var(--green);">${d.sinifGelir.toLocaleString(LC())} ₺</span>
         </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;">
+          <button onclick="sinifDonemDegistir('${d.si.id}',-1)" style="background:none;border:none;color:var(--text2);font-size:16px;cursor:pointer;padding:2px 8px;">‹</button>
+          <span style="font-size:11px;color:var(--text2);font-weight:600;">${d.donemIdx+1}. Dönem</span>
+          <button onclick="sinifDonemDegistir('${d.si.id}',1)" style="background:none;border:none;color:var(--text2);font-size:16px;cursor:pointer;padding:2px 8px;">›</button>
+        </div>
+        <div style="text-align:center;font-size:10.5px;color:var(--text3);margin-bottom:10px;">${donemAyEtiketi(d.donemAralik.bas,d.donemAralik.bitis)} <span style="opacity:.7;">(${donemFmt(d.donemAralik.bas)} – ${donemFmt(d.donemAralik.bitis)})</span></div>
 
         ${isAsistan?`
         <div class="gider-satir" style="font-size:12px;">
