@@ -7449,28 +7449,45 @@ async function renderGiderRapor(){
       karPaylari=[{egitmenId:egitmen.id,ad:egitmen.ad,tutar:pay1},{egitmenId:egitmen2.id,ad:egitmen2.ad,tutar:pay2}];
       basEgitmenKar=kalanKiraSonrasi;
     } else {
+      const kalanKiraSonrasi=Math.max(0,sinifGelir-kiraToplam);
       if(egitmen&&!egitmen.basEgitmen){
-        // Asistan ders veriyor — KİRA (+ PRATİK KİRASI) ÖNCELİKLİDİR.
-        // Önce kira toplam gelirden düşülür; asistana ödenecek pay, normal yüzdesini
-        // aşmayacak ama kira sonrası kalan tutarı da geçmeyecek şekilde sınırlanır.
-        const kalanKiraSonrasi=Math.max(0,sinifGelir-kiraToplam);
+        // Asistan ders veriyor — KİRA (+ PRATİK KİRASI) ÖNCELİKLİDİR, önce
+        // toplam gelirden düşülür. Kalan tutar üzerinde asistan(lar)ın hedef
+        // yüzdeleri hesaplanır.
         const denenenOdeme=Math.round(sinifGelir*asistanPct);
-        asistanOdeme=Math.min(denenenOdeme,kalanKiraSonrasi);
         asistanAd=egitmen.ad;
-        basEgitmenKar=kalanKiraSonrasi-asistanOdeme;
+        if(egitmen2&&asistan2Pct>0){
+          // İkinci eğitmen de kendi yüzdesi kadar sabit bir pay istiyor — o da
+          // asistan1 kadar önceliklidir, biri diğerinin önüne geçmez. Kalan
+          // tutar ikisinin istediği toplamı karşılamıyorsa, ORANLI olarak
+          // (istedikleri tutarlar oranında) bölüşülür.
+          const denenenOdeme2=Math.round(sinifGelir*asistan2Pct);
+          const toplamIstenilen=denenenOdeme+denenenOdeme2;
+          if(toplamIstenilen<=kalanKiraSonrasi){
+            asistanOdeme=denenenOdeme;
+            asistan2Odeme=denenenOdeme2;
+          } else if(toplamIstenilen>0){
+            asistanOdeme=Math.round(kalanKiraSonrasi*(denenenOdeme/toplamIstenilen));
+            asistan2Odeme=kalanKiraSonrasi-asistanOdeme;
+          }
+          asistan2Ad=egitmen2.ad;
+          basEgitmenKar=kalanKiraSonrasi-asistanOdeme-asistan2Odeme;
+        } else {
+          asistanOdeme=Math.min(denenenOdeme,kalanKiraSonrasi);
+          basEgitmenKar=kalanKiraSonrasi-asistanOdeme;
+        }
       } else {
-        // Baş eğitmen veya eğitmen atanmamış — gelir kirayı (+ pratik kirasını)
-        // karşılamıyorsa kâr 0 gösterilir (stüdyonun zararı eğitmene eksi kâr
-        // olarak yansıtılmaz).
-        basEgitmenKar=Math.max(0,sinifGelir-kiraToplam);
-      }
-      // İkinci eğitmen (asistan tarzı) — sabit yüzde alır, kalan havuzu aşamaz.
-      if(egitmen2&&asistan2Pct>0){
-        const kalanIkinciIcin=Math.max(0,basEgitmenKar);
-        const denenenOdeme2=Math.round(sinifGelir*asistan2Pct);
-        asistan2Odeme=Math.min(denenenOdeme2,kalanIkinciIcin);
-        asistan2Ad=egitmen2.ad;
-        basEgitmenKar-=asistan2Odeme;
+        // Baş eğitmen veya eğitmen atanmamış — kalan tutarın tamamı önce onun
+        // (ya da sahipsizse "stüdyo"nun) kârı sayılır; ikinci eğitmen (varsa)
+        // buradan sabit yüzdesi kadar pay alır, kalanı baş eğitmen alır.
+        basEgitmenKar=kalanKiraSonrasi;
+        if(egitmen2&&asistan2Pct>0){
+          const kalanIkinciIcin=Math.max(0,basEgitmenKar);
+          const denenenOdeme2=Math.round(sinifGelir*asistan2Pct);
+          asistan2Odeme=Math.min(denenenOdeme2,kalanIkinciIcin);
+          asistan2Ad=egitmen2.ad;
+          basEgitmenKar-=asistan2Odeme;
+        }
       }
       karPaylari=[{egitmenId:(egitmen&&egitmen.basEgitmen)?egitmen.id:null,ad:(egitmen&&egitmen.basEgitmen)?egitmen.ad:null,tutar:basEgitmenKar}];
     }
