@@ -2141,7 +2141,12 @@ function sinifAsistanGideriHesapla(si,siGelir){
   }
   return odeme1+odeme2;
 }
-function ayLabel(k){if(!k)return'';const[y,m]=k.split('-');const d=new Date(parseInt(y),parseInt(m)-1,1);return d.toLocaleDateString(LC(),{month:'long'})+' '+y;}
+function ayLabel(k){
+  if(!k)return'';
+  const donemEs=/^d(\d+)$/.exec(k);
+  if(donemEs)return (parseInt(donemEs[1],10)+1)+'. Dönem'; // yeni sistem: dönem anahtarı (d0, d1, ...)
+  const[y,m]=k.split('-');const d=new Date(parseInt(y),parseInt(m)-1,1);return d.toLocaleDateString(LC(),{month:'long'})+' '+y;
+}
 function addDays(s,d){const dt=new Date(s+'T00:00:00');dt.setDate(dt.getDate()+d);return otTarihStr(dt);}
 function formatDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short'});}catch(e){return d;}}
 function daysLeft(d){if(!d)return 999;return Math.ceil((new Date(d+'T00:00:00')-simdikiZaman())/864e5);}
@@ -3133,7 +3138,7 @@ function guncelDonemOdemesiBul(ogId,siId){
   const ods=S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);
   const bugunStr=(()=>{const d=simdikiZaman();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})();
   // Önce aylık tip ödemelerde, güncel ayı doğrudan kapsayan var mı bak
-  const aylikEslesen=ods.find(o=>o.odTip==='aylik'&&(o.aylar||[]).includes(bugunStr));
+  const aylikEslesen=ods.find(o=>o.odTip==='aylik'&&odemeAyiKapsiyorMu(o,bugunStr));
   if(aylikEslesen)return aylikEslesen;
   if(k.tip!=='paket')return null;
   // Paket tipi kayıt: hesaplaKayit ile aynı zincir mantığını, hangi ödemenin
@@ -3394,6 +3399,28 @@ function sinifDonemAraligi(si,idx){
   const donemBitis=new Date(donemBas);donemBitis.setDate(donemBitis.getDate()+DONEM_GUN-1);
   return{bas:donemBas,bitis:donemBitis};
 }
+// Bir ödemenin "aylar" listesini GERÇEK takvim ay(lar)ına çevirir. Eski (takvim-ayı,
+// "YYYY-AA") ve yeni (dönem, "dN") anahtar formatlarının ikisini de anlar — bir dönem
+// iki takvim ayına yayılıyorsa ikisi de sete eklenir. "Bu ay ödendi mi" rozetleri ve
+// çakışan-ödeme tespiti gibi hâlâ takvim ayına göre çalışan yerler bunu kullanır.
+function odemeGercekAylar(od){
+  const set=new Set();
+  (od?.aylar||[]).forEach(a=>{
+    const donemEs=/^d(\d+)$/.exec(a);
+    if(!donemEs){set.add(a);return;}
+    const si=S.siniflar.find(s=>s.id===od.sinifId);
+    if(!si)return;
+    const{bas,bitis}=sinifDonemAraligi(si,parseInt(donemEs[1],10));
+    let t=new Date(bas.getFullYear(),bas.getMonth(),1);
+    const son=new Date(bitis.getFullYear(),bitis.getMonth(),1);
+    while(t<=son){
+      set.add(t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0'));
+      t.setMonth(t.getMonth()+1);
+    }
+  });
+  return set;
+}
+function odemeAyiKapsiyorMu(od,ayKeyHedef){return odemeGercekAylar(od).has(ayKeyHedef);}
 function sinifGuncelDonemIndex(si){
   const simdi=simdikiZaman();
   const s=simdi.getFullYear()+'-'+String(simdi.getMonth()+1).padStart(2,'0')+'-'+String(simdi.getDate()).padStart(2,'0');
@@ -4397,7 +4424,7 @@ function renderAnasayfa(){
       const kayit=(si.kayitlar||[]).find(k=>k.ogrenciId===og.id);
       if(kayit&&kayit.donduruldu)return;
       if(kayit&&kayit.tip==='tekders')return;
-      const buAyOdendi=S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===si.id&&(o.aylar||[]).includes(bk));
+      const buAyOdendi=S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===si.id&&odemeAyiKapsiyorMu(o,bk));
       if(!buAyOdendi){
         if(!bekGruplar[si.ad])bekGruplar[si.ad]={si,ogList:[]};
         bekGruplar[si.ad].ogList.push(og);
@@ -4706,7 +4733,7 @@ function renderSinifDetay(siId){
     const h=hesaplaKayit(k.ogrenciId,siId);
     const gh=h?h.hak:k.hak,gb=h?h.bitisTarih:k.bitisTarih;
     const dl=daysLeft(gb);
-    const buAyOdendi=S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===siId&&(o.aylar||[]).includes(bk));
+    const buAyOdendi=S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===siId&&odemeAyiKapsiyorMu(o,bk));
     const hicOdemeYok=!S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===siId);
     const odendi=buAyOdendi||(gh>0);
     const dc=donduruldu?'gd-amber':hicOdemeYok?'gd-red':!odendi?'gd-red':dl<=0&&gh===0?'gd-red':dl<=0&&gh>0?'gd-amber':dl<=3?'gd-amber':dl<=7?'gd-cyan':'gd-green';
@@ -4899,7 +4926,7 @@ function renderOdemeler(){
       const donduruldu=!!k.donduruldu;
       const ods=ogSiOd(og.id,si.id);
       const top=ods.reduce((s,o)=>s+(o.tutar||0),0);
-      const bAy=ods.some(o=>(o.aylar||[]).includes(bk));
+      const bAy=ods.some(o=>odemeAyiKapsiyorMu(o,bk));
       const h=hesaplaKayit(og.id,si.id);const gh=h?h.hak:k.hak;
       // Aktif ders hakkı varsa (paket bu ay içinde geçerliyse) "Ödendi" göster
       const odendi=bAy||(gh>0);
@@ -8214,8 +8241,11 @@ function cakisanOdemeleriBul(){
       for(let j=i+1;j<ods.length;j++){
         const a=ods[i],b=ods[j];
         if(a.sinifId===b.sinifId)continue;
-        const bAy=new Set(b.aylar||[]);
-        const ortak=(a.aylar||[]).filter(x=>bAy.has(x));
+        // Farklı sınıflardaki iki ödeme, dönem anahtarları (dN) farklı sınıflarda farklı
+        // tarihlere karşılık geldiği için doğrudan string olarak değil, gerçek takvim
+        // aylarına çevrilip öyle karşılaştırılır.
+        const bAy=odemeGercekAylar(b);
+        const ortak=[...odemeGercekAylar(a)].filter(x=>bAy.has(x));
         if(ortak.length>0)sonuc.push({a,b,ortak});
       }
     }
