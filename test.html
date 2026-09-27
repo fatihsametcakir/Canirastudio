@@ -2071,7 +2071,7 @@ function cycleLang(){
   applyLang();
 }
 let OG_FILTER='aktif', OG_GRUPLU=true, OG_SIRALAMA='ad', ODEME_TAB='odemeler';
-let OD_AYLAR=[], OD_ONCEKI=new Set();
+let OD_AYLAR=[], OD_ONCEKI=new Set(), OD_ESKI_AYLAR=[];
 let ODEME_ACIK=new Set(), GELIR_ACIK=new Set();
 let ODEME_ARAMA='';
 let BEK_GRUPLAMA='sure', BEK_ACIK=new Set();
@@ -3572,7 +3572,7 @@ async function tasiKayit(){
 // ── GRUP ÖDEME ─────────────────────────────────────────
 function ogSiOd(ogId,siId){return S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);}
 function buildAyGrid(ogId,siId,editId){
-  OD_AYLAR=[];OD_ONCEKI=new Set();
+  OD_AYLAR=[];OD_ONCEKI=new Set();OD_ESKI_AYLAR=[];
   const si=S.siniflar.find(s=>s.id===siId);
   const grid=document.getElementById('od-ay-grid');
   if(!si){grid.innerHTML='';return;}
@@ -3582,13 +3582,15 @@ function buildAyGrid(ogId,siId,editId){
   let eskiFormatliUyari=false;
   if(editId){
     const ed=S.odemeler.find(o=>o.id===editId);
-    // Eski (dönem sistemi öncesi) takvim-ayı formatındaki değerler de OD_AYLAR'a
-    // eklenir ki kaydederken ders sayısı (aylar.length) yanlışlıkla küçülmesin —
-    // sadece ızgarada "seçili" olarak GÖSTERİLEMEZLER (hangi döneme denk
-    // geldiklerini otomatik bilemiyoruz), bu yüzden kullanıcıya uyarı gösteriyoruz.
+    // Yeni (dönem, "dN") formatındaki değerler ızgarada seçili gösterilir ve
+    // OD_AYLAR'a girer. Eski (dönem sistemi öncesi) takvim-ayı formatındakiler
+    // ise AYRI bir listede (OD_ESKI_AYLAR) tutulur — ızgaraya hiç karışmaz.
+    // Kaydederken: kullanıcı yeni bir dönem SEÇTİYSE eski liste tamamen
+    // bırakılır (yoksa ders sayısı iki katına çıkardı — bu bug'ı düzeltiyoruz);
+    // hiç dokunmadıysa eski liste aynen korunur.
     (ed?.aylar||[]).forEach(a=>{
-      OD_AYLAR.push(a);OD_ONCEKI.add(a);
-      if(!donemKeyRegex.test(a))eskiFormatliUyari=true;
+      if(donemKeyRegex.test(a)){OD_AYLAR.push(a);OD_ONCEKI.add(a);}
+      else{OD_ESKI_AYLAR.push(a);eskiFormatliUyari=true;}
     });
   }
   // Takvim ayı yerine sınıfın KENDİ dönemleri (Dönem Başlangıç Tarihi'nden itibaren
@@ -3722,7 +3724,7 @@ function setOdTip(tip){
 async function saveOdeme(){
   const siId=document.getElementById('od-sinif').value,ogId=document.getElementById('od-ogrenci').value,tutar=parseFloat(document.getElementById('od-tutar').value);
   if(!ogId||!siId||!tutar){showToast('Lütfen sınıf, öğrenci ve tutar girin.','error');return;}
-  if(OD_TIP==='aylik'&&!OD_AYLAR.length){
+  if(OD_TIP==='aylik'&&!OD_AYLAR.length&&!OD_ESKI_AYLAR.length){
     const grid=document.getElementById('od-ay-grid');
     if(grid){grid.style.outline='2px solid var(--accent)';grid.style.borderRadius='8px';setTimeout(()=>{grid.style.outline='';},2000);}
     showToast('Lütfen en az bir dönem seçin.','error');return;
@@ -3747,7 +3749,11 @@ async function saveOdeme(){
 }
 async function saveOdemeDevam(siId,ogId,tutar){
   const btn=document.getElementById('btn-save-od');btn.disabled=true;setSyncing(true);
-  const data={ogrenciId:ogId,sinifId:siId,tutar,tarih:document.getElementById('od-tarih').value,yontem:document.getElementById('od-yontem').value,odTip:OD_TIP,aylar:OD_TIP==='aylik'?OD_AYLAR:[],not:document.getElementById('od-not').value,olusturma:EDIT_ODEME?(S.odemeler.find(o=>o.id===EDIT_ODEME)?.olusturma||Date.now()):Date.now(),tip:'grup'};
+  // Yeni dönem seçildiyse eski (takvim-ayı formatındaki) kayıt tamamen bırakılır —
+  // ikisi üst üste eklenip ders sayısını yanlışlıkla ikiye katlamasın diye.
+  // Kullanıcı ızgaraya hiç dokunmadıysa eski kayıt aynen korunur.
+  const kaydedilecekAylar=OD_AYLAR.length?OD_AYLAR:OD_ESKI_AYLAR;
+  const data={ogrenciId:ogId,sinifId:siId,tutar,tarih:document.getElementById('od-tarih').value,yontem:document.getElementById('od-yontem').value,odTip:OD_TIP,aylar:OD_TIP==='aylik'?kaydedilecekAylar:[],not:document.getElementById('od-not').value,olusturma:EDIT_ODEME?(S.odemeler.find(o=>o.id===EDIT_ODEME)?.olusturma||Date.now()):Date.now(),tip:'grup'};
   try{
     let result;
     if(EDIT_ODEME){
