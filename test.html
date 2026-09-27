@@ -1346,6 +1346,17 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
 </div></div>
 
+<div class="overlay" id="m-grup-kira"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:14px;" id="gk-baslik">Kira Değişikliği Ekle</div>
+  <div class="field"><label>Hangi Tarihten İtibaren Geçerli</label><input id="gk-tarih" type="date"/></div>
+  <div class="field"><label>Aylık Kira (₺)</label><input id="gk-tutar" type="number" placeholder="19600" inputmode="decimal"/></div>
+  <div style="display:flex;gap:10px;margin-top:6px;">
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-grup-kira')">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" id="gk-kaydet" onclick="gaGrupKiraKaydet()">Kaydet</button>
+  </div>
+</div></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
@@ -2151,6 +2162,7 @@ function ayLabel(k){
 }
 function addDays(s,d){const dt=new Date(s+'T00:00:00');dt.setDate(dt.getDate()+d);return otTarihStr(dt);}
 function formatDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short'});}catch(e){return d;}}
+function formatDateTamYil(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}}
 function daysLeft(d){if(!d)return 999;return Math.ceil((new Date(d+'T00:00:00')-simdikiZaman())/864e5);}
 function initials(a,b){return((a||'')[0]||'').toUpperCase()+((b||'')[0]||'').toUpperCase();}
 
@@ -7048,7 +7060,7 @@ function renderGaGrupKiraListe(){
   if(!liste.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);">Henüz eklenmedi — kira hiç değişmediyse sınıfların kendi "Aylık Kira" alanları kullanılır.</div>';return;}
   el.innerHTML=liste.map(x=>`
     <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12.5px;">
-      <span style="cursor:pointer;" onclick="gaGrupKiraDuzenle(${x._i})">${formatDate(x.tarih)} itibarıyla → <b>${(x.tutar||0).toLocaleString(LC())} ₺</b></span>
+      <span style="cursor:pointer;" onclick="gaGrupKiraDuzenle(${x._i})">${formatDateTamYil(x.tarih)} itibarıyla → <b>${(x.tutar||0).toLocaleString(LC())} ₺</b></span>
       <div style="display:flex;gap:2px;">
         <button type="button" onclick="gaGrupKiraDuzenle(${x._i})" style="background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:0 4px;" title="Düzenle">✎</button>
         <button type="button" onclick="gaGrupKiraSil(${x._i})" style="background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 4px;" title="Sil">✕</button>
@@ -7065,31 +7077,33 @@ async function gaGrupKiraKaydetListe(liste){
   }catch(e){alert('Hata: '+e.message);}
   setSyncing(false);
 }
-async function gaGrupKiraEkle(){
-  const tarih=prompt('Bu kira tutarı hangi tarihten itibaren geçerli? (YYYY-AA-GG)',bugunTarih());
-  if(!tarih)return;
-  const t2=new Date(tarih+'T00:00:00');
-  if(isNaN(t2.getTime())){alert('Geçersiz tarih formatı. Örnek: 2026-08-20');return;}
-  const tutarStr=prompt('Bu tarihten itibaren tüm grup sınıfları için aylık kira ne kadar? (₺)','');
-  const tutar=parseFloat(tutarStr);
-  if(!tutarStr||isNaN(tutar)){alert('Geçersiz tutar.');return;}
-  const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).filter(x=>x.tarih!==tarih); // aynı tarih varsa üzerine yazılır
-  liste.push({tarih,tutar});
-  await gaGrupKiraKaydetListe(liste);
+let GK_DUZENLE_IDX=null;
+function gaGrupKiraEkle(){
+  GK_DUZENLE_IDX=null;
+  document.getElementById('gk-baslik').textContent='Kira Değişikliği Ekle';
+  document.getElementById('gk-tarih').value=bugunTarih();
+  document.getElementById('gk-tutar').value='';
+  openModal('m-grup-kira');
 }
-async function gaGrupKiraDuzenle(i){
+function gaGrupKiraDuzenle(i){
   const mevcut=(GIDER_AYARLARI.grupKiraGecmisi||[])[i];
   if(!mevcut)return;
-  const tarih=prompt('Bu kira tutarı hangi tarihten itibaren geçerli? (YYYY-AA-GG)',mevcut.tarih);
-  if(!tarih)return;
-  const t2=new Date(tarih+'T00:00:00');
-  if(isNaN(t2.getTime())){alert('Geçersiz tarih formatı. Örnek: 2026-08-20');return;}
-  const tutarStr=prompt('Bu tarihten itibaren tüm grup sınıfları için aylık kira ne kadar? (₺)',String(mevcut.tutar||''));
+  GK_DUZENLE_IDX=i;
+  document.getElementById('gk-baslik').textContent='Kira Değişikliğini Düzenle';
+  document.getElementById('gk-tarih').value=mevcut.tarih;
+  document.getElementById('gk-tutar').value=mevcut.tutar||'';
+  openModal('m-grup-kira');
+}
+async function gaGrupKiraKaydet(){
+  const tarih=document.getElementById('gk-tarih').value;
+  if(!tarih){alert('Lütfen bir tarih seç.');return;}
+  const tutarStr=document.getElementById('gk-tutar').value;
   const tutar=parseFloat(tutarStr);
-  if(!tutarStr||isNaN(tutar)){alert('Geçersiz tutar.');return;}
-  // Düzenlenen kaydı çıkar, hedef tarihte başka bir kayıt varsa onu da çıkar (üzerine yazılır), sonra yenisini ekle
-  const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).filter((x,idx)=>idx!==i&&x.tarih!==tarih);
+  if(!tutarStr||isNaN(tutar)){alert('Lütfen geçerli bir tutar gir.');return;}
+  // Düzenleniyorsa o kaydı çıkar; hedef tarihte başka bir kayıt varsa onu da çıkar (üzerine yazılır)
+  const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).filter((x,idx)=>idx!==GK_DUZENLE_IDX&&x.tarih!==tarih);
   liste.push({tarih,tutar});
+  closeModal('m-grup-kira');
   await gaGrupKiraKaydetListe(liste);
 }
 async function gaGrupKiraSil(i){
