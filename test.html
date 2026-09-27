@@ -1357,6 +1357,18 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
 </div></div>
 
+<div class="overlay" id="m-pratik-kira"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:14px;" id="pk-baslik">Pratik Kirası Değişikliği Ekle</div>
+  <div class="field"><label>Hangi Tarihten İtibaren Geçerli</label><input id="pk-tarih" type="date"/></div>
+  <div class="field"><label>Kaç Saat (Her Cumartesi)</label><input id="pk-saat" type="number" placeholder="3" inputmode="decimal"/></div>
+  <div class="field"><label>Saatlik Ücret (₺)</label><input id="pk-saatlik-ucret" type="number" placeholder="1000" inputmode="decimal"/></div>
+  <div style="display:flex;gap:10px;margin-top:6px;">
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-pratik-kira')">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" id="pk-kaydet" onclick="gaPratikKiraKaydet()">Kaydet</button>
+  </div>
+</div></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
@@ -3401,6 +3413,19 @@ function sinifKiraTarihte(si,tarihStr){
   let uygun=null;
   for(const g of siralı){ if(g.tarih<=tarihStr)uygun=g; else break; }
   return uygun?(uygun.tutar||0):(siralı[0].tutar||0);
+}
+
+// Cumartesi pratik günü için verilen bir tarihte GEÇERLİ OLAN {saat, saatlikUcret}
+// bilgisini döndürür — "Grup Dersleri Kirası" geçmişiyle birebir aynı mantık
+// (Eğitmenler & Giderler bölümünde tek yerden yönetilir, tüm sınıflar için ortak).
+function pratikKiraTarihte(tarihStr){
+  const gecmis=(GIDER_AYARLARI&&GIDER_AYARLARI.pratikKiraGecmisi)||[];
+  if(!gecmis.length)return {saat:0,saatlikUcret:0};
+  const siralı=gecmis.slice().sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  let uygun=null;
+  for(const g of siralı){ if(g.tarih<=tarihStr)uygun=g; else break; }
+  const kayit=uygun||siralı[0];
+  return {saat:kayit.saat||0,saatlikUcret:kayit.saatlikUcret||0};
 }
 // ── Sınıfın KENDİ dönemi (takvim ayı değil) ─────────────────────────
 // Eğitmen ödeme dönemleri, sınıfın "Dönem Başlangıç Tarihi" alanından itibaren
@@ -6997,20 +7022,22 @@ async function giderAyarlariniYukle(){
       try{await db.collection('ayarlar').doc('giderAyarlari').set(veri);}catch(e){}
       return veri;
     }
-    return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[]};
-  }catch(e){return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[]};}
+    return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[]};
+  }catch(e){return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[]};}
 }
 
-async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi){
+async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi,pratikKiraGecmisi){
   const veri={kira:parseFloat(kira)||0,basEgitmenPayPct:parseFloat(pct)||0};
   if(grupKiraGecmisi!==undefined)veri.grupKiraGecmisi=grupKiraGecmisi;
   else if(GIDER_AYARLARI.grupKiraGecmisi)veri.grupKiraGecmisi=GIDER_AYARLARI.grupKiraGecmisi;
+  if(pratikKiraGecmisi!==undefined)veri.pratikKiraGecmisi=pratikKiraGecmisi;
+  else if(GIDER_AYARLARI.pratikKiraGecmisi)veri.pratikKiraGecmisi=GIDER_AYARLARI.pratikKiraGecmisi;
   await db.collection('ayarlar').doc('giderAyarlari').set(veri);
 }
 
-// Senkron erişim için önbellek — özel ders stüdyo kirası ve grup dersleri kira geçmişi
-// birçok yerde senkron render fonksiyonunda kullanılıyor
-let GIDER_AYARLARI={kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[]};
+// Senkron erişim için önbellek — özel ders stüdyo kirası, grup dersleri kira geçmişi
+// ve Cumartesi pratik kirası geçmişi birçok yerde senkron render fonksiyonunda kullanılıyor
+let GIDER_AYARLARI={kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[]};
 async function giderAyarlariniOnbellekleYukle(){
   GIDER_AYARLARI=await giderAyarlariniYukle();
 }
@@ -7044,6 +7071,11 @@ async function renderEgitmenPanel(){
     <div id="ga-grup-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
     <button class="btn btn-ghost" style="width:100%;margin-bottom:16px;" onclick="gaGrupKiraEkle()">+ Kira Değişikliği Ekle</button>
     <div style="height:1px;background:var(--border);margin:16px 0;"></div>
+    <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">🏋️ Cumartesi Pratik Kirası</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Cumartesi pratik günü için kiralanan stüdyonun kaç saatliğine, saatte ne kadar ödendiği. Her sınıfın 4 haftalık dönemi tam 4 Cumartesi içerdiği için aylık tutar otomatik ×4 hesaplanır ve aktif tüm grup sınıfları arasında eşit bölünüp, sınıftaki her eğitmenin kendi payından düşülür. Tutar değişirse buraya yeni bir kayıt ekle — geçmiş dönemler eski tutarla hesaplanmaya devam eder.</div>
+    <div id="ga-pratik-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
+    <button class="btn btn-ghost" style="width:100%;margin-bottom:16px;" onclick="gaPratikKiraEkle()">+ Pratik Kirası Değişikliği Ekle</button>
+    <div style="height:1px;background:var(--border);margin:16px 0;"></div>
     <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('ozel_ders_studyo_kirasi')}</div>
     <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('ozel_kira_aciklama')}</div>
     <div class="field"><label>${t('aylik_ortak_kira')}</label><input id="ga-kira" type="number" placeholder="10000" value="${ayarlar.kira||''}"/></div>
@@ -7051,6 +7083,7 @@ async function renderEgitmenPanel(){
 
   el.innerHTML=html;
   renderGaGrupKiraListe();
+  renderGaPratikKiraListe();
 }
 
 function renderGaGrupKiraListe(){
@@ -7110,6 +7143,69 @@ async function gaGrupKiraSil(i){
   const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).slice();
   liste.splice(i,1);
   await gaGrupKiraKaydetListe(liste);
+}
+
+function renderGaPratikKiraListe(){
+  const el=document.getElementById('ga-pratik-kira-liste');
+  if(!el)return;
+  const liste=(GIDER_AYARLARI.pratikKiraGecmisi||[]).map((x,i)=>({...x,_i:i})).sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  if(!liste.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);">Henüz eklenmedi — pratik kirası payı hesaplanmıyor.</div>';return;}
+  el.innerHTML=liste.map(x=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12.5px;">
+      <span style="cursor:pointer;" onclick="gaPratikKiraDuzenle(${x._i})">${formatDateTamYil(x.tarih)} itibarıyla → <b>${x.saat||0} saat × ${(x.saatlikUcret||0).toLocaleString(LC())} ₺</b></span>
+      <div style="display:flex;gap:2px;">
+        <button type="button" onclick="gaPratikKiraDuzenle(${x._i})" style="background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:0 4px;" title="Düzenle">✎</button>
+        <button type="button" onclick="gaPratikKiraSil(${x._i})" style="background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 4px;" title="Sil">✕</button>
+      </div>
+    </div>`).join('');
+}
+async function gaPratikKiraKaydetListe(liste){
+  setSyncing(true);
+  try{
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,liste);
+    await giderAyarlariniOnbellekleYukle();
+    renderGaPratikKiraListe();
+    renderAll();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
+let PK_DUZENLE_IDX=null;
+function gaPratikKiraEkle(){
+  PK_DUZENLE_IDX=null;
+  document.getElementById('pk-baslik').textContent='Pratik Kirası Değişikliği Ekle';
+  document.getElementById('pk-tarih').value=bugunTarih();
+  document.getElementById('pk-saat').value='';
+  document.getElementById('pk-saatlik-ucret').value='';
+  openModal('m-pratik-kira');
+}
+function gaPratikKiraDuzenle(i){
+  const mevcut=(GIDER_AYARLARI.pratikKiraGecmisi||[])[i];
+  if(!mevcut)return;
+  PK_DUZENLE_IDX=i;
+  document.getElementById('pk-baslik').textContent='Pratik Kirası Değişikliğini Düzenle';
+  document.getElementById('pk-tarih').value=mevcut.tarih;
+  document.getElementById('pk-saat').value=mevcut.saat||'';
+  document.getElementById('pk-saatlik-ucret').value=mevcut.saatlikUcret||'';
+  openModal('m-pratik-kira');
+}
+async function gaPratikKiraKaydet(){
+  const tarih=document.getElementById('pk-tarih').value;
+  if(!tarih){alert('Lütfen bir tarih seç.');return;}
+  const saatStr=document.getElementById('pk-saat').value;
+  const saat=parseFloat(saatStr);
+  if(!saatStr||isNaN(saat)){alert('Lütfen geçerli bir saat gir.');return;}
+  const ucretStr=document.getElementById('pk-saatlik-ucret').value;
+  const saatlikUcret=parseFloat(ucretStr);
+  if(!ucretStr||isNaN(saatlikUcret)){alert('Lütfen geçerli bir saatlik ücret gir.');return;}
+  const liste=(GIDER_AYARLARI.pratikKiraGecmisi||[]).filter((x,idx)=>idx!==PK_DUZENLE_IDX&&x.tarih!==tarih);
+  liste.push({tarih,saat,saatlikUcret});
+  closeModal('m-pratik-kira');
+  await gaPratikKiraKaydetListe(liste);
+}
+async function gaPratikKiraSil(i){
+  const liste=(GIDER_AYARLARI.pratikKiraGecmisi||[]).slice();
+  liste.splice(i,1);
+  await gaPratikKiraKaydetListe(liste);
 }
 
 async function egitmenAyarKaydet(){
@@ -7216,6 +7312,9 @@ async function renderGiderRapor(){
   //   basEgitmenKar = sinifGelir − kira                     → GELİR (gider değil)
 
   const sinifDetaylar=[];
+  // Cumartesi pratik kirası payının bölüneceği payda — aktif TÜM grup sınıfları
+  // (o dönem için geliri/kirası olmasa da sayılır).
+  const aktifSinifSayisi=S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').length;
 
   S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').forEach((si,idx)=>{
     const egitmen=S.egitmenler.find(e=>e.id===si.egitmenId);
@@ -7279,8 +7378,35 @@ async function renderGiderRapor(){
       karPaylari=[{egitmenId:(egitmen&&egitmen.basEgitmen)?egitmen.id:null,ad:(egitmen&&egitmen.basEgitmen)?egitmen.ad:null,tutar:basEgitmenKar}];
     }
 
+    // ── Cumartesi pratik kirası payı ───────────────────────
+    // 28 günlük dönem = tam 4 hafta = tam 4 Cumartesi, bu yüzden sabit ×4.
+    // Dönemin GEÇERLİ tarihindeki (kira geçmişiyle aynı mantık) saat×saatlik
+    // ücret tutarı, aktif tüm grup sınıfları arasında eşit bölünür. Bir sınıfta
+    // birden fazla eğitmen payı varsa (iki baş eğitmen, ya da baş eğitmen+asistan)
+    // HER BİRİ kendi payından bu tutarı öder.
+    const pratikBilgi=pratikKiraTarihte(donemBasStr);
+    const pratikDonemTutari=(pratikBilgi.saat||0)*(pratikBilgi.saatlikUcret||0)*4;
+    const pratikPay=aktifSinifSayisi>0?Math.round(pratikDonemTutari/aktifSinifSayisi):0;
+    if(pratikPay>0){
+      if(ikiBasEgitmen){
+        karPaylari=karPaylari.map(kp=>({...kp,tutar:Math.max(0,kp.tutar-pratikPay)}));
+        basEgitmenKar=karPaylari.reduce((s,kp)=>s+kp.tutar,0);
+      } else {
+        const isAsistanSadece=!!(egitmen&&!egitmen.basEgitmen);
+        if(!isAsistanSadece){
+          basEgitmenKar=Math.max(0,basEgitmenKar-pratikPay);
+          karPaylari=[{egitmenId:(egitmen&&egitmen.basEgitmen)?egitmen.id:null,ad:(egitmen&&egitmen.basEgitmen)?egitmen.ad:null,tutar:basEgitmenKar}];
+        } else if(asistanAd){
+          asistanOdeme=Math.max(0,asistanOdeme-pratikPay);
+        }
+        if(asistan2Ad){
+          asistan2Odeme=Math.max(0,asistan2Odeme-pratikPay);
+        }
+      }
+    }
+
     sinifDetaylar.push({
-      si, idx, egitmen, egitmen2, sinifGelir, kira,
+      si, idx, egitmen, egitmen2, sinifGelir, kira, pratikPay,
       asistanOdeme, asistanAd, asistanPct: si.asistanPct||0,
       asistan2Odeme, asistan2Ad, asistan2Pct: si.asistan2Pct||0,
       ikiBasEgitmen, karPaylari,
@@ -7290,6 +7416,7 @@ async function renderGiderRapor(){
   });
 
   const toplamKira=sinifDetaylar.reduce((s,d)=>s+d.kira,0);
+  const toplamPratikKira=sinifDetaylar.reduce((s,d)=>s+d.pratikPay,0);
   const toplamAsistanOdeme=sinifDetaylar.reduce((s,d)=>s+d.asistanOdeme+d.asistan2Odeme,0);
   const toplamBasEgitmenKar=sinifDetaylar.reduce((s,d)=>s+d.basEgitmenKar,0);
   // Her baş eğitmen için kendi sınıflarının kârı — artık her sınıfın karPaylari
@@ -7353,11 +7480,12 @@ async function renderGiderRapor(){
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--accentbg),transparent);border:1px solid #ff6b6b30;margin-bottom:10px;">
       <div style="font-size:11px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('giderler')}</div>
       <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('toplam_kira')}</span><span style="font-weight:600;color:var(--accent);">−${toplamKira.toLocaleString(LC())} ₺</span></div>
+      ${toplamPratikKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🏋️ Pratik Kirası</span><span style="font-weight:600;color:var(--accent);">−${toplamPratikKira.toLocaleString(LC())} ₺</span></div>`:''}
       ${toplamAsistanOdeme>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('asistan_odemeleri')}</span><span style="font-weight:600;color:var(--accent);">−${toplamAsistanOdeme.toLocaleString(LC())} ₺</span></div>`:''}
       ${ozelStudyoKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('ozel_ders_studyo_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${ozelStudyoKira.toLocaleString(LC())} ₺</span></div>`:''}
       <div class="gider-satir" style="border-top:1px solid #ff6b6b40;margin-top:4px;padding-top:8px;">
         <span style="font-weight:700;">${t('toplam_gider')}</span>
-        <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamAsistanOdeme+ozelStudyoKira>0?(toplamKira+toplamAsistanOdeme+ozelStudyoKira).toLocaleString(LC())+' ₺':'0 ₺'}</span>
+        <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamPratikKira+toplamAsistanOdeme+ozelStudyoKira>0?(toplamKira+toplamPratikKira+toplamAsistanOdeme+ozelStudyoKira).toLocaleString(LC())+' ₺':'0 ₺'}</span>
       </div>
     </div>
 
@@ -7430,6 +7558,11 @@ async function renderGiderRapor(){
           <span style="color:var(--text2);">${t('kira')}</span>
           <span style="color:var(--accent);font-weight:600;">−${d.kira.toLocaleString(LC())} ₺</span>
         </div>
+        ${d.pratikPay>0?`
+        <div class="gider-satir" style="font-size:12px;">
+          <span style="color:var(--text2);">🏋️ Pratik kirası payı</span>
+          <span style="color:var(--accent);font-weight:600;">−${d.pratikPay.toLocaleString(LC())} ₺</span>
+        </div>`:''}
 
         ${d.ikiBasEgitmen?d.karPaylari.map(kp=>`
         <div class="gider-satir" style="font-size:13px;font-weight:700;border-top:1px solid var(--border2);margin-top:4px;padding-top:8px;">
