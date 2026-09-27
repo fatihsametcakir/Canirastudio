@@ -1366,6 +1366,16 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
 </div></div>
 
+<div class="overlay" id="m-pratik-iptal"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:14px;">Pratik Yapılmayan Tarih Ekle</div>
+  <div class="field"><label>Hangi Cumartesi Pratik Yapılmadı</label><input id="pi-tarih" type="date"/></div>
+  <div style="display:flex;gap:10px;margin-top:6px;">
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-pratik-iptal')">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" onclick="gaPratikIptalKaydetForm()">Kaydet</button>
+  </div>
+</div></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
@@ -3426,6 +3436,23 @@ function pratikKiraTarihte(tarihStr){
   for(const g of siralı){ if(g.tarih<=tarihStr)uygun=g; else break; }
   const kayit=uygun||siralı[0];
   return {saat:kayit.saat||0,saatlikUcret:kayit.saatlikUcret||0};
+}
+// [bas,bitis] tarih aralığındaki (ikisi de dahil) Cumartesi sayısını döndürür —
+// "Eğitmenler & Giderler" bölümünde pratik yapılmadığı işaretlenen tarihler
+// (tatil, iptal vb.) sayılmaz. Normalde 28 günlük bir dönemde tam 4 Cumartesi
+// olur; bir/birkaç tanesi iptal işaretliyse o kadar eksik sayılır.
+function pratikCumartesiSayisi(bas,bitis){
+  const iptaller=new Set((GIDER_AYARLARI&&GIDER_AYARLARI.pratikIptalTarihleri)||[]);
+  let sayac=0;
+  const d=new Date(bas);
+  while(d<=bitis){
+    if(d.getDay()===6){
+      const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      if(!iptaller.has(ds))sayac++;
+    }
+    d.setDate(d.getDate()+1);
+  }
+  return sayac;
 }
 // ── Sınıfın KENDİ dönemi (takvim ayı değil) ─────────────────────────
 // Eğitmen ödeme dönemleri, sınıfın "Dönem Başlangıç Tarihi" alanından itibaren
@@ -7022,22 +7049,24 @@ async function giderAyarlariniYukle(){
       try{await db.collection('ayarlar').doc('giderAyarlari').set(veri);}catch(e){}
       return veri;
     }
-    return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[]};
-  }catch(e){return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[]};}
+    return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[]};
+  }catch(e){return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[]};}
 }
 
-async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi,pratikKiraGecmisi){
+async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi,pratikKiraGecmisi,pratikIptalTarihleri){
   const veri={kira:parseFloat(kira)||0,basEgitmenPayPct:parseFloat(pct)||0};
   if(grupKiraGecmisi!==undefined)veri.grupKiraGecmisi=grupKiraGecmisi;
   else if(GIDER_AYARLARI.grupKiraGecmisi)veri.grupKiraGecmisi=GIDER_AYARLARI.grupKiraGecmisi;
   if(pratikKiraGecmisi!==undefined)veri.pratikKiraGecmisi=pratikKiraGecmisi;
   else if(GIDER_AYARLARI.pratikKiraGecmisi)veri.pratikKiraGecmisi=GIDER_AYARLARI.pratikKiraGecmisi;
+  if(pratikIptalTarihleri!==undefined)veri.pratikIptalTarihleri=pratikIptalTarihleri;
+  else if(GIDER_AYARLARI.pratikIptalTarihleri)veri.pratikIptalTarihleri=GIDER_AYARLARI.pratikIptalTarihleri;
   await db.collection('ayarlar').doc('giderAyarlari').set(veri);
 }
 
 // Senkron erişim için önbellek — özel ders stüdyo kirası, grup dersleri kira geçmişi
-// ve Cumartesi pratik kirası geçmişi birçok yerde senkron render fonksiyonunda kullanılıyor
-let GIDER_AYARLARI={kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[]};
+// ve Cumartesi pratik kirası geçmişi/iptalleri birçok yerde senkron render fonksiyonunda kullanılıyor
+let GIDER_AYARLARI={kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[]};
 async function giderAyarlariniOnbellekleYukle(){
   GIDER_AYARLARI=await giderAyarlariniYukle();
 }
@@ -7072,9 +7101,12 @@ async function renderEgitmenPanel(){
     <button class="btn btn-ghost" style="width:100%;margin-bottom:16px;" onclick="gaGrupKiraEkle()">+ Kira Değişikliği Ekle</button>
     <div style="height:1px;background:var(--border);margin:16px 0;"></div>
     <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">🏋️ Cumartesi Pratik Kirası</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Cumartesi pratik günü için kiralanan stüdyonun kaç saatliğine, saatte ne kadar ödendiği. Her sınıfın 4 haftalık dönemi tam 4 Cumartesi içerdiği için aylık tutar otomatik ×4 hesaplanır ve aktif tüm grup sınıfları arasında eşit bölünüp, sınıftaki her eğitmenin kendi payından düşülür. Tutar değişirse buraya yeni bir kayıt ekle — geçmiş dönemler eski tutarla hesaplanmaya devam eder.</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Cumartesi pratik günü için kiralanan stüdyonun kaç saatliğine, saatte ne kadar ödendiği. Her sınıfın 4 haftalık dönemi normalde tam 4 Cumartesi içerir (aşağıda pratik yapılmayan bir Cumartesi işaretlemediğin sürece), tutar aktif tüm grup sınıfları arasında eşit bölünüp, kira gibi eğitmenlere pay dağıtılmadan önce gelirden düşülür. Tutar değişirse buraya yeni bir kayıt ekle — geçmiş dönemler eski tutarla hesaplanmaya devam eder.</div>
     <div id="ga-pratik-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
     <button class="btn btn-ghost" style="width:100%;margin-bottom:16px;" onclick="gaPratikKiraEkle()">+ Pratik Kirası Değişikliği Ekle</button>
+    <div style="font-size:12px;color:var(--text2);margin:14px 0 10px;line-height:1.5;">Bazı haftalar pratik yapılmıyor olabilir (tatil, iptal vb.) — o Cumartesiyi buradan işaretle, o dönem için ücrete dahil edilmesin.</div>
+    <div id="ga-pratik-iptal-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
+    <button class="btn btn-ghost" style="width:100%;margin-bottom:16px;" onclick="gaPratikIptalEkle()">+ Pratik Yapılmayan Tarih Ekle</button>
     <div style="height:1px;background:var(--border);margin:16px 0;"></div>
     <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('ozel_ders_studyo_kirasi')}</div>
     <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('ozel_kira_aciklama')}</div>
@@ -7084,6 +7116,7 @@ async function renderEgitmenPanel(){
   el.innerHTML=html;
   renderGaGrupKiraListe();
   renderGaPratikKiraListe();
+  renderGaPratikIptalListe();
 }
 
 function renderGaGrupKiraListe(){
@@ -7206,6 +7239,55 @@ async function gaPratikKiraSil(i){
   const liste=(GIDER_AYARLARI.pratikKiraGecmisi||[]).slice();
   liste.splice(i,1);
   await gaPratikKiraKaydetListe(liste);
+}
+
+function renderGaPratikIptalListe(){
+  const el=document.getElementById('ga-pratik-iptal-liste');
+  if(!el)return;
+  const liste=(GIDER_AYARLARI.pratikIptalTarihleri||[]).slice().sort();
+  if(!liste.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);">Henüz işaretlenmedi — her dönemde tam 4 Cumartesi sayılır.</div>';return;}
+  el.innerHTML=liste.map(tarih=>{
+    const gun=new Date(tarih+'T00:00:00').getDay();
+    const cumartesiDegil=gun!==6;
+    return `
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12.5px;">
+      <span>${formatDateTamYil(tarih)}${cumartesiDegil?' <span style="color:var(--amber);">(Cumartesi değil — hesaba etkisi olmaz)</span>':' — pratik yapılmadı'}</span>
+      <button type="button" onclick="gaPratikIptalSil('${tarih}')" style="background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 4px;" title="Kaldır">✕</button>
+    </div>`;
+  }).join('');
+}
+function gaPratikIptalEkle(){
+  document.getElementById('pi-tarih').value=bugunTarih();
+  openModal('m-pratik-iptal');
+}
+function gaPratikIptalKaydetForm(){
+  const tarih=document.getElementById('pi-tarih').value;
+  if(!tarih){alert('Lütfen bir tarih seç.');return;}
+  closeModal('m-pratik-iptal');
+  gaPratikIptalKaydet(tarih);
+}
+async function gaPratikIptalKaydet(tarih){
+  const liste=(GIDER_AYARLARI.pratikIptalTarihleri||[]).filter(x=>x!==tarih);
+  liste.push(tarih);
+  setSyncing(true);
+  try{
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,liste);
+    await giderAyarlariniOnbellekleYukle();
+    renderGaPratikIptalListe();
+    renderAll();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
+async function gaPratikIptalSil(tarih){
+  const liste=(GIDER_AYARLARI.pratikIptalTarihleri||[]).filter(x=>x!==tarih);
+  setSyncing(true);
+  try{
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,liste);
+    await giderAyarlariniOnbellekleYukle();
+    renderGaPratikIptalListe();
+    renderAll();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
 }
 
 async function egitmenAyarKaydet(){
@@ -7334,11 +7416,15 @@ async function renderGiderRapor(){
     const kira=sinifKiraTarihte(si,donemBasStr);
     // Cumartesi pratik kirası — STÜDYO KİRASIYLA TAMAMEN AYNI MANTIK: bu da
     // önceliklidir, eğitmenlere pay dağıtılmadan ÖNCE toplam gelirden düşülür.
-    // 28 günlük dönem = tam 4 hafta = tam 4 Cumartesi, bu yüzden sabit ×4.
+    // 28 günlük dönem normalde tam 4 Cumartesi içerir, ama pratiğin yapılmadığı
+    // (tatil, iptal vb.) Cumartesiler "Eğitmenler & Giderler" bölümünden
+    // işaretlenebilir — o hafta için ücret hesaba katılmaz.
     // Dönemin GEÇERLİ tarihindeki (kira geçmişiyle aynı mantık) saat×saatlik
-    // ücret tutarı, aktif tüm grup sınıfları arasında eşit bölünür.
+    // ücret tutarı, gerçekleşen Cumartesi sayısıyla çarpılıp aktif tüm grup
+    // sınıfları arasında eşit bölünür.
     const pratikBilgi=pratikKiraTarihte(donemBasStr);
-    const pratikDonemTutari=(pratikBilgi.saat||0)*(pratikBilgi.saatlikUcret||0)*4;
+    const pratikCumartesiSay=pratikCumartesiSayisi(donemAralik.bas,donemAralik.bitis);
+    const pratikDonemTutari=(pratikBilgi.saat||0)*(pratikBilgi.saatlikUcret||0)*pratikCumartesiSay;
     const pratikPay=aktifSinifSayisi>0?Math.round(pratikDonemTutari/aktifSinifSayisi):0;
     const kiraToplam=kira+pratikPay;
 
