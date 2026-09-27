@@ -7048,9 +7048,22 @@ function renderGaGrupKiraListe(){
   if(!liste.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);">Henüz eklenmedi — kira hiç değişmediyse sınıfların kendi "Aylık Kira" alanları kullanılır.</div>';return;}
   el.innerHTML=liste.map(x=>`
     <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12.5px;">
-      <span>${formatDate(x.tarih)} itibarıyla → <b>${(x.tutar||0).toLocaleString(LC())} ₺</b></span>
-      <button type="button" onclick="gaGrupKiraSil(${x._i})" style="background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 4px;">✕</button>
+      <span style="cursor:pointer;" onclick="gaGrupKiraDuzenle(${x._i})">${formatDate(x.tarih)} itibarıyla → <b>${(x.tutar||0).toLocaleString(LC())} ₺</b></span>
+      <div style="display:flex;gap:2px;">
+        <button type="button" onclick="gaGrupKiraDuzenle(${x._i})" style="background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:0 4px;" title="Düzenle">✎</button>
+        <button type="button" onclick="gaGrupKiraSil(${x._i})" style="background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 4px;" title="Sil">✕</button>
+      </div>
     </div>`).join('');
+}
+async function gaGrupKiraKaydetListe(liste){
+  setSyncing(true);
+  try{
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,liste);
+    await giderAyarlariniOnbellekleYukle();
+    renderGaGrupKiraListe();
+    renderAll();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
 }
 async function gaGrupKiraEkle(){
   const tarih=prompt('Bu kira tutarı hangi tarihten itibaren geçerli? (YYYY-AA-GG)',bugunTarih());
@@ -7062,26 +7075,27 @@ async function gaGrupKiraEkle(){
   if(!tutarStr||isNaN(tutar)){alert('Geçersiz tutar.');return;}
   const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).filter(x=>x.tarih!==tarih); // aynı tarih varsa üzerine yazılır
   liste.push({tarih,tutar});
-  setSyncing(true);
-  try{
-    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,liste);
-    await giderAyarlariniOnbellekleYukle();
-    renderGaGrupKiraListe();
-    renderAll();
-  }catch(e){alert('Hata: '+e.message);}
-  setSyncing(false);
+  await gaGrupKiraKaydetListe(liste);
+}
+async function gaGrupKiraDuzenle(i){
+  const mevcut=(GIDER_AYARLARI.grupKiraGecmisi||[])[i];
+  if(!mevcut)return;
+  const tarih=prompt('Bu kira tutarı hangi tarihten itibaren geçerli? (YYYY-AA-GG)',mevcut.tarih);
+  if(!tarih)return;
+  const t2=new Date(tarih+'T00:00:00');
+  if(isNaN(t2.getTime())){alert('Geçersiz tarih formatı. Örnek: 2026-08-20');return;}
+  const tutarStr=prompt('Bu tarihten itibaren tüm grup sınıfları için aylık kira ne kadar? (₺)',String(mevcut.tutar||''));
+  const tutar=parseFloat(tutarStr);
+  if(!tutarStr||isNaN(tutar)){alert('Geçersiz tutar.');return;}
+  // Düzenlenen kaydı çıkar, hedef tarihte başka bir kayıt varsa onu da çıkar (üzerine yazılır), sonra yenisini ekle
+  const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).filter((x,idx)=>idx!==i&&x.tarih!==tarih);
+  liste.push({tarih,tutar});
+  await gaGrupKiraKaydetListe(liste);
 }
 async function gaGrupKiraSil(i){
   const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).slice();
   liste.splice(i,1);
-  setSyncing(true);
-  try{
-    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,liste);
-    await giderAyarlariniOnbellekleYukle();
-    renderGaGrupKiraListe();
-    renderAll();
-  }catch(e){alert('Hata: '+e.message);}
-  setSyncing(false);
+  await gaGrupKiraKaydetListe(liste);
 }
 
 async function egitmenAyarKaydet(){
