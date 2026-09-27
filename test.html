@@ -1613,6 +1613,7 @@ const TRANSLATIONS={
     giderler:'Giderler', toplam_kira:'Toplam Kira', asistan_odemeleri:'Asistan Ödemeleri', toplam_gider:'Toplam Gider',
     kari:'Kârı', stuydo_kari:'Stüdyo Kârı', kendi_siniflari:'Kendi sınıfları: Gelir − Kira − Asistan',
     kira_yetmedi_uyari:'⚠ Kira karşılanamadığı için bu ay asistana ödeme yapılmadı',
+    kira_oncelik_notu:'ℹ Kira önceliklidir: bu ayki {tutar} ₺ gelirin tamamı kiraya gitti, bu yüzden pay 0 ₺ görünüyor.',
     net_kar:'Net Kâr', toplam_gelir_kira_asistan:'Toplam Gelir − Kira − Asistan',
     payi:'payı', kira:'Kira', bu_ay_kayit_yok:'Bu ay için kayıt bulunamadı.',
     egitmen_eklenmemis_uyari:'⚠ Eğitmen eklenmemiş. "Eğitmenler & Giderler" bölümünden eğitmen ekleyin ve sınıflara atayın.',
@@ -1789,6 +1790,7 @@ const TRANSLATIONS={
     giderler:'Expenses', toplam_kira:'Total Rent', asistan_odemeleri:'Assistant Payments', toplam_gider:'Total Expense',
     kari:'Profit', stuydo_kari:'Studio Profit', kendi_siniflari:'Own classes: Income − Rent − Assistant',
     kira_yetmedi_uyari:'⚠ Assistant was not paid this month because rent could not be covered',
+    kira_oncelik_notu:'ℹ Rent has priority: this month\'s {tutar} ₺ income went entirely to rent, so the share shows 0 ₺.',
     net_kar:'Net Profit', toplam_gelir_kira_asistan:'Total Income − Rent − Assistant',
     payi:'share', kira:'Rent', bu_ay_kayit_yok:'No records for this month.',
     egitmen_eklenmemis_uyari:'⚠ No instructors added. Add instructors in "Instructors & Expenses" and assign them to classes.',
@@ -1965,6 +1967,7 @@ const TRANSLATIONS={
     giderler:'Расходы', toplam_kira:'Общая аренда', asistan_odemeleri:'Выплаты ассистентам', toplam_gider:'Общий расход',
     kari:'Прибыль', stuydo_kari:'Прибыль студии', kendi_siniflari:'Свои группы: Доход − Аренда − Ассистент',
     kira_yetmedi_uyari:'⚠ Ассистенту не выплачено в этом месяце, так как аренда не была покрыта',
+    kira_oncelik_notu:'ℹ Аренда в приоритете: весь доход этого месяца ({tutar} ₺) ушёл на аренду, поэтому доля показывает 0 ₺.',
     net_kar:'Чистая прибыль', toplam_gelir_kira_asistan:'Общий доход − Аренда − Ассистент',
     payi:'доля', kira:'Аренда', bu_ay_kayit_yok:'Записей за этот месяц нет.',
     egitmen_eklenmemis_uyari:'⚠ Преподаватели не добавлены. Добавьте их в разделе "Преподаватели и расходы" и назначьте на группы.',
@@ -7189,6 +7192,7 @@ async function renderGiderRapor(){
           <span style="color:var(--text2);">⭐ ${isAsistan?t('stuydo_kari'):(d.egitmen?.ad||basEgitmen?.ad||t('bas_egitmen'))} ${isAsistan?'':t('kari')}</span>
           <span style="color:${karRenk};">${d.basEgitmenKar.toLocaleString(LC())} ₺</span>
         </div>`}
+        ${(d.sinifGelir>0&&d.kira>=d.sinifGelir&&(d.ikiBasEgitmen||!isAsistan))?`<div style="font-size:10.5px;color:var(--text3);margin:2px 0 0;">${t('kira_oncelik_notu').replace('{tutar}',d.sinifGelir.toLocaleString(LC()))}</div>`:''}
       </div>`;
     });
   }
