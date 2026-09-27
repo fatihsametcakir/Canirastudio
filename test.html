@@ -3546,21 +3546,31 @@ async function tasiKayit(){
 function ogSiOd(ogId,siId){return S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);}
 function buildAyGrid(ogId,siId,editId){
   OD_AYLAR=[];OD_ONCEKI=new Set();
-  const now=simdikiZaman();
-  const odenenAylar=new Set();
-  ogSiOd(ogId,siId).forEach(o=>{if(o.id===editId)return;(o.aylar||[]).forEach(a=>odenenAylar.add(a));});
+  const si=S.siniflar.find(s=>s.id===siId);
+  const grid=document.getElementById('od-ay-grid');
+  if(!si){grid.innerHTML='';return;}
+  const odenenDonemler=new Set();
+  ogSiOd(ogId,siId).forEach(o=>{if(o.id===editId)return;(o.aylar||[]).forEach(a=>odenenDonemler.add(a));});
   if(editId){const ed=S.odemeler.find(o=>o.id===editId);(ed?.aylar||[]).forEach(a=>{OD_AYLAR.push(a);OD_ONCEKI.add(a);});}
-  const aylar=[];
-  for(let i=-3;i<=6;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);aylar.push({yil:d.getFullYear(),ay:d.getMonth()+1,label:d.toLocaleDateString(LC(),{month:'short'})+"'"+(d.getFullYear()+'').slice(2)});}
-  document.getElementById('od-ay-grid').innerHTML=aylar.map(a=>{
-    const k=ayKey(a.yil,a.ay);
-    const odendi=odenenAylar.has(k);
-    const sec=OD_AYLAR.includes(k);
-    // Odendi olan aylar seçilebilir ama farklı stil — çift ödeme uyarısı tooltip ile
+  // Takvim ayı yerine sınıfın KENDİ dönemleri (Dönem Başlangıç Tarihi'nden itibaren
+  // 4'er haftalık bloklar) gösterilir — bkz. sinifDonemAraligi/sinifGuncelDonemIndex.
+  const guncelIdx=sinifGuncelDonemIndex(si);
+  const donemFmt=dt=>dt.toLocaleDateString(LC(),{day:'numeric',month:'short'});
+  const donemler=[];
+  for(let i=-2;i<=7;i++){
+    const idx=guncelIdx+i;
+    if(idx<0)continue;
+    const aralik=sinifDonemAraligi(si,idx);
+    donemler.push({key:'d'+idx,label:(idx+1)+'. Dönem',altLabel:donemFmt(aralik.bas)+'–'+donemFmt(aralik.bitis)});
+  }
+  grid.innerHTML=donemler.map(d=>{
+    const odendi=odenenDonemler.has(d.key);
+    const sec=OD_AYLAR.includes(d.key);
+    // Odendi olan dönemler seçilebilir ama farklı stil — çift ödeme uyarısı tooltip ile
     let cls='ay-btn';
     if(sec)cls+=' active';
     else if(odendi)cls+=' odendi';
-    return `<div class="${cls}" onclick="toggleAy(this,'${k}')" title="${odendi&&!sec?'Bu ay zaten ödendi — yine de seçebilirsiniz':''}">${a.label}${odendi&&!sec?'✓':''}</div>`;
+    return `<div class="${cls}" onclick="toggleAy(this,'${d.key}')" title="${odendi&&!sec?'Bu dönem zaten ödendi — yine de seçebilirsiniz':''}">${d.label}${odendi&&!sec?'✓':''}<div style="font-size:9px;opacity:.75;margin-top:1px;">${d.altLabel}</div></div>`;
   }).join('');
 }
 function toggleAy(el,k){el.classList.toggle('active');if(OD_AYLAR.includes(k))OD_AYLAR=OD_AYLAR.filter(x=>x!==k);else OD_AYLAR.push(k);}
