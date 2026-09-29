@@ -569,15 +569,16 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   .gg-card-ikon{width:48px;height:48px;font-size:22px;}
   #gg-ozet-row{max-width:560px;margin-left:auto;margin-right:auto;}
 
-  /* Ödeme Ekle popup'ı: masaüstünde daha geniş, ve "Kapsanan Aylar"
-     ay seçici ızgarası 3 yerine 6 sütun kullanarak formun scroll
-     gerektirmeden tek ekranda sığmasını sağlıyoruz. Dönem sayısı
-     çok fazla olduğunda (uzun süredir devam eden sınıflar) yine de
-     sığmayabiliyor, bu yüzden ay-grid'i kendi içinde sınırlı
-     yükseklikte scroll edilebilir yapıp Not/Kaydet alanlarının her
-     zaman scrollsuz görünür kalmasını sağlıyoruz. */
-  #m-odeme .sheet{max-width:780px;}
-  #m-odeme .ay-grid{grid-template-columns:repeat(6,1fr);max-height:220px;overflow-y:auto;padding-right:4px;}
+  /* Ödeme Ekle popup'ı: masaüstünde iyice geniş (diğer ekranlardaki
+     içerik alanıyla aynı genişlikte), ve "Kapsanan Aylar" ay seçici
+     ızgarası 6 yerine 10 sütun kullanarak çoğu durumda tüm dönemlerin
+     tek/iki satırda, formun geri kalanı scroll gerektirmeden görünmesini
+     sağlıyoruz. Dönem sayısı gerçekten çok fazla olursa (uzun süredir
+     devam eden sınıflar) yine de sığmayabiliyor, bu yüzden ay-grid'i
+     kendi içinde sınırlı yükseklikte scroll edilebilir yapıp Not/Kaydet
+     alanlarının her zaman scrollsuz görünür kalmasını sağlıyoruz. */
+  #m-odeme .sheet{max-width:1040px;}
+  #m-odeme .ay-grid{grid-template-columns:repeat(10,1fr);max-height:260px;overflow-y:auto;padding-right:4px;}
 }
 </style>
 </head>
