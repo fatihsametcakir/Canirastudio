@@ -564,6 +564,12 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     grid-column:span 1;
   }
 
+  /* Haftalık takvim gün seçici: mobildeki sabit 44px'lik dar butonlar
+     yerine, geniş masaüstü alanını kullanacak şekilde eşit genişlikte
+     yayılsın. */
+  .hafta-gunler{overflow-x:visible;gap:10px;}
+  .hafta-gun-btn{flex:1;width:auto;max-width:120px;padding:10px 4px;}
+
   #toast-container{left:calc(200px + (100vw - 200px)/2);}
 }
 </style>
@@ -639,66 +645,66 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
 <!-- SON ÖDEMELER MODALI -->
 <div class="overlay" id="m-son-odemeler">
-  <div class="sheet" style="max-height:85vh;">
+  <div class="sheet" style="height:85vh;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
     <div class="sheet-handle"></div>
     <button class="sheet-close" onclick="closeModal('m-son-odemeler')">✕</button>
-    <div class="sheet-title" data-i18n="son_odemeler">Son Ödemeler</div>
-    <div style="display:flex;gap:8px;padding:0 0 14px;">
+    <div class="sheet-title" data-i18n="son_odemeler" style="flex-shrink:0;">Son Ödemeler</div>
+    <div style="display:flex;gap:8px;padding:0 0 14px;flex-shrink:0;">
       <button id="so-hafta-btn" class="btn btn-accent btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('hafta')" data-i18n="son_1_hafta">Son 1 Hafta</button>
       <button id="so-ay-btn" class="btn btn-ghost btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('ay')" data-i18n="son_1_ay">Son 1 Ay</button>
       <button id="so-tumü-btn" class="btn btn-ghost btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('tumu')" data-i18n="tumu">Tümü</button>
     </div>
-    <div style="position:relative;margin-bottom:12px;">
+    <div style="position:relative;margin-bottom:12px;flex-shrink:0;">
       <input type="text" id="so-arama-input" placeholder="🔍 Öğrenci ara..." oninput="soAramaDegisti(this.value)" style="width:100%;padding:10px 36px 10px 14px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:14px;">
       <button id="so-arama-temizle" onclick="soAramaTemizle()" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:4px;">✕</button>
     </div>
-    <div id="son-odemeler-liste" style="overflow-y:auto;max-height:calc(85vh - 140px);"></div>
+    <div id="son-odemeler-liste" style="flex:1;min-height:0;overflow-y:auto;"></div>
   </div>
 </div>
 
 <!-- ÇAKIŞAN ÖDEMELER MODAL -->
 <div class="overlay" id="m-cakisan-odemeler">
-  <div class="sheet" style="max-height:85vh;">
+  <div class="sheet" style="height:85vh;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
     <div class="sheet-handle"></div>
     <button class="sheet-close" onclick="closeModal('m-cakisan-odemeler')">✕</button>
-    <div class="sheet-title">🔍 Çakışan Ödemeler</div>
-    <div style="font-size:12.5px;color:var(--text2);margin-bottom:14px;line-height:1.5;">Aynı öğrencinin, farklı sınıflarda kapsadığı ayları çakışan ödemeleri listelenir — genelde bir öğrenci sınıf değiştirdiğinde eski ödemenin yanlışlıkla iki yerde de kalmasından olur. Hangisinin doğru olduğuna siz karar verip diğerini silebilirsiniz.</div>
-    <div id="cakisan-odemeler-liste" style="overflow-y:auto;max-height:calc(85vh - 160px);"></div>
+    <div class="sheet-title" style="flex-shrink:0;">🔍 Çakışan Ödemeler</div>
+    <div style="font-size:12.5px;color:var(--text2);margin-bottom:14px;line-height:1.5;flex-shrink:0;">Aynı öğrencinin, farklı sınıflarda kapsadığı ayları çakışan ödemeleri listelenir — genelde bir öğrenci sınıf değiştirdiğinde eski ödemenin yanlışlıkla iki yerde de kalmasından olur. Hangisinin doğru olduğuna siz karar verip diğerini silebilirsiniz.</div>
+    <div id="cakisan-odemeler-liste" style="flex:1;min-height:0;overflow-y:auto;"></div>
   </div>
 </div>
 
 
 <!-- TUTMA ORANI MODAL -->
-<div class="overlay" id="m-tutma-orani"><div class="sheet" style="max-height:90vh;">
+<div class="overlay" id="m-tutma-orani"><div class="sheet" style="height:90vh;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-tutma-orani')">✕</button>
-  <div class="sheet-title" data-i18n="ogrenci_tutma_orani_ikon">📉 Öğrenci Tutma Oranı</div>
-  <div id="retention-content" style="overflow-y:auto;max-height:calc(90vh - 80px);"><div style="font-size:13px;color:var(--text3);padding:8px 0;" data-i18n="yukleniyor">Yükleniyor...</div></div>
+  <div class="sheet-title" data-i18n="ogrenci_tutma_orani_ikon" style="flex-shrink:0;">📉 Öğrenci Tutma Oranı</div>
+  <div id="retention-content" style="flex:1;min-height:0;overflow-y:auto;"><div style="font-size:13px;color:var(--text3);padding:8px 0;" data-i18n="yukleniyor">Yükleniyor...</div></div>
 </div></div>
 
 <!-- AYLIK GELİR MODAL -->
-<div class="overlay" id="m-aylik-gelir"><div class="sheet" style="max-height:90vh;">
+<div class="overlay" id="m-aylik-gelir"><div class="sheet" style="height:90vh;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-aylik-gelir')">✕</button>
-  <div class="sheet-title" data-i18n="aylik_gelir_ikon">📊 Aylık Gelir</div>
-  <div id="gelir-content" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
+  <div class="sheet-title" data-i18n="aylik_gelir_ikon" style="flex-shrink:0;">📊 Aylık Gelir</div>
+  <div id="gelir-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 
 <!-- GELİR GİDER SHEET -->
-<div class="overlay" id="m-gider-rapor"><div class="sheet" style="max-height:90vh;">
+<div class="overlay" id="m-gider-rapor"><div class="sheet" style="height:90vh;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-gider-rapor')">✕</button>
-  <div class="sheet-title" data-i18n="gider_raporu_ikon">💰 Gider Raporu</div>
-  <div id="gider-rapor-content" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
+  <div class="sheet-title" data-i18n="gider_raporu_ikon" style="flex-shrink:0;">💰 Gider Raporu</div>
+  <div id="gider-rapor-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 
-<div class="overlay" id="m-gelir-trend"><div class="sheet" style="max-height:90vh;">
+<div class="overlay" id="m-gelir-trend"><div class="sheet" style="height:90vh;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-gelir-trend')">✕</button>
-  <div class="sheet-title" data-i18n="aylik_gelir_trendi_ikon">📈 Aylık Gelir Trendi</div>
-  <div id="gelir-trend-content2" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
+  <div class="sheet-title" data-i18n="aylik_gelir_trendi_ikon" style="flex-shrink:0;">📈 Aylık Gelir Trendi</div>
+  <div id="gelir-trend-content2" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 
-<div class="overlay" id="m-egitmen-panel"><div class="sheet" style="max-height:90vh;">
+<div class="overlay" id="m-egitmen-panel"><div class="sheet" style="height:90vh;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-egitmen-panel')">✕</button>
-  <div class="sheet-title" data-i18n="egitmenler_giderler_ikon">👨‍🏫 Eğitmenler & Giderler</div>
-  <div id="egitmen-panel-content2" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
+  <div class="sheet-title" data-i18n="egitmenler_giderler_ikon" style="flex-shrink:0;">👨‍🏫 Eğitmenler & Giderler</div>
+  <div id="egitmen-panel-content2" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 
 <div class="overlay" id="m-odeme-bilgi-ayar"><div class="sheet">
@@ -1295,10 +1301,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 </div></div>
 
 <!-- Paket — Yapılan Dersler Listesi -->
-<div class="overlay" id="m-paket-dersler"><div class="sheet" style="max-height:80vh;">
+<div class="overlay" id="m-paket-dersler"><div class="sheet" style="height:80vh;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-paket-dersler')">✕</button>
-  <div class="sheet-title" id="m-paket-dersler-title">📋 Dersler</div>
-  <div id="m-paket-dersler-content" style="overflow-y:auto;max-height:calc(80vh - 80px);"></div>
+  <div class="sheet-title" id="m-paket-dersler-title" style="flex-shrink:0;">📋 Dersler</div>
+  <div id="m-paket-dersler-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 
 <!-- Haftalık Takvim — Ders Planla -->
@@ -1355,28 +1361,28 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 </div></div>
 
 <!-- Devamsız Öğrenciler -->
-<div class="overlay" id="m-devamsiz"><div class="sheet" style="max-height:85vh;">
+<div class="overlay" id="m-devamsiz"><div class="sheet" style="height:85vh;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-devamsiz')">✕</button>
-  <div class="sheet-title" data-i18n="devamsiz_ogrenciler">🚩 Devamsız Öğrenciler</div>
-  <div class="tab-row">
+  <div class="sheet-title" data-i18n="devamsiz_ogrenciler" style="flex-shrink:0;">🚩 Devamsız Öğrenciler</div>
+  <div class="tab-row" style="flex-shrink:0;">
     <button class="tab-btn active" id="devamsiz-tab-2" onclick="devamsizTabSec('2')" data-i18n="iki_hafta_ustuste">2 Hafta Üst Üste</button>
     <button class="tab-btn" id="devamsiz-tab-3" onclick="devamsizTabSec('3')" data-i18n="uc_hafta_ustuste">3+ Hafta</button>
   </div>
-  <div id="devamsiz-content" style="overflow-y:auto;max-height:calc(85vh - 160px);"></div>
+  <div id="devamsiz-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 
 <!-- Öğrenci Geçmişi -->
-<div class="overlay" id="m-ogrenci-gecmisi"><div class="sheet" style="max-height:80vh;">
+<div class="overlay" id="m-ogrenci-gecmisi"><div class="sheet" style="height:80vh;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ogrenci-gecmisi')">✕</button>
-  <div class="sheet-title" id="m-ogrenci-gecmisi-title" data-i18n="ogrenci_gecmisi">📜 Öğrenci Geçmişi</div>
-  <div id="ogrenci-gecmisi-content" style="overflow-y:auto;max-height:calc(80vh - 90px);"></div>
+  <div class="sheet-title" id="m-ogrenci-gecmisi-title" data-i18n="ogrenci_gecmisi" style="flex-shrink:0;">📜 Öğrenci Geçmişi</div>
+  <div id="ogrenci-gecmisi-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 
 <!-- Sınıf Geçmişi -->
-<div class="overlay" id="m-sinif-gecmisi"><div class="sheet" style="max-height:80vh;">
+<div class="overlay" id="m-sinif-gecmisi"><div class="sheet" style="height:80vh;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-sinif-gecmisi')">✕</button>
-  <div class="sheet-title" id="m-sinif-gecmisi-title" data-i18n="sinif_gecmisi">📜 Sınıf Geçmişi</div>
-  <div id="sinif-gecmisi-content" style="overflow-y:auto;max-height:calc(80vh - 90px);"></div>
+  <div class="sheet-title" id="m-sinif-gecmisi-title" data-i18n="sinif_gecmisi" style="flex-shrink:0;">📜 Sınıf Geçmişi</div>
+  <div id="sinif-gecmisi-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 <div class="overlay" id="m-yoklama-ogrenci"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-yoklama-ogrenci')">✕</button>
