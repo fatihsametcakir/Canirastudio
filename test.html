@@ -675,41 +675,42 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
 
 <!-- TUTMA ORANI MODAL -->
-<div class="overlay" id="m-tutma-orani"><div class="sheet" style="height:90vh;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-tutma-orani')">✕</button>
-  <div class="sheet-title" data-i18n="ogrenci_tutma_orani_ikon" style="flex-shrink:0;">📉 Öğrenci Tutma Oranı</div>
-  <div id="retention-content" style="flex:1;min-height:0;overflow-y:auto;"><div style="font-size:13px;color:var(--text3);padding:8px 0;" data-i18n="yukleniyor">Yükleniyor...</div></div>
-</div></div>
+<!-- ÖĞRENCİ TUTMA ORANI SAYFASI -->
+<div class="page" id="pg-tutma-orani">
+  <div id="retention-content"><div style="font-size:13px;color:var(--text3);padding:8px 0;" data-i18n="yukleniyor">Yükleniyor...</div></div>
+</div>
 
-<!-- AYLIK GELİR MODAL -->
-<div class="overlay" id="m-aylik-gelir"><div class="sheet" style="height:90vh;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-aylik-gelir')">✕</button>
-  <div class="sheet-title" data-i18n="aylik_gelir_ikon" style="flex-shrink:0;">📊 Aylık Gelir</div>
-  <div id="gelir-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
-</div></div>
+<!-- AYLIK GELİR SAYFASI -->
+<div class="page" id="pg-aylik-gelir">
+  <div id="gelir-content"></div>
+</div>
 
-<!-- GELİR GİDER SHEET -->
-<div class="overlay" id="m-gider-rapor"><div class="sheet" style="height:90vh;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-gider-rapor')">✕</button>
-  <div class="sheet-title" data-i18n="gider_raporu_ikon" style="flex-shrink:0;">💰 Gider Raporu</div>
-  <div id="gider-rapor-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
-</div></div>
+<!-- GİDER RAPORU SAYFASI -->
+<div class="page" id="pg-gider-rapor">
+  <div id="gider-rapor-content"></div>
+</div>
 
-<div class="overlay" id="m-gelir-trend"><div class="sheet" style="height:90vh;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-gelir-trend')">✕</button>
-  <div class="sheet-title" data-i18n="aylik_gelir_trendi_ikon" style="flex-shrink:0;">📈 Aylık Gelir Trendi</div>
-  <div id="gelir-trend-content2" style="flex:1;min-height:0;overflow-y:auto;"></div>
-</div></div>
+<!-- AYLIK GELİR TRENDİ SAYFASI -->
+<div class="page" id="pg-gelir-trend">
+  <div id="gelir-trend-content2"></div>
+</div>
 
-<div class="overlay" id="m-egitmen-panel"><div class="sheet" style="height:90vh;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-egitmen-panel')">✕</button>
-  <div class="sheet-title" data-i18n="egitmenler_giderler_ikon" style="flex-shrink:0;">👨‍🏫 Eğitmenler & Giderler</div>
-  <div id="egitmen-panel-content2" style="flex:1;min-height:0;overflow-y:auto;"></div>
-</div></div>
+<!-- EĞİTMENLER & GİDERLER SAYFASI -->
+<div class="page" id="pg-egitmen-panel">
+  <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#fbbf2414,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #fbbf2435;">
+    <div style="font-size:12px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <input id="tatil-tarih" type="date" style="flex:1;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;color-scheme:dark;"/>
+      <input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad" style="flex:2;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
+    </div>
+    <button class="btn btn-accent" style="width:100%;margin-bottom:12px;" onclick="tatilEkle()" data-i18n="btn_tatil_ekle">＋ Tatil Ekle</button>
+    <div id="tatil-liste"></div>
+  </div>
+  <div id="egitmen-panel-content2"></div>
+</div>
 
-<div class="overlay" id="m-odeme-bilgi-ayar"><div class="sheet">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-odeme-bilgi-ayar')">✕</button>
-  <div class="sheet-title" data-i18n="odeme_bilgileri_ikon">🏦 Ödeme Bilgileri</div>
+<!-- ÖDEME BİLGİLERİ SAYFASI -->
+<div class="page" id="pg-odeme-bilgi-ayar">
   <div style="padding:4px 0;">
     <div style="font-size:12px;color:var(--text2);margin-bottom:12px;" data-i18n="odeme_bilgi_aciklama">Öğrenci portalında gösterilecek ödeme bilgileri.</div>
     <div class="field"><label data-i18n="ad_soyad_hesap">Ad Soyad (Hesap Sahibi)</label><input id="ob-adsoyad" type="text" placeholder="Örn: Can Yılmaz"/></div>
@@ -727,7 +728,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="odemeBilgiKaydet()" data-i18n="btn_kaydet">Kaydet</button>
     <div id="ob-status" style="font-size:12px;text-align:center;margin-top:8px;display:none;"></div>
   </div>
-</div></div>
+</div>
 
 <!-- BİRLEŞTİR MODAL -->
 <div class="overlay" id="m-birlestir"><div class="sheet">
@@ -862,15 +863,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
   <!-- TAKVİM -->
   <div class="page" id="pg-takvim">
-    <div style="margin-bottom:12px;padding:14px;background:linear-gradient(135deg,#fbbf2414,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #fbbf2435;">
-      <div style="font-size:12px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <input id="tatil-tarih" type="date" style="flex:1;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;color-scheme:dark;"/>
-        <input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad" style="flex:2;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
-      </div>
-      <button class="btn btn-accent" style="width:100%;margin-bottom:12px;" onclick="tatilEkle()" data-i18n="btn_tatil_ekle">＋ Tatil Ekle</button>
-      <div id="tatil-liste"></div>
-    </div>
     <div id="takvim-content"></div>
   </div>
 
@@ -895,27 +887,27 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <div class="stat-card s2"><div class="stat-label" id="gg-lbl-net">Net Kâr</div><div class="stat-val" id="gg-st-net">0</div></div>
     </div>
     <div class="gg-grid">
-      <button class="gg-card" style="--gg-c:var(--green);" onclick="openModal('m-aylik-gelir');renderGelir();">
+      <button class="gg-card" style="--gg-c:var(--green);" onclick="openAylikGelir()">
         <div class="gg-card-ikon">📊</div>
         <div class="gg-card-baslik" data-i18n="aylik_gelir">Aylık Gelir</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--accent);" onclick="openModal('m-gider-rapor');renderGiderRapor();">
+      <button class="gg-card" style="--gg-c:var(--accent);" onclick="openGiderRaporu()">
         <div class="gg-card-ikon">💰</div>
         <div class="gg-card-baslik" data-i18n="gider_raporu">Gider Raporu</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--cyan);" onclick="openModal('m-gelir-trend');renderGelirTrend();">
+      <button class="gg-card" style="--gg-c:var(--cyan);" onclick="openAylikGelirTrend()">
         <div class="gg-card-ikon">📈</div>
         <div class="gg-card-baslik" data-i18n="aylik_gelir_trendi">Aylık Gelir Trendi</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openModal('m-egitmen-panel');renderEgitmenPanel();">
+      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openEgitmenGiderler()">
         <div class="gg-card-ikon">👨‍🏫</div>
         <div class="gg-card-baslik" data-i18n="egitmenler_giderler">Eğitmenler & Giderler</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--amber);" onclick="openModal('m-odeme-bilgi-ayar');odemeBilgiYukle()">
+      <button class="gg-card" style="--gg-c:var(--amber);" onclick="openOdemeAyarlari()">
         <div class="gg-card-ikon">🏦</div>
         <div class="gg-card-baslik" data-i18n="odeme_bilgileri">Ödeme Bilgileri</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openModal('m-tutma-orani');renderRetention();">
+      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openTutmaOrani()">
         <div class="gg-card-ikon">📉</div>
         <div class="gg-card-baslik" data-i18n="ogrenci_tutma_orani">Öğrenci Tutma Oranı</div>
       </button>
@@ -2437,12 +2429,28 @@ function goTo(p,btn){
   renderAll();
 }
 function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
+// Gelir/Gider ekranındaki rapor kartları: popup yerine tam sayfa olarak açılır
+// (mobil ve masaüstünde aynı — sadece geri tuşu/topbar back ile kapanır).
+function openRaporSayfa(id,i18nKey,renderFn){
+  PREV_PAGE=PAGE;PAGE=id;showPage(id);setTopbar(true,t(i18nKey));
+  const fab=document.getElementById('mainFab');if(fab)fab.style.display='none';
+  if(renderFn)renderFn();
+}
+function openAylikGelir(){openRaporSayfa('aylik-gelir','aylik_gelir',renderGelir);}
+function openGiderRaporu(){openRaporSayfa('gider-rapor','gider_raporu',renderGiderRapor);}
+function openAylikGelirTrend(){openRaporSayfa('gelir-trend','aylik_gelir_trendi',renderGelirTrend);}
+function openEgitmenGiderler(){openRaporSayfa('egitmen-panel','egitmenler_giderler',renderEgitmenPanel);}
+function openOdemeAyarlari(){openRaporSayfa('odeme-bilgi-ayar','odeme_bilgileri',odemeBilgiYukle);}
+function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
+const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani'];
 function goBack(){
-  const bt=PREV_PAGE==='sinif-detay'?'siniflar':PREV_PAGE;
+  let bt=PREV_PAGE==='sinif-detay'?'siniflar':PREV_PAGE;
+  if(RAPOR_SAYFA_ID_LISTESI.includes(bt))bt='gelirgider';
   PAGE=bt;showPage(bt);setTopbar(false);
   const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:3,ozel:4,odemeler:5,gelirgider:6,yoklama:-1};
   document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',i===(map[bt]??-1)));
-  const fab=document.getElementById('mainFab');if(fab)fab.style.display='flex';
+  const fab=document.getElementById('mainFab');
+  if(fab)fab.style.display=(bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider')?'none':'flex';
   renderAll();
 }
 function setTopbar(d,t=''){
@@ -3769,11 +3777,6 @@ function odSinifChange(skipOgChange){const siId=document.getElementById('od-sini
 function odOgrenciChange(){const siId=document.getElementById('od-sinif').value,ogId=document.getElementById('od-ogrenci').value;if(ogId&&siId)buildAyGrid(ogId,siId,EDIT_ODEME);else document.getElementById('od-ay-grid').innerHTML='';}
 function toggleClear(btnId,val){const b=document.getElementById(btnId);if(b)b.classList.toggle('visible',val.length>0);}
 function clearSearch(inputId,cb){const el=document.getElementById(inputId);if(el){el.value='';const clr=document.getElementById(inputId+'-clear');if(clr)clr.classList.remove('visible');}if(cb)cb();}
-function openGiderRaporu(){openModal('m-gider-rapor');renderGiderRapor();}
-function openAylikGelirTrend(){openModal('m-gelir-trend');renderGelirTrend();}
-function openEgitmenGiderler(){openModal('m-egitmen-panel');renderEgitmenPanel();}
-function openOdemeAyarlari(){openModal('m-odeme-bilgi-ayar');odemeBilgiYukle();}
-function openTutmaOrani(){openModal('m-tutma-orani');renderRetention();}
 let BIRLESTIR_KAYNAK=null;
 function openBirlestirModal(siId){
   BIRLESTIR_KAYNAK=siId;
@@ -7134,6 +7137,7 @@ async function giderAyarlariniOnbellekleYukle(){
 
 // Eğitmen yönetim paneli
 async function renderEgitmenPanel(){
+  renderTatilListe();
   const el=document.getElementById('egitmen-panel-content2')||document.getElementById('egitmen-panel-content');
   if(!el)return;
   const ayarlar=await giderAyarlariniYukle();
