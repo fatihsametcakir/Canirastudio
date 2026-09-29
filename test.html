@@ -393,9 +393,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .takvim-mod-btn.active{background:var(--surface);color:var(--accent);box-shadow:inset 0 0 0 1px #ff6b6b40;}
 .takvim-mod-btn:active{transform:scale(.95);}
 .hafta-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.hafta-gunler{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none;}
-.hafta-gunler::-webkit-scrollbar{display:none;}
-.hafta-gun-btn{flex-shrink:0;width:44px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;border-radius:10px;border:1px solid var(--border2);cursor:pointer;background:transparent;font-family:'DM Sans',sans-serif;transition:all .25s cubic-bezier(.34,1.56,.64,1);}
+.hafta-gunler{display:flex;gap:5px;padding-bottom:4px;margin-bottom:12px;}
+.hafta-gun-btn{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;border-radius:10px;border:1px solid var(--border2);cursor:pointer;background:transparent;font-family:'DM Sans',sans-serif;transition:all .25s cubic-bezier(.34,1.56,.64,1);}
 .hafta-gun-btn:active{transform:scale(.92);}
 .hafta-gun-btn.bugun{border-color:var(--accent);}
 .hafta-gun-btn.secili{background:var(--accent);border-color:var(--accent);box-shadow:0 4px 14px -3px #ff6b6b80;transform:scale(1.05);}
@@ -559,7 +558,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   /* Haftalık takvim gün seçici: mobildeki sabit 44px'lik dar butonlar
      yerine, geniş masaüstü alanını kullanacak şekilde eşit genişlikte
      yayılsın. */
-  .hafta-gunler{overflow-x:visible;gap:10px;}
+  .hafta-gunler{gap:10px;justify-content:center;}
   .hafta-gun-btn{flex:1;width:auto;max-width:120px;padding:10px 4px;}
 
   /* Gelir/Gider ekranı: mobildeki 2 sütunlu dar kart grid'i, geniş
@@ -7018,8 +7017,8 @@ function takGunSec(tarih){
     const pztFark=gun===0?-6:1-gun;
     const bugunPzt=new Date(bugun);
     bugunPzt.setDate(bugun.getDate()+pztFark);
-    const diff=Math.round((sel-bugunPzt)/(7*86400000));
-    TAK_HAFTA_OFFSET=Math.floor(diff);
+    const diff=Math.floor((sel-bugunPzt)/(7*86400000));
+    TAK_HAFTA_OFFSET=diff;
   }
   renderTakvim();
 }
