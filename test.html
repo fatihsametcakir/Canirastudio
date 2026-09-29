@@ -544,9 +544,25 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   .drawer{left:200px;transform:translateX(calc(-100% - 200px));}
   .drawer.open{transform:translateX(0);}
 
-  /* Sheet/confirm modallar: alttan açılan değil, ortalanmış dialog */
+  /* Sheet/confirm modallar: alttan açılan değil, ortalanmış dialog.
+     Ayrıca mobildeki dar tek-sütun form yerine, sade alanlardan (metin/
+     sayı/select) oluşan .field'ları iki sütuna diziyoruz; içinde
+     textarea, onay-kutusu listesi (eg-check-row) veya ay seçici
+     (ay-grid) olan alanlar bilerek tam genişlikte kalır. */
   .overlay{align-items:center;}
-  .sheet,.confirm-sheet{border-radius:22px;max-width:560px;max-height:85vh;}
+  .sheet,.confirm-sheet{border-radius:22px;max-width:640px;max-height:85vh;padding-left:28px;padding-right:28px;}
+
+  .sheet:has(> .field),.confirm-sheet:has(> .field){
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:16px;
+    align-items:start;
+  }
+  .sheet:has(> .field)>*,.confirm-sheet:has(> .field)>*{grid-column:1 / -1;}
+  .sheet:has(> .field)>.field:not(:has(textarea)):not(:has(.eg-check-row)):not(:has(.ay-grid)),
+  .confirm-sheet:has(> .field)>.field:not(:has(textarea)):not(:has(.eg-check-row)):not(:has(.ay-grid)){
+    grid-column:span 1;
+  }
 
   #toast-container{left:calc(200px + (100vw - 200px)/2);}
 }
