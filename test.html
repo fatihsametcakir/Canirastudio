@@ -514,35 +514,24 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
 /* ── MASAÜSTÜ DÜZENİ (≥900px) ─────────────────────────────
    Mobilde tek sütun + alt navigasyon + alttan açılan sheet modallar.
-   Masaüstünde: sol sabit kenar çubuğu (aynı bottom-nav elemanları,
-   sadece yeniden konumlandırılıyor — JS/id değişmiyor), daha geniş
-   içerik alanı, ortalanmış dialog modallar. */
+   Masaüstünde de aynı alt navigasyon (bottom-nav) kullanılıyor — sol
+   kenar çubuğuna çevirmiyoruz, çünkü hamburger menü zaten soldan
+   açılıyor. Sadece ortalanmış, biraz daha geniş/ölçekli bir içerik
+   alanı ve ortalanmış dialog modallar ekliyoruz. */
 @media (min-width:900px){
-  .app,.topbar{max-width:1040px;margin-left:232px;margin-right:auto;}
-  .app{padding-bottom:40px;}
+  .app,.topbar{max-width:1040px;margin:0 auto;}
+  .app{padding-bottom:150px;}
 
-  /* Bottom nav → sol sidebar */
-  .bottom-nav{position:fixed;top:0;left:0;bottom:0;width:200px;max-width:200px;transform:none;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:2px;border-radius:0;padding:calc(20px + env(safe-area-inset-top)) 10px 16px;box-shadow:2px 0 24px -8px rgba(0,0,0,.4),1px 0 0 rgba(255,255,255,.06);background:linear-gradient(180deg,#1a1926,#16151f 60%);}
-  .bottom-nav::before{content:'Can & Irina Studio';display:block;font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);padding:2px 10px 18px;}
-  .nav-item{flex:none;flex-direction:row;justify-content:flex-start;align-items:center;gap:10px;padding:10px 10px;border-radius:12px;}
-  .nav-item:not(:last-child)::after{display:none;}
-  .nav-item.active{transform:none;background:var(--surface2);}
-  .nav-icon-wrap{width:26px;height:26px;flex-shrink:0;}
-  .nav-icon-wrap svg{width:16px;height:16px;}
-  .nav-label{font-size:13px;opacity:1;margin-top:0;text-align:left;}
-  .nav-item.active .nav-label{margin-top:0;}
+  /* Alt navigasyon: mobildekiyle aynı yapı, sadece masaüstünde biraz
+     daha geniş ve büyük ikon/etiketlerle. */
+  .bottom-nav{max-width:640px;padding:8px 6px max(8px,env(safe-area-inset-bottom));}
+  .nav-item{padding:8px 2px;}
+  .nav-icon-wrap{width:34px;height:34px;}
+  .nav-icon-wrap svg{width:19px;height:19px;}
+  .nav-label{font-size:11px;}
 
-  .fab{right:32px;bottom:32px;}
+  .fab{right:max(16px,calc(50vw - 504px));bottom:100px;}
   .robot-widget{top:20px;right:20px;}
-
-  /* Drawer sidebar'ın üstüne değil, yanına açılsın.
-     left:200px veriyoruz ama kapanış animasyonu translateX(-100%) kendi
-     genişliğine göre hesaplandığı için (300px), sadece left değiştirmek
-     kapalıyken bile ~100-200px'lik bir dilimin ekranda kalmasına yol açar.
-     Bunu telafi etmek için kapalı/açık transform değerlerini de burada
-     elle, left:200px'i hesaba katarak yeniden tanımlıyoruz. */
-  .drawer{left:200px;transform:translateX(calc(-100% - 200px));}
-  .drawer.open{transform:translateX(0);}
 
   /* Sheet/confirm modallar: alttan açılan değil, ortalanmış dialog.
      Ayrıca mobildeki dar tek-sütun form yerine, sade alanlardan (metin/
@@ -589,8 +578,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
      zaman scrollsuz görünür kalmasını sağlıyoruz. */
   #m-odeme .sheet{max-width:780px;}
   #m-odeme .ay-grid{grid-template-columns:repeat(6,1fr);max-height:220px;overflow-y:auto;padding-right:4px;}
-
-  #toast-container{left:calc(200px + (100vw - 200px)/2);}
 }
 </style>
 </head>
