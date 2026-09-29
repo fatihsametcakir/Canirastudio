@@ -8094,17 +8094,27 @@ function egitmenKategoriKey(idler){
   if(temiz.length===1)return temiz[0];
   return temiz.slice().sort().join('+');
 }
-const DUAL_RENK_PALET=['#94a3b8','#fb923c','#38bdf8','#c084fc','#4ade80'];
-function _strHash(s){let h=0;for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0;}return h;}
+// Eğitmen başına belirgin şekilde ayrışan renkler — aralarında ton (hue) farkı en az ~40° olacak
+// şekilde seçildi, ayrıca grafikteki Net Gelir çizgisinin rengi olan cyan (#22d3ee) bilerek dışarıda
+// bırakıldı ki hiçbir eğitmenin rengi net çizgisiyle karışmasın.
+const EGITMEN_RENK_PALET=['#f87171','#fbbf24','#4ade80','#818cf8','#fb7185','#a3e635','#60a5fa','#e879f9'];
 function kategoriBilgisi(key){
   if(key==='atanmamis')return{ad:'Atanmamış',renk:'#6b7280'};
   if(key.includes('+')){
-    const adlar=key.split('+').map(id=>{const e=S.egitmenler.find(x=>x.id===id);return e?e.ad:'?';}).join(' + ');
-    return{ad:adlar,renk:DUAL_RENK_PALET[_strHash(key)%DUAL_RENK_PALET.length]};
+    const idler=key.split('+');
+    const adlar=idler.map(id=>{const e=S.egitmenler.find(x=>x.id===id);return e?e.ad:'?';}).join(' + ');
+    // Çift eğitmenli dersler için yeni bir düz renk seçmek yerine, karışıklığı önlemek amacıyla
+    // ilgili iki eğitmenin kendi renklerinden çapraz çizgili bir desen oluşturuluyor — böylece
+    // hem "ikisi birlikte" anlamı görsel olarak taşınıyor hem de başka bir renkle çakışma riski kalmıyor.
+    const renkler=idler.map(id=>{
+      const idx=S.egitmenler.findIndex(x=>x.id===id);
+      return EGITMEN_RENK_PALET[idx>=0?idx%EGITMEN_RENK_PALET.length:0];
+    });
+    return{ad:adlar,renk:null,desenRenkleri:renkler,patternId:'pat_'+key.replace(/[^a-zA-Z0-9]/g,'_')};
   }
   const idx=S.egitmenler.findIndex(x=>x.id===key);
   const e=idx>=0?S.egitmenler[idx]:null;
-  return{ad:e?e.ad:'?',renk:RENK_BAR[idx>=0?idx%RENK_BAR.length:0]};
+  return{ad:e?e.ad:'?',renk:EGITMEN_RENK_PALET[idx>=0?idx%EGITMEN_RENK_PALET.length:0]};
 }
 
 function renderGelirTrend(){
@@ -8175,8 +8185,20 @@ function renderGelirTrend(){
     const bilgi=kategoriBilgisi(k);
     ['grup','ozel'].forEach(tip=>{
       const toplamBu=aylar.reduce((s,a)=>s+((a.kategoriler[k]||{})[tip]||0),0);
-      if(toplamBu>0)segmentler.push({key:k,tip,ad:bilgi.ad,renk:bilgi.renk});
+      if(toplamBu>0)segmentler.push({key:k,tip,ad:bilgi.ad,renk:bilgi.renk,desenRenkleri:bilgi.desenRenkleri,patternId:bilgi.patternId});
     });
+  });
+
+  // Çift eğitmenli kategoriler için çapraz çizgili SVG pattern tanımları (her biri sadece bir kez)
+  let patternDefs='';
+  const tanimlananPatternler=new Set();
+  segmentler.filter(s=>s.patternId&&!tanimlananPatternler.has(s.patternId)).forEach(s=>{
+    tanimlananPatternler.add(s.patternId);
+    const [c1,c2]=s.desenRenkleri;
+    patternDefs+=`<pattern id="${s.patternId}" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="7" height="7" fill="${c1}"/>
+      <rect width="3.5" height="7" fill="${c2}"/>
+    </pattern>`;
   });
 
   const maxVal=Math.max(...aylar.map(a=>a.toplam),1);
@@ -8220,7 +8242,8 @@ function renderGelirTrend(){
         if(val<=0)return;
         const hgt=(val/maxVal)*cH;
         const yTop=yCursor-hgt;
-        barsSvg+=`<rect x="${x.toFixed(1)}" y="${yTop.toFixed(1)}" width="${barW.toFixed(1)}" height="${hgt.toFixed(1)}" fill="${bilgi.renk}" opacity="${tip==='ozel'?0.55:0.95}" rx="2"/>`;
+        const dolgu=bilgi.renk||`url(#${bilgi.patternId})`;
+        barsSvg+=`<rect x="${x.toFixed(1)}" y="${yTop.toFixed(1)}" width="${barW.toFixed(1)}" height="${hgt.toFixed(1)}" fill="${dolgu}" opacity="${tip==='ozel'?0.55:0.95}" rx="2"/>`;
         yCursor=yTop;
       });
     });
@@ -8240,7 +8263,10 @@ function renderGelirTrend(){
   const aylikOrtalama=Math.round(toplamToplam/aylar.filter(a=>a.toplam>0).length)||0;
   const buAy=aylar.find(a=>a.key===buAyKey);
 
-  const legendHtml=segmentler.map(s=>`<span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:10px;height:10px;background:${s.renk};opacity:${s.tip==='ozel'?0.55:0.95};border-radius:2px;"></span>${s.ad} · ${s.tip==='grup'?'Grup':'Özel'}</span>`).join('')
+  const legendHtml=segmentler.map(s=>{
+    const swatchBg=s.renk?`background:${s.renk};`:`background:linear-gradient(135deg,${s.desenRenkleri[0]} 50%,${s.desenRenkleri[1]} 50%);`;
+    return `<span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:10px;height:10px;${swatchBg}opacity:${s.tip==='ozel'?0.55:0.95};border-radius:2px;"></span>${s.ad} · ${s.tip==='grup'?'Grup':'Özel'}</span>`;
+  }).join('')
     +`<span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--cyan);border-radius:1px;"></span>${t('net_gelir')}</span>`;
 
   let html=`
@@ -8265,6 +8291,7 @@ function renderGelirTrend(){
     <div style="display:flex;gap:10px;margin-bottom:8px;font-size:11px;flex-wrap:wrap;">${legendHtml}</div>
     <div class="gelir-chart-wrap">
       <svg class="gelir-chart-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+        <defs>${patternDefs}</defs>
         ${gridLines}
         ${barsSvg}
         <polyline points="${netPts}" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
