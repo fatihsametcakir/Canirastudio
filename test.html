@@ -7180,45 +7180,81 @@ async function renderEgitmenPanel(){
   const ayarlar=await giderAyarlariniYukle();
   GIDER_AYARLARI=ayarlar;
 
+  const legacySiniflar=S.siniflar.filter(si=>si.kira);
+
   let html=`
-    <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('egitmenler')}</div>
-    ${S.egitmenler.map(e=>`
-      <div class="egitmen-pay-kart" style="display:flex;align-items:center;gap:10px;background:${e.basEgitmen?'var(--purplebg)':'var(--surface2)'};border-color:${e.basEgitmen?'#a78bfa40':'var(--border2)'};">
-        <div style="font-size:22px;">${e.basEgitmen?'⭐':'👤'}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:14px;font-weight:600;">${e.ad}</div>
-          <div style="font-size:11px;color:var(--text2);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}</div>
-        </div>
-        <div style="display:flex;gap:6px;">
-          <button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenDuzenle('${e.id}')">${t('btn_duzenle_kisa')}</button>
-          <button class="btn btn-danger btn-sm" onclick="egitmenSil('${e.id}')">${t('btn_sil')}</button>
-        </div>
-      </div>`).join('')}
-    ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text2);padding:8px 0 4px;">'+t('henuz_egitmen_yok')+'</div>':''}
-    <button class="btn btn-sm" style="width:100%;margin-top:8px;background:#a78bfa1c;color:var(--purple);border:1px solid #a78bfa40;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>
-    <div style="height:1px;background:var(--border);margin:16px 0;"></div>
-    <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Grup Dersleri Kirası (Tüm Sınıflar İçin Ortak)</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bütün grup sınıflarının aynı kirayı ödediği tek bir yer — tek tek sınıf sınıf girmene gerek yok. Kira değiştiğinde buraya bir kayıt ekle, geçmiş dönemler eski tutarla, yeni dönemler yeni tutarla hesaplanmaya devam eder.</div>
-    <div id="ga-grup-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
-    <button class="btn btn-ghost" style="width:100%;margin-bottom:16px;" onclick="gaGrupKiraEkle()">+ Kira Değişikliği Ekle</button>
-    <div style="height:1px;background:var(--border);margin:16px 0;"></div>
-    <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">🏋️ Cumartesi Pratik Kirası</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Cumartesi pratik günü için kiralanan stüdyonun kaç saatliğine, saatte ne kadar ödendiği. Her sınıfın 4 haftalık dönemi normalde tam 4 Cumartesi içerir (aşağıda pratik yapılmayan bir Cumartesi işaretlemediğin sürece), tutar aktif tüm grup sınıfları arasında eşit bölünüp, kira gibi eğitmenlere pay dağıtılmadan önce gelirden düşülür. Tutar değişirse buraya yeni bir kayıt ekle — geçmiş dönemler eski tutarla hesaplanmaya devam eder.</div>
-    <div id="ga-pratik-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
-    <button class="btn btn-ghost" style="width:100%;margin-bottom:16px;" onclick="gaPratikKiraEkle()">+ Pratik Kirası Değişikliği Ekle</button>
-    <div style="font-size:12px;color:var(--text2);margin:14px 0 10px;line-height:1.5;">Bazı haftalar pratik yapılmıyor olabilir (tatil, iptal vb.) — o Cumartesiyi buradan işaretle, o dönem için ücrete dahil edilmesin.</div>
-    <div id="ga-pratik-iptal-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
-    <button class="btn btn-ghost" style="width:100%;margin-bottom:16px;" onclick="gaPratikIptalEkle()">+ Pratik Yapılmayan Tarih Ekle</button>
-    <div style="height:1px;background:var(--border);margin:16px 0;"></div>
-    <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('ozel_ders_studyo_kirasi')}</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('ozel_kira_aciklama')}</div>
-    <div class="field"><label>${t('aylik_ortak_kira')}</label><input id="ga-kira" type="number" placeholder="10000" value="${ayarlar.kira||''}"/></div>
-    <button class="btn btn-accent" style="width:100%;" onclick="egitmenAyarKaydet()">${t('btn_kaydet')}</button>`;
+    ${legacySiniflar.length?`
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#ff6b6b14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #ff6b6b35;">
+      <div style="font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">⚠ Eski Sabit Kira Kayıtları</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bu sınıflarda hâlâ eski, sabit bir kira kaydı var — bu yüzden aşağıdaki "Grup Dersleri Kirası" geçmişindeki değişiklikler bunlar için geçerli olmuyor, hep bu sabit tutarlar kullanılıyor:</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+        ${legacySiniflar.map(si=>`<div style="font-size:12.5px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;"><span>${si.ad}</span><b>${(si.kira||0).toLocaleString(LC())} ₺</b></div>`).join('')}
+      </div>
+      <button class="btn btn-accent" style="width:100%;" onclick="tumLegacyKiralariTemizle()">Hepsini Temizle, Ortak Kira Geçmişini Kullan</button>
+    </div>`:''}
+
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#a78bfa14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #a78bfa35;">
+      <div style="font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('egitmenler')}</div>
+      ${S.egitmenler.map(e=>`
+        <div class="egitmen-pay-kart" style="display:flex;align-items:center;gap:10px;background:${e.basEgitmen?'var(--purplebg)':'var(--surface2)'};border-color:${e.basEgitmen?'#a78bfa40':'var(--border2)'};">
+          <div style="font-size:22px;">${e.basEgitmen?'⭐':'👤'}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:600;">${e.ad}</div>
+            <div style="font-size:11px;color:var(--text2);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenDuzenle('${e.id}')">${t('btn_duzenle_kisa')}</button>
+            <button class="btn btn-danger btn-sm" onclick="egitmenSil('${e.id}')">${t('btn_sil')}</button>
+          </div>
+        </div>`).join('')}
+      ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text2);padding:8px 0 4px;">'+t('henuz_egitmen_yok')+'</div>':''}
+      <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>
+    </div>
+
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#22d3ee14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #22d3ee35;">
+      <div style="font-size:12px;font-weight:600;color:var(--cyan);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Grup Dersleri Kirası (Tüm Sınıflar İçin Ortak)</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bütün grup sınıflarının aynı kirayı ödediği tek bir yer — tek tek sınıf sınıf girmene gerek yok. Kira değiştiğinde buraya bir kayıt ekle, geçmiş dönemler eski tutarla, yeni dönemler yeni tutarla hesaplanmaya devam eder.</div>
+      <div id="ga-grup-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+      <button class="btn btn-accent" style="width:100%;" onclick="gaGrupKiraEkle()">＋ Kira Değişikliği Ekle</button>
+    </div>
+
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#34d39914,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #34d39935;">
+      <div style="font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">🏋️ Cumartesi Pratik Kirası</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Cumartesi pratik günü için kiralanan stüdyonun kaç saatliğine, saatte ne kadar ödendiği. Her sınıfın 4 haftalık dönemi normalde tam 4 Cumartesi içerir (aşağıda pratik yapılmayan bir Cumartesi işaretlemediğin sürece), tutar aktif tüm grup sınıfları arasında eşit bölünüp, kira gibi eğitmenlere pay dağıtılmadan önce gelirden düşülür. Tutar değişirse buraya yeni bir kayıt ekle — geçmiş dönemler eski tutarla hesaplanmaya devam eder.</div>
+      <div id="ga-pratik-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+      <button class="btn btn-accent" style="width:100%;margin-bottom:16px;" onclick="gaPratikKiraEkle()">＋ Pratik Kirası Değişikliği Ekle</button>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bazı haftalar pratik yapılmıyor olabilir (tatil, iptal vb.) — o Cumartesiyi buradan işaretle, o dönem için ücrete dahil edilmesin.</div>
+      <div id="ga-pratik-iptal-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+      <button class="btn btn-accent" style="width:100%;" onclick="gaPratikIptalEkle()">＋ Pratik Yapılmayan Tarih Ekle</button>
+    </div>
+
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#ff6b6b14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #ff6b6b35;">
+      <div style="font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('ozel_ders_studyo_kirasi')}</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('ozel_kira_aciklama')}</div>
+      <div class="field"><label>${t('aylik_ortak_kira')}</label><input id="ga-kira" type="number" placeholder="10000" value="${ayarlar.kira||''}"/></div>
+      <button class="btn btn-accent" style="width:100%;" onclick="egitmenAyarKaydet()">${t('btn_kaydet')}</button>
+    </div>`;
 
   el.innerHTML=html;
   renderGaGrupKiraListe();
   renderGaPratikKiraListe();
   renderGaPratikIptalListe();
+}
+async function tumLegacyKiralariTemizle(){
+  const legacySiniflar=S.siniflar.filter(si=>si.kira);
+  if(!legacySiniflar.length)return;
+  confirm_('Eski Kira Kayıtlarını Temizle',`${legacySiniflar.length} sınıftaki sabit kira kaydı kaldırılacak, hepsi ortak kira geçmişini kullanmaya başlayacak.`,async()=>{
+    setSyncing(true);
+    try{
+      for(const si of legacySiniflar){
+        await db.collection('siniflar').doc(si.id).update({kira:null});
+        si.kira=null;
+      }
+      _poll('siniflar');
+      renderEgitmenPanel();
+    }catch(e){alert('Hata: '+e.message);}
+    setSyncing(false);
+  });
 }
 
 function renderGaGrupKiraListe(){
