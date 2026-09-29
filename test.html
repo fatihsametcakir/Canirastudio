@@ -572,6 +572,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   .gg-card-ikon{width:48px;height:48px;font-size:22px;}
   #gg-ozet-row{max-width:560px;margin-left:auto;margin-right:auto;}
 
+  /* Ana Sayfa'daki 4 özet kart mobilde 2x2 ızgara — masaüstünde geniş
+     alanda boşuna 2 satıra yayılmasın, tek satırda 4 sütun olsun. */
+  #anasayfa-stats-row{grid-template-columns:repeat(4,1fr);}
+
   /* Ödeme Ekle popup'ı: masaüstünde iyice geniş (diğer ekranlardaki
      içerik alanıyla aynı genişlikte), ve "Kapsanan Aylar" ay seçici
      ızgarası 6 yerine 10 sütun kullanarak çoğu durumda tüm dönemlerin
@@ -771,7 +775,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
   <!-- ANA SAYFA -->
   <div class="page active" id="pg-anasayfa">
-    <div class="stats-row">
+    <div class="stats-row" id="anasayfa-stats-row">
       <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-aktif-ogrenci">Aktif Öğrenci</div><div class="stat-val" id="st-ogrenci">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span></div></div>
       <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-sinif">Sınıf</div><div class="stat-val" id="st-sinif">0</div></div>
       <div class="stat-card s3" onclick="goTo('gelirgider',document.querySelectorAll('.nav-item')[6])" style="cursor:pointer;"><div class="stat-label" id="lbl-bu-ay-gelir">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="lbl-net">Net</span>: <span id="st-net">0</span></div></div>
