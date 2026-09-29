@@ -1382,6 +1382,21 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div id="devamsiz-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 
+<!-- WhatsApp Mesaj Popup -->
+<div class="overlay" id="m-wa-popup"><div class="sheet" style="max-width:460px;">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-wa-popup')">✕</button>
+  <div class="sheet-title">💬 <span data-i18n="wa_mesaj_gonder">WhatsApp Mesajı</span></div>
+  <div id="wa-popup-kime" style="font-size:13px;color:var(--text2);margin-bottom:12px;font-weight:600;"></div>
+  <div class="tab-row" id="wa-popup-tabs" style="flex-wrap:wrap;">
+    <button class="tab-btn" data-key="genel" onclick="waPopupSablonSec('genel')" style="flex:1 1 calc(50% - 4px);font-size:12px;padding:7px 6px;" data-i18n="wa_sablon_genel">Genel</button>
+    <button class="tab-btn" data-key="hatirla" onclick="waPopupSablonSec('hatirla')" style="flex:1 1 calc(50% - 4px);font-size:12px;padding:7px 6px;" data-i18n="wa_sablon_hatirla">Hatırlatma</button>
+    <button class="tab-btn" data-key="yakin" onclick="waPopupSablonSec('yakin')" style="flex:1 1 calc(50% - 4px);font-size:12px;padding:7px 6px;" data-i18n="wa_sablon_yakin">Yakında Dolacak</button>
+    <button class="tab-btn" data-key="doldu" onclick="waPopupSablonSec('doldu')" style="flex:1 1 calc(50% - 4px);font-size:12px;padding:7px 6px;" data-i18n="wa_sablon_doldu">Paket Doldu</button>
+  </div>
+  <textarea id="wa-popup-metin" rows="5" style="width:100%;padding:12px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:14px;font-family:inherit;resize:vertical;margin-top:4px;"></textarea>
+  <button class="btn btn-accent" style="width:100%;margin-top:14px;" onclick="waPopupGonder()">📤 <span data-i18n="wa_gonder">WhatsApp'ta Gönder</span></button>
+</div></div>
+
 <!-- Öğrenci Geçmişi -->
 <div class="overlay" id="m-ogrenci-gecmisi"><div class="sheet" style="height:80vh;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ogrenci-gecmisi')">✕</button>
@@ -1759,6 +1774,7 @@ const TRANSLATIONS={
     duzenle:'Düzenle', yoklama_alindi_aciklama:'Bu ders için yoklama alındı. Bir öğrenciye dokunarak katılım geçmişini görebilir, düzenlemek için aşağıdaki butonu kullanabilirsin.',
     devamsiz_ogrenciler:'🚩 Devamsız Öğrenciler', iki_hafta_ustuste:'2 Hafta Üst Üste', uc_hafta_ustuste:'3+ Hafta',
     devamsiz_ogrenci_yok:'Bu kategoride devamsız öğrenci yok 🎉',
+    wa_mesaj_gonder:'WhatsApp Mesajı', wa_sablon_genel:'Genel', wa_sablon_hatirla:'Hatırlatma', wa_sablon_yakin:'Yakında Dolacak', wa_sablon_doldu:'Paket Doldu', wa_gonder:"WhatsApp'ta Gönder",
     ogrenci_gecmisi:'📜 Öğrenci Geçmişi', gecmis_kaydi_yok:'Henüz kayıtlı bir geçmiş yok.',
     olay_giris:'Sınıfa katıldı', olay_cikis:'Sınıftan çıkarıldı', olay_dondur:'Kayıt donduruldu', olay_coz:'Dondurma çözüldü',
     olay_genel_aktif:'Öğrenci aktif edildi', olay_genel_pasif:'Öğrenci pasife alındı',
@@ -1936,6 +1952,7 @@ const TRANSLATIONS={
     duzenle:'Edit', yoklama_alindi_aciklama:'Attendance has been taken for this class. Tap a student to see their attendance history, or use the button below to edit.',
     devamsiz_ogrenciler:'🚩 Absent Students', iki_hafta_ustuste:'2 Weeks in a Row', uc_hafta_ustuste:'3+ Weeks',
     devamsiz_ogrenci_yok:'No absent students in this category 🎉',
+    wa_mesaj_gonder:'WhatsApp Message', wa_sablon_genel:'General', wa_sablon_hatirla:'Reminder', wa_sablon_yakin:'Expiring Soon', wa_sablon_doldu:'Package Expired', wa_gonder:'Send on WhatsApp',
     ogrenci_gecmisi:'📜 Student History', gecmis_kaydi_yok:'No history recorded yet.',
     olay_giris:'Joined class', olay_cikis:'Removed from class', olay_dondur:'Enrollment frozen', olay_coz:'Freeze lifted',
     olay_genel_aktif:'Student activated', olay_genel_pasif:'Student deactivated',
@@ -2116,6 +2133,7 @@ const TRANSLATIONS={
     duzenle:'Изменить', yoklama_alindi_aciklama:'Посещаемость для этого занятия уже отмечена. Нажмите на ученика, чтобы увидеть историю посещений, или используйте кнопку ниже для изменения.',
     devamsiz_ogrenciler:'🚩 Отсутствующие ученики', iki_hafta_ustuste:'2 недели подряд', uc_hafta_ustuste:'3+ недели',
     devamsiz_ogrenci_yok:'В этой категории нет отсутствующих учеников 🎉',
+    wa_mesaj_gonder:'Сообщение WhatsApp', wa_sablon_genel:'Общее', wa_sablon_hatirla:'Напоминание', wa_sablon_yakin:'Скоро истекает', wa_sablon_doldu:'Пакет истёк', wa_gonder:'Отправить в WhatsApp',
     ogrenci_gecmisi:'📜 История ученика', gecmis_kaydi_yok:'История пока не записана.',
     olay_giris:'Присоединился к группе', olay_cikis:'Удалён из группы', olay_dondur:'Запись заморожена', olay_coz:'Заморозка снята',
     olay_genel_aktif:'Ученик активирован', olay_genel_pasif:'Ученик деактивирован',
@@ -2618,6 +2636,35 @@ function waTikla(btn){
 function waBR(tel,msg){
   const gecerli=telGecerliMi(tel);
   return `<button class="wa-btn${gecerli?'':' wa-btn-devre-disi'}" data-tel="${waHtmlEsc(tel||'')}" data-msg="${waHtmlEsc(msg||'')}" onclick="waTikla(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="${gecerli?'#25D366':'#5c5a78'}"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.12 1.524 5.847L.057 23.57l5.938-1.56C7.68 22.949 9.765 23.5 12 23.5 18.627 23.5 24 18.127 24 11.5S18.627 0 12 0zm0 21.5c-1.944 0-3.752-.545-5.28-1.484l-.379-.225-3.523.927.94-3.433-.246-.392A9.469 9.469 0 012.5 11.5C2.5 6.253 6.753 2 12 2s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/></svg>WA</button>`;
+}
+function waBtnPopup(tel,ad,sinif){
+  const gecerli=telGecerliMi(tel);
+  return `<button class="wa-btn${gecerli?'':' wa-btn-devre-disi'}" data-tel="${waHtmlEsc(tel||'')}" data-ad="${waHtmlEsc(ad||'')}" data-sinif="${waHtmlEsc(sinif||'')}" onclick="waPopupAcBtn(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="${gecerli?'#25D366':'#5c5a78'}"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.12 1.524 5.847L.057 23.57l5.938-1.56C7.68 22.949 9.765 23.5 12 23.5 18.627 23.5 24 18.127 24 11.5S18.627 0 12 0zm0 21.5c-1.944 0-3.752-.545-5.28-1.484l-.379-.225-3.523.927.94-3.433-.246-.392A9.469 9.469 0 012.5 11.5C2.5 6.253 6.753 2 12 2s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/></svg>WA</button>`;
+}
+let WA_POPUP_TEL='',WA_POPUP_AD='',WA_POPUP_SINIF='';
+function waPopupAcBtn(btn){
+  const tel=btn.getAttribute('data-tel')||'';
+  const ad=btn.getAttribute('data-ad')||'';
+  const sinif=btn.getAttribute('data-sinif')||'';
+  if(!telGecerliMi(tel)){waNumaraUyari(tel);return;}
+  waPopupAc(tel,ad,sinif);
+}
+function waPopupAc(tel,ad,sinif){
+  WA_POPUP_TEL=tel||'';WA_POPUP_AD=ad||'';WA_POPUP_SINIF=sinif||'';
+  document.getElementById('wa-popup-kime').textContent=ad||'';
+  waPopupSablonSec('genel');
+  openModal('m-wa-popup');
+}
+function waPopupSablonSec(key){
+  document.querySelectorAll('#wa-popup-tabs .tab-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('data-key')===key));
+  const tpl=WA_SABLON[key]||WA_SABLON.genel;
+  document.getElementById('wa-popup-metin').value=waReplaceVars(tpl,WA_POPUP_AD,WA_POPUP_SINIF,'');
+}
+function waPopupGonder(){
+  const msg=document.getElementById('wa-popup-metin').value;
+  if(!telGecerliMi(WA_POPUP_TEL)){waNumaraUyari(WA_POPUP_TEL);return;}
+  window.open(waLink(WA_POPUP_TEL,msg),'_blank');
+  closeModal('m-wa-popup');
 }
 
 // ── DRAWER ────────────────────────────────────────────
@@ -6737,8 +6784,10 @@ function devamsizOgrencileriHesapla(){
   return {iki:Object.values(grup2),uc:Object.values(grup3)};
 }
 let DEVAMSIZ_TAB='2';
+let DEVAMSIZ_ACIK=new Set();
 function openDevamsizModal(){
   DEVAMSIZ_TAB='2';
+  DEVAMSIZ_ACIK=new Set();
   renderDevamsiz();
   openModal('m-devamsiz');
 }
@@ -6747,6 +6796,15 @@ function devamsizTabSec(tab){
   document.getElementById('devamsiz-tab-2').classList.toggle('active',tab==='2');
   document.getElementById('devamsiz-tab-3').classList.toggle('active',tab==='3');
   renderDevamsiz();
+}
+function toggleDevamsizGrup(key){
+  if(DEVAMSIZ_ACIK.has(key))DEVAMSIZ_ACIK.delete(key);
+  else DEVAMSIZ_ACIK.add(key);
+  const body=document.getElementById('devamsiz-body-'+key),chev=document.getElementById('devamsiz-chev-'+key);
+  if(!body||!chev)return;
+  const a=DEVAMSIZ_ACIK.has(key);
+  body.classList.toggle('open',a);
+  chev.classList.toggle('open',a);
 }
 function renderDevamsiz(){
   const {iki,uc}=devamsizOgrencileriHesapla();
@@ -6758,16 +6816,24 @@ function renderDevamsiz(){
     return;
   }
   el.innerHTML=liste.filter(g=>g.ogrenciler.length).map(grp=>{
-    return `<div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">${grp.si.ad} · ${grp.si.gun}</div>
-      ${grp.ogrenciler.map(og=>`
-        <div style="display:flex;align-items:center;gap:10px;padding:11px;margin-bottom:7px;border-radius:var(--radius-sm);background:#ff6b6b1e;border:1.5px solid #ff6b6b;">
-          <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:30px;height:30px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:14px;font-weight:600;color:#ff6b6b;">${og.ad} ${og.soyad||''}</div>
-          </div>
-          ${waBtnG(og.tel,og.ad)}
-        </div>`).join('')}
+    const key=DEVAMSIZ_TAB+'_'+grp.si.id;
+    const acik=DEVAMSIZ_ACIK.has(key);
+    const grupRenk=RENK_BAR[S.siniflar.indexOf(grp.si)%RENK_BAR.length]||'var(--border2)';
+    return `<div class="odeme-sinif-grup">
+      <div class="odeme-sinif-baslik" onclick="toggleDevamsizGrup('${key}')" style="--grup-renk:${grupRenk};">
+        <div><div class="odeme-sinif-adi">${grp.si.ad}</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;"><span class="badge badge-red" style="font-size:10px;">${grp.ogrenciler.length} ${t('lbl_ogrenci_kucuk')}</span></div></div>
+        <span class="odeme-sinif-chevron${acik?' open':''}" id="devamsiz-chev-${key}">›</span>
+      </div>
+      <div class="odeme-sinif-body${acik?' open':''}" id="devamsiz-body-${key}">
+        ${grp.ogrenciler.map(og=>`
+          <div style="display:flex;align-items:center;gap:10px;padding:11px;margin-bottom:7px;border-radius:var(--radius-sm);background:#ff6b6b1e;border:1.5px solid #ff6b6b;">
+            <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:30px;height:30px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:14px;font-weight:600;color:#ff6b6b;">${og.ad} ${og.soyad||''}</div>
+            </div>
+            ${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),grp.si.ad)}
+          </div>`).join('')}
+      </div>
     </div>`;
   }).join('');
 }
