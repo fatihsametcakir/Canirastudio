@@ -591,15 +591,15 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
      popup da genişlesin diye sabit bir piksel değeri yerine ekran
      genişliğinin yüzdesine göre büyüyor (94vw), çok büyük monitörlerde
      aşırı uzamasın diye 1400px'te tavan var. "Kapsanan Aylar" ay seçici
-     ızgarası 6 yerine 10 sütun kullanarak çoğu durumda tüm dönemlerin
-     tek/iki satırda, formun geri kalanı scroll gerektirmeden görünmesini
-     sağlıyoruz. Dönem sayısı gerçekten çok fazla olursa (uzun süredir
+     ızgarası sabit 6 sütun kullanıyor — 12 dönemlik standart bir sınıfta
+     bu tam olarak iki dolu satır demek, tek başına sarkan yalnız bir
+     kutu kalmıyor. Dönem sayısı gerçekten çok fazla olursa (uzun süredir
      devam eden sınıflar) yine de sığmayabiliyor, bu yüzden ay-grid'i
      kendi içinde sınırlı yükseklikte scroll edilebilir yapıp Not/Kaydet
      alanlarının her zaman scrollsuz görünür kalmasını sağlıyoruz. */
   #m-odeme .sheet{max-width:min(94vw,1400px);max-height:97vh;}
   #m-odeme .field{margin-bottom:9px;}
-  #m-odeme .ay-grid{grid-template-columns:repeat(10,1fr);max-height:260px;overflow-y:auto;padding-right:4px;}
+  #m-odeme .ay-grid{grid-template-columns:repeat(6,1fr);max-height:260px;overflow-y:auto;padding-right:4px;}
   /* Tutar / Ödeme Tarihi / Yöntem: genel 2 sütunlu forma bırakılırsa Yöntem tek başına
      bir sonraki satıra düşüp sağ tarafı boş bırakıyordu — bu üçü özel olarak tek satırda
      3 sütuna diziliyor, geniş popup'taki boş alanı değerlendiriyor. */
