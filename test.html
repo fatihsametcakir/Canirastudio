@@ -1006,6 +1006,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('yoklama',null)">✓ Yoklama</button>
       <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
+      <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
       <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()">🏆 Yarışma (Jack & Jill)</button>
       <a class="drawer-btn" href="https://fatihsametcakir.github.io/Canirastudio/index.html" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none;background:#f59e0b1c;color:#f59e0b;border:1px solid #f59e0b40;border-radius:var(--radius-sm);width:100%;margin-bottom:0;box-sizing:border-box;margin-bottom:8px;">🟢 Canlı Ortama Git</a>
       <button class="drawer-btn" id="drawerBtnTestTarih" style="background:#f59e0b1c;color:#f59e0b;border:1px solid #f59e0b40;border-radius:var(--radius-sm);width:100%;margin-bottom:0;box-sizing:border-box;" onclick="drawerKapat();testTarihAyarla()">🕐 Test Tarihini Değiştir</button>
@@ -1041,22 +1042,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
         <div class="field"><label data-i18n="yeni_sifre">Yeni Şifre</label><input id="sifre-yeni" type="password" placeholder="En az 6 karakter" data-i18n-ph="en_az_6"/></div>
         <div class="field"><label data-i18n="tekrar">Tekrar</label><input id="sifre-tekrar" type="password" placeholder="Tekrar girin" data-i18n-ph="tekrar_girin"/></div>
         <button class="btn btn-accent" style="width:100%;margin-bottom:10px;" onclick="sifreDegistir()" data-i18n="sifreyi_guncelle">Şifreyi Güncelle</button>
-      </div>
-    </div>
-
-    <!-- WhatsApp Şablonları -->
-    <div class="acc-item" style="--item-color:var(--green);">
-      <div class="acc-head" onclick="accToggle('acc-wa')">
-        <div class="acc-title"><span class="acc-icon">💬</span> <span data-i18n="acc_wa">WhatsApp Şablonları</span></div>
-        <span class="acc-arrow" id="arr-acc-wa">›</span>
-      </div>
-      <div class="acc-body" id="acc-wa">
-        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;"><span data-i18n="degiskenler">Değişkenler</span>: <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{ad}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{sinif}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{gun}</code></div>
-        <div class="field"><label data-i18n="suresi_dolmus">Süresi Dolmuş</label><textarea id="wa-tpl-doldu" style="height:72px;font-size:13px;"></textarea></div>
-        <div class="field"><label data-i18n="gun_3_icinde">3 Gün İçinde</label><textarea id="wa-tpl-yakın" style="height:72px;font-size:13px;"></textarea></div>
-        <div class="field"><label data-i18n="gun_4_7_hatirlatma">4-7 Gün Hatırlatma</label><textarea id="wa-tpl-hatirla" style="height:72px;font-size:13px;"></textarea></div>
-        <div class="field"><label data-i18n="genel_mesaj">Genel Mesaj</label><textarea id="wa-tpl-genel" style="height:60px;font-size:13px;"></textarea></div>
-        <button class="btn btn-accent" style="width:100%;" onclick="waSablonKaydet()" data-i18n="btn_kaydet">Kaydet</button>
       </div>
     </div>
 
@@ -1395,6 +1380,18 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
   <textarea id="wa-popup-metin" rows="5" style="width:100%;padding:12px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:14px;font-family:inherit;resize:vertical;margin-top:4px;"></textarea>
   <button class="btn btn-accent" style="width:100%;margin-top:14px;" onclick="waPopupGonder()">📤 <span data-i18n="wa_gonder">WhatsApp'ta Gönder</span></button>
+</div></div>
+
+<!-- WhatsApp Şablon Ayarları -->
+<div class="overlay" id="m-wa-sablon"><div class="sheet" style="max-width:560px;max-height:90vh;">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-wa-sablon')">✕</button>
+  <div class="sheet-title">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></div>
+  <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.5;"><span data-i18n="degiskenler">Değişkenler</span>: <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{ad}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{sinif}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{gun}</code></div>
+  <div class="field"><label data-i18n="suresi_dolmus">Süresi Dolmuş</label><textarea id="wa-tpl-doldu" style="height:96px;font-size:14px;"></textarea></div>
+  <div class="field"><label data-i18n="gun_3_icinde">3 Gün İçinde</label><textarea id="wa-tpl-yakın" style="height:96px;font-size:14px;"></textarea></div>
+  <div class="field"><label data-i18n="gun_4_7_hatirlatma">4-7 Gün Hatırlatma</label><textarea id="wa-tpl-hatirla" style="height:96px;font-size:14px;"></textarea></div>
+  <div class="field"><label data-i18n="genel_mesaj">Genel Mesaj</label><textarea id="wa-tpl-genel" style="height:80px;font-size:14px;"></textarea></div>
+  <button class="btn btn-accent" style="width:100%;" onclick="waSablonKaydet()" data-i18n="btn_kaydet">Kaydet</button>
 </div></div>
 
 <!-- Öğrenci Geçmişi -->
@@ -2585,6 +2582,10 @@ async function waSablonYukle(){
   if(el('wa-tpl-hatirla'))el('wa-tpl-hatirla').value=WA_SABLON.hatirla;
   if(el('wa-tpl-genel'))el('wa-tpl-genel').value=WA_SABLON.genel;
 }
+function openWaSablonModal(){
+  waSablonYukle();
+  openModal('m-wa-sablon');
+}
 async function waSablonKaydet(){
   WA_SABLON.doldu=document.getElementById('wa-tpl-doldu').value||WA_VARSAYILAN.doldu;
   WA_SABLON.yakin=document.getElementById('wa-tpl-yakın').value||WA_VARSAYILAN.yakin;
@@ -2637,28 +2638,30 @@ function waBR(tel,msg){
   const gecerli=telGecerliMi(tel);
   return `<button class="wa-btn${gecerli?'':' wa-btn-devre-disi'}" data-tel="${waHtmlEsc(tel||'')}" data-msg="${waHtmlEsc(msg||'')}" onclick="waTikla(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="${gecerli?'#25D366':'#5c5a78'}"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.12 1.524 5.847L.057 23.57l5.938-1.56C7.68 22.949 9.765 23.5 12 23.5 18.627 23.5 24 18.127 24 11.5S18.627 0 12 0zm0 21.5c-1.944 0-3.752-.545-5.28-1.484l-.379-.225-3.523.927.94-3.433-.246-.392A9.469 9.469 0 012.5 11.5C2.5 6.253 6.753 2 12 2s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/></svg>WA</button>`;
 }
-function waBtnPopup(tel,ad,sinif){
+function waBtnPopup(tel,ad,sinif,gun,startKey){
   const gecerli=telGecerliMi(tel);
-  return `<button class="wa-btn${gecerli?'':' wa-btn-devre-disi'}" data-tel="${waHtmlEsc(tel||'')}" data-ad="${waHtmlEsc(ad||'')}" data-sinif="${waHtmlEsc(sinif||'')}" onclick="waPopupAcBtn(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="${gecerli?'#25D366':'#5c5a78'}"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.12 1.524 5.847L.057 23.57l5.938-1.56C7.68 22.949 9.765 23.5 12 23.5 18.627 23.5 24 18.127 24 11.5S18.627 0 12 0zm0 21.5c-1.944 0-3.752-.545-5.28-1.484l-.379-.225-3.523.927.94-3.433-.246-.392A9.469 9.469 0 012.5 11.5C2.5 6.253 6.753 2 12 2s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/></svg>WA</button>`;
+  return `<button class="wa-btn${gecerli?'':' wa-btn-devre-disi'}" data-tel="${waHtmlEsc(tel||'')}" data-ad="${waHtmlEsc(ad||'')}" data-sinif="${waHtmlEsc(sinif||'')}" data-gun="${waHtmlEsc(gun!=null?gun:'')}" data-start="${waHtmlEsc(startKey||'genel')}" onclick="waPopupAcBtn(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="${gecerli?'#25D366':'#5c5a78'}"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.12 1.524 5.847L.057 23.57l5.938-1.56C7.68 22.949 9.765 23.5 12 23.5 18.627 23.5 24 18.127 24 11.5S18.627 0 12 0zm0 21.5c-1.944 0-3.752-.545-5.28-1.484l-.379-.225-3.523.927.94-3.433-.246-.392A9.469 9.469 0 012.5 11.5C2.5 6.253 6.753 2 12 2s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/></svg>WA</button>`;
 }
-let WA_POPUP_TEL='',WA_POPUP_AD='',WA_POPUP_SINIF='';
+let WA_POPUP_TEL='',WA_POPUP_AD='',WA_POPUP_SINIF='',WA_POPUP_GUN='';
 function waPopupAcBtn(btn){
   const tel=btn.getAttribute('data-tel')||'';
   const ad=btn.getAttribute('data-ad')||'';
   const sinif=btn.getAttribute('data-sinif')||'';
+  const gun=btn.getAttribute('data-gun')||'';
+  const startKey=btn.getAttribute('data-start')||'genel';
   if(!telGecerliMi(tel)){waNumaraUyari(tel);return;}
-  waPopupAc(tel,ad,sinif);
+  waPopupAc(tel,ad,sinif,gun,startKey);
 }
-function waPopupAc(tel,ad,sinif){
-  WA_POPUP_TEL=tel||'';WA_POPUP_AD=ad||'';WA_POPUP_SINIF=sinif||'';
+function waPopupAc(tel,ad,sinif,gun,startKey){
+  WA_POPUP_TEL=tel||'';WA_POPUP_AD=ad||'';WA_POPUP_SINIF=sinif||'';WA_POPUP_GUN=gun!=null?gun:'';
   document.getElementById('wa-popup-kime').textContent=ad||'';
-  waPopupSablonSec('genel');
+  waPopupSablonSec(startKey||'genel');
   openModal('m-wa-popup');
 }
 function waPopupSablonSec(key){
   document.querySelectorAll('#wa-popup-tabs .tab-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('data-key')===key));
   const tpl=WA_SABLON[key]||WA_SABLON.genel;
-  document.getElementById('wa-popup-metin').value=waReplaceVars(tpl,WA_POPUP_AD,WA_POPUP_SINIF,'');
+  document.getElementById('wa-popup-metin').value=waReplaceVars(tpl,WA_POPUP_AD,WA_POPUP_SINIF,WA_POPUP_GUN);
 }
 function waPopupGonder(){
   const msg=document.getElementById('wa-popup-metin').value;
@@ -4580,7 +4583,7 @@ function renderAnasayfa(){
           </div>
           <span class="badge ${bc}" style="flex-shrink:0;white-space:nowrap;font-size:10px;">${dt}</span>
         </div>
-        <div style="display:flex;gap:6px;">${waBtnAlert(og.tel,og.ad,sinif.ad,dl)}<button class="btn btn-green btn-sm" onclick="openOdemeModal('${og.id}','${sinif.id}')">＋ ${t('odeme_al')}</button></div>
+        <div style="display:flex;gap:6px;">${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),sinif.ad,dl,dl<=0?'doldu':dl<=3?'yakin':'hatirla')}<button class="btn btn-green btn-sm" onclick="openOdemeModal('${og.id}','${sinif.id}')">＋ ${t('odeme_al')}</button></div>
       </div>`;
     }).join('');
     return `<div class="odeme-sinif-grup" style="margin-bottom:8px;overflow:hidden;">
@@ -4701,7 +4704,7 @@ function renderAnasayfa(){
           </div>
           <span class="badge badge-amber">${t('yeni_kayit')}</span>
         </div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">${waBtnG(og.tel,og.ad)}</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''))}</div>
       </div>`;
     }
     const alertCls=hicOdeme?'soon':'ok';
@@ -4719,7 +4722,7 @@ function renderAnasayfa(){
         <span class="badge ${badgeCls}">${badgeTxt}</span>
       </div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">
-        ${waBtnG(og.tel,og.ad)}
+        ${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),siAd)}
         <button class="btn btn-accent btn-sm" onclick="openOdemeModal('${og.id}','${si.id}')">＋ ${t('odeme_al')}</button>
       </div>
     </div>`;
@@ -5189,7 +5192,7 @@ function renderOdemeler(){
         <div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;">
           ${!donduruldu?`<button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOdemeModal('${og.id}','${si.id}')">＋ ${t('odeme_al')}</button>`:''}
           <button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="openOdemeDetay('${og.id}','${si.id}')">${t('gecmis')}</button>
-          ${waBtnG(og.tel,og.ad)}
+          ${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),si.ad)}
         </div>
       </div>`;
     });
@@ -5204,7 +5207,7 @@ function renderOdemeler(){
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
       const topOzel=paketler.reduce((s,p)=>s+(p.tutar||0),0);
       const aktif=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
-      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text2);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnG(og.tel,og.ad)}</div></div>`;
+      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text2);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),t('ozel_dersler'))}</div></div>`;
     });
     html+=`</div></div>`;
   }
