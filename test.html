@@ -380,6 +380,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .gider-satir{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);}
 .gider-satir:last-child{border-bottom:none;}
 .egitmen-pay-kart{border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;border:1px solid var(--border2);}
+.gr-kart-body{display:none;}
+.gr-kart-body.open{display:block;}
+.gr-kart-baslik{cursor:pointer;}
 .reten-bar-wrap{height:8px;border-radius:4px;background:var(--surface2);overflow:hidden;margin:6px 0 4px;}
 .reten-bar-fill{height:100%;border-radius:4px;transition:width .4s;}
 .gelir-chart-wrap{width:100%;overflow-x:auto;padding-bottom:4px;}
@@ -2166,6 +2169,7 @@ function cycleLang(){
 let OG_FILTER='aktif', OG_GRUPLU=true, OG_SIRALAMA='ad', ODEME_TAB='odemeler';
 let OD_AYLAR=[], OD_ONCEKI=new Set(), OD_ESKI_AYLAR=[];
 let ODEME_ACIK=new Set(), GELIR_ACIK=new Set();
+let GIDER_RAPOR_ACIK=new Set();
 let ODEME_ARAMA='';
 let BEK_GRUPLAMA='sure', BEK_ACIK=new Set();
 let YEN_GRUPLAMA='sinif', YEN_ACIK=new Set();
@@ -2511,6 +2515,7 @@ function toggleOgGrup(ad){
 }
 function setOgrenciFilter(f){OG_FILTER=f;['aktif','pasif','hepsi'].forEach(k=>{const b=document.getElementById('filter-'+k);if(k===f){b.style.background='var(--accentbg)';b.style.color='var(--accent)';b.style.border='1px solid #ff6b6b40';b.style.boxShadow='0 3px 10px -3px #ff6b6b70';}else{b.style.background='var(--surface2)';b.style.color='var(--text2)';b.style.border='1px solid var(--border2)';b.style.boxShadow='none';}});renderOgrenciler();}
 function toggleOdemeSinif(id){if(ODEME_ACIK.has(id))ODEME_ACIK.delete(id);else ODEME_ACIK.add(id);const body=document.getElementById('odeme-body-'+id),chev=document.getElementById('odeme-chev-'+id);if(!body||!chev)return;const a=ODEME_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
+function toggleGiderKart(id){if(GIDER_RAPOR_ACIK.has(id))GIDER_RAPOR_ACIK.delete(id);else GIDER_RAPOR_ACIK.add(id);const body=document.getElementById('gr-body-'+id),chev=document.getElementById('gr-chev-'+id);if(!body||!chev)return;const a=GIDER_RAPOR_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
 function toggleGelirSinif(id){
   if(GELIR_ACIK.has(id))GELIR_ACIK.delete(id);
   else GELIR_ACIK.add(id);
@@ -7685,15 +7690,20 @@ async function renderGiderRapor(){
         return ay1===ay2?ay1:(ay1+' – '+ay2);
       };
 
+      const kartAcik=GIDER_RAPOR_ACIK.has(d.si.id);
       html+=`<div class="egitmen-pay-kart" style="border-left:3px solid ${renk};margin-bottom:8px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div>
-            <div style="font-size:14px;font-weight:600;">${d.si.ad}</div>
-            ${d.egitmen?`<div style="font-size:11px;color:var(--text2);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}${d.egitmen2?` · ${d.egitmen2.basEgitmen?'⭐':'👤'} ${d.egitmen2.ad}`:''}</div>`:''}
+        <div class="gr-kart-baslik" onclick="toggleGiderKart('${d.si.id}')" style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+            <span class="odeme-sinif-chevron${kartAcik?' open':''}" id="gr-chev-${d.si.id}" style="flex-shrink:0;">›</span>
+            <div style="min-width:0;">
+              <div style="font-size:14px;font-weight:600;">${d.si.ad}</div>
+              ${d.egitmen?`<div style="font-size:11px;color:var(--text2);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}${d.egitmen2?` · ${d.egitmen2.basEgitmen?'⭐':'👤'} ${d.egitmen2.ad}`:''}</div>`:''}
+            </div>
           </div>
-          <span style="font-size:14px;font-weight:700;color:var(--green);">${d.sinifGelir.toLocaleString(LC())} ₺</span>
+          <span style="font-size:14px;font-weight:700;color:var(--green);flex-shrink:0;">${d.sinifGelir.toLocaleString(LC())} ₺</span>
         </div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;">
+        <div class="gr-kart-body${kartAcik?' open':''}" id="gr-body-${d.si.id}">
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;margin-top:10px;">
           <button onclick="sinifDonemDegistir('${d.si.id}',-1)" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;padding:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">‹</button>
           <span style="font-size:11px;color:var(--text2);font-weight:600;">${d.donemIdx+1}. Dönem</span>
           <button onclick="sinifDonemDegistir('${d.si.id}',1)" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;padding:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">›</button>
@@ -7734,6 +7744,7 @@ async function renderGiderRapor(){
           <span style="color:${karRenk};">${d.basEgitmenKar.toLocaleString(LC())} ₺</span>
         </div>`}
         ${(d.sinifGelir>0&&(d.kira+d.pratikPay)>=d.sinifGelir&&(d.ikiBasEgitmen||!isAsistan))?`<div style="font-size:10.5px;color:var(--text3);margin:2px 0 0;">${t('kira_oncelik_notu').replace('{tutar}',d.sinifGelir.toLocaleString(LC()))}</div>`:''}
+        </div>
       </div>`;
     });
   }
