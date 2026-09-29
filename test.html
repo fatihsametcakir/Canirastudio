@@ -1182,6 +1182,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 <div class="overlay" id="m-sinif"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-sinif')">✕</button>
   <div class="sheet-title" id="m-sinif-title">Yeni Sınıf</div>
+  <div id="si-legacy-kira-box" style="display:none;font-size:12px;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;line-height:1.5;">
+    ⚠ Bu sınıfta eski, sabit bir kira kaydı (<b id="si-legacy-kira-tutar"></b>) var — bu yüzden "Eğitmenler &amp; Giderler" bölümündeki ortak kira geçmişindeki değişiklikler bu sınıf için <b>geçerli olmuyor</b>, hep bu sabit tutar kullanılıyor.
+    <button type="button" class="btn btn-sm btn-ghost" style="width:100%;margin-top:8px;" onclick="sinifLegacyKiraTemizle()">Sabit kira kaydını kaldır, ortak kira geçmişini kullan</button>
+  </div>
   <div class="field"><label data-i18n="sinif_adi">Sınıf Adı</label><input id="si-ad" placeholder="örn. Salsa Başlangıç"/></div>
   <div class="field"><label data-i18n="egitmen">Eğitmen</label><select id="si-egitmen"><option value="" data-i18n="secin">— Seçin —</option></select></div>
   <div class="field" id="si-asistan-alan" style="display:none;">
@@ -2925,6 +2929,11 @@ function openSinifModal(id){
     egSel2.value=si.egitmen2Id||'';
     document.getElementById('si-donem-baslangic').value=si.donemBaslangic||'';
     document.getElementById('m-sinif-title').textContent=t('sinifi_duzenle');
+    const legacyBox=document.getElementById('si-legacy-kira-box');
+    if(legacyBox){
+      if(si.kira){legacyBox.style.display='block';document.getElementById('si-legacy-kira-tutar').textContent=si.kira.toLocaleString(LC())+' ₺';}
+      else legacyBox.style.display='none';
+    }
   } else {
     ['si-ad','si-paket','si-tekders','si-asistan-pct','si-asistan2-pct'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('si-saat').value='19:00';
@@ -2932,6 +2941,8 @@ function openSinifModal(id){
     egSel.value='';
     egSel2.value='';
     document.getElementById('m-sinif-title').textContent=t('yeni_sinif');
+    const legacyBox=document.getElementById('si-legacy-kira-box');
+    if(legacyBox)legacyBox.style.display='none';
   }
   guncelleSinifAlani();
   guncelleSinif2Alani();
@@ -2958,6 +2969,19 @@ async function saveSinif(){
     closeModal('m-sinif');_poll('siniflar');
   }catch(e){alert('Hata: '+e.message);}
   btn.disabled=false;setSyncing(false);
+}
+async function sinifLegacyKiraTemizle(){
+  if(!EDIT_SINIF)return;
+  setSyncing(true);
+  try{
+    await db.collection('siniflar').doc(EDIT_SINIF).update({kira:null});
+    const si=S.siniflar.find(s=>s.id===EDIT_SINIF);
+    if(si)si.kira=null;
+    const legacyBox=document.getElementById('si-legacy-kira-box');
+    if(legacyBox)legacyBox.style.display='none';
+    _poll('siniflar');
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
 }
 // Sınıf düzenlemesinde hangi alanların değiştiğini tespit edip sinifGecmisi'ne kaydeder
 async function sinifDegisiklikleriGunlukle(sinifId,eski,yeni){
