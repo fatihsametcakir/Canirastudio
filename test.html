@@ -3614,6 +3614,16 @@ function pratikCumartesiSayisi(bas,bitis){
   }
   return sayac;
 }
+// Takvim ayı bazlı (Ana Sayfa / Gelir sekmesi / Gelir Trendi gibi dönem değil
+// takvim ayı kullanan ekranlar için) o aydaki toplam Cumartesi pratik kirası.
+// ayBasStr = 'YYYY-MM-01' formatında, o ayın ilk günü.
+function pratikKiraAyToplami(ayBasStr){
+  const bas=new Date(ayBasStr+'T00:00:00');
+  const bitis=new Date(bas.getFullYear(),bas.getMonth()+1,0);
+  const bilgi=pratikKiraTarihte(ayBasStr);
+  const sayisi=pratikCumartesiSayisi(bas,bitis);
+  return (bilgi.saat||0)*(bilgi.saatlikUcret||0)*sayisi;
+}
 // ── Sınıfın KENDİ dönemi (takvim ayı değil) ─────────────────────────
 // Eğitmen ödeme dönemleri, sınıfın "Dönem Başlangıç Tarihi" alanından itibaren
 // 4'er haftalık (28 gün) bloklar halinde ilerler. Böylece ayın sonunda açılan
@@ -4550,12 +4560,14 @@ function renderAnasayfa(){
   const total=grupToplam+ozelToplam;
   const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
   const bugunStr=bugunTarih();
+  const ayBasStrBk=bk+'-01';
   const toplamKira=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,bugunStr),0);
+  const pratikKira=pratikKiraAyToplami(ayBasStrBk);
   const asistanGider=aktifSiniflar.reduce((s,si)=>{
     const siGelir=S.odemeler.filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===bk;}).reduce((t,o)=>t+(o.tutar||0),0);
     return s+sinifAsistanGideriHesapla(si,siGelir,bugunStr);
   },0);
-  const netTotal=total-toplamKira-asistanGider-(GIDER_AYARLARI.kira||0);
+  const netTotal=total-toplamKira-pratikKira-asistanGider-(GIDER_AYARLARI.kira||0);
   const fmt=v=>v>=1000?Math.round(v/1000)+'K':(Math.round(v)||'0');
   document.getElementById('st-odeme').textContent=fmt(total);
   document.getElementById('st-net').textContent=fmt(netTotal);
@@ -5256,6 +5268,7 @@ function renderGelir(){
     // Bu ay net: brüt - bu ayda geçerli olan kira - bu ayın asistan gideri
     const ayBasStr=key+'-01';
     const buAyKira=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,ayBasStr),0);
+    const buAyPratikKira=pratikKiraAyToplami(ayBasStr);
     const buAyAsistan=aktifSiniflar.reduce((s,si)=>{
       const siGelir=S.odemeler.filter(o=>{
         const t=o.tarih;if(!t||o.sinifId!==si.id)return false;
@@ -5263,7 +5276,7 @@ function renderGelir(){
       }).reduce((t,o)=>t+(o.tutar||0),0);
       return s+sinifAsistanGideriHesapla(si,siGelir,ayBasStr);
     },0);
-    const ayNet=v.toplam-buAyKira-buAyAsistan-(GIDER_AYARLARI.kira||0);
+    const ayNet=v.toplam-buAyKira-buAyPratikKira-buAyAsistan-(GIDER_AYARLARI.kira||0);
     const gruplar=v.gruplar||{};
     html+=`<div class="gelir-row">
       <div class="gelir-row-header" onclick="toggleGelirAy('${key}')">
@@ -7991,11 +8004,12 @@ function renderGelirTrend(){
     const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
     const ayBasStr=key+'-01';
     const kiraToplam=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,ayBasStr),0);
+    const pratikKira=pratikKiraAyToplami(ayBasStr);
     const asistanGider=aktifSiniflar.reduce((s,si)=>{
       const siGelir=S.odemeler.filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;}).reduce((t,o)=>t+(o.tutar||0),0);
       return s+sinifAsistanGideriHesapla(si,siGelir,ayBasStr);
     },0);
-    const net=(grup+ozel)-kiraToplam-asistanGider-(GIDER_AYARLARI.kira||0);
+    const net=(grup+ozel)-kiraToplam-pratikKira-asistanGider-(GIDER_AYARLARI.kira||0);
     aylar.push({key,label,toplam:grup+ozel,grup,ozel,net:Math.max(0,net)});
   }
 
