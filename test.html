@@ -289,6 +289,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .sheet-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .field{margin-bottom:13px;}
 .field label{display:block;font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
+/* Mobilde .field-row3 içindeki alanlar normal akışta tek tek alt alta sıralansın diye
+   display:contents ile sarmalayıcıyı "görünmez" yapıyoruz — masaüstünde 3 sütuna dönüşüyor. */
+.field-row3{display:contents;}
 .eg-check-row{display:flex;align-items:center;gap:10px;text-transform:none;letter-spacing:normal;font-size:14px;font-weight:400;color:var(--text);margin-bottom:0;padding:9px 2px;border-bottom:1px solid var(--border);}
 .field .eg-check-row:last-child{border-bottom:none;}
 .eg-check-row input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--accent);}
@@ -597,6 +600,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   #m-odeme .sheet{max-width:min(94vw,1400px);max-height:97vh;}
   #m-odeme .field{margin-bottom:9px;}
   #m-odeme .ay-grid{grid-template-columns:repeat(10,1fr);max-height:260px;overflow-y:auto;padding-right:4px;}
+  /* Tutar / Ödeme Tarihi / Yöntem: genel 2 sütunlu forma bırakılırsa Yöntem tek başına
+     bir sonraki satıra düşüp sağ tarafı boş bırakıyordu — bu üçü özel olarak tek satırda
+     3 sütuna diziliyor, geniş popup'taki boş alanı değerlendiriyor. */
+  #m-odeme .field-row3{display:grid;grid-column:1 / -1;grid-template-columns:repeat(3,1fr);column-gap:16px;}
 }
 </style>
 </head>
@@ -1259,9 +1266,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
   <div class="field"><label data-i18n="lbl_sinif">Sınıf</label><select id="od-sinif" onchange="odSinifChange()"></select></div>
   <div class="field"><label data-i18n="lbl_ogrenci">Öğrenci</label><select id="od-ogrenci" onchange="odOgrenciChange()"></select></div>
-  <div class="field"><label data-i18n="lbl_tutar">Tutar (₺)</label><input id="od-tutar" type="number" placeholder="800"/></div>
-  <div class="field"><label data-i18n="odeme_tarihi">Ödeme Tarihi</label><input id="od-tarih" type="date"/></div>
-  <div class="field"><label data-i18n="lbl_yontem">Yöntem</label><select id="od-yontem"><option value="nakit" data-i18n="nakit">Nakit</option><option value="kart" data-i18n="kart">Kart</option><option value="havale" data-i18n="havale">Havale/EFT</option></select></div>
+  <div class="field-row3">
+    <div class="field"><label data-i18n="lbl_tutar">Tutar (₺)</label><input id="od-tutar" type="number" placeholder="800"/></div>
+    <div class="field"><label data-i18n="odeme_tarihi">Ödeme Tarihi</label><input id="od-tarih" type="date"/></div>
+    <div class="field"><label data-i18n="lbl_yontem">Yöntem</label><select id="od-yontem"><option value="nakit" data-i18n="nakit">Nakit</option><option value="kart" data-i18n="kart">Kart</option><option value="havale" data-i18n="havale">Havale/EFT</option></select></div>
+  </div>
   <div class="field" id="od-ay-alan"><label><span data-i18n="kapsanan_aylar">Kapsanan Aylar</span> <span style="color:var(--accent);">*</span></label><div style="font-size:12px;color:var(--text2);margin-bottom:7px;" data-i18n="bu_odeme_hangi_ay">Bu ödeme hangi ay(lar) için?</div><div id="od-ay-eski-uyari" style="display:none;font-size:11px;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:7px 9px;margin-bottom:7px;">⚠ Bu ödeme, dönem sistemi öncesinde eski "ay" formatıyla kaydedilmiş. Ders sayısı korunuyor ama aşağıda hangi dönem(ler) olduğu otomatik işaretlenemiyor — istersen doğru dönem(ler)i elle seçip eskisinin yerine geçirebilirsin.</div><div class="ay-grid" id="od-ay-grid"></div></div>
   <div class="field"><label data-i18n="lbl_not">Not</label><textarea id="od-not" placeholder="Ek not..."></textarea></div>
   <div id="od-edit-sil-row" style="display:none;margin-top:6px;"><button class="btn btn-danger" style="width:100%;" onclick="silOdeme()" data-i18n="bu_odemeyi_sil">Bu Ödemeyi Sil</button></div>
