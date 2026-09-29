@@ -2245,10 +2245,10 @@ function ayKey(y,m){return y+'-'+(m<10?'0':'')+m;}
 // Not: bu hızlı özet kartlarında (Ana Sayfa, Gelir Trendi) HAM ödeme tutarı
 // kullanılır — ders bazlı ay dağılımı (sinifGelirAyProrated) sadece Gider
 // Raporu'ndaki detaylı sınıf bazlı hesaplamada kullanılır.
-function sinifAsistanGideriHesapla(si,siGelir){
+function sinifAsistanGideriHesapla(si,siGelir,tarihStr){
   const eg1=S.egitmenler.find(e=>e.id===si.egitmenId);
   const eg2=S.egitmenler.find(e=>e.id===si.egitmen2Id);
-  const kira=si.kira||0;
+  const kira=tarihStr?sinifKiraTarihte(si,tarihStr):(si.kira||0);
   let odeme1=0;
   let kalan=Math.max(0,siGelir-kira);
   if(eg1&&!eg1.basEgitmen){
@@ -4549,10 +4549,11 @@ function renderAnasayfa(){
   const ozelToplam=S.ozelPaketler.filter(p=>{if(!p.tarih)return false;const d=new Date(p.tarih+'T00:00:00');return ayKey(d.getFullYear(),d.getMonth()+1)===bk;}).reduce((s,p)=>s+(p.tutar||0),0);
   const total=grupToplam+ozelToplam;
   const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
-  const toplamKira=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
+  const bugunStr=bugunTarih();
+  const toplamKira=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,bugunStr),0);
   const asistanGider=aktifSiniflar.reduce((s,si)=>{
     const siGelir=S.odemeler.filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===bk;}).reduce((t,o)=>t+(o.tutar||0),0);
-    return s+sinifAsistanGideriHesapla(si,siGelir);
+    return s+sinifAsistanGideriHesapla(si,siGelir,bugunStr);
   },0);
   const netTotal=total-toplamKira-asistanGider-(GIDER_AYARLARI.kira||0);
   const fmt=v=>v>=1000?Math.round(v/1000)+'K':(Math.round(v)||'0');
@@ -5247,31 +5248,22 @@ function renderGelir(){
   if(!Object.keys(ayMap).length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('henuz_odeme_kaydi_yok')+'</div></div>';return;}
   const sirali=Object.entries(ayMap).sort((a,b)=>b[0].localeCompare(a[0]));
   const toplamToplam=sirali.reduce((s,[,v])=>s+v.toplam,0);
-  // Net gelir hesapla: kira + asistan eğitmen payı
+  // Net gelir hesapla: her ay kendi tarihinde GEÇERLİ OLAN kira + asistan eğitmen payı ile
   const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
-  const toplamKira=aktifSiniflar.length*aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0)/Math.max(aktifSiniflar.length,1);
-  // Toplam kira = her aktif sınıfın kirası toplamı (tek seferlik, aylık değil)
-  // Kira her ay için hesaplanır (kaç ay gösteriliyorsa o kadar)
-  const aySayisi=sirali.length||1;
-  const kiraToplam=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0)*aySayisi;
-  const asistanToplam=aktifSiniflar.reduce((s,si)=>{
-    const siGelir=S.odemeler.filter(o=>o.sinifId===si.id).reduce((t,o)=>t+(o.tutar||0),0);
-    return s+sinifAsistanGideriHesapla(si,siGelir);
-  },0);
-  const netToplam=toplamToplam-kiraToplam-asistanToplam;
-  const aylikKira=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
   let html='<div class="card">';
   sirali.forEach(([key,v])=>{
     const acik=GELIR_ACIK.has(key);
-    // Bu ay net: brüt - aylık kira - bu ayın asistan gideri
+    // Bu ay net: brüt - bu ayda geçerli olan kira - bu ayın asistan gideri
+    const ayBasStr=key+'-01';
+    const buAyKira=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,ayBasStr),0);
     const buAyAsistan=aktifSiniflar.reduce((s,si)=>{
       const siGelir=S.odemeler.filter(o=>{
         const t=o.tarih;if(!t||o.sinifId!==si.id)return false;
         return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;
       }).reduce((t,o)=>t+(o.tutar||0),0);
-      return s+sinifAsistanGideriHesapla(si,siGelir);
+      return s+sinifAsistanGideriHesapla(si,siGelir,ayBasStr);
     },0);
-    const ayNet=v.toplam-aylikKira-buAyAsistan-(GIDER_AYARLARI.kira||0);
+    const ayNet=v.toplam-buAyKira-buAyAsistan-(GIDER_AYARLARI.kira||0);
     const gruplar=v.gruplar||{};
     html+=`<div class="gelir-row">
       <div class="gelir-row-header" onclick="toggleGelirAy('${key}')">
@@ -7995,12 +7987,13 @@ function renderGelirTrend(){
       const pd=new Date(p.tarih+'T00:00:00');
       return ayKey(pd.getFullYear(),pd.getMonth()+1)===key;
     }).reduce((s,p)=>s+(p.tutar||0),0);
-    // Net gelir: kira + asistan payı düş
+    // Net gelir: bu ayda geçerli olan kira + asistan payı düş
     const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
-    const kiraToplam=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
+    const ayBasStr=key+'-01';
+    const kiraToplam=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,ayBasStr),0);
     const asistanGider=aktifSiniflar.reduce((s,si)=>{
       const siGelir=S.odemeler.filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;}).reduce((t,o)=>t+(o.tutar||0),0);
-      return s+sinifAsistanGideriHesapla(si,siGelir);
+      return s+sinifAsistanGideriHesapla(si,siGelir,ayBasStr);
     },0);
     const net=(grup+ozel)-kiraToplam-asistanGider-(GIDER_AYARLARI.kira||0);
     aylar.push({key,label,toplam:grup+ozel,grup,ozel,net:Math.max(0,net)});
