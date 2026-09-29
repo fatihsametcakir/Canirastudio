@@ -914,6 +914,12 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <button class="btn btn-accent" style="width:100%;margin-bottom:12px;" onclick="tatilEkle()" data-i18n="btn_tatil_ekle">＋ Tatil Ekle</button>
     <div id="tatil-liste"></div>
   </div>
+  <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#34d39914,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #34d39935;">
+    <div style="font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">🚫 Pratik Yapılmayan Günler</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bazı haftalar pratik yapılmıyor olabilir (tatil, iptal vb.) — o Cumartesiyi buradan işaretle, o dönem için ücrete dahil edilmesin.</div>
+    <div id="ga-pratik-iptal-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+    <button class="btn btn-accent" style="width:100%;" onclick="gaPratikIptalEkle()">＋ Pratik Yapılmayan Tarih Ekle</button>
+  </div>
   <div id="egitmen-panel-content2"></div>
 </div>
 
@@ -7340,10 +7346,7 @@ async function renderEgitmenPanel(){
       <div style="font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">🏋️ Cumartesi Pratik Kirası</div>
       <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Cumartesi pratik günü için kiralanan stüdyonun kaç saatliğine, saatte ne kadar ödendiği. Her sınıfın 4 haftalık dönemi normalde tam 4 Cumartesi içerir (aşağıda pratik yapılmayan bir Cumartesi işaretlemediğin sürece), tutar aktif tüm grup sınıfları arasında eşit bölünüp, kira gibi eğitmenlere pay dağıtılmadan önce gelirden düşülür. Tutar değişirse buraya yeni bir kayıt ekle — geçmiş dönemler eski tutarla hesaplanmaya devam eder.</div>
       <div id="ga-pratik-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
-      <button class="btn btn-accent" style="width:100%;margin-bottom:16px;" onclick="gaPratikKiraEkle()">＋ Pratik Kirası Değişikliği Ekle</button>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bazı haftalar pratik yapılmıyor olabilir (tatil, iptal vb.) — o Cumartesiyi buradan işaretle, o dönem için ücrete dahil edilmesin.</div>
-      <div id="ga-pratik-iptal-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
-      <button class="btn btn-accent" style="width:100%;" onclick="gaPratikIptalEkle()">＋ Pratik Yapılmayan Tarih Ekle</button>
+      <button class="btn btn-accent" style="width:100%;" onclick="gaPratikKiraEkle()">＋ Pratik Kirası Değişikliği Ekle</button>
     </div>
 
     <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#ff6b6b14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #ff6b6b35;">
@@ -8083,6 +8086,27 @@ function renderRetention(){
   el.innerHTML=html;
 }
 
+// Gelir trendinde grup/özel ders gelirini eğitmene göre kategorize eder.
+// Çift eğitmenli dersler tek eğitmene bölünmez, ikisi birlikte tek bir "ortak" kategori olur.
+function egitmenKategoriKey(idler){
+  const temiz=[...new Set((idler||[]).filter(Boolean))];
+  if(!temiz.length)return 'atanmamis';
+  if(temiz.length===1)return temiz[0];
+  return temiz.slice().sort().join('+');
+}
+const DUAL_RENK_PALET=['#94a3b8','#fb923c','#38bdf8','#c084fc','#4ade80'];
+function _strHash(s){let h=0;for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0;}return h;}
+function kategoriBilgisi(key){
+  if(key==='atanmamis')return{ad:'Atanmamış',renk:'#6b7280'};
+  if(key.includes('+')){
+    const adlar=key.split('+').map(id=>{const e=S.egitmenler.find(x=>x.id===id);return e?e.ad:'?';}).join(' + ');
+    return{ad:adlar,renk:DUAL_RENK_PALET[_strHash(key)%DUAL_RENK_PALET.length]};
+  }
+  const idx=S.egitmenler.findIndex(x=>x.id===key);
+  const e=idx>=0?S.egitmenler[idx]:null;
+  return{ad:e?e.ad:'?',renk:RENK_BAR[idx>=0?idx%RENK_BAR.length:0]};
+}
+
 function renderGelirTrend(){
   const el=document.getElementById('gelir-trend-content2')||document.getElementById('gelir-trend-content');
   if(!el)return;
@@ -8094,20 +8118,39 @@ function renderGelirTrend(){
     const d=new Date(simdi.getFullYear(),simdi.getMonth()-i,1);
     const key=ayKey(d.getFullYear(),d.getMonth()+1);
     const label=d.toLocaleDateString(LC(),{month:'short',year:'2-digit'});
-    // Grup dersleri
-    const grup=S.odemeler.filter(o=>{
+    const ayBasStr=key+'-01';
+
+    const odemelerBuAy=S.odemeler.filter(o=>{
       const t=o.tarih;if(!t)return false;
       return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;
-    }).reduce((s,o)=>s+(o.tutar||0),0);
-    // Özel dersler
-    const ozel=S.ozelPaketler.filter(p=>{
+    });
+    const paketlerBuAy=S.ozelPaketler.filter(p=>{
       if(!p.tarih)return false;
       const pd=new Date(p.tarih+'T00:00:00');
       return ayKey(pd.getFullYear(),pd.getMonth()+1)===key;
-    }).reduce((s,p)=>s+(p.tutar||0),0);
+    });
+
+    // Eğitmen + ders türüne göre kırılım
+    const kategoriler={};
+    const kategoriyeEkle=(k,tip,tutar)=>{
+      if(!kategoriler[k])kategoriler[k]={grup:0,ozel:0};
+      kategoriler[k][tip]+=tutar;
+    };
+    odemelerBuAy.forEach(o=>{
+      const si=S.siniflar.find(s=>s.id===o.sinifId);
+      const k=egitmenKategoriKey(si?[si.egitmenId,si.egitmen2Id]:[]);
+      kategoriyeEkle(k,'grup',o.tutar||0);
+    });
+    paketlerBuAy.forEach(p=>{
+      const k=egitmenKategoriKey(p.egitmenIds||[]);
+      kategoriyeEkle(k,'ozel',p.tutar||0);
+    });
+
+    const grup=odemelerBuAy.reduce((s,o)=>s+(o.tutar||0),0);
+    const ozel=paketlerBuAy.reduce((s,p)=>s+(p.tutar||0),0);
+
     // Net gelir: bu ayda geçerli olan kira + asistan payı düş
     const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
-    const ayBasStr=key+'-01';
     const kiraToplam=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,ayBasStr),0);
     const pratikKira=pratikKiraAyToplami(ayBasStr);
     const asistanGider=aktifSiniflar.reduce((s,si)=>{
@@ -8116,28 +8159,42 @@ function renderGelirTrend(){
     },0);
     const ozelStudyoKira=ozelStudyoKiraTarihte(ayBasStr);
     const net=(grup+ozel)-kiraToplam-pratikKira-asistanGider-ozelStudyoKira;
-    aylar.push({key,label,toplam:grup+ozel,grup,ozel,net:Math.max(0,net)});
+    aylar.push({key,label,toplam:grup+ozel,grup,ozel,net:Math.max(0,net),kategoriler});
   }
+
+  // Tüm kategori key'lerini topla, sabit bir sıraya diz: eğitmenler (S.egitmenler sırasıyla), sonra ikili dersler, sonra atanmamış
+  const tumKategoriler=new Set();
+  aylar.forEach(a=>Object.keys(a.kategoriler).forEach(k=>tumKategoriler.add(k)));
+  const tekliSira=S.egitmenler.map(e=>e.id).filter(id=>tumKategoriler.has(id));
+  const ikiliSira=[...tumKategoriler].filter(k=>k!=='atanmamis'&&k.includes('+')).sort((a,b)=>kategoriBilgisi(a).ad.localeCompare(kategoriBilgisi(b).ad,'tr'));
+  const kategoriSirasi=[...tekliSira,...ikiliSira,...(tumKategoriler.has('atanmamis')?['atanmamis']:[])];
+
+  // Sadece toplamı 0'dan büyük olan kategori+tür kombinasyonları için lejant girdisi
+  const segmentler=[];
+  kategoriSirasi.forEach(k=>{
+    const bilgi=kategoriBilgisi(k);
+    ['grup','ozel'].forEach(tip=>{
+      const toplamBu=aylar.reduce((s,a)=>s+((a.kategoriler[k]||{})[tip]||0),0);
+      if(toplamBu>0)segmentler.push({key:k,tip,ad:bilgi.ad,renk:bilgi.renk});
+    });
+  });
 
   const maxVal=Math.max(...aylar.map(a=>a.toplam),1);
   const minVal=0;
 
-  // SVG line chart
+  // Yığın (stacked) bar + net gelir çizgisi
   const W=Math.max(300,aylar.length*52);
-  const H=140;
+  const H=150;
   const PAD={top:14,right:16,bottom:36,left:46};
   const cW=W-PAD.left-PAD.right;
   const cH=H-PAD.top-PAD.bottom;
+  const slot=cW/aylar.length;
+  const barW=Math.max(6,slot*0.6);
 
-  const xPos=i=>PAD.left+i*(cW/(aylar.length-1));
+  const xCenter=i=>PAD.left+slot*i+slot/2;
   const yPos=v=>PAD.top+cH-(((v-minVal)/(maxVal-minVal))*cH);
 
-  // Polyline points
-  const pts=aylar.map((a,i)=>`${xPos(i)},${yPos(a.toplam)}`).join(' ');
-  const netPts=aylar.map((a,i)=>`${xPos(i)},${yPos(a.net)}`).join(' ');
-  // Fill area
-  const fillPts=`${xPos(0)},${PAD.top+cH} `+pts+` ${xPos(aylar.length-1)},${PAD.top+cH}`;
-  const netFillPts=`${xPos(0)},${PAD.top+cH} `+netPts+` ${xPos(aylar.length-1)},${PAD.top+cH}`;
+  const netPts=aylar.map((a,i)=>`${xCenter(i).toFixed(1)},${yPos(a.net).toFixed(1)}`).join(' ');
 
   // Y grid lines (4 adet)
   let gridLines='';
@@ -8149,21 +8206,32 @@ function renderGelirTrend(){
     <text x="${PAD.left-6}" y="${y+4}" text-anchor="end" font-size="9" fill="var(--text2)">${label}</text>`;
   }
 
-  // X labels + dots
-  let dots='',xlabels='';
+  // Yığın barlar + toplam etiketleri + x label
+  let barsSvg='',toplamLabels='',xlabels='',netDots='';
   const buAyKey=ayKey(simdi.getFullYear(),simdi.getMonth()+1);
   aylar.forEach((a,i)=>{
-    const x=xPos(i),y=yPos(a.toplam);
+    const x=xCenter(i)-barW/2;
     const isThis=a.key===buAyKey;
-    const dotR=isThis?5:3.5;
-    dots+=`<circle cx="${x}" cy="${y}" r="${dotR}" fill="${isThis?'var(--cyan)':'var(--purple)'}" stroke="var(--bg)" stroke-width="2"/>`;
+    let yCursor=PAD.top+cH;
+    kategoriSirasi.forEach(k=>{
+      const bilgi=kategoriBilgisi(k);
+      ['grup','ozel'].forEach(tip=>{
+        const val=(a.kategoriler[k]||{})[tip]||0;
+        if(val<=0)return;
+        const hgt=(val/maxVal)*cH;
+        const yTop=yCursor-hgt;
+        barsSvg+=`<rect x="${x.toFixed(1)}" y="${yTop.toFixed(1)}" width="${barW.toFixed(1)}" height="${hgt.toFixed(1)}" fill="${bilgi.renk}" opacity="${tip==='ozel'?0.55:0.95}" rx="2"/>`;
+        yCursor=yTop;
+      });
+    });
     if(a.toplam>0){
       const lbl=a.toplam>=1000?(a.toplam/1000).toFixed(1)+'K':a.toplam;
-      dots+=`<text x="${x}" y="${y-8}" text-anchor="middle" font-size="9" fill="var(--text2)">${lbl}</text>`;
+      toplamLabels+=`<text x="${xCenter(i).toFixed(1)}" y="${(yPos(a.toplam)-6).toFixed(1)}" text-anchor="middle" font-size="9" fill="var(--text2)">${lbl}</text>`;
     }
-    // Her 2 ayda bir label (fazla dolmaması için)
+    const netR=isThis?5:3.5;
+    netDots+=`<circle cx="${xCenter(i).toFixed(1)}" cy="${yPos(a.net).toFixed(1)}" r="${netR}" fill="var(--cyan)" stroke="var(--bg)" stroke-width="2"/>`;
     if(i%2===0||i===aylar.length-1||isThis){
-      xlabels+=`<text x="${x}" y="${H-PAD.bottom+14}" text-anchor="middle" font-size="9" fill="${isThis?'var(--cyan)':'var(--text2)'}" font-weight="${isThis?'600':'400'}">${a.label}</text>`;
+      xlabels+=`<text x="${xCenter(i).toFixed(1)}" y="${H-PAD.bottom+14}" text-anchor="middle" font-size="9" fill="${isThis?'var(--cyan)':'var(--text2)'}" font-weight="${isThis?'600':'400'}">${a.label}</text>`;
     }
   });
 
@@ -8171,6 +8239,9 @@ function renderGelirTrend(){
   const toplamToplam=aylar.reduce((s,a)=>s+a.toplam,0);
   const aylikOrtalama=Math.round(toplamToplam/aylar.filter(a=>a.toplam>0).length)||0;
   const buAy=aylar.find(a=>a.key===buAyKey);
+
+  const legendHtml=segmentler.map(s=>`<span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:10px;height:10px;background:${s.renk};opacity:${s.tip==='ozel'?0.55:0.95};border-radius:2px;"></span>${s.ad} · ${s.tip==='grup'?'Grup':'Özel'}</span>`).join('')
+    +`<span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--cyan);border-radius:1px;"></span>${t('net_gelir')}</span>`;
 
   let html=`
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
@@ -8191,30 +8262,14 @@ function renderGelirTrend(){
         <div style="font-size:15px;font-weight:700;color:var(--green);">${toplamToplam.toLocaleString(LC())} ₺</div>
       </div>
     </div>
-    <div style="display:flex;gap:12px;margin-bottom:8px;font-size:11px;">
-      <span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--purple);border-radius:1px;"></span>${t('brut_gelir')}</span>
-      <span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--cyan);border-radius:1px;"></span>${t('net_gelir')}</span>
-    </div>
+    <div style="display:flex;gap:10px;margin-bottom:8px;font-size:11px;flex-wrap:wrap;">${legendHtml}</div>
     <div class="gelir-chart-wrap">
       <svg class="gelir-chart-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-        <defs>
-          <linearGradient id="gelirGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--purple)" stop-opacity=".25"/>
-            <stop offset="100%" stop-color="var(--purple)" stop-opacity=".02"/>
-          </linearGradient>
-        </defs>
         ${gridLines}
-        <defs>
-          <linearGradient id="netGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--cyan)" stop-opacity=".2"/>
-            <stop offset="100%" stop-color="var(--cyan)" stop-opacity=".02"/>
-          </linearGradient>
-        </defs>
-        <polygon points="${fillPts}" fill="url(#gelirGrad)"/>
-        <polygon points="${netFillPts}" fill="url(#netGrad)"/>
-        <polyline points="${pts}" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".8"/>
+        ${barsSvg}
         <polyline points="${netPts}" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-        ${dots}
+        ${netDots}
+        ${toplamLabels}
         ${xlabels}
       </svg>
     </div>
