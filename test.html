@@ -987,7 +987,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <button class="nav-item c-od" onclick="goTo('odemeler',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M5.5 9v.01M18.5 15v.01"/></svg></div><span class="nav-label" id="navlbl-odemeler">Ödemeler</span></button>
     <button class="nav-item c-gg" onclick="goTo('gelirgider',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V13M10 20V8M16 20V11M20 20V4"/></svg></div><span class="nav-label" id="navlbl-gelirgider">Gelir/Gider</span></button>
   </nav>
-  <button class="fab" id="mainFab" onclick="fabAction()">＋</button>
+  <button class="fab" id="mainFab" onclick="fabAction()" style="display:none;">＋</button>
 </div>
 
 <!-- Drawer overlay -->
@@ -2445,7 +2445,7 @@ function goTo(p,btn){
   if(btn)btn.classList.add('active');
   setTopbar(false);
   const fab=document.getElementById('mainFab');
-  if(fab)fab.style.display=(p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider')?'none':'flex';
+  if(fab)fab.style.display=(p==='anasayfa'||p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider')?'none':'flex';
   renderAll();
 }
 function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
@@ -2470,7 +2470,7 @@ function goBack(){
   const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:3,ozel:4,odemeler:5,gelirgider:6,yoklama:-1};
   document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',i===(map[bt]??-1)));
   const fab=document.getElementById('mainFab');
-  if(fab)fab.style.display=(bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider')?'none':'flex';
+  if(fab)fab.style.display=(bt==='anasayfa'||bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider')?'none':'flex';
   renderAll();
 }
 function setTopbar(d,t=''){
