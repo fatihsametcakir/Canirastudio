@@ -535,8 +535,14 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   .fab{right:32px;bottom:32px;}
   .robot-widget{top:20px;right:20px;}
 
-  /* Drawer sidebar'ın üstüne değil, yanına açılsın */
-  .drawer{left:200px;}
+  /* Drawer sidebar'ın üstüne değil, yanına açılsın.
+     left:200px veriyoruz ama kapanış animasyonu translateX(-100%) kendi
+     genişliğine göre hesaplandığı için (300px), sadece left değiştirmek
+     kapalıyken bile ~100-200px'lik bir dilimin ekranda kalmasına yol açar.
+     Bunu telafi etmek için kapalı/açık transform değerlerini de burada
+     elle, left:200px'i hesaba katarak yeniden tanımlıyoruz. */
+  .drawer{left:200px;transform:translateX(calc(-100% - 200px));}
+  .drawer.open{transform:translateX(0);}
 
   /* Sheet/confirm modallar: alttan açılan değil, ortalanmış dialog */
   .overlay{align-items:center;}
