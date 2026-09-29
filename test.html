@@ -584,15 +584,17 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
      alanda boşuna 2 satıra yayılmasın, tek satırda 4 sütun olsun. */
   #anasayfa-stats-row{grid-template-columns:repeat(4,1fr);}
 
-  /* Ödeme Ekle popup'ı: masaüstünde iyice geniş (diğer ekranlardaki
-     içerik alanıyla aynı genişlikte), ve "Kapsanan Aylar" ay seçici
+  /* Ödeme Ekle popup'ı: masaüstünde iyice geniş, ekran genişledikçe
+     popup da genişlesin diye sabit bir piksel değeri yerine ekran
+     genişliğinin yüzdesine göre büyüyor (94vw), çok büyük monitörlerde
+     aşırı uzamasın diye 1400px'te tavan var. "Kapsanan Aylar" ay seçici
      ızgarası 6 yerine 10 sütun kullanarak çoğu durumda tüm dönemlerin
      tek/iki satırda, formun geri kalanı scroll gerektirmeden görünmesini
      sağlıyoruz. Dönem sayısı gerçekten çok fazla olursa (uzun süredir
      devam eden sınıflar) yine de sığmayabiliyor, bu yüzden ay-grid'i
      kendi içinde sınırlı yükseklikte scroll edilebilir yapıp Not/Kaydet
      alanlarının her zaman scrollsuz görünür kalmasını sağlıyoruz. */
-  #m-odeme .sheet{max-width:1040px;max-height:97vh;}
+  #m-odeme .sheet{max-width:min(94vw,1400px);max-height:97vh;}
   #m-odeme .field{margin-bottom:9px;}
   #m-odeme .ay-grid{grid-template-columns:repeat(10,1fr);max-height:260px;overflow-y:auto;padding-right:4px;}
 }
