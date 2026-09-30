@@ -289,6 +289,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .sheet-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .field{margin-bottom:13px;}
 .field label{display:block;font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
+/* Mobilde .field-row3 içindeki alanlar normal akışta tek tek alt alta sıralansın diye
+   display:contents ile sarmalayıcıyı "görünmez" yapıyoruz — masaüstünde 3 sütuna dönüşüyor. */
+.field-row3{display:contents;}
 .eg-check-row{display:flex;align-items:center;gap:10px;text-transform:none;letter-spacing:normal;font-size:14px;font-weight:400;color:var(--text);margin-bottom:0;padding:9px 2px;border-bottom:1px solid var(--border);}
 .field .eg-check-row:last-child{border-bottom:none;}
 .eg-check-row input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--accent);}
@@ -380,6 +383,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .gider-satir{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);}
 .gider-satir:last-child{border-bottom:none;}
 .egitmen-pay-kart{border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;border:1px solid var(--border2);}
+.gr-kart-body{display:none;}
+.gr-kart-body.open{display:block;}
+.gr-kart-baslik{cursor:pointer;}
 .reten-bar-wrap{height:8px;border-radius:4px;background:var(--surface2);overflow:hidden;margin:6px 0 4px;}
 .reten-bar-fill{height:100%;border-radius:4px;transition:width .4s;}
 .gelir-chart-wrap{width:100%;overflow-x:auto;padding-bottom:4px;}
@@ -390,9 +396,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .takvim-mod-btn.active{background:var(--surface);color:var(--accent);box-shadow:inset 0 0 0 1px #ff6b6b40;}
 .takvim-mod-btn:active{transform:scale(.95);}
 .hafta-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.hafta-gunler{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none;}
-.hafta-gunler::-webkit-scrollbar{display:none;}
-.hafta-gun-btn{flex-shrink:0;width:44px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;border-radius:10px;border:1px solid transparent;cursor:pointer;background:transparent;font-family:'DM Sans',sans-serif;transition:all .25s cubic-bezier(.34,1.56,.64,1);}
+.hafta-gunler{display:flex;gap:5px;padding-bottom:4px;margin-bottom:12px;}
+.hafta-gun-btn{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;border-radius:10px;border:1px solid var(--border2);cursor:pointer;background:transparent;font-family:'DM Sans',sans-serif;transition:all .25s cubic-bezier(.34,1.56,.64,1);}
 .hafta-gun-btn:active{transform:scale(.92);}
 .hafta-gun-btn.bugun{border-color:var(--accent);}
 .hafta-gun-btn.secili{background:var(--accent);border-color:var(--accent);box-shadow:0 4px 14px -3px #ff6b6b80;transform:scale(1.05);}
@@ -511,10 +516,99 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 #si-arama:focus{border-color:#a78bfa70;box-shadow:0 0 0 3px #a78bfa1a;}
 .search-clear{position:absolute;right:10px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px;display:none;line-height:1;}
 .search-clear.visible{display:block;}
+
+/* ── MASAÜSTÜ DÜZENİ (≥900px) ─────────────────────────────
+   Mobilde tek sütun + alt navigasyon + alttan açılan sheet modallar.
+   Masaüstünde de aynı alt navigasyon (bottom-nav) kullanılıyor — sol
+   kenar çubuğuna çevirmiyoruz, çünkü hamburger menü zaten soldan
+   açılıyor. Sadece ortalanmış, biraz daha geniş/ölçekli bir içerik
+   alanı ve ortalanmış dialog modallar ekliyoruz. */
+@media (min-width:900px){
+  .app,.topbar{max-width:1040px;margin:0 auto;}
+  .app{padding-bottom:150px;}
+
+  /* Alt navigasyon: mobildekiyle aynı yapı, sadece masaüstünde biraz
+     daha geniş ve büyük ikon/etiketlerle. */
+  .bottom-nav{max-width:640px;padding:8px 6px max(8px,env(safe-area-inset-bottom));}
+  .nav-item{padding:8px 2px;}
+  .nav-icon-wrap{width:34px;height:34px;}
+  .nav-icon-wrap svg{width:19px;height:19px;}
+  .nav-label{font-size:11px;}
+
+  .fab{right:max(16px,calc(50vw - 504px));bottom:100px;}
+  .robot-widget{top:20px;right:20px;}
+
+  /* Sheet/confirm modallar: alttan açılan değil, ortalanmış dialog.
+     Ayrıca mobildeki dar tek-sütun form yerine, sade alanlardan (metin/
+     sayı/select) oluşan .field'ları iki sütuna diziyoruz; içinde
+     textarea, onay-kutusu listesi (eg-check-row) veya ay seçici
+     (ay-grid) olan alanlar bilerek tam genişlikte kalır. */
+  .overlay{align-items:center;}
+  .sheet,.confirm-sheet{border-radius:22px;max-width:640px;max-height:85vh;padding-left:28px;padding-right:28px;}
+
+  .sheet:has(> .field),.confirm-sheet:has(> .field){
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:16px;
+    align-items:start;
+  }
+  .sheet:has(> .field)>*,.confirm-sheet:has(> .field)>*{grid-column:1 / -1;}
+  .sheet:has(> .field)>.field:not(:has(textarea)):not(:has(.eg-check-row)):not(:has(.ay-grid)),
+  .confirm-sheet:has(> .field)>.field:not(:has(textarea)):not(:has(.eg-check-row)):not(:has(.ay-grid)){
+    grid-column:span 1;
+  }
+
+  /* Haftalık takvim gün seçici: mobildeki sabit 44px'lik dar butonlar
+     yerine, geniş masaüstü alanını kullanacak şekilde eşit genişlikte
+     yayılsın. */
+  .hafta-gunler{gap:10px;justify-content:center;}
+  .hafta-gun-btn{flex:1;width:auto;max-width:120px;padding:10px 4px;}
+
+  /* Gelir/Gider ekranı: mobildeki 2 sütunlu dar kart grid'i, geniş
+     masaüstünde dev boş kutulara dönüşüyordu (ölçek sorunu). Rapor
+     kartlarını 3 sütuna yayıp daha kare/oturaklı yapıyoruz, üst özet
+     kartlarının (Bu Ay Gelir/Net Kâr) satırını da makul bir genişlikte
+     sınırlıyoruz ki dev, boş kutular gibi görünmesin. */
+  .gg-grid{grid-template-columns:repeat(3,1fr);gap:14px;}
+  .gg-card{align-items:center;text-align:center;padding:22px 16px;}
+  .gg-card-ikon{width:48px;height:48px;font-size:22px;}
+  #gg-ozet-row{max-width:560px;margin-left:auto;margin-right:auto;}
+
+  /* Aylık Gelir Trendi grafiği: SVG sabit piksel genişlikte çiziliyor
+     (12 ay × 52px), mobilde yatay scroll ile gösteriliyor ama masaüstünde
+     bu dar haliyle kalıp geniş çerçevede küçük görünüyordu. Scroll'u
+     kapatıp SVG'yi çerçevenin tam genişliğine yayıyoruz — viewBox aynı
+     kaldığı için oranlı büyüyor, çizgiler/etiketler de büyüyüp daha
+     okunaklı oluyor. */
+  .gelir-chart-wrap{overflow-x:visible;}
+  .gelir-chart-svg{width:100%;height:auto;}
+
+  /* Ana Sayfa'daki 4 özet kart mobilde 2x2 ızgara — masaüstünde geniş
+     alanda boşuna 2 satıra yayılmasın, tek satırda 4 sütun olsun. */
+  #anasayfa-stats-row{grid-template-columns:repeat(4,1fr);}
+
+  /* Ödeme Ekle popup'ı: masaüstünde iyice geniş, ekran genişledikçe
+     popup da genişlesin diye sabit bir piksel değeri yerine ekran
+     genişliğinin yüzdesine göre büyüyor (94vw), çok büyük monitörlerde
+     aşırı uzamasın diye 1400px'te tavan var. "Kapsanan Aylar" ay seçici
+     ızgarası sabit 6 sütun kullanıyor — 12 dönemlik standart bir sınıfta
+     bu tam olarak iki dolu satır demek, tek başına sarkan yalnız bir
+     kutu kalmıyor. Dönem sayısı gerçekten çok fazla olursa (uzun süredir
+     devam eden sınıflar) yine de sığmayabiliyor, bu yüzden ay-grid'i
+     kendi içinde sınırlı yükseklikte scroll edilebilir yapıp Not/Kaydet
+     alanlarının her zaman scrollsuz görünür kalmasını sağlıyoruz. */
+  #m-odeme .sheet{max-width:min(94vw,1400px);max-height:97vh;}
+  #m-odeme .field{margin-bottom:9px;}
+  #m-odeme .ay-grid{grid-template-columns:repeat(6,1fr);max-height:260px;overflow-y:auto;padding-right:4px;}
+  /* Tutar / Ödeme Tarihi / Yöntem: genel 2 sütunlu forma bırakılırsa Yöntem tek başına
+     bir sonraki satıra düşüp sağ tarafı boş bırakıyordu — bu üçü özel olarak tek satırda
+     3 sütuna diziliyor, geniş popup'taki boş alanı değerlendiriyor. */
+  #m-odeme .field-row3{display:grid;grid-column:1 / -1;grid-template-columns:repeat(3,1fr);column-gap:16px;}
+}
 </style>
 </head>
 <body>
-<div id="login-screen">
+<div id="login-screen" style="padding-top:24px;">
   <div class="login-logo">Can & Irina<br><span>Studio</span></div>
   <div class="login-sub" id="login-sub-text" data-i18n="yonetim_paneli">Yönetim Paneli</div>
   <div class="login-box">
@@ -570,89 +664,34 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
 <!-- SON ÖDEMELER MODALI -->
 <div class="overlay" id="m-son-odemeler">
-  <div class="sheet" style="max-height:85vh;">
+  <div class="sheet" style="height:85vh;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
     <div class="sheet-handle"></div>
     <button class="sheet-close" onclick="closeModal('m-son-odemeler')">✕</button>
-    <div class="sheet-title" data-i18n="son_odemeler">Son Ödemeler</div>
-    <div style="display:flex;gap:8px;padding:0 0 14px;">
+    <div class="sheet-title" data-i18n="son_odemeler" style="flex-shrink:0;">Son Ödemeler</div>
+    <div style="display:flex;gap:8px;padding:0 0 14px;flex-shrink:0;">
       <button id="so-hafta-btn" class="btn btn-accent btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('hafta')" data-i18n="son_1_hafta">Son 1 Hafta</button>
       <button id="so-ay-btn" class="btn btn-ghost btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('ay')" data-i18n="son_1_ay">Son 1 Ay</button>
       <button id="so-tumü-btn" class="btn btn-ghost btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('tumu')" data-i18n="tumu">Tümü</button>
     </div>
-    <div style="position:relative;margin-bottom:12px;">
+    <div style="position:relative;margin-bottom:12px;flex-shrink:0;">
       <input type="text" id="so-arama-input" placeholder="🔍 Öğrenci ara..." oninput="soAramaDegisti(this.value)" style="width:100%;padding:10px 36px 10px 14px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:14px;">
       <button id="so-arama-temizle" onclick="soAramaTemizle()" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:4px;">✕</button>
     </div>
-    <div id="son-odemeler-liste" style="overflow-y:auto;max-height:calc(85vh - 140px);"></div>
+    <div id="son-odemeler-liste" style="flex:1;min-height:0;overflow-y:auto;"></div>
   </div>
 </div>
 
 <!-- ÇAKIŞAN ÖDEMELER MODAL -->
 <div class="overlay" id="m-cakisan-odemeler">
-  <div class="sheet" style="max-height:85vh;">
+  <div class="sheet" style="height:85vh;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
     <div class="sheet-handle"></div>
     <button class="sheet-close" onclick="closeModal('m-cakisan-odemeler')">✕</button>
-    <div class="sheet-title">🔍 Çakışan Ödemeler</div>
-    <div style="font-size:12.5px;color:var(--text2);margin-bottom:14px;line-height:1.5;">Aynı öğrencinin, farklı sınıflarda kapsadığı ayları çakışan ödemeleri listelenir — genelde bir öğrenci sınıf değiştirdiğinde eski ödemenin yanlışlıkla iki yerde de kalmasından olur. Hangisinin doğru olduğuna siz karar verip diğerini silebilirsiniz.</div>
-    <div id="cakisan-odemeler-liste" style="overflow-y:auto;max-height:calc(85vh - 160px);"></div>
+    <div class="sheet-title" style="flex-shrink:0;">🔍 Çakışan Ödemeler</div>
+    <div style="font-size:12.5px;color:var(--text2);margin-bottom:14px;line-height:1.5;flex-shrink:0;">Aynı öğrencinin, farklı sınıflarda kapsadığı ayları çakışan ödemeleri listelenir — genelde bir öğrenci sınıf değiştirdiğinde eski ödemenin yanlışlıkla iki yerde de kalmasından olur. Hangisinin doğru olduğuna siz karar verip diğerini silebilirsiniz.</div>
+    <div id="cakisan-odemeler-liste" style="flex:1;min-height:0;overflow-y:auto;"></div>
   </div>
 </div>
 
-
-<!-- TUTMA ORANI MODAL -->
-<div class="overlay" id="m-tutma-orani"><div class="sheet" style="max-height:90vh;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-tutma-orani')">✕</button>
-  <div class="sheet-title" data-i18n="ogrenci_tutma_orani_ikon">📉 Öğrenci Tutma Oranı</div>
-  <div id="retention-content" style="overflow-y:auto;max-height:calc(90vh - 80px);"><div style="font-size:13px;color:var(--text3);padding:8px 0;" data-i18n="yukleniyor">Yükleniyor...</div></div>
-</div></div>
-
-<!-- AYLIK GELİR MODAL -->
-<div class="overlay" id="m-aylik-gelir"><div class="sheet" style="max-height:90vh;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-aylik-gelir')">✕</button>
-  <div class="sheet-title" data-i18n="aylik_gelir_ikon">📊 Aylık Gelir</div>
-  <div id="gelir-content" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
-</div></div>
-
-<!-- GELİR GİDER SHEET -->
-<div class="overlay" id="m-gider-rapor"><div class="sheet" style="max-height:90vh;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-gider-rapor')">✕</button>
-  <div class="sheet-title" data-i18n="gider_raporu_ikon">💰 Gider Raporu</div>
-  <div id="gider-rapor-content" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
-</div></div>
-
-<div class="overlay" id="m-gelir-trend"><div class="sheet" style="max-height:90vh;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-gelir-trend')">✕</button>
-  <div class="sheet-title" data-i18n="aylik_gelir_trendi_ikon">📈 Aylık Gelir Trendi</div>
-  <div id="gelir-trend-content2" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
-</div></div>
-
-<div class="overlay" id="m-egitmen-panel"><div class="sheet" style="max-height:90vh;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-egitmen-panel')">✕</button>
-  <div class="sheet-title" data-i18n="egitmenler_giderler_ikon">👨‍🏫 Eğitmenler & Giderler</div>
-  <div id="egitmen-panel-content2" style="overflow-y:auto;max-height:calc(90vh - 80px);"></div>
-</div></div>
-
-<div class="overlay" id="m-odeme-bilgi-ayar"><div class="sheet">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-odeme-bilgi-ayar')">✕</button>
-  <div class="sheet-title" data-i18n="odeme_bilgileri_ikon">🏦 Ödeme Bilgileri</div>
-  <div style="padding:4px 0;">
-    <div style="font-size:12px;color:var(--text2);margin-bottom:12px;" data-i18n="odeme_bilgi_aciklama">Öğrenci portalında gösterilecek ödeme bilgileri.</div>
-    <div class="field"><label data-i18n="ad_soyad_hesap">Ad Soyad (Hesap Sahibi)</label><input id="ob-adsoyad" type="text" placeholder="Örn: Can Yılmaz"/></div>
-    <div class="field"><label>IBAN</label><input id="ob-iban" type="text" placeholder="TR00 0000 0000 0000 0000 0000 00" style="font-family:monospace;"/></div>
-    <div class="field"><label data-i18n="banka_adi">Banka Adı</label><input id="ob-banka" type="text" placeholder="Örn: Ziraat Bankası"/></div>
-    <div class="field">
-      <label data-i18n="qr_kod_gorseli">QR Kod Görseli</label>
-      <div id="ob-qr-preview" style="display:none;margin-bottom:8px;text-align:center;">
-        <img id="ob-qr-img" style="max-width:160px;max-height:160px;border-radius:8px;border:1px solid var(--border2);" src=""/>
-      </div>
-      <input type="file" id="ob-qr-file" accept="image/*" style="display:none;" onchange="obQrSec(this)"/>
-      <button class="btn btn-sm" style="width:100%;font-size:13px;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="document.getElementById('ob-qr-file').click()" data-i18n="qr_gorsel_sec">📷 QR Görsel Seç</button>
-      <button id="ob-qr-sil-btn" class="btn" style="width:100%;font-size:13px;margin-top:6px;display:none;color:var(--accent);border-color:var(--accent);" onclick="obQrSil()" data-i18n="qr_gorseli_kaldir">✕ QR Görseli Kaldır</button>
-    </div>
-    <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="odemeBilgiKaydet()" data-i18n="btn_kaydet">Kaydet</button>
-    <div id="ob-status" style="font-size:12px;text-align:center;margin-top:8px;display:none;"></div>
-  </div>
-</div></div>
 
 <!-- BİRLEŞTİR MODAL -->
 <div class="overlay" id="m-birlestir"><div class="sheet">
@@ -719,7 +758,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button class="hamburger" id="hamburgerBtn" onclick="drawerAc()" aria-label="Menü">
         <span></span><span></span><span></span>
       </button>
-      <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none;">‹</button>
+      <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 5l-7 7 7 7"/></svg></button>
       <div id="topbar-brand" style="min-width:0;">
         <div class="topbar-title">Can & Irina <span>Studio</span></div>
         <div class="topbar-sub" id="topbarSub">Yönetim Paneli</div>
@@ -740,11 +779,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
   <!-- ANA SAYFA -->
   <div class="page active" id="pg-anasayfa">
-    <div class="stats-row">
+    <div class="stats-row" id="anasayfa-stats-row">
       <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-aktif-ogrenci">Aktif Öğrenci</div><div class="stat-val" id="st-ogrenci">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span></div></div>
       <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-sinif">Sınıf</div><div class="stat-val" id="st-sinif">0</div></div>
       <div class="stat-card s3" onclick="goTo('gelirgider',document.querySelectorAll('.nav-item')[6])" style="cursor:pointer;"><div class="stat-label" id="lbl-bu-ay-gelir">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="lbl-net">Net</span>: <span id="st-net">0</span></div></div>
-      <div class="stat-card s4"><div class="stat-label" id="lbl-paket-yenileme">Paket yenileme</div><div class="stat-val" id="st-yaklasan">0</div></div>
+      <div class="stat-card s4" onclick="goTo('odemeler',document.querySelectorAll('.nav-item')[5])" style="cursor:pointer;"><div class="stat-label" id="lbl-paket-yenileme">Paket yenileme</div><div class="stat-val" id="st-yaklasan">0</div></div>
     </div>
     <div id="anasayfa-alerts" style="padding-bottom:8px;"></div>
   </div>
@@ -787,15 +826,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
   <!-- TAKVİM -->
   <div class="page" id="pg-takvim">
-    <div style="margin-bottom:12px;padding:14px;background:linear-gradient(135deg,#fbbf2414,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #fbbf2435;">
-      <div style="font-size:12px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <input id="tatil-tarih" type="date" style="flex:1;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;color-scheme:dark;"/>
-        <input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad" style="flex:2;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
-      </div>
-      <button class="btn btn-accent" style="width:100%;margin-bottom:12px;" onclick="tatilEkle()" data-i18n="btn_tatil_ekle">＋ Tatil Ekle</button>
-      <div id="tatil-liste"></div>
-    </div>
     <div id="takvim-content"></div>
   </div>
 
@@ -820,32 +850,94 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <div class="stat-card s2"><div class="stat-label" id="gg-lbl-net">Net Kâr</div><div class="stat-val" id="gg-st-net">0</div></div>
     </div>
     <div class="gg-grid">
-      <button class="gg-card" style="--gg-c:var(--green);" onclick="openModal('m-aylik-gelir');renderGelir();">
+      <button class="gg-card" style="--gg-c:var(--green);" onclick="openAylikGelir()">
         <div class="gg-card-ikon">📊</div>
         <div class="gg-card-baslik" data-i18n="aylik_gelir">Aylık Gelir</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--accent);" onclick="openModal('m-gider-rapor');renderGiderRapor();">
+      <button class="gg-card" style="--gg-c:var(--accent);" onclick="openGiderRaporu()">
         <div class="gg-card-ikon">💰</div>
         <div class="gg-card-baslik" data-i18n="gider_raporu">Gider Raporu</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--cyan);" onclick="openModal('m-gelir-trend');renderGelirTrend();">
+      <button class="gg-card" style="--gg-c:var(--cyan);" onclick="openAylikGelirTrend()">
         <div class="gg-card-ikon">📈</div>
         <div class="gg-card-baslik" data-i18n="aylik_gelir_trendi">Aylık Gelir Trendi</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openModal('m-egitmen-panel');renderEgitmenPanel();">
+      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openEgitmenGiderler()">
         <div class="gg-card-ikon">👨‍🏫</div>
         <div class="gg-card-baslik" data-i18n="egitmenler_giderler">Eğitmenler & Giderler</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--amber);" onclick="openModal('m-odeme-bilgi-ayar');odemeBilgiYukle()">
+      <button class="gg-card" style="--gg-c:var(--amber);" onclick="openOdemeAyarlari()">
         <div class="gg-card-ikon">🏦</div>
         <div class="gg-card-baslik" data-i18n="odeme_bilgileri">Ödeme Bilgileri</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openModal('m-tutma-orani');renderRetention();">
+      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openTutmaOrani()">
         <div class="gg-card-ikon">📉</div>
         <div class="gg-card-baslik" data-i18n="ogrenci_tutma_orani">Öğrenci Tutma Oranı</div>
       </button>
     </div>
   </div>
+
+<!-- TUTMA ORANI MODAL -->
+<!-- ÖĞRENCİ TUTMA ORANI SAYFASI -->
+<div class="page" id="pg-tutma-orani">
+  <div id="retention-content"><div style="font-size:13px;color:var(--text3);padding:8px 0;" data-i18n="yukleniyor">Yükleniyor...</div></div>
+</div>
+
+<!-- AYLIK GELİR SAYFASI -->
+<div class="page" id="pg-aylik-gelir">
+  <div id="gelir-content"></div>
+</div>
+
+<!-- GİDER RAPORU SAYFASI -->
+<div class="page" id="pg-gider-rapor">
+  <div id="gider-rapor-content"></div>
+</div>
+
+<!-- AYLIK GELİR TRENDİ SAYFASI -->
+<div class="page" id="pg-gelir-trend">
+  <div id="gelir-trend-content2"></div>
+</div>
+
+<!-- EĞİTMENLER & GİDERLER SAYFASI -->
+<div class="page" id="pg-egitmen-panel">
+  <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#fbbf2414,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #fbbf2435;">
+    <div style="font-size:12px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <input id="tatil-tarih" type="date" style="flex:1;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;color-scheme:dark;"/>
+      <input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad" style="flex:2;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
+    </div>
+    <button class="btn btn-accent" style="width:100%;margin-bottom:12px;" onclick="tatilEkle()" data-i18n="btn_tatil_ekle">＋ Tatil Ekle</button>
+    <div id="tatil-liste"></div>
+  </div>
+  <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#34d39914,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #34d39935;">
+    <div style="font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">🚫 Pratik Yapılmayan Günler</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bazı haftalar pratik yapılmıyor olabilir (tatil, iptal vb.) — o Cumartesiyi buradan işaretle, o dönem için ücrete dahil edilmesin.</div>
+    <div id="ga-pratik-iptal-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+    <button class="btn btn-accent" style="width:100%;" onclick="gaPratikIptalEkle()">＋ Pratik Yapılmayan Tarih Ekle</button>
+  </div>
+  <div id="egitmen-panel-content2"></div>
+</div>
+
+<!-- ÖDEME BİLGİLERİ SAYFASI -->
+<div class="page" id="pg-odeme-bilgi-ayar">
+  <div style="padding:4px 0;">
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px;" data-i18n="odeme_bilgi_aciklama">Öğrenci portalında gösterilecek ödeme bilgileri.</div>
+    <div class="field"><label data-i18n="ad_soyad_hesap">Ad Soyad (Hesap Sahibi)</label><input id="ob-adsoyad" type="text" placeholder="Örn: Can Yılmaz"/></div>
+    <div class="field"><label>IBAN</label><input id="ob-iban" type="text" placeholder="TR00 0000 0000 0000 0000 0000 00" style="font-family:monospace;"/></div>
+    <div class="field"><label data-i18n="banka_adi">Banka Adı</label><input id="ob-banka" type="text" placeholder="Örn: Ziraat Bankası"/></div>
+    <div class="field">
+      <label data-i18n="qr_kod_gorseli">QR Kod Görseli</label>
+      <div id="ob-qr-preview" style="display:none;margin-bottom:8px;text-align:center;">
+        <img id="ob-qr-img" style="max-width:160px;max-height:160px;border-radius:8px;border:1px solid var(--border2);" src=""/>
+      </div>
+      <input type="file" id="ob-qr-file" accept="image/*" style="display:none;" onchange="obQrSec(this)"/>
+      <button class="btn btn-sm" style="width:100%;font-size:13px;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="document.getElementById('ob-qr-file').click()" data-i18n="qr_gorsel_sec">📷 QR Görsel Seç</button>
+      <button id="ob-qr-sil-btn" class="btn" style="width:100%;font-size:13px;margin-top:6px;display:none;color:var(--accent);border-color:var(--accent);" onclick="obQrSil()" data-i18n="qr_gorseli_kaldir">✕ QR Görseli Kaldır</button>
+    </div>
+    <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="odemeBilgiKaydet()" data-i18n="btn_kaydet">Kaydet</button>
+    <div id="ob-status" style="font-size:12px;text-align:center;margin-top:8px;display:none;"></div>
+  </div>
+</div>
 
   <!-- ÖZEL DERS HAFTALIK TAKVİM -->
   <div class="page" id="pg-ozel-takvim">
@@ -905,7 +997,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <button class="nav-item c-od" onclick="goTo('odemeler',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M5.5 9v.01M18.5 15v.01"/></svg></div><span class="nav-label" id="navlbl-odemeler">Ödemeler</span></button>
     <button class="nav-item c-gg" onclick="goTo('gelirgider',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V13M10 20V8M16 20V11M20 20V4"/></svg></div><span class="nav-label" id="navlbl-gelirgider">Gelir/Gider</span></button>
   </nav>
-  <button class="fab" id="mainFab" onclick="fabAction()">＋</button>
+  <button class="fab" id="mainFab" onclick="fabAction()" style="display:none;">＋</button>
 </div>
 
 <!-- Drawer overlay -->
@@ -924,8 +1016,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('yoklama',null)">✓ Yoklama</button>
       <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
+      <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
       <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()">🏆 Yarışma (Jack & Jill)</button>
-      <a class="drawer-btn" href="https://fatihsametcakir.github.io/Canirastudio/test.html" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none;background:#f59e0b1c;color:#f59e0b;border:1px solid #f59e0b40;border-radius:var(--radius-sm);width:100%;margin-bottom:0;box-sizing:border-box;">🧪 Test Ortamına Git</a>
     </div>
     <label style="display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;">
       <input type="checkbox" id="robot-ayar-toggle" onchange="robotAyarDegisti(this)" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--purple);cursor:pointer;"/>
@@ -958,22 +1050,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
         <div class="field"><label data-i18n="yeni_sifre">Yeni Şifre</label><input id="sifre-yeni" type="password" placeholder="En az 6 karakter" data-i18n-ph="en_az_6"/></div>
         <div class="field"><label data-i18n="tekrar">Tekrar</label><input id="sifre-tekrar" type="password" placeholder="Tekrar girin" data-i18n-ph="tekrar_girin"/></div>
         <button class="btn btn-accent" style="width:100%;margin-bottom:10px;" onclick="sifreDegistir()" data-i18n="sifreyi_guncelle">Şifreyi Güncelle</button>
-      </div>
-    </div>
-
-    <!-- WhatsApp Şablonları -->
-    <div class="acc-item" style="--item-color:var(--green);">
-      <div class="acc-head" onclick="accToggle('acc-wa')">
-        <div class="acc-title"><span class="acc-icon">💬</span> <span data-i18n="acc_wa">WhatsApp Şablonları</span></div>
-        <span class="acc-arrow" id="arr-acc-wa">›</span>
-      </div>
-      <div class="acc-body" id="acc-wa">
-        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;"><span data-i18n="degiskenler">Değişkenler</span>: <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{ad}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{sinif}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{gun}</code></div>
-        <div class="field"><label data-i18n="suresi_dolmus">Süresi Dolmuş</label><textarea id="wa-tpl-doldu" style="height:72px;font-size:13px;"></textarea></div>
-        <div class="field"><label data-i18n="gun_3_icinde">3 Gün İçinde</label><textarea id="wa-tpl-yakın" style="height:72px;font-size:13px;"></textarea></div>
-        <div class="field"><label data-i18n="gun_4_7_hatirlatma">4-7 Gün Hatırlatma</label><textarea id="wa-tpl-hatirla" style="height:72px;font-size:13px;"></textarea></div>
-        <div class="field"><label data-i18n="genel_mesaj">Genel Mesaj</label><textarea id="wa-tpl-genel" style="height:60px;font-size:13px;"></textarea></div>
-        <button class="btn btn-accent" style="width:100%;" onclick="waSablonKaydet()" data-i18n="btn_kaydet">Kaydet</button>
       </div>
     </div>
 
@@ -1103,18 +1179,30 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 <div class="overlay" id="m-sinif"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-sinif')">✕</button>
   <div class="sheet-title" id="m-sinif-title">Yeni Sınıf</div>
+  <div id="si-legacy-kira-box" style="display:none;font-size:12px;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;line-height:1.5;">
+    ⚠ Bu sınıfta eski, sabit bir kira kaydı (<b id="si-legacy-kira-tutar"></b>) var — bu yüzden "Eğitmenler &amp; Giderler" bölümündeki ortak kira geçmişindeki değişiklikler bu sınıf için <b>geçerli olmuyor</b>, hep bu sabit tutar kullanılıyor.
+    <button type="button" class="btn btn-sm btn-ghost" style="width:100%;margin-top:8px;" onclick="sinifLegacyKiraTemizle()">Sabit kira kaydını kaldır, ortak kira geçmişini kullan</button>
+  </div>
   <div class="field"><label data-i18n="sinif_adi">Sınıf Adı</label><input id="si-ad" placeholder="örn. Salsa Başlangıç"/></div>
   <div class="field"><label data-i18n="egitmen">Eğitmen</label><select id="si-egitmen"><option value="" data-i18n="secin">— Seçin —</option></select></div>
-  <div class="field"><label data-i18n="aylik_kira">Aylık Kira (₺)</label><input id="si-kira" type="number" placeholder="5000"/></div>
   <div class="field" id="si-asistan-alan" style="display:none;">
     <label data-i18n="asistan_pay_orani">Asistan Pay Oranı (%)</label>
     <input id="si-asistan-pct" type="number" placeholder="40" min="0" max="100"/>
     <div style="font-size:11px;color:var(--text3);margin-top:4px;" data-i18n="asistan_pay_aciklama">O ayın gelirinin bu yüzdesi asistan eğitmene ödenir.</div>
   </div>
+  <div class="field"><label>İkinci Eğitmen (opsiyonel)</label><select id="si-egitmen2"><option value="">— Yok —</option></select></div>
+  <div class="field" id="si-asistan2-alan" style="display:none;">
+    <label>2. Eğitmen Pay Oranı (%)</label>
+    <input id="si-asistan2-pct" type="number" placeholder="20" min="0" max="100"/>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px;">O ayın gelirinin bu yüzdesi bu eğitmene ödenir (kira ve 1. eğitmenin payı düşüldükten sonra kalan tutarı geçmez).</div>
+  </div>
   <div class="field"><label data-i18n="gun">Gün</label><select id="si-gun"><option value="Pazartesi" data-i18n="pazartesi">Pazartesi</option><option value="Salı" data-i18n="sali">Salı</option><option value="Çarşamba" data-i18n="carsamba">Çarşamba</option><option value="Perşembe" data-i18n="persembe">Perşembe</option><option value="Cuma" data-i18n="cuma">Cuma</option><option value="Cumartesi" data-i18n="cumartesi">Cumartesi</option><option value="Pazar" data-i18n="pazar">Pazar</option></select></div>
   <div class="field"><label data-i18n="saat">Saat</label><input id="si-saat" type="time" value="19:00"/></div>
   <div class="field"><label data-i18n="paket_ucreti_4h">4 Haftalık Paket Ücreti (₺)</label><input id="si-paket" type="number" placeholder="800"/></div>
   <div class="field"><label data-i18n="tek_ders_ucreti">Tek Ders Ücreti (₺)</label><input id="si-tekders" type="number" placeholder="250"/></div>
+  <div class="field"><label>Dönem Başlangıç Tarihi</label><input id="si-donem-baslangic" type="date"/>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px;">Eğitmen ödeme dönemleri (Gider Raporu'ndaki "1. Dönem, 2. Dönem...") bu tarihten itibaren 4'er haftalık bloklar halinde ilerler — takvim ayı değil.</div>
+  </div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-sinif')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-si" onclick="saveSinif()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
 
@@ -1162,10 +1250,12 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
   <div class="field"><label data-i18n="lbl_sinif">Sınıf</label><select id="od-sinif" onchange="odSinifChange()"></select></div>
   <div class="field"><label data-i18n="lbl_ogrenci">Öğrenci</label><select id="od-ogrenci" onchange="odOgrenciChange()"></select></div>
-  <div class="field"><label data-i18n="lbl_tutar">Tutar (₺)</label><input id="od-tutar" type="number" placeholder="800"/></div>
-  <div class="field"><label data-i18n="odeme_tarihi">Ödeme Tarihi</label><input id="od-tarih" type="date"/></div>
-  <div class="field"><label data-i18n="lbl_yontem">Yöntem</label><select id="od-yontem"><option value="nakit" data-i18n="nakit">Nakit</option><option value="kart" data-i18n="kart">Kart</option><option value="havale" data-i18n="havale">Havale/EFT</option></select></div>
-  <div class="field" id="od-ay-alan"><label><span data-i18n="kapsanan_aylar">Kapsanan Aylar</span> <span style="color:var(--accent);">*</span></label><div style="font-size:12px;color:var(--text2);margin-bottom:7px;" data-i18n="bu_odeme_hangi_ay">Bu ödeme hangi ay(lar) için?</div><div class="ay-grid" id="od-ay-grid"></div></div>
+  <div class="field-row3">
+    <div class="field"><label data-i18n="lbl_tutar">Tutar (₺)</label><input id="od-tutar" type="number" placeholder="800"/></div>
+    <div class="field"><label data-i18n="odeme_tarihi">Ödeme Tarihi</label><input id="od-tarih" type="date"/></div>
+    <div class="field"><label data-i18n="lbl_yontem">Yöntem</label><select id="od-yontem"><option value="nakit" data-i18n="nakit">Nakit</option><option value="kart" data-i18n="kart">Kart</option><option value="havale" data-i18n="havale">Havale/EFT</option></select></div>
+  </div>
+  <div class="field" id="od-ay-alan"><label><span data-i18n="kapsanan_aylar">Kapsanan Aylar</span> <span style="color:var(--accent);">*</span></label><div style="font-size:12px;color:var(--text2);margin-bottom:7px;" data-i18n="bu_odeme_hangi_ay">Bu ödeme hangi ay(lar) için?</div><div id="od-ay-eski-uyari" style="display:none;font-size:11px;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:7px 9px;margin-bottom:7px;">⚠ Bu ödeme, dönem sistemi öncesinde eski "ay" formatıyla kaydedilmiş. Ders sayısı korunuyor ama aşağıda hangi dönem(ler) olduğu otomatik işaretlenemiyor — istersen doğru dönem(ler)i elle seçip eskisinin yerine geçirebilirsin.</div><div class="ay-grid" id="od-ay-grid"></div></div>
   <div class="field"><label data-i18n="lbl_not">Not</label><textarea id="od-not" placeholder="Ek not..."></textarea></div>
   <div id="od-edit-sil-row" style="display:none;margin-top:6px;"><button class="btn btn-danger" style="width:100%;" onclick="silOdeme()" data-i18n="bu_odemeyi_sil">Bu Ödemeyi Sil</button></div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-odeme')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-od" onclick="saveOdeme()" data-i18n="btn_kaydet">Kaydet</button></div>
@@ -1217,10 +1307,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 </div></div>
 
 <!-- Paket — Yapılan Dersler Listesi -->
-<div class="overlay" id="m-paket-dersler"><div class="sheet" style="max-height:80vh;">
+<div class="overlay" id="m-paket-dersler"><div class="sheet" style="height:80vh;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-paket-dersler')">✕</button>
-  <div class="sheet-title" id="m-paket-dersler-title">📋 Dersler</div>
-  <div id="m-paket-dersler-content" style="overflow-y:auto;max-height:calc(80vh - 80px);"></div>
+  <div class="sheet-title" id="m-paket-dersler-title" style="flex-shrink:0;">📋 Dersler</div>
+  <div id="m-paket-dersler-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 
 <!-- Haftalık Takvim — Ders Planla -->
@@ -1277,28 +1367,55 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 </div></div>
 
 <!-- Devamsız Öğrenciler -->
-<div class="overlay" id="m-devamsiz"><div class="sheet" style="max-height:85vh;">
+<div class="overlay" id="m-devamsiz"><div class="sheet" style="height:85vh;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-devamsiz')">✕</button>
-  <div class="sheet-title" data-i18n="devamsiz_ogrenciler">🚩 Devamsız Öğrenciler</div>
-  <div class="tab-row">
+  <div class="sheet-title" data-i18n="devamsiz_ogrenciler" style="flex-shrink:0;">🚩 Devamsız Öğrenciler</div>
+  <div class="tab-row" style="flex-shrink:0;">
     <button class="tab-btn active" id="devamsiz-tab-2" onclick="devamsizTabSec('2')" data-i18n="iki_hafta_ustuste">2 Hafta Üst Üste</button>
     <button class="tab-btn" id="devamsiz-tab-3" onclick="devamsizTabSec('3')" data-i18n="uc_hafta_ustuste">3+ Hafta</button>
   </div>
-  <div id="devamsiz-content" style="overflow-y:auto;max-height:calc(85vh - 160px);"></div>
+  <div id="devamsiz-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
+</div></div>
+
+<!-- WhatsApp Mesaj Popup -->
+<div class="overlay" id="m-wa-popup"><div class="sheet" style="max-width:460px;">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-wa-popup')">✕</button>
+  <div class="sheet-title">💬 <span data-i18n="wa_mesaj_gonder">WhatsApp Mesajı</span></div>
+  <div id="wa-popup-kime" style="font-size:13px;color:var(--text2);margin-bottom:12px;font-weight:600;"></div>
+  <div class="tab-row" id="wa-popup-tabs" style="flex-wrap:wrap;">
+    <button class="tab-btn" data-key="genel" onclick="waPopupSablonSec('genel')" style="flex:1 1 calc(50% - 4px);font-size:12px;padding:7px 6px;" data-i18n="wa_sablon_genel">Genel</button>
+    <button class="tab-btn" data-key="hatirla" onclick="waPopupSablonSec('hatirla')" style="flex:1 1 calc(50% - 4px);font-size:12px;padding:7px 6px;" data-i18n="wa_sablon_hatirla">Hatırlatma</button>
+    <button class="tab-btn" data-key="yakin" onclick="waPopupSablonSec('yakin')" style="flex:1 1 calc(50% - 4px);font-size:12px;padding:7px 6px;" data-i18n="wa_sablon_yakin">Yakında Dolacak</button>
+    <button class="tab-btn" data-key="doldu" onclick="waPopupSablonSec('doldu')" style="flex:1 1 calc(50% - 4px);font-size:12px;padding:7px 6px;" data-i18n="wa_sablon_doldu">Paket Doldu</button>
+  </div>
+  <textarea id="wa-popup-metin" rows="5" style="width:100%;padding:12px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:14px;font-family:inherit;resize:vertical;margin-top:4px;"></textarea>
+  <button class="btn btn-accent" style="width:100%;margin-top:14px;" onclick="waPopupGonder()">📤 <span data-i18n="wa_gonder">WhatsApp'ta Gönder</span></button>
+</div></div>
+
+<!-- WhatsApp Şablon Ayarları -->
+<div class="overlay" id="m-wa-sablon"><div class="sheet" style="max-width:560px;max-height:90vh;">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-wa-sablon')">✕</button>
+  <div class="sheet-title">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></div>
+  <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.5;"><span data-i18n="degiskenler">Değişkenler</span>: <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{ad}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{sinif}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{gun}</code></div>
+  <div class="field"><label data-i18n="suresi_dolmus">Süresi Dolmuş</label><textarea id="wa-tpl-doldu" style="height:96px;font-size:14px;"></textarea></div>
+  <div class="field"><label data-i18n="gun_3_icinde">3 Gün İçinde</label><textarea id="wa-tpl-yakın" style="height:96px;font-size:14px;"></textarea></div>
+  <div class="field"><label data-i18n="gun_4_7_hatirlatma">4-7 Gün Hatırlatma</label><textarea id="wa-tpl-hatirla" style="height:96px;font-size:14px;"></textarea></div>
+  <div class="field"><label data-i18n="genel_mesaj">Genel Mesaj</label><textarea id="wa-tpl-genel" style="height:80px;font-size:14px;"></textarea></div>
+  <button class="btn btn-accent" style="width:100%;" onclick="waSablonKaydet()" data-i18n="btn_kaydet">Kaydet</button>
 </div></div>
 
 <!-- Öğrenci Geçmişi -->
-<div class="overlay" id="m-ogrenci-gecmisi"><div class="sheet" style="max-height:80vh;">
+<div class="overlay" id="m-ogrenci-gecmisi"><div class="sheet" style="height:80vh;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ogrenci-gecmisi')">✕</button>
-  <div class="sheet-title" id="m-ogrenci-gecmisi-title" data-i18n="ogrenci_gecmisi">📜 Öğrenci Geçmişi</div>
-  <div id="ogrenci-gecmisi-content" style="overflow-y:auto;max-height:calc(80vh - 90px);"></div>
+  <div class="sheet-title" id="m-ogrenci-gecmisi-title" data-i18n="ogrenci_gecmisi" style="flex-shrink:0;">📜 Öğrenci Geçmişi</div>
+  <div id="ogrenci-gecmisi-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 
 <!-- Sınıf Geçmişi -->
-<div class="overlay" id="m-sinif-gecmisi"><div class="sheet" style="max-height:80vh;">
+<div class="overlay" id="m-sinif-gecmisi"><div class="sheet" style="height:80vh;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-sinif-gecmisi')">✕</button>
-  <div class="sheet-title" id="m-sinif-gecmisi-title" data-i18n="sinif_gecmisi">📜 Sınıf Geçmişi</div>
-  <div id="sinif-gecmisi-content" style="overflow-y:auto;max-height:calc(80vh - 90px);"></div>
+  <div class="sheet-title" id="m-sinif-gecmisi-title" data-i18n="sinif_gecmisi" style="flex-shrink:0;">📜 Sınıf Geçmişi</div>
+  <div id="sinif-gecmisi-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
 <div class="overlay" id="m-yoklama-ogrenci"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-yoklama-ogrenci')">✕</button>
@@ -1320,6 +1437,50 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   </div>
 </div></div>
 
+<div class="overlay" id="m-grup-kira"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:14px;" id="gk-baslik">Kira Değişikliği Ekle</div>
+  <div class="field"><label>Hangi Tarihten İtibaren Geçerli</label><input id="gk-tarih" type="date"/></div>
+  <div class="field"><label>Aylık Kira (₺)</label><input id="gk-tutar" type="number" placeholder="19600" inputmode="decimal"/></div>
+  <div style="display:flex;gap:10px;margin-top:6px;">
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-grup-kira')">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" id="gk-kaydet" onclick="gaGrupKiraKaydet()">Kaydet</button>
+  </div>
+</div></div>
+
+<div class="overlay" id="m-pratik-kira"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:14px;" id="pk-baslik">Pratik Kirası Değişikliği Ekle</div>
+  <div class="field"><label>Hangi Tarihten İtibaren Geçerli</label><input id="pk-tarih" type="date"/></div>
+  <div class="field"><label>Kaç Saat (Her Cumartesi)</label><input id="pk-saat" type="number" placeholder="3" inputmode="decimal"/></div>
+  <div class="field"><label>Saatlik Ücret (₺)</label><input id="pk-saatlik-ucret" type="number" placeholder="1000" inputmode="decimal"/></div>
+  <div style="display:flex;gap:10px;margin-top:6px;">
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-pratik-kira')">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" id="pk-kaydet" onclick="gaPratikKiraKaydet()">Kaydet</button>
+  </div>
+</div></div>
+
+<div class="overlay" id="m-pratik-iptal"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:14px;">Pratik Yapılmayan Tarih Ekle</div>
+  <div class="field"><label>Hangi Cumartesi Pratik Yapılmadı</label><input id="pi-tarih" type="date"/></div>
+  <div style="display:flex;gap:10px;margin-top:6px;">
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-pratik-iptal')">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" onclick="gaPratikIptalKaydetForm()">Kaydet</button>
+  </div>
+</div></div>
+
+<div class="overlay" id="m-ozel-kira"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:14px;" id="ok-baslik">Kira Değişikliği Ekle</div>
+  <div class="field"><label>Hangi Tarihten İtibaren Geçerli</label><input id="ok-tarih" type="date"/></div>
+  <div class="field"><label>Aylık Kira (₺)</label><input id="ok-tutar" type="number" placeholder="10000" inputmode="decimal"/></div>
+  <div style="display:flex;gap:10px;margin-top:6px;">
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-ozel-kira')">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" id="ok-kaydet" onclick="gaOzelKiraKaydet()">Kaydet</button>
+  </div>
+</div></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
@@ -1328,6 +1489,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 const FS_PROJECT='canirinastudio';
 const FS_API=`https://firestore.googleapis.com/v1/projects/${FS_PROJECT}/databases/(default)/documents`;
 const FS_KEY='AIzaSyCzk-_5P70Xd6wBgOVZwkfQO8zn6_Vk2gY';
+
+function simdikiZaman(){return new Date();}
 
 // ── YouTube Data API (Ders Videoları için) ──
 const YT_API_KEY='AIzaSyBZYwTKXPhvaetOj8qMCuMbbrqbKyWt0BE';
@@ -1564,6 +1727,7 @@ const TRANSLATIONS={
     giderler:'Giderler', toplam_kira:'Toplam Kira', asistan_odemeleri:'Asistan Ödemeleri', toplam_gider:'Toplam Gider',
     kari:'Kârı', stuydo_kari:'Stüdyo Kârı', kendi_siniflari:'Kendi sınıfları: Gelir − Kira − Asistan',
     kira_yetmedi_uyari:'⚠ Kira karşılanamadığı için bu ay asistana ödeme yapılmadı',
+    kira_oncelik_notu:'ℹ Kira önceliklidir: bu ayki {tutar} ₺ gelirin tamamı kiraya gitti, bu yüzden pay 0 ₺ görünüyor.',
     net_kar:'Net Kâr', toplam_gelir_kira_asistan:'Toplam Gelir − Kira − Asistan',
     payi:'payı', kira:'Kira', bu_ay_kayit_yok:'Bu ay için kayıt bulunamadı.',
     egitmen_eklenmemis_uyari:'⚠ Eğitmen eklenmemiş. "Eğitmenler & Giderler" bölümünden eğitmen ekleyin ve sınıflara atayın.',
@@ -1602,6 +1766,7 @@ const TRANSLATIONS={
     duzenle:'Düzenle', yoklama_alindi_aciklama:'Bu ders için yoklama alındı. Bir öğrenciye dokunarak katılım geçmişini görebilir, düzenlemek için aşağıdaki butonu kullanabilirsin.',
     devamsiz_ogrenciler:'🚩 Devamsız Öğrenciler', iki_hafta_ustuste:'2 Hafta Üst Üste', uc_hafta_ustuste:'3+ Hafta',
     devamsiz_ogrenci_yok:'Bu kategoride devamsız öğrenci yok 🎉',
+    wa_mesaj_gonder:'WhatsApp Mesajı', wa_sablon_genel:'Genel', wa_sablon_hatirla:'Hatırlatma', wa_sablon_yakin:'Yakında Dolacak', wa_sablon_doldu:'Paket Doldu', wa_gonder:"WhatsApp'ta Gönder",
     ogrenci_gecmisi:'📜 Öğrenci Geçmişi', gecmis_kaydi_yok:'Henüz kayıtlı bir geçmiş yok.',
     olay_giris:'Sınıfa katıldı', olay_cikis:'Sınıftan çıkarıldı', olay_dondur:'Kayıt donduruldu', olay_coz:'Dondurma çözüldü',
     olay_genel_aktif:'Öğrenci aktif edildi', olay_genel_pasif:'Öğrenci pasife alındı',
@@ -1740,6 +1905,7 @@ const TRANSLATIONS={
     giderler:'Expenses', toplam_kira:'Total Rent', asistan_odemeleri:'Assistant Payments', toplam_gider:'Total Expense',
     kari:'Profit', stuydo_kari:'Studio Profit', kendi_siniflari:'Own classes: Income − Rent − Assistant',
     kira_yetmedi_uyari:'⚠ Assistant was not paid this month because rent could not be covered',
+    kira_oncelik_notu:'ℹ Rent has priority: this month\'s {tutar} ₺ income went entirely to rent, so the share shows 0 ₺.',
     net_kar:'Net Profit', toplam_gelir_kira_asistan:'Total Income − Rent − Assistant',
     payi:'share', kira:'Rent', bu_ay_kayit_yok:'No records for this month.',
     egitmen_eklenmemis_uyari:'⚠ No instructors added. Add instructors in "Instructors & Expenses" and assign them to classes.',
@@ -1778,6 +1944,7 @@ const TRANSLATIONS={
     duzenle:'Edit', yoklama_alindi_aciklama:'Attendance has been taken for this class. Tap a student to see their attendance history, or use the button below to edit.',
     devamsiz_ogrenciler:'🚩 Absent Students', iki_hafta_ustuste:'2 Weeks in a Row', uc_hafta_ustuste:'3+ Weeks',
     devamsiz_ogrenci_yok:'No absent students in this category 🎉',
+    wa_mesaj_gonder:'WhatsApp Message', wa_sablon_genel:'General', wa_sablon_hatirla:'Reminder', wa_sablon_yakin:'Expiring Soon', wa_sablon_doldu:'Package Expired', wa_gonder:'Send on WhatsApp',
     ogrenci_gecmisi:'📜 Student History', gecmis_kaydi_yok:'No history recorded yet.',
     olay_giris:'Joined class', olay_cikis:'Removed from class', olay_dondur:'Enrollment frozen', olay_coz:'Freeze lifted',
     olay_genel_aktif:'Student activated', olay_genel_pasif:'Student deactivated',
@@ -1916,6 +2083,7 @@ const TRANSLATIONS={
     giderler:'Расходы', toplam_kira:'Общая аренда', asistan_odemeleri:'Выплаты ассистентам', toplam_gider:'Общий расход',
     kari:'Прибыль', stuydo_kari:'Прибыль студии', kendi_siniflari:'Свои группы: Доход − Аренда − Ассистент',
     kira_yetmedi_uyari:'⚠ Ассистенту не выплачено в этом месяце, так как аренда не была покрыта',
+    kira_oncelik_notu:'ℹ Аренда в приоритете: весь доход этого месяца ({tutar} ₺) ушёл на аренду, поэтому доля показывает 0 ₺.',
     net_kar:'Чистая прибыль', toplam_gelir_kira_asistan:'Общий доход − Аренда − Ассистент',
     payi:'доля', kira:'Аренда', bu_ay_kayit_yok:'Записей за этот месяц нет.',
     egitmen_eklenmemis_uyari:'⚠ Преподаватели не добавлены. Добавьте их в разделе "Преподаватели и расходы" и назначьте на группы.',
@@ -1957,6 +2125,7 @@ const TRANSLATIONS={
     duzenle:'Изменить', yoklama_alindi_aciklama:'Посещаемость для этого занятия уже отмечена. Нажмите на ученика, чтобы увидеть историю посещений, или используйте кнопку ниже для изменения.',
     devamsiz_ogrenciler:'🚩 Отсутствующие ученики', iki_hafta_ustuste:'2 недели подряд', uc_hafta_ustuste:'3+ недели',
     devamsiz_ogrenci_yok:'В этой категории нет отсутствующих учеников 🎉',
+    wa_mesaj_gonder:'Сообщение WhatsApp', wa_sablon_genel:'Общее', wa_sablon_hatirla:'Напоминание', wa_sablon_yakin:'Скоро истекает', wa_sablon_doldu:'Пакет истёк', wa_gonder:'Отправить в WhatsApp',
     ogrenci_gecmisi:'📜 История ученика', gecmis_kaydi_yok:'История пока не записана.',
     olay_giris:'Присоединился к группе', olay_cikis:'Удалён из группы', olay_dondur:'Запись заморожена', olay_coz:'Заморозка снята',
     olay_genel_aktif:'Ученик активирован', olay_genel_pasif:'Ученик деактивирован',
@@ -2016,12 +2185,14 @@ function cycleLang(){
   applyLang();
 }
 let OG_FILTER='aktif', OG_GRUPLU=true, OG_SIRALAMA='ad', ODEME_TAB='odemeler';
-let OD_AYLAR=[], OD_ONCEKI=new Set();
+let OD_AYLAR=[], OD_ONCEKI=new Set(), OD_ESKI_AYLAR=[];
 let ODEME_ACIK=new Set(), GELIR_ACIK=new Set();
+let GIDER_RAPOR_ACIK=new Set();
 let ODEME_ARAMA='';
 let BEK_GRUPLAMA='sure', BEK_ACIK=new Set();
 let YEN_GRUPLAMA='sinif', YEN_ACIK=new Set();
 let GIDER_AY=null;
+let GIDER_DONEM_IDX={}; // sinifId -> seçili dönem index (yoksa güncel dönem kullanılır)
 let PORTAL_OG_ID=null, PORTAL_TAB='bilgiler';
 let _adminNotifUnsub=null;
 
@@ -2061,10 +2232,40 @@ let CONFIRM_CB=null;
 
 // helpers
 function ayKey(y,m){return y+'-'+(m<10?'0':'')+m;}
-function ayLabel(k){if(!k)return'';const[y,m]=k.split('-');const d=new Date(parseInt(y),parseInt(m)-1,1);return d.toLocaleDateString(LC(),{month:'long'})+' '+y;}
+
+// Bir sınıfın (ham) gelirinden, atanmış eğitmen(ler)e gidecek toplam payı hesaplar.
+// 1. eğitmen "asistan" (baş eğitmen değil) ise kendi yüzdesini alır, baş eğitmense
+// kalanı aldığı için burada bir gider oluşturmaz. 2. eğitmen (varsa) her zaman
+// sabit yüzdesini alır. İkisi de kira düştükten sonraki havuzu aşamaz.
+// Not: bu hızlı özet kartlarında (Ana Sayfa, Gelir Trendi) HAM ödeme tutarı
+// kullanılır — ders bazlı ay dağılımı (sinifGelirAyProrated) sadece Gider
+// Raporu'ndaki detaylı sınıf bazlı hesaplamada kullanılır.
+function sinifAsistanGideriHesapla(si,siGelir,tarihStr){
+  const eg1=S.egitmenler.find(e=>e.id===si.egitmenId);
+  const eg2=S.egitmenler.find(e=>e.id===si.egitmen2Id);
+  const kira=tarihStr?sinifKiraTarihte(si,tarihStr):(si.kira||0);
+  let odeme1=0;
+  let kalan=Math.max(0,siGelir-kira);
+  if(eg1&&!eg1.basEgitmen){
+    odeme1=Math.min(Math.round(siGelir*(si.asistanPct||0)/100),kalan);
+    kalan-=odeme1;
+  }
+  let odeme2=0;
+  if(eg2&&(si.asistan2Pct||0)>0){
+    odeme2=Math.min(Math.round(siGelir*(si.asistan2Pct||0)/100),Math.max(0,kalan));
+  }
+  return odeme1+odeme2;
+}
+function ayLabel(k){
+  if(!k)return'';
+  const donemEs=/^d(\d+)$/.exec(k);
+  if(donemEs)return (parseInt(donemEs[1],10)+1)+'. Dönem'; // yeni sistem: dönem anahtarı (d0, d1, ...)
+  const[y,m]=k.split('-');const d=new Date(parseInt(y),parseInt(m)-1,1);return d.toLocaleDateString(LC(),{month:'long'})+' '+y;
+}
 function addDays(s,d){const dt=new Date(s+'T00:00:00');dt.setDate(dt.getDate()+d);return otTarihStr(dt);}
 function formatDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short'});}catch(e){return d;}}
-function daysLeft(d){if(!d)return 999;return Math.ceil((new Date(d+'T00:00:00')-new Date())/864e5);}
+function formatDateTamYil(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}}
+function daysLeft(d){if(!d)return 999;return Math.ceil((new Date(d+'T00:00:00')-simdikiZaman())/864e5);}
 function initials(a,b){return((a||'')[0]||'').toUpperCase()+((b||'')[0]||'').toUpperCase();}
 
 // ── ÖZEL DERS / GRUP ÖĞRENCİ BİRLEŞTİRME ────────────────
@@ -2254,16 +2455,32 @@ function goTo(p,btn){
   if(btn)btn.classList.add('active');
   setTopbar(false);
   const fab=document.getElementById('mainFab');
-  if(fab)fab.style.display=(p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider')?'none':'flex';
+  if(fab)fab.style.display=(p==='anasayfa'||p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider')?'none':'flex';
   renderAll();
 }
 function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
+// Gelir/Gider ekranındaki rapor kartları: popup yerine tam sayfa olarak açılır
+// (mobil ve masaüstünde aynı — sadece geri tuşu/topbar back ile kapanır).
+function openRaporSayfa(id,i18nKey,renderFn){
+  PREV_PAGE=PAGE;PAGE=id;showPage(id);setTopbar(true,t(i18nKey));
+  const fab=document.getElementById('mainFab');if(fab)fab.style.display='none';
+  if(renderFn)renderFn();
+}
+function openAylikGelir(){openRaporSayfa('aylik-gelir','aylik_gelir',renderGelir);}
+function openGiderRaporu(){openRaporSayfa('gider-rapor','gider_raporu',renderGiderRapor);}
+function openAylikGelirTrend(){openRaporSayfa('gelir-trend','aylik_gelir_trendi',renderGelirTrend);}
+function openEgitmenGiderler(){openRaporSayfa('egitmen-panel','egitmenler_giderler',renderEgitmenPanel);}
+function openOdemeAyarlari(){openRaporSayfa('odeme-bilgi-ayar','odeme_bilgileri',odemeBilgiYukle);}
+function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
+const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani'];
 function goBack(){
-  const bt=PREV_PAGE==='sinif-detay'?'siniflar':PREV_PAGE;
+  let bt=PREV_PAGE==='sinif-detay'?'siniflar':PREV_PAGE;
+  if(RAPOR_SAYFA_ID_LISTESI.includes(bt))bt='gelirgider';
   PAGE=bt;showPage(bt);setTopbar(false);
   const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:3,ozel:4,odemeler:5,gelirgider:6,yoklama:-1};
   document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',i===(map[bt]??-1)));
-  const fab=document.getElementById('mainFab');if(fab)fab.style.display='flex';
+  const fab=document.getElementById('mainFab');
+  if(fab)fab.style.display=(bt==='anasayfa'||bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider')?'none':'flex';
   renderAll();
 }
 function setTopbar(d,t=''){
@@ -2316,6 +2533,7 @@ function toggleOgGrup(ad){
 }
 function setOgrenciFilter(f){OG_FILTER=f;['aktif','pasif','hepsi'].forEach(k=>{const b=document.getElementById('filter-'+k);if(k===f){b.style.background='var(--accentbg)';b.style.color='var(--accent)';b.style.border='1px solid #ff6b6b40';b.style.boxShadow='0 3px 10px -3px #ff6b6b70';}else{b.style.background='var(--surface2)';b.style.color='var(--text2)';b.style.border='1px solid var(--border2)';b.style.boxShadow='none';}});renderOgrenciler();}
 function toggleOdemeSinif(id){if(ODEME_ACIK.has(id))ODEME_ACIK.delete(id);else ODEME_ACIK.add(id);const body=document.getElementById('odeme-body-'+id),chev=document.getElementById('odeme-chev-'+id);if(!body||!chev)return;const a=ODEME_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
+function toggleGiderKart(id){if(GIDER_RAPOR_ACIK.has(id))GIDER_RAPOR_ACIK.delete(id);else GIDER_RAPOR_ACIK.add(id);const body=document.getElementById('gr-body-'+id),chev=document.getElementById('gr-chev-'+id);if(!body||!chev)return;const a=GIDER_RAPOR_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
 function toggleGelirSinif(id){
   if(GELIR_ACIK.has(id))GELIR_ACIK.delete(id);
   else GELIR_ACIK.add(id);
@@ -2358,6 +2576,10 @@ async function waSablonYukle(){
   if(el('wa-tpl-yakın'))el('wa-tpl-yakın').value=WA_SABLON.yakin;
   if(el('wa-tpl-hatirla'))el('wa-tpl-hatirla').value=WA_SABLON.hatirla;
   if(el('wa-tpl-genel'))el('wa-tpl-genel').value=WA_SABLON.genel;
+}
+function openWaSablonModal(){
+  waSablonYukle();
+  openModal('m-wa-sablon');
 }
 async function waSablonKaydet(){
   WA_SABLON.doldu=document.getElementById('wa-tpl-doldu').value||WA_VARSAYILAN.doldu;
@@ -2410,6 +2632,37 @@ function waTikla(btn){
 function waBR(tel,msg){
   const gecerli=telGecerliMi(tel);
   return `<button class="wa-btn${gecerli?'':' wa-btn-devre-disi'}" data-tel="${waHtmlEsc(tel||'')}" data-msg="${waHtmlEsc(msg||'')}" onclick="waTikla(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="${gecerli?'#25D366':'#5c5a78'}"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.12 1.524 5.847L.057 23.57l5.938-1.56C7.68 22.949 9.765 23.5 12 23.5 18.627 23.5 24 18.127 24 11.5S18.627 0 12 0zm0 21.5c-1.944 0-3.752-.545-5.28-1.484l-.379-.225-3.523.927.94-3.433-.246-.392A9.469 9.469 0 012.5 11.5C2.5 6.253 6.753 2 12 2s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/></svg>WA</button>`;
+}
+function waBtnPopup(tel,ad,sinif,gun,startKey){
+  const gecerli=telGecerliMi(tel);
+  return `<button class="wa-btn${gecerli?'':' wa-btn-devre-disi'}" data-tel="${waHtmlEsc(tel||'')}" data-ad="${waHtmlEsc(ad||'')}" data-sinif="${waHtmlEsc(sinif||'')}" data-gun="${waHtmlEsc(gun!=null?gun:'')}" data-start="${waHtmlEsc(startKey||'genel')}" onclick="waPopupAcBtn(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="${gecerli?'#25D366':'#5c5a78'}"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.12 1.524 5.847L.057 23.57l5.938-1.56C7.68 22.949 9.765 23.5 12 23.5 18.627 23.5 24 18.127 24 11.5S18.627 0 12 0zm0 21.5c-1.944 0-3.752-.545-5.28-1.484l-.379-.225-3.523.927.94-3.433-.246-.392A9.469 9.469 0 012.5 11.5C2.5 6.253 6.753 2 12 2s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/></svg>WA</button>`;
+}
+let WA_POPUP_TEL='',WA_POPUP_AD='',WA_POPUP_SINIF='',WA_POPUP_GUN='';
+function waPopupAcBtn(btn){
+  const tel=btn.getAttribute('data-tel')||'';
+  const ad=btn.getAttribute('data-ad')||'';
+  const sinif=btn.getAttribute('data-sinif')||'';
+  const gun=btn.getAttribute('data-gun')||'';
+  const startKey=btn.getAttribute('data-start')||'genel';
+  if(!telGecerliMi(tel)){waNumaraUyari(tel);return;}
+  waPopupAc(tel,ad,sinif,gun,startKey);
+}
+function waPopupAc(tel,ad,sinif,gun,startKey){
+  WA_POPUP_TEL=tel||'';WA_POPUP_AD=ad||'';WA_POPUP_SINIF=sinif||'';WA_POPUP_GUN=gun!=null?gun:'';
+  document.getElementById('wa-popup-kime').textContent=ad||'';
+  waPopupSablonSec(startKey||'genel');
+  openModal('m-wa-popup');
+}
+function waPopupSablonSec(key){
+  document.querySelectorAll('#wa-popup-tabs .tab-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('data-key')===key));
+  const tpl=WA_SABLON[key]||WA_SABLON.genel;
+  document.getElementById('wa-popup-metin').value=waReplaceVars(tpl,WA_POPUP_AD,WA_POPUP_SINIF,WA_POPUP_GUN);
+}
+function waPopupGonder(){
+  const msg=document.getElementById('wa-popup-metin').value;
+  if(!telGecerliMi(WA_POPUP_TEL)){waNumaraUyari(WA_POPUP_TEL);return;}
+  window.open(waLink(WA_POPUP_TEL,msg),'_blank');
+  closeModal('m-wa-popup');
 }
 
 // ── DRAWER ────────────────────────────────────────────
@@ -2693,6 +2946,9 @@ function openSinifModal(id){
   const egSel=document.getElementById('si-egitmen');
   egSel.innerHTML='<option value="">— Seçin —</option>'+
     S.egitmenler.map(e=>`<option value="${e.id}">${e.ad}${e.basEgitmen?' ⭐':''}</option>`).join('');
+  const egSel2=document.getElementById('si-egitmen2');
+  egSel2.innerHTML='<option value="">— Yok —</option>'+
+    S.egitmenler.map(e=>`<option value="${e.id}">${e.ad}${e.basEgitmen?' ⭐':''}</option>`).join('');
 
   const guncelleSinifAlani=()=>{
     const seciliId=egSel.value;
@@ -2701,6 +2957,13 @@ function openSinifModal(id){
     if(asistanAlan) asistanAlan.style.display=(eg&&!eg.basEgitmen)?'block':'none';
   };
   egSel.onchange=guncelleSinifAlani;
+  const guncelleSinif2Alani=()=>{
+    const eg2=S.egitmenler.find(e=>e.id===egSel2.value);
+    const asistan2Alan=document.getElementById('si-asistan2-alan');
+    // İki eğitmen de baş eğitmense yüzde sorulmaz — kira sonrası kalan otomatik %50-%50 bölünür.
+    if(asistan2Alan) asistan2Alan.style.display=(eg2&&!eg2.basEgitmen)?'block':'none';
+  };
+  egSel2.onchange=guncelleSinif2Alani;
 
   if(id){
     const si=S.siniflar.find(s=>s.id===id);
@@ -2709,23 +2972,39 @@ function openSinifModal(id){
     document.getElementById('si-saat').value=si.saat;
     document.getElementById('si-paket').value=si.paket||'';
     document.getElementById('si-tekders').value=si.tekders||'';
-    document.getElementById('si-kira').value=si.kira||'';
     document.getElementById('si-asistan-pct').value=si.asistanPct||'';
     egSel.value=si.egitmenId||'';
+    document.getElementById('si-asistan2-pct').value=si.asistan2Pct||'';
+    egSel2.value=si.egitmen2Id||'';
+    document.getElementById('si-donem-baslangic').value=si.donemBaslangic||'';
     document.getElementById('m-sinif-title').textContent=t('sinifi_duzenle');
+    const legacyBox=document.getElementById('si-legacy-kira-box');
+    if(legacyBox){
+      if(si.kira){legacyBox.style.display='block';document.getElementById('si-legacy-kira-tutar').textContent=si.kira.toLocaleString(LC())+' ₺';}
+      else legacyBox.style.display='none';
+    }
   } else {
-    ['si-ad','si-paket','si-tekders','si-kira','si-asistan-pct'].forEach(i=>document.getElementById(i).value='');
+    ['si-ad','si-paket','si-tekders','si-asistan-pct','si-asistan2-pct'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('si-saat').value='19:00';
+    document.getElementById('si-donem-baslangic').value=bugunTarih();
     egSel.value='';
+    egSel2.value='';
     document.getElementById('m-sinif-title').textContent=t('yeni_sinif');
+    const legacyBox=document.getElementById('si-legacy-kira-box');
+    if(legacyBox)legacyBox.style.display='none';
   }
   guncelleSinifAlani();
+  guncelleSinif2Alani();
   openModal('m-sinif');
 }
 async function saveSinif(){
   const ad=document.getElementById('si-ad').value.trim();if(!ad)return;
   const btn=document.getElementById('btn-save-si');btn.disabled=true;setSyncing(true);
-  const data={ad,gun:document.getElementById('si-gun').value,saat:document.getElementById('si-saat').value,paket:parseFloat(document.getElementById('si-paket').value)||0,tekders:parseFloat(document.getElementById('si-tekders').value)||0,kira:parseFloat(document.getElementById('si-kira').value)||0,asistanPct:parseFloat(document.getElementById('si-asistan-pct').value)||0,egitmenId:document.getElementById('si-egitmen').value||null};
+  // Not: "kira" alanı artık bu formda yok — sınıf bazlı kira, "Eğitmenler & Giderler"
+  // panelindeki ortak "Grup Dersleri Kirası" geçmişinden geliyor. Burada göndermediğimiz
+  // için .update() eski (varsa) legacy si.kira değerine dokunmaz, sadece bu formdan
+  // kaldırılmış olur — sinifKiraTarihte() hâlâ varsa onu geçersiz kılma olarak kullanır.
+  const data={ad,gun:document.getElementById('si-gun').value,saat:document.getElementById('si-saat').value,paket:parseFloat(document.getElementById('si-paket').value)||0,tekders:parseFloat(document.getElementById('si-tekders').value)||0,asistanPct:parseFloat(document.getElementById('si-asistan-pct').value)||0,egitmenId:document.getElementById('si-egitmen').value||null,egitmen2Id:document.getElementById('si-egitmen2').value||null,asistan2Pct:parseFloat(document.getElementById('si-asistan2-pct').value)||0,donemBaslangic:document.getElementById('si-donem-baslangic').value||bugunTarih()};
   try{
     if(EDIT_SINIF){
       const eski=S.siniflar.find(s=>s.id===EDIT_SINIF);
@@ -2740,6 +3019,19 @@ async function saveSinif(){
   }catch(e){alert('Hata: '+e.message);}
   btn.disabled=false;setSyncing(false);
 }
+async function sinifLegacyKiraTemizle(){
+  if(!EDIT_SINIF)return;
+  setSyncing(true);
+  try{
+    await db.collection('siniflar').doc(EDIT_SINIF).update({kira:null});
+    const si=S.siniflar.find(s=>s.id===EDIT_SINIF);
+    if(si)si.kira=null;
+    const legacyBox=document.getElementById('si-legacy-kira-box');
+    if(legacyBox)legacyBox.style.display='none';
+    _poll('siniflar');
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
 // Sınıf düzenlemesinde hangi alanların değiştiğini tespit edip sinifGecmisi'ne kaydeder
 async function sinifDegisiklikleriGunlukle(sinifId,eski,yeni){
   const egAd=id=>id?(S.egitmenler.find(e=>e.id===id)?.ad||'—'):'—';
@@ -2748,7 +3040,6 @@ async function sinifDegisiklikleriGunlukle(sinifId,eski,yeni){
     {key:'gun',olay:'gun_degisti',fmt:v=>v},
     {key:'saat',olay:'saat_degisti',fmt:v=>v},
     {key:'egitmenId',olay:'egitmen_degisti',fmt:v=>egAd(v)},
-    {key:'kira',olay:'kira_degisti',fmt:v=>(v||0).toLocaleString(LC())+' ₺'},
     {key:'paket',olay:'paket_ucreti_degisti',fmt:v=>(v||0).toLocaleString(LC())+' ₺'},
     {key:'tekders',olay:'tekders_ucreti_degisti',fmt:v=>(v||0).toLocaleString(LC())+' ₺'},
   ];
@@ -3035,16 +3326,16 @@ function guncelDonemOdemesiBul(ogId,siId){
   const k=(si.kayitlar||[]).find(x=>x.ogrenciId===ogId);
   if(!k)return null;
   const ods=S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);
-  const bugunStr=(()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})();
+  const bugunStr=(()=>{const d=simdikiZaman();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');})();
   // Önce aylık tip ödemelerde, güncel ayı doğrudan kapsayan var mı bak
-  const aylikEslesen=ods.find(o=>o.odTip==='aylik'&&(o.aylar||[]).includes(bugunStr));
+  const aylikEslesen=ods.find(o=>o.odTip==='aylik'&&odemeAyiKapsiyorMu(o,bugunStr));
   if(aylikEslesen)return aylikEslesen;
   if(k.tip!=='paket')return null;
   // Paket tipi kayıt: hesaplaKayit ile aynı zincir mantığını, hangi ödemenin
   // dönem aralığının bugünü kapsadığını bulmak için ödeme bazında tekrar kuruyoruz.
   const gunNoTespit=sinifGunNo(si);
   const dersGunu=gunNoTespit>=0?gunNoTespit:1;
-  const bugun=new Date();bugun.setHours(0,0,0,0);
+  const bugun=simdikiZaman();bugun.setHours(0,0,0,0);
   const tatilSet=new Set((S.tatiller||[]).map(t=>t.tarih));
   function dateStr(t){const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');return y+'-'+m+'-'+d;}
   function ilkDersGunu(tarihStr){const parts=tarihStr.split('-');const t=new Date(+parts[0],+parts[1]-1,+parts[2]);const fark=(dersGunu-t.getDay()+7)%7;t.setDate(t.getDate()+fark);return t;}
@@ -3088,7 +3379,7 @@ function hesaplaKayit(ogId,siId){
 
   const gunNoTespit=sinifGunNo(si);
   const dersGunu=gunNoTespit>=0?gunNoTespit:1;
-  const bugun=new Date();bugun.setHours(0,0,0,0);
+  const bugun=simdikiZaman();bugun.setHours(0,0,0,0);
   const tatilSet=new Set((S.tatiller||[]).map(t=>t.tarih));
 
   function dateStr(t){
@@ -3161,6 +3452,264 @@ function hesaplaKayit(ogId,siId){
   }
   return{hak:hakSonuc,bitisTarih:bitisTarihSonuc};
 }
+
+// ── EĞİTMEN ÖDEMESİ: AY BAZLI DERS DAĞILIMI ────────────────────────────
+// Bir öğrencinin bir sınıftaki TÜM ödemelerini, hesaplaKayit ile AYNI zincir
+// mantığıyla (hangi ödeme hangi tarihten başlayıp kaç ders sürüyor) işler,
+// ama sonuçta sadece "kaç ders kaldı" değil, her ödemenin kapsadığı GERÇEK
+// ders tarihlerinin tam listesini döndürür. Böylece bir ödeme takvimde iki
+// aya yayılıyorsa (örn. ayın ortasında başlayan bir paket), o ödemenin hangi
+// dersinin hangi aya düştüğünü, dolayısıyla tutarının aylar arasında nasıl
+// bölüneceğini hesaplayabiliriz. Eğitmene "bu ay kaç ders verildiyse o kadar
+// öde" mantığı bunun üzerine kurulu.
+function hesaplaOdemeDersTarihleri(ogId,siId){
+  const si=S.siniflar.find(s=>s.id===siId);
+  if(!si)return[];
+  const k=(si.kayitlar||[]).find(x=>x.ogrenciId===ogId);
+  if(!k||k.tip!=='paket')return[]; // paket dışı kayıtlarda ders bazlı tarih takibi yok
+
+  const ods=S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);
+  const siraliOd=ods.filter(o=>o.tarih).sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  if(!siraliOd.length)return[];
+
+  const gunNoTespit=sinifGunNo(si);
+  const dersGunu=gunNoTespit>=0?gunNoTespit:1;
+  const tatilSet=new Set((S.tatiller||[]).map(t=>t.tarih));
+
+  function dateStr(t){
+    const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');
+    return y+'-'+m+'-'+d;
+  }
+  function ilkDersGunu(tarihStr){
+    const parts=tarihStr.split('-');
+    const t=new Date(+parts[0],+parts[1]-1,+parts[2]);
+    const fark=(dersGunu-t.getDay()+7)%7;
+    t.setDate(t.getDate()+fark);
+    return t;
+  }
+  // nDersSonra ile birebir aynı ilerleme mantığı, ama sadece son tarihi değil
+  // yol boyunca geçtiği TÜM geçerli (tatil olmayan) ders tarihlerini toplar.
+  function nDersTarihleri(bas,n){
+    const liste=[];
+    const t=new Date(bas.getFullYear(),bas.getMonth(),bas.getDate());
+    while(tatilSet.has(dateStr(t))){t.setDate(t.getDate()+7);}
+    liste.push(dateStr(t));
+    let sayac=1;
+    while(sayac<n){
+      t.setDate(t.getDate()+7);
+      if(!tatilSet.has(dateStr(t))){sayac++;liste.push(dateStr(t));}
+    }
+    return{liste,sonTarih:new Date(t.getFullYear(),t.getMonth(),t.getDate())};
+  }
+
+  const sonuc=[];
+  let zincirBitis=null;
+  for(const od of siraliOd){
+    const aySayisi=(od.aylar||[]).length>0?od.aylar.length:1;
+    const dersSayisi=aySayisi*4;
+    let donemBas;
+    if(!zincirBitis){
+      donemBas=ilkDersGunu(od.tarih);
+    } else {
+      const odemeIlkDers=ilkDersGunu(od.tarih);
+      if(odemeIlkDers.getTime()===zincirBitis.getTime()){
+        donemBas=new Date(zincirBitis);
+      } else if(odemeIlkDers<zincirBitis){
+        donemBas=new Date(zincirBitis.getFullYear(),zincirBitis.getMonth(),zincirBitis.getDate());
+        donemBas.setDate(donemBas.getDate()+7);
+        while(tatilSet.has(dateStr(donemBas)))donemBas.setDate(donemBas.getDate()+7);
+      } else {
+        donemBas=odemeIlkDers;
+      }
+    }
+    const{liste,sonTarih}=nDersTarihleri(donemBas,dersSayisi);
+    sonuc.push({od,tarihler:liste});
+    zincirBitis=sonTarih;
+  }
+  return sonuc;
+}
+
+// Bir sınıfın belirli bir takvim ayındaki gelirini, o ay içinde GERÇEKTEN
+// verilen derslere göre böler (ham ödeme tutarını değil). Bir öğrencinin
+// ödemesi iki aya yayılıyorsa (örn. ayın 3. haftasında kaydolan öğrencinin
+// 4 derslik paketinin 2 dersi bu ay, 2 dersi gelecek ay düşüyorsa), tutar
+// da aynı oranda bölünür. Eğitmen ödemesi bu bölünmüş tutar üzerinden
+// hesaplanır — böylece bir öğrencinin henüz verilmemiş derslerinin parası
+// bu ay eğitmene ödenmez, dersler verildiği ay ödenir.
+function sinifGelirAyProrated(si,ayKeyHedef){
+  let toplam=0;
+  (si.kayitlar||[]).forEach(k=>{
+    const ods=S.odemeler.filter(o=>o.ogrenciId===k.ogrenciId&&o.sinifId===si.id);
+    if(k.tip!=='paket'){
+      // Paket dışı (ders bazlı takibi olmayan) kayıtlarda eski davranış:
+      // ödeme hangi takvim ayında girildiyse tamamı o aya sayılır.
+      ods.forEach(o=>{
+        if(!o.tarih)return;
+        const d=new Date(o.tarih+'T00:00:00');
+        if(ayKey(d.getFullYear(),d.getMonth()+1)===ayKeyHedef)toplam+=(o.tutar||0);
+      });
+      return;
+    }
+    const dagilim=hesaplaOdemeDersTarihleri(k.ogrenciId,si.id);
+    dagilim.forEach(({od,tarihler})=>{
+      if(!tarihler.length)return;
+      const buAySayisi=tarihler.filter(d=>d.slice(0,7)===ayKeyHedef).length;
+      if(buAySayisi>0)toplam+=(od.tutar||0)*(buAySayisi/tarihler.length);
+    });
+  });
+  return Math.round(toplam);
+}
+
+// Sınıfın verilen bir tarihte GEÇERLİ OLAN kira tutarını döndürür.
+// Öncelik sırası:
+//  1) Sınıfın kendi veritabanı kaydında (artık sınıf formunda alanı yok, ama
+//     eski/legacy bir kayıtta hâlâ doluysa) si.kira set edilmişse — sabit,
+//     tarihsiz bir geçersiz kılma olarak kullanılır.
+//  2) Değilse, TÜM grup sınıfları için ortak olan "Grup Dersleri Kirası"
+//     geçmişine bakılır (Eğitmenler & Giderler bölümünde tek yerden yönetilir):
+//     sorgulanan tarihe kadarki (o tarih dahil) en güncel değişiklik kullanılır;
+//     sorgulanan tarih listedeki en eski kayıttan da önceyse, bilinen en eski
+//     değer kullanılır (öncesi hakkında bilgimiz yok).
+function sinifKiraTarihte(si,tarihStr){
+  if(si.kira)return si.kira;
+  const gecmis=(GIDER_AYARLARI&&GIDER_AYARLARI.grupKiraGecmisi)||[];
+  if(!gecmis.length)return 0;
+  const siralı=gecmis.slice().sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  let uygun=null;
+  for(const g of siralı){ if(g.tarih<=tarihStr)uygun=g; else break; }
+  return uygun?(uygun.tutar||0):(siralı[0].tutar||0);
+}
+
+// Özel ders stüdyo kirası için verilen bir tarihte GEÇERLİ OLAN tutarı döndürür
+// — "Grup Dersleri Kirası" geçmişiyle birebir aynı mantık. Henüz hiç geçmiş
+// kaydı girilmemişse (özellik yeni kullanılmaya başlanıyorsa) eski sabit
+// GIDER_AYARLARI.kira değerine düşer; geçmiş bir kez girildiyse artık o
+// tarihe göre değişen değerler kullanılır (sabit değer bir daha öncelikli olmaz).
+function ozelStudyoKiraTarihte(tarihStr){
+  const gecmis=(GIDER_AYARLARI&&GIDER_AYARLARI.ozelKiraGecmisi)||[];
+  if(!gecmis.length)return (GIDER_AYARLARI&&GIDER_AYARLARI.kira)||0;
+  const siralı=gecmis.slice().sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  let uygun=null;
+  for(const g of siralı){ if(g.tarih<=tarihStr)uygun=g; else break; }
+  return uygun?(uygun.tutar||0):(siralı[0].tutar||0);
+}
+
+// Cumartesi pratik günü için verilen bir tarihte GEÇERLİ OLAN {saat, saatlikUcret}
+// bilgisini döndürür — "Grup Dersleri Kirası" geçmişiyle birebir aynı mantık
+// (Eğitmenler & Giderler bölümünde tek yerden yönetilir, tüm sınıflar için ortak).
+function pratikKiraTarihte(tarihStr){
+  const gecmis=(GIDER_AYARLARI&&GIDER_AYARLARI.pratikKiraGecmisi)||[];
+  if(!gecmis.length)return {saat:0,saatlikUcret:0};
+  const siralı=gecmis.slice().sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  let uygun=null;
+  for(const g of siralı){ if(g.tarih<=tarihStr)uygun=g; else break; }
+  const kayit=uygun||siralı[0];
+  return {saat:kayit.saat||0,saatlikUcret:kayit.saatlikUcret||0};
+}
+// [bas,bitis] tarih aralığındaki (ikisi de dahil) Cumartesi sayısını döndürür —
+// "Eğitmenler & Giderler" bölümünde pratik yapılmadığı işaretlenen tarihler
+// (tatil, iptal vb.) sayılmaz. Normalde 28 günlük bir dönemde tam 4 Cumartesi
+// olur; bir/birkaç tanesi iptal işaretliyse o kadar eksik sayılır.
+function pratikCumartesiSayisi(bas,bitis){
+  const iptaller=new Set((GIDER_AYARLARI&&GIDER_AYARLARI.pratikIptalTarihleri)||[]);
+  let sayac=0;
+  const d=new Date(bas);
+  while(d<=bitis){
+    if(d.getDay()===6){
+      const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      if(!iptaller.has(ds))sayac++;
+    }
+    d.setDate(d.getDate()+1);
+  }
+  return sayac;
+}
+// Takvim ayı bazlı (Ana Sayfa / Gelir sekmesi / Gelir Trendi gibi dönem değil
+// takvim ayı kullanan ekranlar için) o aydaki toplam Cumartesi pratik kirası.
+// ayBasStr = 'YYYY-MM-01' formatında, o ayın ilk günü.
+function pratikKiraAyToplami(ayBasStr){
+  const bas=new Date(ayBasStr+'T00:00:00');
+  const bitis=new Date(bas.getFullYear(),bas.getMonth()+1,0);
+  const bilgi=pratikKiraTarihte(ayBasStr);
+  const sayisi=pratikCumartesiSayisi(bas,bitis);
+  return (bilgi.saat||0)*(bilgi.saatlikUcret||0)*sayisi;
+}
+// ── Sınıfın KENDİ dönemi (takvim ayı değil) ─────────────────────────
+// Eğitmen ödeme dönemleri, sınıfın "Dönem Başlangıç Tarihi" alanından itibaren
+// 4'er haftalık (28 gün) bloklar halinde ilerler. Böylece ayın sonunda açılan
+// bir sınıfın ilk paketi "takvim ayı sona erdi" diye yapay şekilde bölünmez —
+// sınıfın kendi 1. dönemi, açıldığı günden itibaren tam 4 hafta sürer.
+const DONEM_GUN=28;
+function sinifDonemBaslangic(si){
+  if(si.donemBaslangic)return si.donemBaslangic;
+  // Alan boşsa (eski sınıflar), sabit bir tarihe ihtiyaç var — her seferinde
+  // "bugün" kullanırsak dönemler her gün kayar. Onun yerine o sınıfın en eski
+  // ödeme tarihini kullanıyoruz; hiç ödeme yoksa bugünün tarihine düşüyoruz.
+  const ods=S.odemeler.filter(o=>o.sinifId===si.id&&o.tarih);
+  if(ods.length){
+    return ods.reduce((min,o)=>o.tarih<min?o.tarih:min,ods[0].tarih);
+  }
+  return bugunTarih();
+}
+function sinifDonemIndex(si,tarihStr){
+  const bas=new Date(sinifDonemBaslangic(si)+'T00:00:00');
+  const t=new Date(tarihStr+'T00:00:00');
+  const gunFarki=Math.floor((t-bas)/864e5);
+  return Math.floor(gunFarki/DONEM_GUN);
+}
+function sinifDonemAraligi(si,idx){
+  const bas=new Date(sinifDonemBaslangic(si)+'T00:00:00');
+  const donemBas=new Date(bas);donemBas.setDate(donemBas.getDate()+idx*DONEM_GUN);
+  const donemBitis=new Date(donemBas);donemBitis.setDate(donemBitis.getDate()+DONEM_GUN-1);
+  return{bas:donemBas,bitis:donemBitis};
+}
+// Bir ödemenin "aylar" listesini GERÇEK takvim ay(lar)ına çevirir. Eski (takvim-ayı,
+// "YYYY-AA") ve yeni (dönem, "dN") anahtar formatlarının ikisini de anlar — bir dönem
+// iki takvim ayına yayılıyorsa ikisi de sete eklenir. "Bu ay ödendi mi" rozetleri ve
+// çakışan-ödeme tespiti gibi hâlâ takvim ayına göre çalışan yerler bunu kullanır.
+function odemeGercekAylar(od){
+  const set=new Set();
+  (od?.aylar||[]).forEach(a=>{
+    const donemEs=/^d(\d+)$/.exec(a);
+    if(!donemEs){set.add(a);return;}
+    const si=S.siniflar.find(s=>s.id===od.sinifId);
+    if(!si)return;
+    const{bas,bitis}=sinifDonemAraligi(si,parseInt(donemEs[1],10));
+    let t=new Date(bas.getFullYear(),bas.getMonth(),1);
+    const son=new Date(bitis.getFullYear(),bitis.getMonth(),1);
+    while(t<=son){
+      set.add(t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0'));
+      t.setMonth(t.getMonth()+1);
+    }
+  });
+  return set;
+}
+function odemeAyiKapsiyorMu(od,ayKeyHedef){return odemeGercekAylar(od).has(ayKeyHedef);}
+function sinifGuncelDonemIndex(si){
+  const simdi=simdikiZaman();
+  const s=simdi.getFullYear()+'-'+String(simdi.getMonth()+1).padStart(2,'0')+'-'+String(simdi.getDate()).padStart(2,'0');
+  return sinifDonemIndex(si,s);
+}
+function sinifGelirDonemProrated(si,donemIdx){
+  let toplam=0;
+  (si.kayitlar||[]).forEach(k=>{
+    const ods=S.odemeler.filter(o=>o.ogrenciId===k.ogrenciId&&o.sinifId===si.id);
+    if(k.tip!=='paket'){
+      ods.forEach(o=>{
+        if(!o.tarih)return;
+        if(sinifDonemIndex(si,o.tarih)===donemIdx)toplam+=(o.tutar||0);
+      });
+      return;
+    }
+    const dagilim=hesaplaOdemeDersTarihleri(k.ogrenciId,si.id);
+    dagilim.forEach(({od,tarihler})=>{
+      if(!tarihler.length)return;
+      const buDonemSayisi=tarihler.filter(d=>sinifDonemIndex(si,d)===donemIdx).length;
+      if(buDonemSayisi>0)toplam+=(od.tutar||0)*(buDonemSayisi/tarihler.length);
+    });
+  });
+  return Math.round(toplam);
+}
+
 function openKayitIslem(siId,kayitId){
   CUR_SINIF=siId;CUR_KAYIT=kayitId;
   const si=S.siniflar.find(s=>s.id===siId);
@@ -3286,23 +3835,51 @@ async function tasiKayit(){
 // ── GRUP ÖDEME ─────────────────────────────────────────
 function ogSiOd(ogId,siId){return S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);}
 function buildAyGrid(ogId,siId,editId){
-  OD_AYLAR=[];OD_ONCEKI=new Set();
-  const now=new Date();
-  const odenenAylar=new Set();
-  ogSiOd(ogId,siId).forEach(o=>{if(o.id===editId)return;(o.aylar||[]).forEach(a=>odenenAylar.add(a));});
-  if(editId){const ed=S.odemeler.find(o=>o.id===editId);(ed?.aylar||[]).forEach(a=>{OD_AYLAR.push(a);OD_ONCEKI.add(a);});}
-  const aylar=[];
-  for(let i=-3;i<=6;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);aylar.push({yil:d.getFullYear(),ay:d.getMonth()+1,label:d.toLocaleDateString(LC(),{month:'short'})+"'"+(d.getFullYear()+'').slice(2)});}
-  document.getElementById('od-ay-grid').innerHTML=aylar.map(a=>{
-    const k=ayKey(a.yil,a.ay);
-    const odendi=odenenAylar.has(k);
-    const sec=OD_AYLAR.includes(k);
-    // Odendi olan aylar seçilebilir ama farklı stil — çift ödeme uyarısı tooltip ile
+  OD_AYLAR=[];OD_ONCEKI=new Set();OD_ESKI_AYLAR=[];
+  const si=S.siniflar.find(s=>s.id===siId);
+  const grid=document.getElementById('od-ay-grid');
+  if(!si){grid.innerHTML='';return;}
+  const donemKeyRegex=/^d\d+$/;
+  const odenenDonemler=new Set();
+  ogSiOd(ogId,siId).forEach(o=>{if(o.id===editId)return;(o.aylar||[]).filter(a=>donemKeyRegex.test(a)).forEach(a=>odenenDonemler.add(a));});
+  let eskiFormatliUyari=false;
+  if(editId){
+    const ed=S.odemeler.find(o=>o.id===editId);
+    // Yeni (dönem, "dN") formatındaki değerler ızgarada seçili gösterilir ve
+    // OD_AYLAR'a girer. Eski (dönem sistemi öncesi) takvim-ayı formatındakiler
+    // ise AYRI bir listede (OD_ESKI_AYLAR) tutulur — ızgaraya hiç karışmaz.
+    // Kaydederken: kullanıcı yeni bir dönem SEÇTİYSE eski liste tamamen
+    // bırakılır (yoksa ders sayısı iki katına çıkardı — bu bug'ı düzeltiyoruz);
+    // hiç dokunmadıysa eski liste aynen korunur.
+    (ed?.aylar||[]).forEach(a=>{
+      if(donemKeyRegex.test(a)){OD_AYLAR.push(a);OD_ONCEKI.add(a);}
+      else{OD_ESKI_AYLAR.push(a);eskiFormatliUyari=true;}
+    });
+  }
+  // Takvim ayı yerine sınıfın KENDİ dönemleri (Dönem Başlangıç Tarihi'nden itibaren
+  // 4'er haftalık bloklar) gösterilir — bkz. sinifDonemAraligi/sinifGuncelDonemIndex.
+  const guncelIdx=sinifGuncelDonemIndex(si);
+  const donemFmt=dt=>dt.toLocaleDateString(LC(),{day:'numeric',month:'short'});
+  // Sınıfın 1. döneminden başlayıp güncel dönemin birkaç ötesine kadar TÜM
+  // dönemler listelenir — geçmiş bir dönemi düzenlerken (örn. sınıfın açıldığı
+  // ilk dönem) o dönem her zaman görünür kalsın diye "güncele göre son 2 dönem"
+  // gibi bir pencereleme yapılmıyor.
+  const donemler=[];
+  for(let idx=0;idx<=guncelIdx+7;idx++){
+    const aralik=sinifDonemAraligi(si,idx);
+    donemler.push({key:'d'+idx,label:(idx+1)+'. Dönem',altLabel:donemFmt(aralik.bas)+'–'+donemFmt(aralik.bitis)});
+  }
+  grid.innerHTML=donemler.map(d=>{
+    const odendi=odenenDonemler.has(d.key);
+    const sec=OD_AYLAR.includes(d.key);
+    // Odendi olan dönemler seçilebilir ama farklı stil — çift ödeme uyarısı tooltip ile
     let cls='ay-btn';
     if(sec)cls+=' active';
     else if(odendi)cls+=' odendi';
-    return `<div class="${cls}" onclick="toggleAy(this,'${k}')" title="${odendi&&!sec?'Bu ay zaten ödendi — yine de seçebilirsiniz':''}">${a.label}${odendi&&!sec?'✓':''}</div>`;
+    return `<div class="${cls}" onclick="toggleAy(this,'${d.key}')" title="${odendi&&!sec?'Bu dönem zaten ödendi — yine de seçebilirsiniz':''}">${d.label}${odendi&&!sec?'✓':''}<div style="font-size:9px;opacity:.75;margin-top:1px;">${d.altLabel}</div></div>`;
   }).join('');
+  const uyariEl=document.getElementById('od-ay-eski-uyari');
+  if(uyariEl)uyariEl.style.display=eskiFormatliUyari?'block':'none';
 }
 function toggleAy(el,k){el.classList.toggle('active');if(OD_AYLAR.includes(k))OD_AYLAR=OD_AYLAR.filter(x=>x!==k);else OD_AYLAR.push(k);}
 function openOdemeModal(preOg,preSi,editId){EDIT_ODEME=editId||null;document.getElementById('m-odeme-title').textContent=editId?t('odeme_duzenle'):t('odeme_ekle');document.getElementById('od-edit-sil-row').style.display=editId?'block':'none';const ss=document.getElementById('od-sinif');ss.innerHTML=S.siniflar.map(s=>`<option value="${s.id}">${s.ad}</option>`).join('');if(editId){const od=S.odemeler.find(o=>o.id===editId);if(od){ss.value=od.sinifId;odSinifChange();document.getElementById('od-ogrenci').value=od.ogrenciId;document.getElementById('od-tutar').value=od.tutar||'';document.getElementById('od-tarih').value=od.tarih||'';document.getElementById('od-yontem').value=od.yontem||'nakit';document.getElementById('od-not').value=od.not||'';buildAyGrid(od.ogrenciId,od.sinifId,editId);}}else{if(preSi)ss.value=preSi;odSinifChange(true);if(preOg)document.getElementById('od-ogrenci').value=preOg;odOgrenciChange();document.getElementById('od-tarih').value=bugunTarih();document.getElementById('od-not').value='';const s=S.siniflar.find(x=>x.id===ss.value);if(s)document.getElementById('od-tutar').value=s.paket||'';}openModal('m-odeme');}
@@ -3310,11 +3887,6 @@ function odSinifChange(skipOgChange){const siId=document.getElementById('od-sini
 function odOgrenciChange(){const siId=document.getElementById('od-sinif').value,ogId=document.getElementById('od-ogrenci').value;if(ogId&&siId)buildAyGrid(ogId,siId,EDIT_ODEME);else document.getElementById('od-ay-grid').innerHTML='';}
 function toggleClear(btnId,val){const b=document.getElementById(btnId);if(b)b.classList.toggle('visible',val.length>0);}
 function clearSearch(inputId,cb){const el=document.getElementById(inputId);if(el){el.value='';const clr=document.getElementById(inputId+'-clear');if(clr)clr.classList.remove('visible');}if(cb)cb();}
-function openGiderRaporu(){openModal('m-gider-rapor');renderGiderRapor();}
-function openAylikGelirTrend(){openModal('m-gelir-trend');renderGelirTrend();}
-function openEgitmenGiderler(){openModal('m-egitmen-panel');renderEgitmenPanel();}
-function openOdemeAyarlari(){openModal('m-odeme-bilgi-ayar');odemeBilgiYukle();}
-function openTutmaOrani(){openModal('m-tutma-orani');renderRetention();}
 let BIRLESTIR_KAYNAK=null;
 function openBirlestirModal(siId){
   BIRLESTIR_KAYNAK=siId;
@@ -3410,7 +3982,7 @@ function setOdTip(tip){
 async function saveOdeme(){
   const siId=document.getElementById('od-sinif').value,ogId=document.getElementById('od-ogrenci').value,tutar=parseFloat(document.getElementById('od-tutar').value);
   if(!ogId||!siId||!tutar){showToast('Lütfen sınıf, öğrenci ve tutar girin.','error');return;}
-  if(OD_TIP==='aylik'&&!OD_AYLAR.length){
+  if(OD_TIP==='aylik'&&!OD_AYLAR.length&&!OD_ESKI_AYLAR.length){
     const grid=document.getElementById('od-ay-grid');
     if(grid){grid.style.outline='2px solid var(--accent)';grid.style.borderRadius='8px';setTimeout(()=>{grid.style.outline='';},2000);}
     showToast('Lütfen en az bir dönem seçin.','error');return;
@@ -3435,7 +4007,11 @@ async function saveOdeme(){
 }
 async function saveOdemeDevam(siId,ogId,tutar){
   const btn=document.getElementById('btn-save-od');btn.disabled=true;setSyncing(true);
-  const data={ogrenciId:ogId,sinifId:siId,tutar,tarih:document.getElementById('od-tarih').value,yontem:document.getElementById('od-yontem').value,odTip:OD_TIP,aylar:OD_TIP==='aylik'?OD_AYLAR:[],not:document.getElementById('od-not').value,olusturma:EDIT_ODEME?(S.odemeler.find(o=>o.id===EDIT_ODEME)?.olusturma||Date.now()):Date.now(),tip:'grup'};
+  // Yeni dönem seçildiyse eski (takvim-ayı formatındaki) kayıt tamamen bırakılır —
+  // ikisi üst üste eklenip ders sayısını yanlışlıkla ikiye katlamasın diye.
+  // Kullanıcı ızgaraya hiç dokunmadıysa eski kayıt aynen korunur.
+  const kaydedilecekAylar=OD_AYLAR.length?OD_AYLAR:OD_ESKI_AYLAR;
+  const data={ogrenciId:ogId,sinifId:siId,tutar,tarih:document.getElementById('od-tarih').value,yontem:document.getElementById('od-yontem').value,odTip:OD_TIP,aylar:OD_TIP==='aylik'?kaydedilecekAylar:[],not:document.getElementById('od-not').value,olusturma:EDIT_ODEME?(S.odemeler.find(o=>o.id===EDIT_ODEME)?.olusturma||Date.now()):Date.now(),tip:'grup'};
   try{
     let result;
     if(EDIT_ODEME){
@@ -3662,7 +4238,7 @@ async function silOzelPaket(id){
 
 // ── ÖZEL DERS HAFTALIK TAKVİM ──────────────────────────
 function otGetMonday(d){const x=new Date(d);const day=x.getDay();const diff=(day===0?-6:1-day);x.setDate(x.getDate()+diff);x.setHours(0,0,0,0);return x;}
-let OT_WEEK_START=otGetMonday(new Date());
+let OT_WEEK_START=otGetMonday(simdikiZaman());
 function otTarihStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function otHaftaDegistir(dir){OT_WEEK_START=new Date(OT_WEEK_START.getTime()+dir*7*86400000);renderOzelTakvim();}
 function openOzelTakvim(){
@@ -3728,7 +4304,7 @@ function renderOzelTakvim(){
   // Başlık satırı
   let html=`<div style="grid-column:1;grid-row:1;position:sticky;left:0;z-index:4;background:var(--bg);"></div>`;
   gunler.forEach((d,i)=>{
-    const bugun=otTarihStr(d)===otTarihStr(new Date());
+    const bugun=otTarihStr(d)===otTarihStr(simdikiZaman());
     html+=`<div class="ot-gun-header" style="grid-column:${i+2};grid-row:1;">${OT_GUN_ADLARI_F()[d.getDay()]}<div class="ot-gun-num" style="${bugun?'color:var(--accent);':''}">${d.getDate()}</div></div>`;
   });
 
@@ -3987,21 +4563,21 @@ function renderAnasayfa(){
   if(kayitEl)kayitEl.textContent=aktifKayitSayisi;
   document.getElementById('st-sinif').textContent=S.siniflar.filter(s=>s.durum!=='pasif').length;
   const yaklasanlar=getYaklasanlar();document.getElementById('st-yaklasan').textContent=yaklasanlar.length;
-  const bk=ayKey(new Date().getFullYear(),new Date().getMonth()+1);
+  const bk=ayKey(simdikiZaman().getFullYear(),simdikiZaman().getMonth()+1);
   const grupToplam=S.odemeler.filter(o=>{const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===bk;}).reduce((s,o)=>s+(o.tutar||0),0);
   const ozelToplam=S.ozelPaketler.filter(p=>{if(!p.tarih)return false;const d=new Date(p.tarih+'T00:00:00');return ayKey(d.getFullYear(),d.getMonth()+1)===bk;}).reduce((s,p)=>s+(p.tutar||0),0);
   const total=grupToplam+ozelToplam;
   const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
-  const toplamKira=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
+  const bugunStr=bugunTarih();
+  const ayBasStrBk=bk+'-01';
+  const toplamKira=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,bugunStr),0);
+  const pratikKira=pratikKiraAyToplami(ayBasStrBk);
   const asistanGider=aktifSiniflar.reduce((s,si)=>{
-    const eg=S.egitmenler.find(e=>e.id===si.egitmenId);
-    if(!eg||eg.basEgitmen)return s;
     const siGelir=S.odemeler.filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===bk;}).reduce((t,o)=>t+(o.tutar||0),0);
-    const kalanKiraSonrasi=Math.max(0,siGelir-(si.kira||0));
-    const denenenOdeme=Math.round(siGelir*(si.asistanPct||0)/100);
-    return s+Math.min(denenenOdeme,kalanKiraSonrasi);
+    return s+sinifAsistanGideriHesapla(si,siGelir,bugunStr);
   },0);
-  const netTotal=total-toplamKira-asistanGider-(GIDER_AYARLARI.kira||0);
+  const ozelStudyoKiraBu=ozelStudyoKiraTarihte(bugunStr);
+  const netTotal=total-toplamKira-pratikKira-asistanGider-ozelStudyoKiraBu;
   const fmt=v=>v>=1000?Math.round(v/1000)+'K':(Math.round(v)||'0');
   document.getElementById('st-odeme').textContent=fmt(total);
   document.getElementById('st-net').textContent=fmt(netTotal);
@@ -4030,7 +4606,7 @@ function renderAnasayfa(){
           </div>
           <span class="badge ${bc}" style="flex-shrink:0;white-space:nowrap;font-size:10px;">${dt}</span>
         </div>
-        <div style="display:flex;gap:6px;">${waBtnAlert(og.tel,og.ad,sinif.ad,dl)}<button class="btn btn-green btn-sm" onclick="openOdemeModal('${og.id}','${sinif.id}')">＋ ${t('odeme_al')}</button></div>
+        <div style="display:flex;gap:6px;">${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),sinif.ad,dl,dl<=0?'doldu':dl<=3?'yakin':'hatirla')}<button class="btn btn-green btn-sm" onclick="openOdemeModal('${og.id}','${sinif.id}')">＋ ${t('odeme_al')}</button></div>
       </div>`;
     }).join('');
     return `<div class="odeme-sinif-grup" style="margin-bottom:8px;overflow:hidden;">
@@ -4116,7 +4692,7 @@ function renderAnasayfa(){
       const kayit=(si.kayitlar||[]).find(k=>k.ogrenciId===og.id);
       if(kayit&&kayit.donduruldu)return;
       if(kayit&&kayit.tip==='tekders')return;
-      const buAyOdendi=S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===si.id&&(o.aylar||[]).includes(bk));
+      const buAyOdendi=S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===si.id&&odemeAyiKapsiyorMu(o,bk));
       if(!buAyOdendi){
         if(!bekGruplar[si.ad])bekGruplar[si.ad]={si,ogList:[]};
         bekGruplar[si.ad].ogList.push(og);
@@ -4151,7 +4727,7 @@ function renderAnasayfa(){
           </div>
           <span class="badge badge-amber">${t('yeni_kayit')}</span>
         </div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">${waBtnG(og.tel,og.ad)}</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''))}</div>
       </div>`;
     }
     const alertCls=hicOdeme?'soon':'ok';
@@ -4169,7 +4745,7 @@ function renderAnasayfa(){
         <span class="badge ${badgeCls}">${badgeTxt}</span>
       </div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;">
-        ${waBtnG(og.tel,og.ad)}
+        ${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),siAd)}
         <button class="btn btn-accent btn-sm" onclick="openOdemeModal('${og.id}','${si.id}')">＋ ${t('odeme_al')}</button>
       </div>
     </div>`;
@@ -4315,8 +4891,10 @@ function renderOgrenciler(){
     sira.forEach((ad,gi)=>{
       const acik=window._ogGrupAcik.has(ad);
       const sayi=gruplar[ad].length;
+      const grupSi=S.siniflar.find(s=>s.ad===ad);
+      const grupRenk=grupSi?RENK_BAR[S.siniflar.indexOf(grupSi)%RENK_BAR.length]:'var(--border2)';
       html+='<div style="margin-bottom:6px;">'
-        +'<div onclick="toggleOgGrupByIdx('+gi+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border2);">'
+        +'<div onclick="toggleOgGrupByIdx('+gi+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border2);border-left:3px solid '+grupRenk+';">'
         +'<div style="font-size:13px;font-weight:600;">'+ad+'</div>'
         +'<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><span style="font-size:12px;color:var(--text2);font-weight:400;">'+sayi+' '+t('lbl_ogrenci_kucuk')+'</span><span style="color:var(--text2);transition:transform .2s;transform:'+(acik?'rotate(90deg)':'rotate(0deg)')+';">›</span></div>'
         +'</div>'
@@ -4327,7 +4905,7 @@ function renderOgrenciler(){
       const soIdx=sira.length;
       const soAcik=window._ogGrupAcik.has('__sadeceozel__');
       html+='<div style="margin-bottom:6px;">'
-        +'<div onclick="toggleOgGrupByIdx('+soIdx+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--purplebg);border-radius:var(--radius-sm);cursor:pointer;border:1px solid #a78bfa30;">'
+        +'<div onclick="toggleOgGrupByIdx('+soIdx+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--purplebg);border-radius:var(--radius-sm);cursor:pointer;border:1px solid #a78bfa30;border-left:3px solid var(--purple);">'
         +'<div style="font-size:13px;font-weight:600;color:var(--purple);">✦ '+t('sadece_ozel_ders')+'</div>'
         +'<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><span style="font-size:12px;color:var(--text2);font-weight:400;">'+sadeceOzel.length+' '+t('lbl_ogrenci_kucuk')+'</span><span style="color:var(--text2);transform:'+(soAcik?'rotate(90deg)':'rotate(0deg)')+';">›</span></div>'
         +'</div>'
@@ -4338,7 +4916,7 @@ function renderOgrenciler(){
       const sfIdx=sira.length+(sadeceOzel.length?1:0);
       const sfAcik=window._ogGrupAcik.has('__sinifsiz__');
       html+='<div style="margin-bottom:6px;">'
-        +'<div onclick="toggleOgGrupByIdx('+sfIdx+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border2);">'
+        +'<div onclick="toggleOgGrupByIdx('+sfIdx+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border2);border-left:3px solid var(--text3);">'
         +'<div style="font-size:13px;font-weight:600;">'+t('sinifsiz')+'</div>'
         +'<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><span style="font-size:12px;color:var(--text2);font-weight:400;">'+sinifsizlar.length+' '+t('lbl_ogrenci_kucuk')+'</span><span style="color:var(--text2);transform:'+(sfAcik?'rotate(90deg)':'rotate(0deg)')+';">›</span></div>'
         +'</div>'
@@ -4418,14 +4996,14 @@ function renderSiniflar(){
 function renderSinifDetay(siId){
   const si=S.siniflar.find(s=>s.id===siId);if(!si){document.getElementById('sinif-detay-content').innerHTML='';return;}
   const kayitlar=si.kayitlar||[];const idx=S.siniflar.indexOf(si);const gc=RENK_GC[idx%RENK_GC.length];
-  const bk=ayKey(new Date().getFullYear(),new Date().getMonth()+1);
+  const bk=ayKey(simdikiZaman().getFullYear(),simdikiZaman().getMonth()+1);
   const kHTML=kayitlar.length?kayitlar.map(k=>{
     const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);if(!og||(og.durum||'aktif')==='pasif')return'';
     const donduruldu=!!k.donduruldu;
     const h=hesaplaKayit(k.ogrenciId,siId);
     const gh=h?h.hak:k.hak,gb=h?h.bitisTarih:k.bitisTarih;
     const dl=daysLeft(gb);
-    const buAyOdendi=S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===siId&&(o.aylar||[]).includes(bk));
+    const buAyOdendi=S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===siId&&odemeAyiKapsiyorMu(o,bk));
     const hicOdemeYok=!S.odemeler.some(o=>o.ogrenciId===og.id&&o.sinifId===siId);
     const odendi=buAyOdendi||(gh>0);
     const dc=donduruldu?'gd-amber':hicOdemeYok?'gd-red':!odendi?'gd-red':dl<=0&&gh===0?'gd-red':dl<=0&&gh>0?'gd-amber':dl<=3?'gd-amber':dl<=7?'gd-cyan':'gd-green';
@@ -4589,7 +5167,7 @@ function odemeAramaTemizle(){ODEME_ARAMA='';renderOdemeler();}
 function renderOdemeler(){
   const el=document.getElementById('odeme-content');
   if(!S.siniflar.length&&!S.ozelPaketler.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('once_sinif_ekle')+'</div></div>';return;}
-  const bk=ayKey(new Date().getFullYear(),new Date().getMonth()+1);
+  const bk=ayKey(simdikiZaman().getFullYear(),simdikiZaman().getMonth()+1);
   let html=`<div style="display:flex;gap:8px;justify-content:flex-end;margin:4px 0 12px;"><button class="btn btn-sm" style="background:#fbbf2422;color:var(--amber);border:1px solid #fbbf2450;" onclick="openSonOdemelerModal()">🕐 ${t('son_odemeler')}</button><button class="btn btn-accent btn-sm" onclick="openOdemeModal()">＋ ${t('odeme_ekle')}</button></div>
   <div style="position:relative;margin-bottom:12px;">
     <input type="text" id="odeme-arama-input" value="${ODEME_ARAMA.replace(/"/g,'&quot;')}" placeholder="🔍 Öğrenci ara..." oninput="odemeAramaDegisti(this.value)" style="width:100%;padding:10px 36px 10px 14px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:14px;">
@@ -4618,7 +5196,7 @@ function renderOdemeler(){
       const donduruldu=!!k.donduruldu;
       const ods=ogSiOd(og.id,si.id);
       const top=ods.reduce((s,o)=>s+(o.tutar||0),0);
-      const bAy=ods.some(o=>(o.aylar||[]).includes(bk));
+      const bAy=ods.some(o=>odemeAyiKapsiyorMu(o,bk));
       const h=hesaplaKayit(og.id,si.id);const gh=h?h.hak:k.hak;
       // Aktif ders hakkı varsa (paket bu ay içinde geçerliyse) "Ödendi" göster
       const odendi=bAy||(gh>0);
@@ -4637,7 +5215,7 @@ function renderOdemeler(){
         <div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;">
           ${!donduruldu?`<button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOdemeModal('${og.id}','${si.id}')">＋ ${t('odeme_al')}</button>`:''}
           <button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="openOdemeDetay('${og.id}','${si.id}')">${t('gecmis')}</button>
-          ${waBtnG(og.tel,og.ad)}
+          ${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),si.ad)}
         </div>
       </div>`;
     });
@@ -4652,7 +5230,7 @@ function renderOdemeler(){
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
       const topOzel=paketler.reduce((s,p)=>s+(p.tutar||0),0);
       const aktif=paketler.find(p=>p.aktif&&p.yapilanSaat<p.toplamSaat);
-      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text2);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnG(og.tel,og.ad)}</div></div>`;
+      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text2);">${aktif?`${fmtSaat(aktif.toplamSaat-aktif.yapilanSaat)} ${t('saat_kaldi')}`:t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),t('ozel_dersler'))}</div></div>`;
     });
     html+=`</div></div>`;
   }
@@ -4692,35 +5270,24 @@ function renderGelir(){
   if(!Object.keys(ayMap).length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('henuz_odeme_kaydi_yok')+'</div></div>';return;}
   const sirali=Object.entries(ayMap).sort((a,b)=>b[0].localeCompare(a[0]));
   const toplamToplam=sirali.reduce((s,[,v])=>s+v.toplam,0);
-  // Net gelir hesapla: kira + asistan eğitmen payı
+  // Net gelir hesapla: her ay kendi tarihinde GEÇERLİ OLAN kira + asistan eğitmen payı ile
   const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
-  const toplamKira=aktifSiniflar.length*aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0)/Math.max(aktifSiniflar.length,1);
-  // Toplam kira = her aktif sınıfın kirası toplamı (tek seferlik, aylık değil)
-  // Kira her ay için hesaplanır (kaç ay gösteriliyorsa o kadar)
-  const aySayisi=sirali.length||1;
-  const kiraToplam=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0)*aySayisi;
-  const asistanToplam=aktifSiniflar.reduce((s,si)=>{
-    const eg=S.egitmenler.find(e=>e.id===si.egitmenId);
-    if(!eg||eg.basEgitmen)return s;
-    const siGelir=S.odemeler.filter(o=>o.sinifId===si.id).reduce((t,o)=>t+(o.tutar||0),0);
-    return s+siGelir*(si.asistanPct||0)/100;
-  },0);
-  const netToplam=toplamToplam-kiraToplam-asistanToplam;
-  const aylikKira=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
   let html='<div class="card">';
   sirali.forEach(([key,v])=>{
     const acik=GELIR_ACIK.has(key);
-    // Bu ay net: brüt - aylık kira - bu ayın asistan gideri
+    // Bu ay net: brüt - bu ayda geçerli olan kira - bu ayın asistan gideri
+    const ayBasStr=key+'-01';
+    const buAyKira=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,ayBasStr),0);
+    const buAyPratikKira=pratikKiraAyToplami(ayBasStr);
     const buAyAsistan=aktifSiniflar.reduce((s,si)=>{
-      const eg=S.egitmenler.find(e=>e.id===si.egitmenId);
-      if(!eg||eg.basEgitmen)return s;
       const siGelir=S.odemeler.filter(o=>{
         const t=o.tarih;if(!t||o.sinifId!==si.id)return false;
         return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;
       }).reduce((t,o)=>t+(o.tutar||0),0);
-      return s+siGelir*(si.asistanPct||0)/100;
+      return s+sinifAsistanGideriHesapla(si,siGelir,ayBasStr);
     },0);
-    const ayNet=v.toplam-aylikKira-buAyAsistan-(GIDER_AYARLARI.kira||0);
+    const buAyOzelStudyoKira=ozelStudyoKiraTarihte(ayBasStr);
+    const ayNet=v.toplam-buAyKira-buAyPratikKira-buAyAsistan-buAyOzelStudyoKira;
     const gruplar=v.gruplar||{};
     html+=`<div class="gelir-row">
       <div class="gelir-row-header" onclick="toggleGelirAy('${key}')">
@@ -5303,7 +5870,7 @@ function excelIndir(){
 
   try{
     const wb=XLSX.utils.book_new();
-    const tarihStr=new Date().toLocaleDateString(LC()).replace(/\./g,'-');
+    const tarihStr=simdikiZaman().toLocaleDateString(LC()).replace(/\./g,'-');
 
     // ── 1. Öğrenciler ──────────────────────────────────
     const ogRows=S.ogrenciler.map(og=>{
@@ -5458,7 +6025,7 @@ async function yedekal(){
   if(btn){btn.disabled=true;btn.textContent=t('yedek_hazirlaniyor');}
   setSyncing(true);
   try{
-    const veri={tarih:new Date().toISOString(),versiyon:3};
+    const veri={tarih:simdikiZaman().toISOString(),versiyon:3};
     for(const col of TUM_KOLEKSIYONLAR){
       veri[col]=await fsTumBelgeler(col);
     }
@@ -5566,7 +6133,7 @@ function toastGoster(msg,sure=2800){
 
 // ── YOKLAMA SİSTEMİ ────────────────────────────────────
 
-function bugunTarih(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function bugunTarih(){const d=simdikiZaman();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
 async function yoklamaKaydet(sinifId, ogrenciId){
   const tarih=bugunTarih();
@@ -6031,7 +6598,7 @@ function yoklamaOgrenciModal(sinifId){
   if(!si)return;
   document.getElementById('m-yok-og-title').textContent=si.ad;
   document.getElementById('m-yok-og-sinif').textContent=
-    si.gun+' · '+si.saat+' — '+new Date().toLocaleDateString(LC(),{day:'numeric',month:'long'});
+    si.gun+' · '+si.saat+' — '+simdikiZaman().toLocaleDateString(LC(),{day:'numeric',month:'long'});
 
   const kayitlar=(si.kayitlar||[]);
   const aktifOgList=kayitlar
@@ -6236,8 +6803,10 @@ function devamsizOgrencileriHesapla(){
   return {iki:Object.values(grup2),uc:Object.values(grup3)};
 }
 let DEVAMSIZ_TAB='2';
+let DEVAMSIZ_ACIK=new Set();
 function openDevamsizModal(){
   DEVAMSIZ_TAB='2';
+  DEVAMSIZ_ACIK=new Set();
   renderDevamsiz();
   openModal('m-devamsiz');
 }
@@ -6246,6 +6815,15 @@ function devamsizTabSec(tab){
   document.getElementById('devamsiz-tab-2').classList.toggle('active',tab==='2');
   document.getElementById('devamsiz-tab-3').classList.toggle('active',tab==='3');
   renderDevamsiz();
+}
+function toggleDevamsizGrup(key){
+  if(DEVAMSIZ_ACIK.has(key))DEVAMSIZ_ACIK.delete(key);
+  else DEVAMSIZ_ACIK.add(key);
+  const body=document.getElementById('devamsiz-body-'+key),chev=document.getElementById('devamsiz-chev-'+key);
+  if(!body||!chev)return;
+  const a=DEVAMSIZ_ACIK.has(key);
+  body.classList.toggle('open',a);
+  chev.classList.toggle('open',a);
 }
 function renderDevamsiz(){
   const {iki,uc}=devamsizOgrencileriHesapla();
@@ -6257,16 +6835,24 @@ function renderDevamsiz(){
     return;
   }
   el.innerHTML=liste.filter(g=>g.ogrenciler.length).map(grp=>{
-    return `<div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">${grp.si.ad} · ${grp.si.gun}</div>
-      ${grp.ogrenciler.map(og=>`
-        <div style="display:flex;align-items:center;gap:10px;padding:11px;margin-bottom:7px;border-radius:var(--radius-sm);background:#ff6b6b1e;border:1.5px solid #ff6b6b;">
-          <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:30px;height:30px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:14px;font-weight:600;color:#ff6b6b;">${og.ad} ${og.soyad||''}</div>
-          </div>
-          ${waBtnG(og.tel,og.ad)}
-        </div>`).join('')}
+    const key=DEVAMSIZ_TAB+'_'+grp.si.id;
+    const acik=DEVAMSIZ_ACIK.has(key);
+    const grupRenk=RENK_BAR[S.siniflar.indexOf(grp.si)%RENK_BAR.length]||'var(--border2)';
+    return `<div class="odeme-sinif-grup">
+      <div class="odeme-sinif-baslik" onclick="toggleDevamsizGrup('${key}')" style="--grup-renk:${grupRenk};">
+        <div><div class="odeme-sinif-adi">${grp.si.ad}</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;"><span class="badge badge-red" style="font-size:10px;">${grp.ogrenciler.length} ${t('lbl_ogrenci_kucuk')}</span></div></div>
+        <span class="odeme-sinif-chevron${acik?' open':''}" id="devamsiz-chev-${key}">›</span>
+      </div>
+      <div class="odeme-sinif-body${acik?' open':''}" id="devamsiz-body-${key}">
+        ${grp.ogrenciler.map(og=>`
+          <div style="display:flex;align-items:center;gap:10px;padding:11px;margin-bottom:7px;border-radius:var(--radius-sm);background:#ff6b6b1e;border:1.5px solid #ff6b6b;">
+            <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:30px;height:30px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:14px;font-weight:600;color:#ff6b6b;">${og.ad} ${og.soyad||''}</div>
+            </div>
+            ${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),grp.si.ad)}
+          </div>`).join('')}
+      </div>
     </div>`;
   }).join('');
 }
@@ -6356,7 +6942,7 @@ function gunDersleri(tarihStr){
 
 // Bu hafta için Pzt-Paz tarih dizisi
 function haftaGunleri(offset=0){
-  const bugun=new Date();
+  const bugun=simdikiZaman();
   const gun=bugun.getDay(); // 0=Paz
   const pztFark=gun===0?-6:1-gun;
   const pzt=new Date(bugun);
@@ -6430,7 +7016,7 @@ function renderTakvimHafta(){
 }
 
 function renderTakvimAy(){
-  const bugun=new Date();
+  const bugun=simdikiZaman();
   const hedefAy=new Date(bugun.getFullYear(),bugun.getMonth()+TAK_AY_OFFSET,1);
   const yil=hedefAy.getFullYear();
   const ay=hedefAy.getMonth();
@@ -6511,13 +7097,13 @@ function takGunSec(tarih){
   // Hafta modunda, seçilen gün hafta offset'ini güncelle
   if(TAK_MOD==='hafta'){
     const sel=new Date(tarih+'T00:00:00');
-    const bugun=new Date();
+    const bugun=simdikiZaman();
     const gun=bugun.getDay();
     const pztFark=gun===0?-6:1-gun;
     const bugunPzt=new Date(bugun);
     bugunPzt.setDate(bugun.getDate()+pztFark);
-    const diff=Math.round((sel-bugunPzt)/(7*86400000));
-    TAK_HAFTA_OFFSET=Math.floor(diff);
+    const diff=Math.floor((sel-bugunPzt)/(7*86400000));
+    TAK_HAFTA_OFFSET=diff;
   }
   renderTakvim();
 }
@@ -6583,7 +7169,7 @@ function renderPortalTakvim(el,og){
   }
 
   // Önümüzdeki 4 hafta
-  const bugun=new Date();
+  const bugun=simdikiZaman();
   const gun=bugun.getDay();
   const pztFark=gun===0?-6:1-gun;
   const pzt=new Date(bugun);pzt.setDate(bugun.getDate()+pztFark);
@@ -6655,50 +7241,343 @@ async function giderAyarlariniYukle(){
       try{await db.collection('ayarlar').doc('giderAyarlari').set(veri);}catch(e){}
       return veri;
     }
-    return {kira:0,basEgitmenPayPct:30};
-  }catch(e){return {kira:0,basEgitmenPayPct:30};}
+    return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[],ozelKiraGecmisi:[]};
+  }catch(e){return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[],ozelKiraGecmisi:[]};}
 }
 
-async function giderAyarlariniKaydet(kira,pct){
-  await db.collection('ayarlar').doc('giderAyarlari').set({kira:parseFloat(kira)||0,basEgitmenPayPct:parseFloat(pct)||0});
+async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi,pratikKiraGecmisi,pratikIptalTarihleri,ozelKiraGecmisi){
+  const veri={kira:parseFloat(kira)||0,basEgitmenPayPct:parseFloat(pct)||0};
+  if(grupKiraGecmisi!==undefined)veri.grupKiraGecmisi=grupKiraGecmisi;
+  else if(GIDER_AYARLARI.grupKiraGecmisi)veri.grupKiraGecmisi=GIDER_AYARLARI.grupKiraGecmisi;
+  if(pratikKiraGecmisi!==undefined)veri.pratikKiraGecmisi=pratikKiraGecmisi;
+  else if(GIDER_AYARLARI.pratikKiraGecmisi)veri.pratikKiraGecmisi=GIDER_AYARLARI.pratikKiraGecmisi;
+  if(pratikIptalTarihleri!==undefined)veri.pratikIptalTarihleri=pratikIptalTarihleri;
+  else if(GIDER_AYARLARI.pratikIptalTarihleri)veri.pratikIptalTarihleri=GIDER_AYARLARI.pratikIptalTarihleri;
+  if(ozelKiraGecmisi!==undefined)veri.ozelKiraGecmisi=ozelKiraGecmisi;
+  else if(GIDER_AYARLARI.ozelKiraGecmisi)veri.ozelKiraGecmisi=GIDER_AYARLARI.ozelKiraGecmisi;
+  await db.collection('ayarlar').doc('giderAyarlari').set(veri);
 }
 
-// Senkron erişim için önbellek — özel ders stüdyo kirası birçok yerde senkron render fonksiyonunda kullanılıyor
-let GIDER_AYARLARI={kira:0,basEgitmenPayPct:30};
+// Senkron erişim için önbellek — özel ders stüdyo kirası, grup dersleri kira geçmişi
+// ve Cumartesi pratik kirası geçmişi/iptalleri birçok yerde senkron render fonksiyonunda kullanılıyor
+let GIDER_AYARLARI={kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[],ozelKiraGecmisi:[]};
 async function giderAyarlariniOnbellekleYukle(){
   GIDER_AYARLARI=await giderAyarlariniYukle();
 }
 
 // Eğitmen yönetim paneli
 async function renderEgitmenPanel(){
+  renderTatilListe();
   const el=document.getElementById('egitmen-panel-content2')||document.getElementById('egitmen-panel-content');
   if(!el)return;
   const ayarlar=await giderAyarlariniYukle();
   GIDER_AYARLARI=ayarlar;
 
+  const legacySiniflar=S.siniflar.filter(si=>si.kira);
+
   let html=`
-    <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('egitmenler')}</div>
-    ${S.egitmenler.map(e=>`
-      <div class="egitmen-pay-kart" style="display:flex;align-items:center;gap:10px;background:${e.basEgitmen?'var(--purplebg)':'var(--surface2)'};border-color:${e.basEgitmen?'#a78bfa40':'var(--border2)'};">
-        <div style="font-size:22px;">${e.basEgitmen?'⭐':'👤'}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:14px;font-weight:600;">${e.ad}</div>
-          <div style="font-size:11px;color:var(--text2);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}</div>
-        </div>
-        <div style="display:flex;gap:6px;">
-          <button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenDuzenle('${e.id}')">${t('btn_duzenle_kisa')}</button>
-          <button class="btn btn-danger btn-sm" onclick="egitmenSil('${e.id}')">${t('btn_sil')}</button>
-        </div>
-      </div>`).join('')}
-    ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text2);padding:8px 0 4px;">'+t('henuz_egitmen_yok')+'</div>':''}
-    <button class="btn btn-sm" style="width:100%;margin-top:8px;background:#a78bfa1c;color:var(--purple);border:1px solid #a78bfa40;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>
-    <div style="height:1px;background:var(--border);margin:16px 0;"></div>
-    <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('ozel_ders_studyo_kirasi')}</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('ozel_kira_aciklama')}</div>
-    <div class="field"><label>${t('aylik_ortak_kira')}</label><input id="ga-kira" type="number" placeholder="10000" value="${ayarlar.kira||''}"/></div>
-    <button class="btn btn-accent" style="width:100%;" onclick="egitmenAyarKaydet()">${t('btn_kaydet')}</button>`;
+    ${legacySiniflar.length?`
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#ff6b6b14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #ff6b6b35;">
+      <div style="font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">⚠ Eski Sabit Kira Kayıtları</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bu sınıflarda hâlâ eski, sabit bir kira kaydı var — bu yüzden aşağıdaki "Grup Dersleri Kirası" geçmişindeki değişiklikler bunlar için geçerli olmuyor, hep bu sabit tutarlar kullanılıyor:</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+        ${legacySiniflar.map(si=>`<div style="font-size:12.5px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;"><span>${si.ad}</span><b>${(si.kira||0).toLocaleString(LC())} ₺</b></div>`).join('')}
+      </div>
+      <button class="btn btn-accent" style="width:100%;" onclick="tumLegacyKiralariTemizle()">Hepsini Temizle, Ortak Kira Geçmişini Kullan</button>
+    </div>`:''}
+
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#a78bfa14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #a78bfa35;">
+      <div style="font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('egitmenler')}</div>
+      ${S.egitmenler.map(e=>`
+        <div class="egitmen-pay-kart" style="display:flex;align-items:center;gap:10px;background:${e.basEgitmen?'var(--purplebg)':'var(--surface2)'};border-color:${e.basEgitmen?'#a78bfa40':'var(--border2)'};">
+          <div style="font-size:22px;">${e.basEgitmen?'⭐':'👤'}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:600;">${e.ad}</div>
+            <div style="font-size:11px;color:var(--text2);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenDuzenle('${e.id}')">${t('btn_duzenle_kisa')}</button>
+            <button class="btn btn-danger btn-sm" onclick="egitmenSil('${e.id}')">${t('btn_sil')}</button>
+          </div>
+        </div>`).join('')}
+      ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text2);padding:8px 0 4px;">'+t('henuz_egitmen_yok')+'</div>':''}
+      <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>
+    </div>
+
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#22d3ee14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #22d3ee35;">
+      <div style="font-size:12px;font-weight:600;color:var(--cyan);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Grup Dersleri Kirası (Tüm Sınıflar İçin Ortak)</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bütün grup sınıflarının aynı kirayı ödediği tek bir yer — tek tek sınıf sınıf girmene gerek yok. Kira değiştiğinde buraya bir kayıt ekle, geçmiş dönemler eski tutarla, yeni dönemler yeni tutarla hesaplanmaya devam eder.</div>
+      <div id="ga-grup-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+      <button class="btn btn-accent" style="width:100%;" onclick="gaGrupKiraEkle()">＋ Kira Değişikliği Ekle</button>
+    </div>
+
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#34d39914,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #34d39935;">
+      <div style="font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">🏋️ Cumartesi Pratik Kirası</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Cumartesi pratik günü için kiralanan stüdyonun kaç saatliğine, saatte ne kadar ödendiği. Her sınıfın 4 haftalık dönemi normalde tam 4 Cumartesi içerir (aşağıda pratik yapılmayan bir Cumartesi işaretlemediğin sürece), tutar aktif tüm grup sınıfları arasında eşit bölünüp, kira gibi eğitmenlere pay dağıtılmadan önce gelirden düşülür. Tutar değişirse buraya yeni bir kayıt ekle — geçmiş dönemler eski tutarla hesaplanmaya devam eder.</div>
+      <div id="ga-pratik-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+      <button class="btn btn-accent" style="width:100%;" onclick="gaPratikKiraEkle()">＋ Pratik Kirası Değişikliği Ekle</button>
+    </div>
+
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#ff6b6b14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #ff6b6b35;">
+      <div style="font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('ozel_ders_studyo_kirasi')}</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('ozel_kira_aciklama')} Tutar değişirse (zam vb.) buraya yeni bir kayıt ekle — geçmiş aylar eski tutarla hesaplanmaya devam eder.</div>
+      <div id="ga-ozel-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+      <button class="btn btn-accent" style="width:100%;" onclick="gaOzelKiraEkle()">＋ Kira Değişikliği Ekle</button>
+    </div>`;
 
   el.innerHTML=html;
+  renderGaGrupKiraListe();
+  renderGaOzelKiraListe();
+  renderGaPratikKiraListe();
+  renderGaPratikIptalListe();
+}
+async function tumLegacyKiralariTemizle(){
+  const legacySiniflar=S.siniflar.filter(si=>si.kira);
+  if(!legacySiniflar.length)return;
+  confirm_('Eski Kira Kayıtlarını Temizle',`${legacySiniflar.length} sınıftaki sabit kira kaydı kaldırılacak, hepsi ortak kira geçmişini kullanmaya başlayacak.`,async()=>{
+    setSyncing(true);
+    try{
+      for(const si of legacySiniflar){
+        await db.collection('siniflar').doc(si.id).update({kira:null});
+        si.kira=null;
+      }
+      _poll('siniflar');
+      renderEgitmenPanel();
+    }catch(e){alert('Hata: '+e.message);}
+    setSyncing(false);
+  });
+}
+
+function renderGaGrupKiraListe(){
+  const el=document.getElementById('ga-grup-kira-liste');
+  if(!el)return;
+  const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).map((x,i)=>({...x,_i:i})).sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  if(!liste.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);">Henüz eklenmedi — hiçbir sınıfın kirası hesaba katılmaz.</div>';return;}
+  el.innerHTML=liste.map(x=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12.5px;">
+      <span style="cursor:pointer;" onclick="gaGrupKiraDuzenle(${x._i})">${formatDateTamYil(x.tarih)} itibarıyla → <b>${(x.tutar||0).toLocaleString(LC())} ₺</b></span>
+      <div style="display:flex;gap:2px;">
+        <button type="button" onclick="gaGrupKiraDuzenle(${x._i})" style="background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:0 4px;" title="Düzenle">✎</button>
+        <button type="button" onclick="gaGrupKiraSil(${x._i})" style="background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 4px;" title="Sil">✕</button>
+      </div>
+    </div>`).join('');
+}
+async function gaGrupKiraKaydetListe(liste){
+  setSyncing(true);
+  try{
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,liste);
+    await giderAyarlariniOnbellekleYukle();
+    renderGaGrupKiraListe();
+    renderAll();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
+let GK_DUZENLE_IDX=null;
+function gaGrupKiraEkle(){
+  GK_DUZENLE_IDX=null;
+  document.getElementById('gk-baslik').textContent='Kira Değişikliği Ekle';
+  document.getElementById('gk-tarih').value=bugunTarih();
+  document.getElementById('gk-tutar').value='';
+  openModal('m-grup-kira');
+}
+function gaGrupKiraDuzenle(i){
+  const mevcut=(GIDER_AYARLARI.grupKiraGecmisi||[])[i];
+  if(!mevcut)return;
+  GK_DUZENLE_IDX=i;
+  document.getElementById('gk-baslik').textContent='Kira Değişikliğini Düzenle';
+  document.getElementById('gk-tarih').value=mevcut.tarih;
+  document.getElementById('gk-tutar').value=mevcut.tutar||'';
+  openModal('m-grup-kira');
+}
+async function gaGrupKiraKaydet(){
+  const tarih=document.getElementById('gk-tarih').value;
+  if(!tarih){alert('Lütfen bir tarih seç.');return;}
+  const tutarStr=document.getElementById('gk-tutar').value;
+  const tutar=parseFloat(tutarStr);
+  if(!tutarStr||isNaN(tutar)){alert('Lütfen geçerli bir tutar gir.');return;}
+  // Düzenleniyorsa o kaydı çıkar; hedef tarihte başka bir kayıt varsa onu da çıkar (üzerine yazılır)
+  const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).filter((x,idx)=>idx!==GK_DUZENLE_IDX&&x.tarih!==tarih);
+  liste.push({tarih,tutar});
+  closeModal('m-grup-kira');
+  await gaGrupKiraKaydetListe(liste);
+}
+async function gaGrupKiraSil(i){
+  const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).slice();
+  liste.splice(i,1);
+  await gaGrupKiraKaydetListe(liste);
+}
+
+function renderGaOzelKiraListe(){
+  const el=document.getElementById('ga-ozel-kira-liste');
+  if(!el)return;
+  const liste=(GIDER_AYARLARI.ozelKiraGecmisi||[]).map((x,i)=>({...x,_i:i})).sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  if(!liste.length){
+    el.innerHTML=`<div style="font-size:11px;color:var(--text3);">Henüz eklenmedi${GIDER_AYARLARI.kira?' — eski sabit tutar ('+(GIDER_AYARLARI.kira||0).toLocaleString(LC())+' ₺) kullanılıyor':' — hiçbir tutar hesaba katılmaz'}.</div>`;
+    return;
+  }
+  el.innerHTML=liste.map(x=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12.5px;">
+      <span style="cursor:pointer;" onclick="gaOzelKiraDuzenle(${x._i})">${formatDateTamYil(x.tarih)} itibarıyla → <b>${(x.tutar||0).toLocaleString(LC())} ₺</b></span>
+      <div style="display:flex;gap:2px;">
+        <button type="button" onclick="gaOzelKiraDuzenle(${x._i})" style="background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:0 4px;" title="Düzenle">✎</button>
+        <button type="button" onclick="gaOzelKiraSil(${x._i})" style="background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 4px;" title="Sil">✕</button>
+      </div>
+    </div>`).join('');
+}
+async function gaOzelKiraKaydetListe(liste){
+  setSyncing(true);
+  try{
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,undefined,liste);
+    await giderAyarlariniOnbellekleYukle();
+    renderGaOzelKiraListe();
+    renderAll();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
+let OK_DUZENLE_IDX=null;
+function gaOzelKiraEkle(){
+  OK_DUZENLE_IDX=null;
+  document.getElementById('ok-baslik').textContent='Kira Değişikliği Ekle';
+  document.getElementById('ok-tarih').value=bugunTarih();
+  document.getElementById('ok-tutar').value=GIDER_AYARLARI.kira||'';
+  openModal('m-ozel-kira');
+}
+function gaOzelKiraDuzenle(i){
+  const mevcut=(GIDER_AYARLARI.ozelKiraGecmisi||[])[i];
+  if(!mevcut)return;
+  OK_DUZENLE_IDX=i;
+  document.getElementById('ok-baslik').textContent='Kira Değişikliğini Düzenle';
+  document.getElementById('ok-tarih').value=mevcut.tarih;
+  document.getElementById('ok-tutar').value=mevcut.tutar||'';
+  openModal('m-ozel-kira');
+}
+async function gaOzelKiraKaydet(){
+  const tarih=document.getElementById('ok-tarih').value;
+  if(!tarih){alert('Lütfen bir tarih seç.');return;}
+  const tutarStr=document.getElementById('ok-tutar').value;
+  const tutar=parseFloat(tutarStr);
+  if(!tutarStr||isNaN(tutar)){alert('Lütfen geçerli bir tutar gir.');return;}
+  const liste=(GIDER_AYARLARI.ozelKiraGecmisi||[]).filter((x,idx)=>idx!==OK_DUZENLE_IDX&&x.tarih!==tarih);
+  liste.push({tarih,tutar});
+  closeModal('m-ozel-kira');
+  await gaOzelKiraKaydetListe(liste);
+}
+async function gaOzelKiraSil(i){
+  const liste=(GIDER_AYARLARI.ozelKiraGecmisi||[]).slice();
+  liste.splice(i,1);
+  await gaOzelKiraKaydetListe(liste);
+}
+
+function renderGaPratikKiraListe(){
+  const el=document.getElementById('ga-pratik-kira-liste');
+  if(!el)return;
+  const liste=(GIDER_AYARLARI.pratikKiraGecmisi||[]).map((x,i)=>({...x,_i:i})).sort((a,b)=>a.tarih.localeCompare(b.tarih));
+  if(!liste.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);">Henüz eklenmedi — pratik kirası payı hesaplanmıyor.</div>';return;}
+  el.innerHTML=liste.map(x=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12.5px;">
+      <span style="cursor:pointer;" onclick="gaPratikKiraDuzenle(${x._i})">${formatDateTamYil(x.tarih)} itibarıyla → <b>${x.saat||0} saat × ${(x.saatlikUcret||0).toLocaleString(LC())} ₺</b></span>
+      <div style="display:flex;gap:2px;">
+        <button type="button" onclick="gaPratikKiraDuzenle(${x._i})" style="background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:0 4px;" title="Düzenle">✎</button>
+        <button type="button" onclick="gaPratikKiraSil(${x._i})" style="background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 4px;" title="Sil">✕</button>
+      </div>
+    </div>`).join('');
+}
+async function gaPratikKiraKaydetListe(liste){
+  setSyncing(true);
+  try{
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,liste);
+    await giderAyarlariniOnbellekleYukle();
+    renderGaPratikKiraListe();
+    renderAll();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
+let PK_DUZENLE_IDX=null;
+function gaPratikKiraEkle(){
+  PK_DUZENLE_IDX=null;
+  document.getElementById('pk-baslik').textContent='Pratik Kirası Değişikliği Ekle';
+  document.getElementById('pk-tarih').value=bugunTarih();
+  document.getElementById('pk-saat').value='';
+  document.getElementById('pk-saatlik-ucret').value='';
+  openModal('m-pratik-kira');
+}
+function gaPratikKiraDuzenle(i){
+  const mevcut=(GIDER_AYARLARI.pratikKiraGecmisi||[])[i];
+  if(!mevcut)return;
+  PK_DUZENLE_IDX=i;
+  document.getElementById('pk-baslik').textContent='Pratik Kirası Değişikliğini Düzenle';
+  document.getElementById('pk-tarih').value=mevcut.tarih;
+  document.getElementById('pk-saat').value=mevcut.saat||'';
+  document.getElementById('pk-saatlik-ucret').value=mevcut.saatlikUcret||'';
+  openModal('m-pratik-kira');
+}
+async function gaPratikKiraKaydet(){
+  const tarih=document.getElementById('pk-tarih').value;
+  if(!tarih){alert('Lütfen bir tarih seç.');return;}
+  const saatStr=document.getElementById('pk-saat').value;
+  const saat=parseFloat(saatStr);
+  if(!saatStr||isNaN(saat)){alert('Lütfen geçerli bir saat gir.');return;}
+  const ucretStr=document.getElementById('pk-saatlik-ucret').value;
+  const saatlikUcret=parseFloat(ucretStr);
+  if(!ucretStr||isNaN(saatlikUcret)){alert('Lütfen geçerli bir saatlik ücret gir.');return;}
+  const liste=(GIDER_AYARLARI.pratikKiraGecmisi||[]).filter((x,idx)=>idx!==PK_DUZENLE_IDX&&x.tarih!==tarih);
+  liste.push({tarih,saat,saatlikUcret});
+  closeModal('m-pratik-kira');
+  await gaPratikKiraKaydetListe(liste);
+}
+async function gaPratikKiraSil(i){
+  const liste=(GIDER_AYARLARI.pratikKiraGecmisi||[]).slice();
+  liste.splice(i,1);
+  await gaPratikKiraKaydetListe(liste);
+}
+
+function renderGaPratikIptalListe(){
+  const el=document.getElementById('ga-pratik-iptal-liste');
+  if(!el)return;
+  const liste=(GIDER_AYARLARI.pratikIptalTarihleri||[]).slice().sort();
+  if(!liste.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);">Henüz işaretlenmedi — her dönemde tam 4 Cumartesi sayılır.</div>';return;}
+  el.innerHTML=liste.map(tarih=>{
+    const gun=new Date(tarih+'T00:00:00').getDay();
+    const cumartesiDegil=gun!==6;
+    return `
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12.5px;">
+      <span>${formatDateTamYil(tarih)}${cumartesiDegil?' <span style="color:var(--amber);">(Cumartesi değil — hesaba etkisi olmaz)</span>':' — pratik yapılmadı'}</span>
+      <button type="button" onclick="gaPratikIptalSil('${tarih}')" style="background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 4px;" title="Kaldır">✕</button>
+    </div>`;
+  }).join('');
+}
+function gaPratikIptalEkle(){
+  document.getElementById('pi-tarih').value=bugunTarih();
+  openModal('m-pratik-iptal');
+}
+function gaPratikIptalKaydetForm(){
+  const tarih=document.getElementById('pi-tarih').value;
+  if(!tarih){alert('Lütfen bir tarih seç.');return;}
+  closeModal('m-pratik-iptal');
+  gaPratikIptalKaydet(tarih);
+}
+async function gaPratikIptalKaydet(tarih){
+  const liste=(GIDER_AYARLARI.pratikIptalTarihleri||[]).filter(x=>x!==tarih);
+  liste.push(tarih);
+  setSyncing(true);
+  try{
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,liste);
+    await giderAyarlariniOnbellekleYukle();
+    renderGaPratikIptalListe();
+    renderAll();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
+async function gaPratikIptalSil(tarih){
+  const liste=(GIDER_AYARLARI.pratikIptalTarihleri||[]).filter(x=>x!==tarih);
+  setSyncing(true);
+  try{
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,liste);
+    await giderAyarlariniOnbellekleYukle();
+    renderGaPratikIptalListe();
+    renderAll();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
 }
 
 async function egitmenAyarKaydet(){
@@ -6765,11 +7644,18 @@ async function egitmenSil(id){
 }
 
 // ── GİDER RAPORU ───────────────────────────────────────
+function sinifDonemDegistir(siId,delta){
+  const si=S.siniflar.find(s=>s.id===siId);
+  if(!si)return;
+  const guncel=GIDER_DONEM_IDX[siId]??sinifGuncelDonemIndex(si);
+  GIDER_DONEM_IDX[siId]=Math.max(0,guncel+delta);
+  renderGiderRapor();
+}
 async function renderGiderRapor(){
   const el=document.getElementById('gider-rapor-content');
   if(!el)return;
 
-  const simdi=new Date();
+  const simdi=simdikiZaman();
   if(!GIDER_AY) GIDER_AY=`${simdi.getFullYear()}-${String(simdi.getMonth()+1).padStart(2,'0')}`;
 
   const [yil,ay]=GIDER_AY.split('-').map(Number);
@@ -6798,59 +7684,133 @@ async function renderGiderRapor(){
   //   basEgitmenKar = sinifGelir − kira                     → GELİR (gider değil)
 
   const sinifDetaylar=[];
+  // Cumartesi pratik kirası payının bölüneceği payda — aktif TÜM grup sınıfları
+  // (o dönem için geliri/kirası olmasa da sayılır).
+  const aktifSinifSayisi=S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').length;
 
   S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').forEach((si,idx)=>{
     const egitmen=S.egitmenler.find(e=>e.id===si.egitmenId);
-    const kira=si.kira||0;
+    const egitmen2=S.egitmenler.find(e=>e.id===si.egitmen2Id);
     const asistanPct=(si.asistanPct||0)/100;
+    const asistan2Pct=(si.asistan2Pct||0)/100;
 
-    const sinifGelir=S.odemeler
-      .filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===buAyKey;})
-      .reduce((s,o)=>s+(o.tutar||0),0);
+    // Eğitmen payı hesaplaması, TAKVİM AYINA göre değil sınıfın KENDİ döneminin
+    // (Dönem Başlangıç Tarihi'nden itibaren 4 haftalık bloklar) hangi bloğu
+    // gösteriliyorsa ona göre, o dönemde GERÇEKTEN verilen derslere göre yapılır.
+    const donemIdx=GIDER_DONEM_IDX[si.id]??sinifGuncelDonemIndex(si);
+    const donemAralik=sinifDonemAraligi(si,donemIdx);
+    const sinifGelir=sinifGelirDonemProrated(si,donemIdx);
+    // Kira da o dönemde GEÇERLİ OLAN tutar üzerinden hesaplanır (kira geçmişi
+    // varsa) — kira sonradan artmışsa eski dönemler eski tutarla hesaplanır.
+    const donemBasStr=donemAralik.bas.getFullYear()+'-'+String(donemAralik.bas.getMonth()+1).padStart(2,'0')+'-'+String(donemAralik.bas.getDate()).padStart(2,'0');
+    const kira=sinifKiraTarihte(si,donemBasStr);
+    // Cumartesi pratik kirası — STÜDYO KİRASIYLA TAMAMEN AYNI MANTIK: bu da
+    // önceliklidir, eğitmenlere pay dağıtılmadan ÖNCE toplam gelirden düşülür.
+    // 28 günlük dönem normalde tam 4 Cumartesi içerir, ama pratiğin yapılmadığı
+    // (tatil, iptal vb.) Cumartesiler "Eğitmenler & Giderler" bölümünden
+    // işaretlenebilir — o hafta için ücret hesaba katılmaz.
+    // Dönemin GEÇERLİ tarihindeki (kira geçmişiyle aynı mantık) saat×saatlik
+    // ücret tutarı, gerçekleşen Cumartesi sayısıyla çarpılıp aktif tüm grup
+    // sınıfları arasında eşit bölünür.
+    const pratikBilgi=pratikKiraTarihte(donemBasStr);
+    const pratikCumartesiSay=pratikCumartesiSayisi(donemAralik.bas,donemAralik.bitis);
+    const pratikDonemTutari=(pratikBilgi.saat||0)*(pratikBilgi.saatlikUcret||0)*pratikCumartesiSay;
+    const pratikPay=aktifSinifSayisi>0?Math.round(pratikDonemTutari/aktifSinifSayisi):0;
+    const kiraToplam=kira+pratikPay;
 
-    if(!sinifGelir&&!kira)return;
+    if(!sinifGelir&&!kiraToplam)return;
 
     let asistanOdeme=0;
     let asistanAd=null;
+    let asistan2Odeme=0;
+    let asistan2Ad=null;
     let basEgitmenKar=0;
+    let karPaylari=[]; // [{egitmenId, ad, tutar}] — bu sınıfın kâr/kalan tutarının kime ne kadar gittiği
+    const ikiBasEgitmen=!!(egitmen&&egitmen.basEgitmen&&egitmen2&&egitmen2.basEgitmen);
 
-    if(egitmen&&!egitmen.basEgitmen){
-      // Asistan ders veriyor — KİRA ÖNCELİKLİDİR.
-      // Önce kira toplam gelirden düşülür; asistana ödenecek pay, normal yüzdesini
-      // aşmayacak ama kira sonrası kalan tutarı da geçmeyecek şekilde sınırlanır.
-      const kalanKiraSonrasi=Math.max(0,sinifGelir-kira);
-      const denenenOdeme=Math.round(sinifGelir*asistanPct);
-      asistanOdeme=Math.min(denenenOdeme,kalanKiraSonrasi);
-      asistanAd=egitmen.ad;
-      basEgitmenKar=kalanKiraSonrasi-asistanOdeme;
+    if(ikiBasEgitmen){
+      // İki baş eğitmen birlikte atanmış — form bu durumda yüzde sormaz,
+      // kira (+ pratik kirası) düştükten sonra kalan TAMAMI ikisi arasında
+      // her zaman %50-%50 bölünür (tek baş eğitmende olduğu gibi, burada da
+      // yüzde girilmez).
+      const kalanKiraSonrasi=Math.max(0,sinifGelir-kiraToplam);
+      const pay1=Math.round(kalanKiraSonrasi/2);
+      const pay2=kalanKiraSonrasi-pay1;
+      karPaylari=[{egitmenId:egitmen.id,ad:egitmen.ad,tutar:pay1},{egitmenId:egitmen2.id,ad:egitmen2.ad,tutar:pay2}];
+      basEgitmenKar=kalanKiraSonrasi;
     } else {
-      // Baş eğitmen veya eğitmen atanmamış
-      basEgitmenKar=sinifGelir-kira;
+      const kalanKiraSonrasi=Math.max(0,sinifGelir-kiraToplam);
+      if(egitmen&&!egitmen.basEgitmen){
+        // Asistan ders veriyor — KİRA (+ PRATİK KİRASI) ÖNCELİKLİDİR, önce
+        // toplam gelirden düşülür. Kalan tutar üzerinde asistan(lar)ın hedef
+        // yüzdeleri hesaplanır.
+        const denenenOdeme=Math.round(sinifGelir*asistanPct);
+        asistanAd=egitmen.ad;
+        if(egitmen2&&asistan2Pct>0){
+          // İkinci eğitmen de kendi yüzdesi kadar sabit bir pay istiyor — o da
+          // asistan1 kadar önceliklidir, biri diğerinin önüne geçmez. Kalan
+          // tutar ikisinin istediği toplamı karşılamıyorsa, ORANLI olarak
+          // (istedikleri tutarlar oranında) bölüşülür.
+          const denenenOdeme2=Math.round(sinifGelir*asistan2Pct);
+          const toplamIstenilen=denenenOdeme+denenenOdeme2;
+          if(toplamIstenilen<=kalanKiraSonrasi){
+            asistanOdeme=denenenOdeme;
+            asistan2Odeme=denenenOdeme2;
+          } else if(toplamIstenilen>0){
+            asistanOdeme=Math.round(kalanKiraSonrasi*(denenenOdeme/toplamIstenilen));
+            asistan2Odeme=kalanKiraSonrasi-asistanOdeme;
+          }
+          asistan2Ad=egitmen2.ad;
+          basEgitmenKar=kalanKiraSonrasi-asistanOdeme-asistan2Odeme;
+        } else {
+          asistanOdeme=Math.min(denenenOdeme,kalanKiraSonrasi);
+          basEgitmenKar=kalanKiraSonrasi-asistanOdeme;
+        }
+      } else {
+        // Baş eğitmen veya eğitmen atanmamış — kalan tutarın tamamı önce onun
+        // (ya da sahipsizse "stüdyo"nun) kârı sayılır; ikinci eğitmen (varsa)
+        // buradan sabit yüzdesi kadar pay alır, kalanı baş eğitmen alır.
+        basEgitmenKar=kalanKiraSonrasi;
+        if(egitmen2&&asistan2Pct>0){
+          const kalanIkinciIcin=Math.max(0,basEgitmenKar);
+          const denenenOdeme2=Math.round(sinifGelir*asistan2Pct);
+          asistan2Odeme=Math.min(denenenOdeme2,kalanIkinciIcin);
+          asistan2Ad=egitmen2.ad;
+          basEgitmenKar-=asistan2Odeme;
+        }
+      }
+      karPaylari=[{egitmenId:(egitmen&&egitmen.basEgitmen)?egitmen.id:null,ad:(egitmen&&egitmen.basEgitmen)?egitmen.ad:null,tutar:basEgitmenKar}];
     }
 
     sinifDetaylar.push({
-      si, idx, egitmen, sinifGelir, kira,
+      si, idx, egitmen, egitmen2, sinifGelir, kira, pratikPay,
       asistanOdeme, asistanAd, asistanPct: si.asistanPct||0,
-      basEgitmenKar: basEgitmenKar
+      asistan2Odeme, asistan2Ad, asistan2Pct: si.asistan2Pct||0,
+      ikiBasEgitmen, karPaylari,
+      basEgitmenKar: basEgitmenKar,
+      donemIdx, donemAralik
     });
   });
 
   const toplamKira=sinifDetaylar.reduce((s,d)=>s+d.kira,0);
-  const toplamAsistanOdeme=sinifDetaylar.reduce((s,d)=>s+d.asistanOdeme,0);
+  const toplamPratikKira=sinifDetaylar.reduce((s,d)=>s+d.pratikPay,0);
+  const toplamAsistanOdeme=sinifDetaylar.reduce((s,d)=>s+d.asistanOdeme+d.asistan2Odeme,0);
   const toplamBasEgitmenKar=sinifDetaylar.reduce((s,d)=>s+d.basEgitmenKar,0);
-  // Her baş eğitmen için kendi sınıflarının kârı
-  // Sınıfın egitmenId'si olan baş eğitmene yaz, yoksa toplamı eşit böl
+  // Her baş eğitmen için kendi sınıflarının kârı — artık her sınıfın karPaylari
+  // listesi üzerinden dağıtılıyor, böylece iki baş eğitmenli sınıflarda ikisi
+  // de kendi payını alıyor (eskiden sadece 1. eğitmen slotuna yazılıyordu).
   const basEgitmenKarMap={};
   basEgitmenler.forEach(be=>{basEgitmenKarMap[be.id]=0;});
   let atanamamisKar=0;
   sinifDetaylar.forEach(d=>{
-    const egitmen=d.egitmen;
-    if(egitmen&&egitmen.basEgitmen&&basEgitmenKarMap.hasOwnProperty(egitmen.id)){
-      basEgitmenKarMap[egitmen.id]+=d.basEgitmenKar;
-    } else {
-      // Eğitmeni yok veya asistan — kârı tüm baş eğitmenlere eşit böl
-      atanamamisKar+=d.basEgitmenKar;
-    }
+    d.karPaylari.forEach(kp=>{
+      if(kp.egitmenId&&basEgitmenKarMap.hasOwnProperty(kp.egitmenId)){
+        basEgitmenKarMap[kp.egitmenId]+=kp.tutar;
+      } else {
+        // Eğitmeni yok veya baş eğitmen değil — kârı tüm baş eğitmenlere eşit böl
+        atanamamisKar+=kp.tutar;
+      }
+    });
   });
   if(basEgitmenler.length>0){
     const payBasina=Math.round(atanamamisKar/basEgitmenler.length);
@@ -6874,7 +7834,7 @@ async function renderGiderRapor(){
     basEgitmenler.forEach(be=>{basEgitmenKarMap[be.id]+=payBasina2;});
   }
   // Net kâr = toplam gelir − kiralar − asistan ödemeleri − özel ders stüdyo kirası (tek sefer, paylaşımlı)
-  const ozelStudyoKira=GIDER_AYARLARI.kira||0;
+  const ozelStudyoKira=ozelStudyoKiraTarihte(buAyKey+'-01');
   const netKar=Object.values(basEgitmenKarMap).reduce((s,v)=>s+v,0)-ozelStudyoKira;
 
   let html=`
@@ -6897,11 +7857,12 @@ async function renderGiderRapor(){
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--accentbg),transparent);border:1px solid #ff6b6b30;margin-bottom:10px;">
       <div style="font-size:11px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('giderler')}</div>
       <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('toplam_kira')}</span><span style="font-weight:600;color:var(--accent);">−${toplamKira.toLocaleString(LC())} ₺</span></div>
+      ${toplamPratikKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🏋️ Pratik Kirası</span><span style="font-weight:600;color:var(--accent);">−${toplamPratikKira.toLocaleString(LC())} ₺</span></div>`:''}
       ${toplamAsistanOdeme>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('asistan_odemeleri')}</span><span style="font-weight:600;color:var(--accent);">−${toplamAsistanOdeme.toLocaleString(LC())} ₺</span></div>`:''}
       ${ozelStudyoKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('ozel_ders_studyo_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${ozelStudyoKira.toLocaleString(LC())} ₺</span></div>`:''}
       <div class="gider-satir" style="border-top:1px solid #ff6b6b40;margin-top:4px;padding-top:8px;">
         <span style="font-weight:700;">${t('toplam_gider')}</span>
-        <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamAsistanOdeme+ozelStudyoKira>0?(toplamKira+toplamAsistanOdeme+ozelStudyoKira).toLocaleString(LC())+' ₺':'0 ₺'}</span>
+        <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamPratikKira+toplamAsistanOdeme+ozelStudyoKira>0?(toplamKira+toplamPratikKira+toplamAsistanOdeme+ozelStudyoKira).toLocaleString(LC())+' ₺':'0 ₺'}</span>
       </div>
     </div>
 
@@ -6928,20 +7889,38 @@ async function renderGiderRapor(){
     </div>`;
 
   if(sinifDetaylar.length){
-    html+=`<div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>`;
+    html+=`<div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>
+    <div style="font-size:11px;color:var(--text3);background:var(--surface2);border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.5;">ℹ Buradaki sınıf gelirleri <b>takvim ayına göre değil</b>, her sınıfın kendi "Dönem Başlangıç Tarihi"nden itibaren ilerleyen 4 haftalık dönemlere göre, o dönemde <b>gerçekten verilen derslere</b> göre bölünür. Henüz verilmemiş derslerin payı, dersin verileceği döneme sayılır. Her sınıfın altındaki ‹ › okları ile o sınıfın dönemleri arasında gezebilirsin.</div>`;
     sinifDetaylar.forEach(d=>{
       const renk=RENK_BAR[d.idx%RENK_BAR.length];
       const karRenk=d.basEgitmenKar>=0?'var(--purple)':'var(--accent)';
       const isAsistan=d.egitmen&&!d.egitmen.basEgitmen;
+      const donemFmt=dt=>dt.toLocaleDateString(LC(),{day:'numeric',month:'short'});
+      const donemAyEtiketi=(bas,bitis)=>{
+        const ay1=bas.toLocaleDateString(LC(),{month:'long',year:'numeric'});
+        const ay2=bitis.toLocaleDateString(LC(),{month:'long',year:'numeric'});
+        return ay1===ay2?ay1:(ay1+' – '+ay2);
+      };
 
+      const kartAcik=GIDER_RAPOR_ACIK.has(d.si.id);
       html+=`<div class="egitmen-pay-kart" style="border-left:3px solid ${renk};margin-bottom:8px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-          <div>
-            <div style="font-size:14px;font-weight:600;">${d.si.ad}</div>
-            ${d.egitmen?`<div style="font-size:11px;color:var(--text2);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}</div>`:''}
+        <div class="gr-kart-baslik" onclick="toggleGiderKart('${d.si.id}')" style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+            <span class="odeme-sinif-chevron${kartAcik?' open':''}" id="gr-chev-${d.si.id}" style="flex-shrink:0;">›</span>
+            <div style="min-width:0;">
+              <div style="font-size:14px;font-weight:600;">${d.si.ad}</div>
+              ${d.egitmen?`<div style="font-size:11px;color:var(--text2);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}${d.egitmen2?` · ${d.egitmen2.basEgitmen?'⭐':'👤'} ${d.egitmen2.ad}`:''}</div>`:''}
+            </div>
           </div>
-          <span style="font-size:14px;font-weight:700;color:var(--green);">${d.sinifGelir.toLocaleString(LC())} ₺</span>
+          <span style="font-size:14px;font-weight:700;color:var(--green);flex-shrink:0;">${d.sinifGelir.toLocaleString(LC())} ₺</span>
         </div>
+        <div class="gr-kart-body${kartAcik?' open':''}" id="gr-body-${d.si.id}">
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;margin-top:10px;">
+          <button onclick="sinifDonemDegistir('${d.si.id}',-1)" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;padding:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">‹</button>
+          <span style="font-size:11px;color:var(--text2);font-weight:600;">${d.donemIdx+1}. Dönem</span>
+          <button onclick="sinifDonemDegistir('${d.si.id}',1)" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;padding:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">›</button>
+        </div>
+        <div style="text-align:center;font-size:10.5px;color:var(--text3);margin-bottom:10px;">${donemAyEtiketi(d.donemAralik.bas,d.donemAralik.bitis)} <span style="opacity:.7;">(${donemFmt(d.donemAralik.bas)} – ${donemFmt(d.donemAralik.bitis)})</span></div>
 
         ${isAsistan?`
         <div class="gider-satir" style="font-size:12px;">
@@ -6950,14 +7929,33 @@ async function renderGiderRapor(){
         </div>
         ${d.asistanOdeme===0&&d.asistanPct<100?`<div style="font-size:10.5px;color:var(--amber);margin:-4px 0 4px;">${t('kira_yetmedi_uyari')}</div>`:''}`:''}
 
+        ${d.asistan2Ad?`
+        <div class="gider-satir" style="font-size:12px;">
+          <span style="color:var(--text2);">👤 ${d.asistan2Ad} payı (%${d.asistan2Pct})</span>
+          <span style="color:${d.asistan2Odeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistan2Odeme>0?'−'+d.asistan2Odeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>
+        </div>
+        ${d.asistan2Odeme===0&&d.asistan2Pct<100?`<div style="font-size:10.5px;color:var(--amber);margin:-4px 0 4px;">Kalan tutar bu payı karşılamadı</div>`:''}`:''}
+
         <div class="gider-satir" style="font-size:12px;">
           <span style="color:var(--text2);">${t('kira')}</span>
           <span style="color:var(--accent);font-weight:600;">−${d.kira.toLocaleString(LC())} ₺</span>
         </div>
+        ${d.pratikPay>0?`
+        <div class="gider-satir" style="font-size:12px;">
+          <span style="color:var(--text2);">🏋️ Pratik kirası payı</span>
+          <span style="color:var(--accent);font-weight:600;">−${d.pratikPay.toLocaleString(LC())} ₺</span>
+        </div>`:''}
 
+        ${d.ikiBasEgitmen?d.karPaylari.map(kp=>`
+        <div class="gider-satir" style="font-size:13px;font-weight:700;border-top:1px solid var(--border2);margin-top:4px;padding-top:8px;">
+          <span style="color:var(--text2);">⭐ ${kp.ad} ${t('kari')}</span>
+          <span style="color:${kp.tutar>=0?'var(--purple)':'var(--accent)'};">${kp.tutar.toLocaleString(LC())} ₺</span>
+        </div>`).join(''):`
         <div class="gider-satir" style="font-size:13px;font-weight:700;border-top:1px solid var(--border2);margin-top:4px;padding-top:8px;">
           <span style="color:var(--text2);">⭐ ${isAsistan?t('stuydo_kari'):(d.egitmen?.ad||basEgitmen?.ad||t('bas_egitmen'))} ${isAsistan?'':t('kari')}</span>
           <span style="color:${karRenk};">${d.basEgitmenKar.toLocaleString(LC())} ₺</span>
+        </div>`}
+        ${(d.sinifGelir>0&&(d.kira+d.pratikPay)>=d.sinifGelir&&(d.ikiBasEgitmen||!isAsistan))?`<div style="font-size:10.5px;color:var(--text3);margin:2px 0 0;">${t('kira_oncelik_notu').replace('{tutar}',d.sinifGelir.toLocaleString(LC()))}</div>`:''}
         </div>
       </div>`;
     });
@@ -7008,9 +8006,9 @@ function renderRetention(){
     </div>
     <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('sinif_bazinda')}</div>`;
 
-  S.siniflar.forEach((si,idx)=>{
+  const sinifRetention=S.siniflar.map((si,idx)=>{
     const kayitlar=si.kayitlar||[];
-    if(!kayitlar.length)return;
+    if(!kayitlar.length)return null;
     const renk=RENK_BAR[idx%RENK_BAR.length];
 
     // Sınıftaki kayıtlı öğrencilerin güncel durumunu bul
@@ -7030,6 +8028,11 @@ function renderRetention(){
     const toplam=kayitlar.length;
     const aktifSay=aktifler.length;
     const pct=toplam?Math.round((aktifSay/toplam)*100):0;
+    return {si,renk,aktifler,dondurulmus,ayrilanlar,pct};
+  }).filter(Boolean).sort((a,b)=>b.pct-a.pct);
+
+  sinifRetention.forEach(({si,renk,aktifler,dondurulmus,ayrilanlar,pct})=>{
+    const aktifSay=aktifler.length;
     const barRenk=pct>=75?'var(--green)':pct>=50?'var(--amber)':'var(--accent)';
 
     html+=`<div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;border-left:3px solid ${renk};">
@@ -7052,62 +8055,137 @@ function renderRetention(){
   el.innerHTML=html;
 }
 
+// Gelir trendinde grup/özel ders gelirini eğitmene göre kategorize eder.
+// Çift eğitmenli dersler tek eğitmene bölünmez, ikisi birlikte tek bir "ortak" kategori olur.
+function egitmenKategoriKey(idler){
+  const temiz=[...new Set((idler||[]).filter(Boolean))];
+  if(!temiz.length)return 'atanmamis';
+  if(temiz.length===1)return temiz[0];
+  return temiz.slice().sort().join('+');
+}
+// Eğitmen başına belirgin şekilde ayrışan renkler — aralarında ton (hue) farkı en az ~40° olacak
+// şekilde seçildi, ayrıca grafikteki Net Gelir çizgisinin rengi olan cyan (#22d3ee) bilerek dışarıda
+// bırakıldı ki hiçbir eğitmenin rengi net çizgisiyle karışmasın.
+const EGITMEN_RENK_PALET=['#f87171','#fbbf24','#4ade80','#818cf8','#fb7185','#a3e635','#60a5fa','#e879f9'];
+function kategoriBilgisi(key){
+  if(key==='atanmamis')return{ad:'Atanmamış',renk:'#6b7280'};
+  if(key.includes('+')){
+    const idler=key.split('+');
+    const adlar=idler.map(id=>{const e=S.egitmenler.find(x=>x.id===id);return e?e.ad:'?';}).join(' + ');
+    // Çift eğitmenli dersler için yeni bir düz renk seçmek yerine, karışıklığı önlemek amacıyla
+    // ilgili iki eğitmenin kendi renklerinden çapraz çizgili bir desen oluşturuluyor — böylece
+    // hem "ikisi birlikte" anlamı görsel olarak taşınıyor hem de başka bir renkle çakışma riski kalmıyor.
+    const renkler=idler.map(id=>{
+      const idx=S.egitmenler.findIndex(x=>x.id===id);
+      return EGITMEN_RENK_PALET[idx>=0?idx%EGITMEN_RENK_PALET.length:0];
+    });
+    return{ad:adlar,renk:null,desenRenkleri:renkler,patternId:'pat_'+key.replace(/[^a-zA-Z0-9]/g,'_')};
+  }
+  const idx=S.egitmenler.findIndex(x=>x.id===key);
+  const e=idx>=0?S.egitmenler[idx]:null;
+  return{ad:e?e.ad:'?',renk:EGITMEN_RENK_PALET[idx>=0?idx%EGITMEN_RENK_PALET.length:0]};
+}
+
 function renderGelirTrend(){
   const el=document.getElementById('gelir-trend-content2')||document.getElementById('gelir-trend-content');
   if(!el)return;
 
   // Son 12 aya ait geliri hesapla
-  const simdi=new Date();
+  const simdi=simdikiZaman();
   const aylar=[];
   for(let i=11;i>=0;i--){
     const d=new Date(simdi.getFullYear(),simdi.getMonth()-i,1);
     const key=ayKey(d.getFullYear(),d.getMonth()+1);
     const label=d.toLocaleDateString(LC(),{month:'short',year:'2-digit'});
-    // Grup dersleri
-    const grup=S.odemeler.filter(o=>{
+    const ayBasStr=key+'-01';
+
+    const odemelerBuAy=S.odemeler.filter(o=>{
       const t=o.tarih;if(!t)return false;
       return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;
-    }).reduce((s,o)=>s+(o.tutar||0),0);
-    // Özel dersler
-    const ozel=S.ozelPaketler.filter(p=>{
+    });
+    const paketlerBuAy=S.ozelPaketler.filter(p=>{
       if(!p.tarih)return false;
       const pd=new Date(p.tarih+'T00:00:00');
       return ayKey(pd.getFullYear(),pd.getMonth()+1)===key;
-    }).reduce((s,p)=>s+(p.tutar||0),0);
-    // Net gelir: kira + asistan payı düş
+    });
+
+    // Eğitmen + ders türüne göre kırılım
+    const kategoriler={};
+    const kategoriyeEkle=(k,tip,tutar)=>{
+      if(!kategoriler[k])kategoriler[k]={grup:0,ozel:0};
+      kategoriler[k][tip]+=tutar;
+    };
+    odemelerBuAy.forEach(o=>{
+      const si=S.siniflar.find(s=>s.id===o.sinifId);
+      const k=egitmenKategoriKey(si?[si.egitmenId,si.egitmen2Id]:[]);
+      kategoriyeEkle(k,'grup',o.tutar||0);
+    });
+    paketlerBuAy.forEach(p=>{
+      const k=egitmenKategoriKey(p.egitmenIds||[]);
+      kategoriyeEkle(k,'ozel',p.tutar||0);
+    });
+
+    const grup=odemelerBuAy.reduce((s,o)=>s+(o.tutar||0),0);
+    const ozel=paketlerBuAy.reduce((s,p)=>s+(p.tutar||0),0);
+
+    // Net gelir: bu ayda geçerli olan kira + asistan payı düş
     const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
-    const kiraToplam=aktifSiniflar.reduce((s,si)=>s+(si.kira||0),0);
+    const kiraToplam=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,ayBasStr),0);
+    const pratikKira=pratikKiraAyToplami(ayBasStr);
     const asistanGider=aktifSiniflar.reduce((s,si)=>{
-      const eg=S.egitmenler.find(e=>e.id===si.egitmenId);
-      if(!eg||eg.basEgitmen)return s;
       const siGelir=S.odemeler.filter(o=>{if(o.sinifId!==si.id)return false;const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;}).reduce((t,o)=>t+(o.tutar||0),0);
-      const kalanKiraSonrasi=Math.max(0,siGelir-(si.kira||0));
-      const denenenOdeme=Math.round(siGelir*(si.asistanPct||0)/100);
-      return s+Math.min(denenenOdeme,kalanKiraSonrasi);
+      return s+sinifAsistanGideriHesapla(si,siGelir,ayBasStr);
     },0);
-    const net=(grup+ozel)-kiraToplam-asistanGider-(GIDER_AYARLARI.kira||0);
-    aylar.push({key,label,toplam:grup+ozel,grup,ozel,net:Math.max(0,net)});
+    const ozelStudyoKira=ozelStudyoKiraTarihte(ayBasStr);
+    const net=(grup+ozel)-kiraToplam-pratikKira-asistanGider-ozelStudyoKira;
+    aylar.push({key,label,toplam:grup+ozel,grup,ozel,net:Math.max(0,net),kategoriler});
   }
+
+  // Tüm kategori key'lerini topla, sabit bir sıraya diz: eğitmenler (S.egitmenler sırasıyla), sonra ikili dersler, sonra atanmamış
+  const tumKategoriler=new Set();
+  aylar.forEach(a=>Object.keys(a.kategoriler).forEach(k=>tumKategoriler.add(k)));
+  const tekliSira=S.egitmenler.map(e=>e.id).filter(id=>tumKategoriler.has(id));
+  const ikiliSira=[...tumKategoriler].filter(k=>k!=='atanmamis'&&k.includes('+')).sort((a,b)=>kategoriBilgisi(a).ad.localeCompare(kategoriBilgisi(b).ad,'tr'));
+  const kategoriSirasi=[...tekliSira,...ikiliSira,...(tumKategoriler.has('atanmamis')?['atanmamis']:[])];
+
+  // Sadece toplamı 0'dan büyük olan kategori+tür kombinasyonları için lejant girdisi
+  const segmentler=[];
+  kategoriSirasi.forEach(k=>{
+    const bilgi=kategoriBilgisi(k);
+    ['grup','ozel'].forEach(tip=>{
+      const toplamBu=aylar.reduce((s,a)=>s+((a.kategoriler[k]||{})[tip]||0),0);
+      if(toplamBu>0)segmentler.push({key:k,tip,ad:bilgi.ad,renk:bilgi.renk,desenRenkleri:bilgi.desenRenkleri,patternId:bilgi.patternId});
+    });
+  });
+
+  // Çift eğitmenli kategoriler için çapraz çizgili SVG pattern tanımları (her biri sadece bir kez)
+  let patternDefs='';
+  const tanimlananPatternler=new Set();
+  segmentler.filter(s=>s.patternId&&!tanimlananPatternler.has(s.patternId)).forEach(s=>{
+    tanimlananPatternler.add(s.patternId);
+    const [c1,c2]=s.desenRenkleri;
+    patternDefs+=`<pattern id="${s.patternId}" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="7" height="7" fill="${c1}"/>
+      <rect width="3.5" height="7" fill="${c2}"/>
+    </pattern>`;
+  });
 
   const maxVal=Math.max(...aylar.map(a=>a.toplam),1);
   const minVal=0;
 
-  // SVG line chart
+  // Yığın (stacked) bar + net gelir çizgisi
   const W=Math.max(300,aylar.length*52);
-  const H=140;
+  const H=150;
   const PAD={top:14,right:16,bottom:36,left:46};
   const cW=W-PAD.left-PAD.right;
   const cH=H-PAD.top-PAD.bottom;
+  const slot=cW/aylar.length;
+  const barW=Math.max(6,slot*0.6);
 
-  const xPos=i=>PAD.left+i*(cW/(aylar.length-1));
+  const xCenter=i=>PAD.left+slot*i+slot/2;
   const yPos=v=>PAD.top+cH-(((v-minVal)/(maxVal-minVal))*cH);
 
-  // Polyline points
-  const pts=aylar.map((a,i)=>`${xPos(i)},${yPos(a.toplam)}`).join(' ');
-  const netPts=aylar.map((a,i)=>`${xPos(i)},${yPos(a.net)}`).join(' ');
-  // Fill area
-  const fillPts=`${xPos(0)},${PAD.top+cH} `+pts+` ${xPos(aylar.length-1)},${PAD.top+cH}`;
-  const netFillPts=`${xPos(0)},${PAD.top+cH} `+netPts+` ${xPos(aylar.length-1)},${PAD.top+cH}`;
+  const netPts=aylar.map((a,i)=>`${xCenter(i).toFixed(1)},${yPos(a.net).toFixed(1)}`).join(' ');
 
   // Y grid lines (4 adet)
   let gridLines='';
@@ -7119,21 +8197,33 @@ function renderGelirTrend(){
     <text x="${PAD.left-6}" y="${y+4}" text-anchor="end" font-size="9" fill="var(--text2)">${label}</text>`;
   }
 
-  // X labels + dots
-  let dots='',xlabels='';
+  // Yığın barlar + toplam etiketleri + x label
+  let barsSvg='',toplamLabels='',xlabels='',netDots='';
   const buAyKey=ayKey(simdi.getFullYear(),simdi.getMonth()+1);
   aylar.forEach((a,i)=>{
-    const x=xPos(i),y=yPos(a.toplam);
+    const x=xCenter(i)-barW/2;
     const isThis=a.key===buAyKey;
-    const dotR=isThis?5:3.5;
-    dots+=`<circle cx="${x}" cy="${y}" r="${dotR}" fill="${isThis?'var(--cyan)':'var(--purple)'}" stroke="var(--bg)" stroke-width="2"/>`;
+    let yCursor=PAD.top+cH;
+    kategoriSirasi.forEach(k=>{
+      const bilgi=kategoriBilgisi(k);
+      ['grup','ozel'].forEach(tip=>{
+        const val=(a.kategoriler[k]||{})[tip]||0;
+        if(val<=0)return;
+        const hgt=(val/maxVal)*cH;
+        const yTop=yCursor-hgt;
+        const dolgu=bilgi.renk||`url(#${bilgi.patternId})`;
+        barsSvg+=`<rect x="${x.toFixed(1)}" y="${yTop.toFixed(1)}" width="${barW.toFixed(1)}" height="${hgt.toFixed(1)}" fill="${dolgu}" opacity="${tip==='ozel'?0.55:0.95}" rx="2"/>`;
+        yCursor=yTop;
+      });
+    });
     if(a.toplam>0){
       const lbl=a.toplam>=1000?(a.toplam/1000).toFixed(1)+'K':a.toplam;
-      dots+=`<text x="${x}" y="${y-8}" text-anchor="middle" font-size="9" fill="var(--text2)">${lbl}</text>`;
+      toplamLabels+=`<text x="${xCenter(i).toFixed(1)}" y="${(yPos(a.toplam)-6).toFixed(1)}" text-anchor="middle" font-size="9" fill="var(--text2)">${lbl}</text>`;
     }
-    // Her 2 ayda bir label (fazla dolmaması için)
+    const netR=isThis?5:3.5;
+    netDots+=`<circle cx="${xCenter(i).toFixed(1)}" cy="${yPos(a.net).toFixed(1)}" r="${netR}" fill="var(--cyan)" stroke="var(--bg)" stroke-width="2"/>`;
     if(i%2===0||i===aylar.length-1||isThis){
-      xlabels+=`<text x="${x}" y="${H-PAD.bottom+14}" text-anchor="middle" font-size="9" fill="${isThis?'var(--cyan)':'var(--text2)'}" font-weight="${isThis?'600':'400'}">${a.label}</text>`;
+      xlabels+=`<text x="${xCenter(i).toFixed(1)}" y="${H-PAD.bottom+14}" text-anchor="middle" font-size="9" fill="${isThis?'var(--cyan)':'var(--text2)'}" font-weight="${isThis?'600':'400'}">${a.label}</text>`;
     }
   });
 
@@ -7141,6 +8231,12 @@ function renderGelirTrend(){
   const toplamToplam=aylar.reduce((s,a)=>s+a.toplam,0);
   const aylikOrtalama=Math.round(toplamToplam/aylar.filter(a=>a.toplam>0).length)||0;
   const buAy=aylar.find(a=>a.key===buAyKey);
+
+  const legendHtml=segmentler.map(s=>{
+    const swatchBg=s.renk?`background:${s.renk};`:`background:linear-gradient(135deg,${s.desenRenkleri[0]} 50%,${s.desenRenkleri[1]} 50%);`;
+    return `<span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:10px;height:10px;${swatchBg}opacity:${s.tip==='ozel'?0.55:0.95};border-radius:2px;"></span>${s.ad} · ${s.tip==='grup'?'Grup':'Özel'}</span>`;
+  }).join('')
+    +`<span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--cyan);border-radius:1px;"></span>${t('net_gelir')}</span>`;
 
   let html=`
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
@@ -7161,30 +8257,15 @@ function renderGelirTrend(){
         <div style="font-size:15px;font-weight:700;color:var(--green);">${toplamToplam.toLocaleString(LC())} ₺</div>
       </div>
     </div>
-    <div style="display:flex;gap:12px;margin-bottom:8px;font-size:11px;">
-      <span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--purple);border-radius:1px;"></span>${t('brut_gelir')}</span>
-      <span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--cyan);border-radius:1px;"></span>${t('net_gelir')}</span>
-    </div>
+    <div style="display:flex;gap:10px;margin-bottom:8px;font-size:11px;flex-wrap:wrap;">${legendHtml}</div>
     <div class="gelir-chart-wrap">
       <svg class="gelir-chart-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-        <defs>
-          <linearGradient id="gelirGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--purple)" stop-opacity=".25"/>
-            <stop offset="100%" stop-color="var(--purple)" stop-opacity=".02"/>
-          </linearGradient>
-        </defs>
+        <defs>${patternDefs}</defs>
         ${gridLines}
-        <defs>
-          <linearGradient id="netGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--cyan)" stop-opacity=".2"/>
-            <stop offset="100%" stop-color="var(--cyan)" stop-opacity=".02"/>
-          </linearGradient>
-        </defs>
-        <polygon points="${fillPts}" fill="url(#gelirGrad)"/>
-        <polygon points="${netFillPts}" fill="url(#netGrad)"/>
-        <polyline points="${pts}" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".8"/>
+        ${barsSvg}
         <polyline points="${netPts}" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-        ${dots}
+        ${netDots}
+        ${toplamLabels}
         ${xlabels}
       </svg>
     </div>
@@ -7504,7 +8585,7 @@ function renderPortalYoklama(el,og){
     // Son 30 gün katılım
     const son30=[];
     for(let i=29;i>=0;i--){
-      const d=new Date();d.setDate(d.getDate()-i);
+      const d=simdikiZaman();d.setDate(d.getDate()-i);
       son30.push(otTarihStr(d));
     }
     const gelenGunler=new Set(tarihler);
@@ -7830,7 +8911,7 @@ function renderTatilListe(){
   el.innerHTML=sirali.map(tt=>{
     const d=new Date(tt.tarih+'T00:00:00');
     const fmt=d.toLocaleDateString(LC(),{weekday:'short',day:'numeric',month:'long',year:'numeric'});
-    const gecti=d<new Date();
+    const gecti=d<simdikiZaman();
     return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);">
       <div style="flex:1;">
         <div style="font-size:13px;font-weight:600;${gecti?'color:var(--text3)':''}">${tt.ad}</div>
@@ -7873,8 +8954,11 @@ function cakisanOdemeleriBul(){
       for(let j=i+1;j<ods.length;j++){
         const a=ods[i],b=ods[j];
         if(a.sinifId===b.sinifId)continue;
-        const bAy=new Set(b.aylar||[]);
-        const ortak=(a.aylar||[]).filter(x=>bAy.has(x));
+        // Farklı sınıflardaki iki ödeme, dönem anahtarları (dN) farklı sınıflarda farklı
+        // tarihlere karşılık geldiği için doğrudan string olarak değil, gerçek takvim
+        // aylarına çevrilip öyle karşılaştırılır.
+        const bAy=odemeGercekAylar(b);
+        const ortak=[...odemeGercekAylar(a)].filter(x=>bAy.has(x));
         if(ortak.length>0)sonuc.push({a,b,ortak});
       }
     }
