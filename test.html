@@ -3507,10 +3507,16 @@ function hesaplaKayit(ogId,siId){
 function hesaplaOdemeDersTarihleri(ogId,siId){
   const si=S.siniflar.find(s=>s.id===siId);
   if(!si)return[];
-  const k=(si.kayitlar||[]).find(x=>x.ogrenciId===ogId);
-  if(!k||k.tip!=='paket')return[]; // paket dışı kayıtlarda ders bazlı tarih takibi yok
-
   const ods=S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId);
+  const k=(si.kayitlar||[]).find(x=>x.ogrenciId===ogId);
+  // Öğrenci bu sınıftan ayrılmış olabilir (sınıf değiştirme/birleştirme sonrası
+  // kayıt kaldırılır), ama GEÇMİŞ ödemeleri hâlâ bu sınıfa ait ve hakediş
+  // hesaplarında (sinifGelirDonemProrated/sinifGelirAyProrated) doğru şekilde
+  // sayılmaya devam etmeli. Böyle durumlarda ogrenciSinifDegistirOdemeleriBol'un
+  // ödeme kaydına işlediği paketTipi bayrağına bakılır.
+  const paketMi=k?k.tip==='paket':ods.some(o=>o.paketTipi===true);
+  if(!paketMi)return[]; // paket dışı kayıtlarda ders bazlı tarih takibi yok
+
   const siraliOd=ods.filter(o=>o.tarih).sort((a,b)=>a.tarih.localeCompare(b.tarih));
   if(!siraliOd.length)return[];
 
@@ -3585,50 +3591,65 @@ function hesaplaOdemeDersTarihleri(ogId,siId){
 // ödemelerde) her ödeme zaten tek bir geçmiş derse ait olduğu için dokunulmuyor,
 // olduğu gibi eski sınıfta kalıyor.
 //
+// Bir tarih listesini, VERİLEN sınıfın KENDİ dönem numaralandırmasına göre
+// (bkz. sinifDonemIndex/sinifDonemBaslangic — her sınıfın dönem başlangıcı
+// kendine özeldir) benzersiz "dN" anahtarlarına çevirir. Bir sınıftan diğerine
+// geçen bir ödemenin "aylar" alanını asla OLDUĞU GİBİ taşımayız — eski
+// sınıftaki "d3" anahtarı yeni sınıfta apayrı bir takvim aralığına denk
+// gelebilir, bu da "ödendi mi" / "kaç ders kaldı" göstergelerinin yeni
+// sınıfta yanlış (çoğu zaman sıfır) çıkmasına yol açar.
+function donemAnahtarlariniHesapla(si,tarihler){
+  const set=new Set(tarihler.map(t=>'d'+sinifDonemIndex(si,t)));
+  return[...set].sort((a,b)=>parseInt(a.slice(1),10)-parseInt(b.slice(1),10));
+}
 // Dönup: {tasinanTam, bolunen, dokunulmayan} — sadece bilgilendirme/toast için.
 async function ogrenciSinifDegistirOdemeleriBol(ogId,eskiSiId,yeniSiId,degisimTarihStr){
   const sonuc={tasinanTam:0,bolunen:0,dokunulmayan:0};
   const eskiSi=S.siniflar.find(s=>s.id===eskiSiId);
+  const yeniSi=S.siniflar.find(s=>s.id===yeniSiId);
   const kayit=(eskiSi?.kayitlar||[]).find(k=>k.ogrenciId===ogId);
-  if(!kayit||kayit.tip!=='paket')return sonuc;
+  if(!kayit||kayit.tip!=='paket'||!yeniSi)return sonuc;
 
   const dagilim=hesaplaOdemeDersTarihleri(ogId,eskiSiId);
-  const donemKeyRegex=/^d\d+$/;
 
   for(const{od,tarihler} of dagilim){
     if(!tarihler.length){sonuc.dokunulmayan++;continue;}
     const gecmis=tarihler.filter(d=>d<degisimTarihStr);
     const kalan=tarihler.filter(d=>d>=degisimTarihStr);
-    if(!kalan.length){sonuc.dokunulmayan++;continue;} // tamamen geçmiş, eski sınıfta kalır
+    if(!kalan.length){
+      // Tamamen geçmiş — eski sınıfta/eğitmende kalır. Öğrenci kayıttan
+      // çıktıktan sonra da bu ödemenin hakediş hesaplarında sayılmaya devam
+      // etmesi için "paket" olduğunu ödeme kaydının üzerine de işaretliyoruz
+      // (bkz. hesaplaOdemeDersTarihleri / sinifIlgiliOgrenciIdleri).
+      if(!od.paketTipi){
+        await db.collection('odemeler').doc(od.id).update({paketTipi:true});
+        const idx=S.odemeler.findIndex(o=>o.id===od.id);
+        if(idx>=0)S.odemeler[idx]={...S.odemeler[idx],paketTipi:true};
+      }
+      sonuc.dokunulmayan++;continue;
+    }
     if(!gecmis.length){
-      // Hiç dersi verilmemiş — tamamı yeni sınıfa
-      await db.collection('odemeler').doc(od.id).update({sinifId:yeniSiId});
+      // Hiç dersi verilmemiş — tamamı yeni sınıfa. Dönem anahtarları YENİ
+      // sınıfın kendi numaralandırmasıyla yeniden hesaplanır.
+      const yeniAylarTam=donemAnahtarlariniHesapla(yeniSi,tarihler);
+      await db.collection('odemeler').doc(od.id).update({sinifId:yeniSiId,aylar:yeniAylarTam,paketTipi:true});
       const idx=S.odemeler.findIndex(o=>o.id===od.id);
-      if(idx>=0)S.odemeler[idx]={...S.odemeler[idx],sinifId:yeniSiId};
+      if(idx>=0)S.odemeler[idx]={...S.odemeler[idx],sinifId:yeniSiId,aylar:yeniAylarTam,paketTipi:true};
       sonuc.tasinanTam++;
       continue;
     }
     // Dönem ortasında değişiklik — ödemeyi ders sayısına göre orantılı böl.
-    const aylarDonem=(od.aylar||[]).every(a=>donemKeyRegex.test(a))?(od.aylar||[]):[];
-    let eskiAylar=[],yeniAylar=[];
-    if(aylarDonem.length&&aylarDonem.length*4===tarihler.length){
-      aylarDonem.forEach((donemKey,i)=>{
-        const parca=tarihler.slice(i*4,i*4+4);
-        const tamamiGecmis=parca.every(d=>d<degisimTarihStr);
-        if(tamamiGecmis)eskiAylar.push(donemKey);else yeniAylar.push(donemKey);
-      });
-    } else {
-      // Dönem anahtarları beklenen formatta değil (eski format vb.) — yine de
-      // tutarı ders sayısına göre bölüyoruz, sadece "kapsanan dönem" etiketleri
-      // güvenilir olmadığından ikisine de boş bırakılıyor.
-    }
+    // Her parçanın dönem anahtarı, o parçanın ait olduğu sınıfın (eski/yeni)
+    // KENDİ numaralandırmasına göre yeniden hesaplanır.
+    const eskiAylar=donemAnahtarlariniHesapla(eskiSi,gecmis);
+    const yeniAylar=donemAnahtarlariniHesapla(yeniSi,kalan);
     const eskiTutar=Math.round((od.tutar||0)*gecmis.length/tarihler.length);
     const yeniTutar=(od.tutar||0)-eskiTutar;
     const not_=(od.not?od.not+' — ':'')+`Sınıf değişikliği (${formatDate(degisimTarihStr)}): ${gecmis.length} ders eski, ${kalan.length} ders yeni sınıfta.`;
-    await db.collection('odemeler').doc(od.id).update({tutar:eskiTutar,aylar:eskiAylar,not:not_});
+    await db.collection('odemeler').doc(od.id).update({tutar:eskiTutar,aylar:eskiAylar,not:not_,paketTipi:true});
     const eskiIdx=S.odemeler.findIndex(o=>o.id===od.id);
-    if(eskiIdx>=0)S.odemeler[eskiIdx]={...S.odemeler[eskiIdx],tutar:eskiTutar,aylar:eskiAylar,not:not_};
-    const yeniData={ogrenciId:ogId,sinifId:yeniSiId,tutar:yeniTutar,tarih:degisimTarihStr,yontem:od.yontem||'nakit',odTip:'aylik',aylar:yeniAylar,not:not_,olusturma:Date.now(),tip:'grup'};
+    if(eskiIdx>=0)S.odemeler[eskiIdx]={...S.odemeler[eskiIdx],tutar:eskiTutar,aylar:eskiAylar,not:not_,paketTipi:true};
+    const yeniData={ogrenciId:ogId,sinifId:yeniSiId,tutar:yeniTutar,tarih:degisimTarihStr,yontem:od.yontem||'nakit',odTip:'aylik',aylar:yeniAylar,not:not_,olusturma:Date.now(),tip:'grup',paketTipi:true};
     const yeniSonuc=await db.collection('odemeler').add(yeniData);
     S.odemeler.push({...yeniData,id:yeniSonuc.id});
     sonuc.bolunen++;
@@ -3643,11 +3664,23 @@ async function ogrenciSinifDegistirOdemeleriBol(ogId,eskiSiId,yeniSiId,degisimTa
 // da aynı oranda bölünür. Eğitmen ödemesi bu bölünmüş tutar üzerinden
 // hesaplanır — böylece bir öğrencinin henüz verilmemiş derslerinin parası
 // bu ay eğitmene ödenmez, dersler verildiği ay ödenir.
+// Bir sınıfın gelir hesabına dahil edilecek TÜM öğrenci id'lerini döndürür:
+// hâlâ o sınıfa kayıtlı olanlar + sınıftan ayrılmış olsa bile o sınıfa ait
+// (sinifId ile eşleşen) geçmiş ödemesi bulunanlar. Sınıf birleştirme/taşıma
+// sonrası öğrenci kayıttan çıksa da geçmişte kazanılmış geliri o sınıfın
+// (ve eski eğitmenin) raporlarından kaybolmasın diye.
+function sinifIlgiliOgrenciIdleri(si){
+  const set=new Set((si.kayitlar||[]).map(k=>k.ogrenciId));
+  S.odemeler.forEach(o=>{if(o.sinifId===si.id)set.add(o.ogrenciId);});
+  return set;
+}
 function sinifGelirAyProrated(si,ayKeyHedef){
   let toplam=0;
-  (si.kayitlar||[]).forEach(k=>{
-    const ods=S.odemeler.filter(o=>o.ogrenciId===k.ogrenciId&&o.sinifId===si.id);
-    if(k.tip!=='paket'){
+  sinifIlgiliOgrenciIdleri(si).forEach(ogId=>{
+    const k=(si.kayitlar||[]).find(x=>x.ogrenciId===ogId);
+    const ods=S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===si.id);
+    const paketMi=k?k.tip==='paket':ods.some(o=>o.paketTipi===true);
+    if(!paketMi){
       // Paket dışı (ders bazlı takibi olmayan) kayıtlarda eski davranış:
       // ödeme hangi takvim ayında girildiyse tamamı o aya sayılır.
       ods.forEach(o=>{
@@ -3657,7 +3690,7 @@ function sinifGelirAyProrated(si,ayKeyHedef){
       });
       return;
     }
-    const dagilim=hesaplaOdemeDersTarihleri(k.ogrenciId,si.id);
+    const dagilim=hesaplaOdemeDersTarihleri(ogId,si.id);
     dagilim.forEach(({od,tarihler})=>{
       if(!tarihler.length)return;
       const buAySayisi=tarihler.filter(d=>d.slice(0,7)===ayKeyHedef).length;
@@ -3798,16 +3831,18 @@ function sinifGuncelDonemIndex(si){
 }
 function sinifGelirDonemProrated(si,donemIdx){
   let toplam=0;
-  (si.kayitlar||[]).forEach(k=>{
-    const ods=S.odemeler.filter(o=>o.ogrenciId===k.ogrenciId&&o.sinifId===si.id);
-    if(k.tip!=='paket'){
+  sinifIlgiliOgrenciIdleri(si).forEach(ogId=>{
+    const k=(si.kayitlar||[]).find(x=>x.ogrenciId===ogId);
+    const ods=S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===si.id);
+    const paketMi=k?k.tip==='paket':ods.some(o=>o.paketTipi===true);
+    if(!paketMi){
       ods.forEach(o=>{
         if(!o.tarih)return;
         if(sinifDonemIndex(si,o.tarih)===donemIdx)toplam+=(o.tutar||0);
       });
       return;
     }
-    const dagilim=hesaplaOdemeDersTarihleri(k.ogrenciId,si.id);
+    const dagilim=hesaplaOdemeDersTarihleri(ogId,si.id);
     dagilim.forEach(({od,tarihler})=>{
       if(!tarihler.length)return;
       const buDonemSayisi=tarihler.filter(d=>sinifDonemIndex(si,d)===donemIdx).length;
