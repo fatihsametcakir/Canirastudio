@@ -3942,7 +3942,34 @@ async function hakEkle(n){
   setSyncing(false);
   openKayitIslem(CUR_SINIF,CUR_KAYIT);
 }
-async function silKayit(){confirm_('Sınıftan Çıkar','Öğrenci bu sınıftan silinecek.',async()=>{const si=S.siniflar.find(s=>s.id===CUR_SINIF);const k=si.kayitlar.find(x=>x.id===CUR_KAYIT);const kayitlar=si.kayitlar.filter(x=>x.id!==CUR_KAYIT);setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});if(k)await kayitGecmisineEkle(CUR_SINIF,k.ogrenciId,'cikis');_poll('siniflar');setSyncing(false);closeModal('m-kayit-islem');});}
+// Bir öğrencinin bir sınıftaki TÜM paket ödemelerine paketTipi:true işler —
+// kayıt sınıftan kaldırılmadan ÖNCE çağrılmalı. Böylece kayıt silindikten
+// sonra bile hesaplaOdemeDersTarihleri/sinifGelirDonemProrated bu öğrencinin
+// (o ana kadar) GERÇEKTEN KAZANILMIŞ hakedişini eğitmenin raporunda saymaya
+// devam eder — "sınıftan çıkarınca eğitmenin hakedişi kaybolmasın" kuralı.
+async function paketOdemeleriniIsaretle(ogId,siId){
+  const dokunulacaklar=S.odemeler.filter(o=>o.ogrenciId===ogId&&o.sinifId===siId&&!o.paketTipi);
+  for(const od of dokunulacaklar){
+    try{
+      await db.collection('odemeler').doc(od.id).update({paketTipi:true});
+      const idx=S.odemeler.findIndex(o=>o.id===od.id);
+      if(idx>=0)S.odemeler[idx]={...S.odemeler[idx],paketTipi:true};
+    }catch(e){/* işaretleme başarısız olursa ana işlemi engellemez */}
+  }
+}
+async function silKayit(){confirm_('Sınıftan Çıkar','Öğrenci bu sınıftan silinecek.',async()=>{const si=S.siniflar.find(s=>s.id===CUR_SINIF);const k=si.kayitlar.find(x=>x.id===CUR_KAYIT);if(k&&k.tip==='paket')await paketOdemeleriniIsaretle(k.ogrenciId,CUR_SINIF);const kayitlar=si.kayitlar.filter(x=>x.id!==CUR_KAYIT);setSyncing(true);await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});if(k)await kayitGecmisineEkle(CUR_SINIF,k.ogrenciId,'cikis');_poll('siniflar');setSyncing(false);closeModal('m-kayit-islem');});}
+// "İşlemler" panelindeki "Öğrenciyi Pasife Al/Aktife Al" butonu — öğrencinin
+// GENEL (tüm sınıflardaki) durumunu değiştirir. Kayıt hiçbir sınıftan
+// kaldırılmadığından hakediş hesapları zaten etkilenmez.
+function kayitOgrenciPasife(){
+  const si=S.siniflar.find(s=>s.id===CUR_SINIF);
+  const k=si?.kayitlar.find(x=>x.id===CUR_KAYIT);
+  if(!k)return;
+  // toggleOgrenciDurum kendi onay penceresini açar ve öğrenci kaydedilir
+  // kaydedilmez ekranı tazeler (_poll) — burada ekstra bir yenileme
+  // tetiklemiyoruz ki henüz onaylanmamış bir durumu erken göstermeyelim.
+  toggleOgrenciDurum(k.ogrenciId);
+}
 async function tasiKayit(){
   const hId=document.getElementById('ki-sinif').value;
   if(!hId)return;
