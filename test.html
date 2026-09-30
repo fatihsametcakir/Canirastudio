@@ -3409,6 +3409,44 @@ function guncelDonemOdemesiBul(ogId,siId){
   }
   return null;
 }
+// Bir öğrencinin bir sınıftaki kaydı için, "dondur"/"çöz" günlüğünden (bkz.
+// toggleDondur → ogrenciOlayEkle) DONDURULMUŞ takvim aralıklarını çıkarır.
+// Her aralık [baslangic, bitis) — baslangic dondurma tarihi (o günden itibaren
+// ders sayılmaz), bitis ise çözme tarihi (o günden itibaren tekrar sayılır).
+// Hâlâ dondurulmuş durumdaysa (son olay "dondur", eşleşen bir "çöz" yok) aralık
+// ileriye doğru açık bırakılır — dondurma çözülene kadar hiçbir hafta sayılmaz.
+// Bu sayede "kaç ders kaldı"/"bitiş tarihi" ve hakediş hesapları, dondurulan
+// haftaları atlayıp devam ettiği yerden saymaya devam eder — dondurulan
+// haftalar boyunca ders verilmiş/kazanılmış gibi görünmez, çözülünce de
+// dönem/bitiş tarihi otomatik olarak dondurulan süre kadar ileri kayar.
+function ogrenciDonukAraliklariniHesapla(ogId,siId){
+  const olaylar=S.ogrenciGecmisi
+    .filter(g=>g.ogrenciId===ogId&&g.sinifId===siId&&(g.olay==='dondur'||g.olay==='coz')&&g.tarih)
+    .sort((a,b)=>a.tarih.localeCompare(b.tarih)||(a.olusturma||0)-(b.olusturma||0));
+  const araliklar=[];
+  let acikBaslangic=null;
+  olaylar.forEach(g=>{
+    if(g.olay==='dondur'){
+      if(acikBaslangic==null)acikBaslangic=g.tarih; // zaten dondurulmuşsa yinelenen olayı yok say
+    } else if(g.olay==='coz'){
+      if(acikBaslangic!=null){araliklar.push([acikBaslangic,g.tarih]);acikBaslangic=null;}
+    }
+  });
+  if(acikBaslangic!=null){
+    // Hâlâ dondurulmuş (çözülmemiş) — ileriye açık, ama nDersSonra/nDersTarihleri'nin
+    // haftalık arama döngüsü sonsuza kadar (yıl 9999'a kadar!) dönmesin diye makul
+    // bir ufuk (bugünden 2 yıl) ile sınırlıyoruz. Çözüldüğü an gerçek "çöz" tarihi
+    // bu sınırın yerini alır ve tarihler doğru şekilde yeniden hesaplanır.
+    const simdi=simdikiZaman();
+    const sinir=new Date(simdi.getFullYear()+2,simdi.getMonth(),simdi.getDate());
+    const sinirStr=sinir.getFullYear()+'-'+String(sinir.getMonth()+1).padStart(2,'0')+'-'+String(sinir.getDate()).padStart(2,'0');
+    araliklar.push([acikBaslangic,sinirStr]);
+  }
+  return araliklar;
+}
+function tarihDondurulmusMu(araliklar,tarihStr){
+  return araliklar.some(([b,s])=>tarihStr>=b&&tarihStr<s);
+}
 function hesaplaKayit(ogId,siId){
   const si=S.siniflar.find(s=>s.id===siId);
   if(!si)return null;
@@ -3423,11 +3461,13 @@ function hesaplaKayit(ogId,siId){
   const dersGunu=gunNoTespit>=0?gunNoTespit:1;
   const bugun=simdikiZaman();bugun.setHours(0,0,0,0);
   const tatilSet=new Set((S.tatiller||[]).map(t=>t.tarih));
+  const donukAraliklari=ogrenciDonukAraliklariniHesapla(ogId,siId);
 
   function dateStr(t){
     const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');
     return y+'-'+m+'-'+d;
   }
+  function gecersiz(tarihStr){return tatilSet.has(tarihStr)||tarihDondurulmusMu(donukAraliklari,tarihStr);}
   function ilkDersGunu(tarihStr){
     const parts=tarihStr.split('-');
     const t=new Date(+parts[0],+parts[1]-1,+parts[2]);
@@ -3439,10 +3479,10 @@ function hesaplaKayit(ogId,siId){
   function nDersSonra(bas,n){
     const t=new Date(bas.getFullYear(),bas.getMonth(),bas.getDate());
     let sayac=1;
-    while(tatilSet.has(dateStr(t))){t.setDate(t.getDate()+7);}
+    while(gecersiz(dateStr(t))){t.setDate(t.getDate()+7);}
     while(sayac<n){
       t.setDate(t.getDate()+7);
-      if(!tatilSet.has(dateStr(t)))sayac++;
+      if(!gecersiz(dateStr(t)))sayac++;
     }
     return t;
   }
@@ -3472,7 +3512,7 @@ function hesaplaKayit(ogId,siId){
       } else if(odemeIlkDers<zincirBitis){
         donemBas=new Date(zincirBitis.getFullYear(),zincirBitis.getMonth(),zincirBitis.getDate());
         donemBas.setDate(donemBas.getDate()+7);
-        while(tatilSet.has(dateStr(donemBas)))donemBas.setDate(donemBas.getDate()+7);
+        while(gecersiz(dateStr(donemBas)))donemBas.setDate(donemBas.getDate()+7);
       } else {
         donemBas=odemeIlkDers;
       }
@@ -3487,7 +3527,7 @@ function hesaplaKayit(ogId,siId){
   const tLoop=new Date(ilkDonemBas.getFullYear(),ilkDonemBas.getMonth(),ilkDonemBas.getDate());
   const bitisLoop=new Date(toplamBitis.getFullYear(),toplamBitis.getMonth(),toplamBitis.getDate());
   while(tLoop<=bitisLoop){
-    if(!tatilSet.has(dateStr(tLoop))&&tLoop>=bugun)kalan++;
+    if(!gecersiz(dateStr(tLoop))&&tLoop>=bugun)kalan++;
     tLoop.setDate(tLoop.getDate()+7);
   }
 
@@ -3530,11 +3570,13 @@ function hesaplaOdemeDersTarihleri(ogId,siId){
   const gunNoTespit=sinifGunNo(si);
   const dersGunu=gunNoTespit>=0?gunNoTespit:1;
   const tatilSet=new Set((S.tatiller||[]).map(t=>t.tarih));
+  const donukAraliklari=ogrenciDonukAraliklariniHesapla(ogId,siId);
 
   function dateStr(t){
     const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');
     return y+'-'+m+'-'+d;
   }
+  function gecersiz(tarihStr){return tatilSet.has(tarihStr)||tarihDondurulmusMu(donukAraliklari,tarihStr);}
   function ilkDersGunu(tarihStr){
     const parts=tarihStr.split('-');
     const t=new Date(+parts[0],+parts[1]-1,+parts[2]);
@@ -3543,16 +3585,17 @@ function hesaplaOdemeDersTarihleri(ogId,siId){
     return t;
   }
   // nDersSonra ile birebir aynı ilerleme mantığı, ama sadece son tarihi değil
-  // yol boyunca geçtiği TÜM geçerli (tatil olmayan) ders tarihlerini toplar.
+  // yol boyunca geçtiği TÜM geçerli (tatil olmayan VE dondurulmamış) ders
+  // tarihlerini toplar.
   function nDersTarihleri(bas,n){
     const liste=[];
     const t=new Date(bas.getFullYear(),bas.getMonth(),bas.getDate());
-    while(tatilSet.has(dateStr(t))){t.setDate(t.getDate()+7);}
+    while(gecersiz(dateStr(t))){t.setDate(t.getDate()+7);}
     liste.push(dateStr(t));
     let sayac=1;
     while(sayac<n){
       t.setDate(t.getDate()+7);
-      if(!tatilSet.has(dateStr(t))){sayac++;liste.push(dateStr(t));}
+      if(!gecersiz(dateStr(t))){sayac++;liste.push(dateStr(t));}
     }
     return{liste,sonTarih:new Date(t.getFullYear(),t.getMonth(),t.getDate())};
   }
@@ -3575,7 +3618,7 @@ function hesaplaOdemeDersTarihleri(ogId,siId){
       } else if(odemeIlkDers<zincirBitis){
         donemBas=new Date(zincirBitis.getFullYear(),zincirBitis.getMonth(),zincirBitis.getDate());
         donemBas.setDate(donemBas.getDate()+7);
-        while(tatilSet.has(dateStr(donemBas)))donemBas.setDate(donemBas.getDate()+7);
+        while(gecersiz(dateStr(donemBas)))donemBas.setDate(donemBas.getDate()+7);
       } else {
         donemBas=odemeIlkDers;
       }
