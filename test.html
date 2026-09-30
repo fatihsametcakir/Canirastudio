@@ -3571,6 +3571,71 @@ function hesaplaOdemeDersTarihleri(ogId,siId){
   return sonuc;
 }
 
+// ── Sınıf değişikliğinde (Sınıf Birleştir / Bu Sınıfa Taşı) ödemeleri
+// GERÇEKTEN VERİLEN DERSE göre eski/yeni sınıf arasında böler. Hakediş usulü
+// eğitmen ödemesi ders tarihine göre hesaplandığı için (bkz. sinifGelirDonemProrated),
+// bir öğrencinin devam eden dönemi ortasında sınıf/eğitmen değiştirirse: değişim
+// tarihinden ÖNCEKİ dersler eski sınıfta (eski eğitmene) kalmalı, o tarihten
+// İTİBAREN kalan dersler yeni sınıfa (yeni eğitmene) geçmeli — aksi halde henüz
+// verilmemiş derslerin parası yanlış eğitmene, verilmiş derslerin parası da hiç
+// kimseye gitmeyecek şekilde eski sınıfta unutulmuş olurdu.
+//
+// Sadece "paket" (4 haftalık dönem) tipi kayıtlarda ders-tarihi bazlı takip
+// mümkün; tek ders kayıtlarında (veya dönem formatı öncesi eski "ay" formatlı
+// ödemelerde) her ödeme zaten tek bir geçmiş derse ait olduğu için dokunulmuyor,
+// olduğu gibi eski sınıfta kalıyor.
+//
+// Dönup: {tasinanTam, bolunen, dokunulmayan} — sadece bilgilendirme/toast için.
+async function ogrenciSinifDegistirOdemeleriBol(ogId,eskiSiId,yeniSiId,degisimTarihStr){
+  const sonuc={tasinanTam:0,bolunen:0,dokunulmayan:0};
+  const eskiSi=S.siniflar.find(s=>s.id===eskiSiId);
+  const kayit=(eskiSi?.kayitlar||[]).find(k=>k.ogrenciId===ogId);
+  if(!kayit||kayit.tip!=='paket')return sonuc;
+
+  const dagilim=hesaplaOdemeDersTarihleri(ogId,eskiSiId);
+  const donemKeyRegex=/^d\d+$/;
+
+  for(const{od,tarihler} of dagilim){
+    if(!tarihler.length){sonuc.dokunulmayan++;continue;}
+    const gecmis=tarihler.filter(d=>d<degisimTarihStr);
+    const kalan=tarihler.filter(d=>d>=degisimTarihStr);
+    if(!kalan.length){sonuc.dokunulmayan++;continue;} // tamamen geçmiş, eski sınıfta kalır
+    if(!gecmis.length){
+      // Hiç dersi verilmemiş — tamamı yeni sınıfa
+      await db.collection('odemeler').doc(od.id).update({sinifId:yeniSiId});
+      const idx=S.odemeler.findIndex(o=>o.id===od.id);
+      if(idx>=0)S.odemeler[idx]={...S.odemeler[idx],sinifId:yeniSiId};
+      sonuc.tasinanTam++;
+      continue;
+    }
+    // Dönem ortasında değişiklik — ödemeyi ders sayısına göre orantılı böl.
+    const aylarDonem=(od.aylar||[]).every(a=>donemKeyRegex.test(a))?(od.aylar||[]):[];
+    let eskiAylar=[],yeniAylar=[];
+    if(aylarDonem.length&&aylarDonem.length*4===tarihler.length){
+      aylarDonem.forEach((donemKey,i)=>{
+        const parca=tarihler.slice(i*4,i*4+4);
+        const tamamiGecmis=parca.every(d=>d<degisimTarihStr);
+        if(tamamiGecmis)eskiAylar.push(donemKey);else yeniAylar.push(donemKey);
+      });
+    } else {
+      // Dönem anahtarları beklenen formatta değil (eski format vb.) — yine de
+      // tutarı ders sayısına göre bölüyoruz, sadece "kapsanan dönem" etiketleri
+      // güvenilir olmadığından ikisine de boş bırakılıyor.
+    }
+    const eskiTutar=Math.round((od.tutar||0)*gecmis.length/tarihler.length);
+    const yeniTutar=(od.tutar||0)-eskiTutar;
+    const not_=(od.not?od.not+' — ':'')+`Sınıf değişikliği (${formatDate(degisimTarihStr)}): ${gecmis.length} ders eski, ${kalan.length} ders yeni sınıfta.`;
+    await db.collection('odemeler').doc(od.id).update({tutar:eskiTutar,aylar:eskiAylar,not:not_});
+    const eskiIdx=S.odemeler.findIndex(o=>o.id===od.id);
+    if(eskiIdx>=0)S.odemeler[eskiIdx]={...S.odemeler[eskiIdx],tutar:eskiTutar,aylar:eskiAylar,not:not_};
+    const yeniData={ogrenciId:ogId,sinifId:yeniSiId,tutar:yeniTutar,tarih:degisimTarihStr,yontem:od.yontem||'nakit',odTip:'aylik',aylar:yeniAylar,not:not_,olusturma:Date.now(),tip:'grup'};
+    const yeniSonuc=await db.collection('odemeler').add(yeniData);
+    S.odemeler.push({...yeniData,id:yeniSonuc.id});
+    sonuc.bolunen++;
+  }
+  return sonuc;
+}
+
 // Bir sınıfın belirli bir takvim ayındaki gelirini, o ay içinde GERÇEKTEN
 // verilen derslere göre böler (ham ödeme tutarını değil). Bir öğrencinin
 // ödemesi iki aya yayılıyorsa (örn. ayın 3. haftasında kaydolan öğrencinin
@@ -3856,17 +3921,15 @@ async function tasiKayit(){
     await db.collection('siniflar').doc(hId).update({kayitlar:[...(h.kayitlar||[]),{...kayit,id:'k'+Date.now()}]});
     await ogrenciOlayEkle(kayit.ogrenciId,CUR_SINIF,k.ad,'cikis');
     await ogrenciOlayEkle(kayit.ogrenciId,hId,h.ad,'giris');
-    // Öğrencinin bu sınıftaki ödemelerinden, GÜNCEL TARİHİ GERÇEKTEN KAPSAYAN
-    // (süresi henüz dolmamış) ödemesi varsa, sadece o yeni sınıfa taşınır.
-    // Süresi geçmiş ödemeler eski sınıfta kalır — öğrenci o dönemlerde
-    // gerçekten o sınıfa gidiyordu.
-    const sonOdeme=guncelDonemOdemesiBul(kayit.ogrenciId,CUR_SINIF);
-    if(sonOdeme){
-      await db.collection('odemeler').doc(sonOdeme.id).update({sinifId:hId});
-      sonOdeme.sinifId=hId;
-    }
+    // Öğrencinin GERÇEKTEN VERİLMİŞ dersleri (bugünden önceki) eski sınıfta/
+    // eski eğitmende kalır, henüz verilmemiş (bugün dahil kalan) dersleri yeni
+    // sınıfa taşınır. Bir ödeme tam ortadan bölünüyorsa (dönem yarılanmışsa)
+    // tutar da ders sayısına göre orantılı ikiye ayrılır — hakediş usulü
+    // eğitmen ödemesi böylece doğru kişiye gider.
+    const bolSonuc=await ogrenciSinifDegistirOdemeleriBol(kayit.ogrenciId,CUR_SINIF,hId,bugunTarih());
     _poll('siniflar');_poll('odemeler');
-    showToast(sonOdeme?'Öğrenci taşındı, güncel dönem ödemesi de birlikte taşındı ✓':'Öğrenci taşındı ✓','success');
+    const tasindiMi=bolSonuc.tasinanTam+bolSonuc.bolunen>0;
+    showToast(tasindiMi?'Öğrenci taşındı, kalan ders hakkı da yeni sınıfa geçti ✓':'Öğrenci taşındı ✓','success');
   }catch(e){
     showToast('Taşıma işlemi tamamlanamadı: '+e.message,'error');
   }
@@ -3966,6 +4029,18 @@ async function sinifBirlestir(){
       // Hedef sınıfa ekle — kayıt id'lerini koru, sadece ekle
       const yeniKayitlar=[...hedefKayitlar,...kaynakKayitlar];
       await db.collection('siniflar').doc(hedefId).update({kayitlar:yeniKayitlar});
+      // Ödemeleri böl/taşı — GERÇEKTEN VERİLMİŞ (bugünden önceki) dersler eski
+      // sınıfta/eğitmende kalır, henüz verilmemiş kalan dersler yeni sınıfa
+      // geçer; dönem ortasındaysa tutar da ders sayısına göre orantılı bölünür.
+      // Bunu, kaynak sınıfın kayıtları hâlâ yerindeyken (kalanKayitlar'la
+      // değişmeden önce) yapıyoruz çünkü ders-tarihi hesaplaması kayıt tipine
+      // (paket/tek ders) bakıyor.
+      const bugunStr=bugunTarih();
+      let toplamBolunen=0,toplamTasinan=0;
+      for(const k of kaynakKayitlar){
+        const bs=await ogrenciSinifDegistirOdemeleriBol(k.ogrenciId,BIRLESTIR_KAYNAK,hedefId,bugunStr);
+        toplamBolunen+=bs.bolunen;toplamTasinan+=bs.tasinanTam;
+      }
       // Kaynak sınıftaki taşınan öğrencilerin kayıtlarını kaldır
       const tasinanIds=new Set(kaynakKayitlar.map(k=>k.ogrenciId));
       const kalanKayitlar=(kaynak.kayitlar||[]).filter(k=>!tasinanIds.has(k.ogrenciId));
@@ -3973,21 +4048,11 @@ async function sinifBirlestir(){
       await db.collection('siniflar').doc(BIRLESTIR_KAYNAK).update({durum:'pasif',kayitlar:kalanKayitlar});
       const kIdx2=S.siniflar.findIndex(s=>s.id===BIRLESTIR_KAYNAK);
       if(kIdx2>=0)S.siniflar[kIdx2]={...S.siniflar[kIdx2],kayitlar:kalanKayitlar};
-      // Taşınan öğrencilerin ödemelerini yeni sınıfa güncelle
-      const tasinanOgIds=new Set(kaynakKayitlar.map(k=>k.ogrenciId));
-      const guncellenecekOd=S.odemeler.filter(o=>o.sinifId===BIRLESTIR_KAYNAK&&tasinanOgIds.has(o.ogrenciId));
-      await Promise.all(guncellenecekOd.map(od=>
-        db.collection('odemeler').doc(od.id).update({sinifId:hedefId})
-      ));
       // Local state güncelle
       const hIdx=S.siniflar.findIndex(s=>s.id===hedefId);
       if(hIdx>=0)S.siniflar[hIdx]={...S.siniflar[hIdx],kayitlar:yeniKayitlar};
       const kIdx=S.siniflar.findIndex(s=>s.id===BIRLESTIR_KAYNAK);
       if(kIdx>=0)S.siniflar[kIdx]={...S.siniflar[kIdx],durum:'pasif'};
-      guncellenecekOd.forEach(od=>{
-        const idx=S.odemeler.findIndex(o=>o.id===od.id);
-        if(idx>=0)S.odemeler[idx]={...S.odemeler[idx],sinifId:hedefId};
-      });
       // Taşınan öğrenciler için geçmiş günlüğüne çıkış/giriş kaydı düş
       Promise.all(kaynakKayitlar.map(k=>Promise.all([
         ogrenciOlayEkle(k.ogrenciId,BIRLESTIR_KAYNAK,kaynak.ad,'cikis'),
@@ -3996,7 +4061,8 @@ async function sinifBirlestir(){
       _poll('siniflar');_poll('odemeler');
       closeModal('m-birlestir');
       renderAll();
-      showToast(kaynakKayitlar.length+' öğrenci ve '+guncellenecekOd.length+' ödeme '+hedef.ad+' sınıfına taşındı ✓','success');
+      const odBilgi=toplamBolunen?` (${toplamBolunen} ödeme dönem ortasında bölündü)`:'';
+      showToast(kaynakKayitlar.length+' öğrenci '+hedef.ad+' sınıfına taşındı ✓'+odBilgi,'success');
       // Hedef sınıf detayına git
       openSinifDetay(hedefId);
     }catch(e){showToast('Hata: '+e.message,'error');}
