@@ -3453,7 +3453,14 @@ function hesaplaKayit(ogId,siId){
   let zincirBitis=null,toplamBitis=null,ilkDonemBas=null;
   for(const od of siraliOd){
     const aySayisi=(od.aylar||[]).length>0?od.aylar.length:1;
-    const dersSayisi=aySayisi*4;
+    // Normalde bir ödeme her zaman TAM dönem(ler) (4'er ders) kapsar, o yüzden
+    // "kaç ders" = dönem sayısı × 4. AMA sınıf değiştirme/birleştirmede bölünen
+    // ödemeler (bkz. ogrenciSinifDegistirOdemeleriBol) tam dönem kapsamayabilir
+    // (örn. kalan 2 ders yeni sınıfın dönem sınırını ortadan kesebilir, bu da
+    // "aylar" alanına 2 farklı dönem anahtarı düşürüp 4×2=8 gibi yanlış bir
+    // sayı üretebilir). Böyle durumlarda ödeme kaydı üzerindeki dersSayisiOzel
+    // gerçek ders sayısını override eder.
+    const dersSayisi=od.dersSayisiOzel!=null?od.dersSayisiOzel:aySayisi*4;
     let donemBas;
     if(!zincirBitis){
       donemBas=ilkDersGunu(od.tarih);
@@ -3554,7 +3561,10 @@ function hesaplaOdemeDersTarihleri(ogId,siId){
   let zincirBitis=null;
   for(const od of siraliOd){
     const aySayisi=(od.aylar||[]).length>0?od.aylar.length:1;
-    const dersSayisi=aySayisi*4;
+    // bkz. hesaplaKayit'teki aynı isimli yorum — bölünmüş ödemelerde dönem
+    // sayısı × 4 gerçek ders sayısını yansıtmayabilir, dersSayisiOzel varsa
+    // onu kullan.
+    const dersSayisi=od.dersSayisiOzel!=null?od.dersSayisiOzel:aySayisi*4;
     let donemBas;
     if(!zincirBitis){
       donemBas=ilkDersGunu(od.tarih);
@@ -3630,26 +3640,32 @@ async function ogrenciSinifDegistirOdemeleriBol(ogId,eskiSiId,yeniSiId,degisimTa
     }
     if(!gecmis.length){
       // Hiç dersi verilmemiş — tamamı yeni sınıfa. Dönem anahtarları YENİ
-      // sınıfın kendi numaralandırmasıyla yeniden hesaplanır.
+      // sınıfın kendi numaralandırmasıyla yeniden hesaplanır. Bu, yeni
+      // sınıfın dönem sınırını ortadan kesip birden fazla anahtar üretebilir
+      // (örn. 4 ders iki farklı döneme bölünebilir) — bu yüzden gerçek ders
+      // sayısını dersSayisiOzel ile AYRICA sabitliyoruz, "dönem sayısı × 4"
+      // varsayımına güvenmiyoruz (bkz. hesaplaKayit/hesaplaOdemeDersTarihleri).
       const yeniAylarTam=donemAnahtarlariniHesapla(yeniSi,tarihler);
-      await db.collection('odemeler').doc(od.id).update({sinifId:yeniSiId,aylar:yeniAylarTam,paketTipi:true});
+      await db.collection('odemeler').doc(od.id).update({sinifId:yeniSiId,aylar:yeniAylarTam,paketTipi:true,dersSayisiOzel:tarihler.length});
       const idx=S.odemeler.findIndex(o=>o.id===od.id);
-      if(idx>=0)S.odemeler[idx]={...S.odemeler[idx],sinifId:yeniSiId,aylar:yeniAylarTam,paketTipi:true};
+      if(idx>=0)S.odemeler[idx]={...S.odemeler[idx],sinifId:yeniSiId,aylar:yeniAylarTam,paketTipi:true,dersSayisiOzel:tarihler.length};
       sonuc.tasinanTam++;
       continue;
     }
     // Dönem ortasında değişiklik — ödemeyi ders sayısına göre orantılı böl.
     // Her parçanın dönem anahtarı, o parçanın ait olduğu sınıfın (eski/yeni)
-    // KENDİ numaralandırmasına göre yeniden hesaplanır.
+    // KENDİ numaralandırmasına göre yeniden hesaplanır. Aynı sebepten (dönem
+    // sınırı ortadan kesebilir) her iki parçaya da GERÇEK ders sayısını
+    // dersSayisiOzel ile sabitliyoruz.
     const eskiAylar=donemAnahtarlariniHesapla(eskiSi,gecmis);
     const yeniAylar=donemAnahtarlariniHesapla(yeniSi,kalan);
     const eskiTutar=Math.round((od.tutar||0)*gecmis.length/tarihler.length);
     const yeniTutar=(od.tutar||0)-eskiTutar;
     const not_=(od.not?od.not+' — ':'')+`Sınıf değişikliği (${formatDate(degisimTarihStr)}): ${gecmis.length} ders eski, ${kalan.length} ders yeni sınıfta.`;
-    await db.collection('odemeler').doc(od.id).update({tutar:eskiTutar,aylar:eskiAylar,not:not_,paketTipi:true});
+    await db.collection('odemeler').doc(od.id).update({tutar:eskiTutar,aylar:eskiAylar,not:not_,paketTipi:true,dersSayisiOzel:gecmis.length});
     const eskiIdx=S.odemeler.findIndex(o=>o.id===od.id);
-    if(eskiIdx>=0)S.odemeler[eskiIdx]={...S.odemeler[eskiIdx],tutar:eskiTutar,aylar:eskiAylar,not:not_,paketTipi:true};
-    const yeniData={ogrenciId:ogId,sinifId:yeniSiId,tutar:yeniTutar,tarih:degisimTarihStr,yontem:od.yontem||'nakit',odTip:'aylik',aylar:yeniAylar,not:not_,olusturma:Date.now(),tip:'grup',paketTipi:true};
+    if(eskiIdx>=0)S.odemeler[eskiIdx]={...S.odemeler[eskiIdx],tutar:eskiTutar,aylar:eskiAylar,not:not_,paketTipi:true,dersSayisiOzel:gecmis.length};
+    const yeniData={ogrenciId:ogId,sinifId:yeniSiId,tutar:yeniTutar,tarih:degisimTarihStr,yontem:od.yontem||'nakit',odTip:'aylik',aylar:yeniAylar,not:not_,olusturma:Date.now(),tip:'grup',paketTipi:true,dersSayisiOzel:kalan.length};
     const yeniSonuc=await db.collection('odemeler').add(yeniData);
     S.odemeler.push({...yeniData,id:yeniSonuc.id});
     sonuc.bolunen++;
