@@ -3967,6 +3967,33 @@ async function kayitGecmisineEkle(sinifId,ogrenciId,olay){
   const si=S.siniflar.find(s=>s.id===sinifId);
   await ogrenciOlayEkle(ogrenciId,sinifId,si?si.ad:null,olay);
 }
+// Dondurma çözülünce (dondurulmuş haftalar artık gerçek ders tarihlerini
+// ileri ittiği için) bu öğrencinin o sınıftaki ödemelerinin "Kapsanan Aylar"
+// etiketini (od.aylar) GÜNCEL (dondurma sonrası kaymış) ders tarihlerine göre
+// yeniden hesaplar. Aksi halde ödeme kaydı hâlâ dondurmadan ÖNCEKİ takvim
+// dönemlerini ("5,6,7. Dönem" gibi) gösterirdi — halbuki dersler artık o
+// dönemlerde değil, çözülme tarihinden itibaren farklı bir takvim aralığında
+// veriliyor. Not: bu sadece görünüm/etiket düzeltmesi — hakediş ve "kaç ders
+// kaldı" zaten hesaplaKayit/hesaplaOdemeDersTarihleri üzerinden dondurmaya
+// duyarlı hesaplanıyor, burada sadece ödeme kaydındaki etiket eşitleniyor.
+async function paketOdemeleriniYenidenEtiketle(ogId,siId){
+  const si=S.siniflar.find(s=>s.id===siId);
+  const k=(si?.kayitlar||[]).find(x=>x.ogrenciId===ogId);
+  if(!si||!k||k.tip!=='paket')return;
+  const dagilim=hesaplaOdemeDersTarihleri(ogId,siId);
+  for(const{od,tarihler} of dagilim){
+    if(!tarihler.length)continue;
+    const yeniAylar=donemAnahtarlariniHesapla(si,tarihler);
+    const eskiAylarStr=(od.aylar||[]).slice().sort().join(',');
+    const yeniAylarStr=yeniAylar.slice().sort().join(',');
+    if(eskiAylarStr===yeniAylarStr&&od.dersSayisiOzel===tarihler.length)continue; // değişiklik yok, gereksiz yazma
+    try{
+      await db.collection('odemeler').doc(od.id).update({aylar:yeniAylar,dersSayisiOzel:tarihler.length});
+      const idx=S.odemeler.findIndex(o=>o.id===od.id);
+      if(idx>=0)S.odemeler[idx]={...S.odemeler[idx],aylar:yeniAylar,dersSayisiOzel:tarihler.length};
+    }catch(e){/* etiket güncellenemezse ana işlemi engellemez */}
+  }
+}
 async function toggleDondur(){
   const si=S.siniflar.find(s=>s.id===CUR_SINIF);
   const k=si.kayitlar.find(x=>x.id===CUR_KAYIT);
@@ -3977,7 +4004,8 @@ async function toggleDondur(){
     await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});
     await kayitGecmisineEkle(CUR_SINIF,k.ogrenciId,yeniDurum?'dondur':'coz');
     si.kayitlar=kayitlar;
-    _poll('siniflar');
+    if(!yeniDurum)await paketOdemeleriniYenidenEtiketle(k.ogrenciId,CUR_SINIF); // çözüldü — etiketleri güncel tarihlere göre yenile
+    _poll('siniflar');_poll('odemeler');
   }catch(e){
     showToast('İşlem tamamlanamadı: '+e.message,'error');
   }
