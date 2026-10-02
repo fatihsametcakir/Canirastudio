@@ -3306,6 +3306,13 @@ async function sinifOlayEkle(sinifId,olay,eskiDeger,yeniDeger){
 async function sinifDurumToggle(id){
   const si=S.siniflar.find(s=>s.id===id);
   if(!si)return;
+  // Dondurulmuş bir sınıf pasife alınamaz — önce çözülmesi gerekir, aksi halde
+  // "dondurulmuşken pasif" gibi anlamsız/tutarsız bir durum oluşur ve dondurma
+  // aralığı hiç kapanmadan sınıf askıda kalır.
+  if(si.donduruldu&&si.durum!=='pasif'){
+    showToast(si.ad+' dondurulmuş durumda — pasife almadan önce sınıfı çözmeniz gerekir.','error');
+    return;
+  }
   const yeniDurum=si.durum==='pasif'?'aktif':'pasif';
   const mesaj=yeniDurum==='pasif'
     ?si.ad+' pasife alınacak. Sınıf listesinde en alta taşınır.'
@@ -3943,7 +3950,7 @@ function openKayitIslem(siId,kayitId){
   document.getElementById('m-kayit-islem-content').innerHTML=`
     <div class="grad-card ${donduruldu?'gc-amber':'gc-cyan'}" style="margin-bottom:14px;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-        ${donduruldu?'<span style="font-size:18px;">🧊</span><span style="font-size:13px;color:var(--amber);font-weight:600;">Donduruldu</span>':''}
+        ${donduruldu?'<span style="font-size:18px;">🧊</span><span style="font-size:13px;color:var(--amber);font-weight:600;">Donduruldu'+((k.dondurulduguTarih||si.dondurulduguTarih)?' · '+formatDate(k.dondurulduguTarih||si.dondurulduguTarih):'')+'</span>':''}
         <div style="font-size:13px;color:var(--text2);">${si.ad} · ${k.tip==='paket'?'4 Haftalık Paket':'Tek Ders'}</div>
       </div>
       <div style="font-size:20px;font-family:Fraunces,serif;font-weight:600;margin:5px 0;">
@@ -4013,7 +4020,10 @@ async function toggleDondur(){
   const si=S.siniflar.find(s=>s.id===CUR_SINIF);
   const k=si.kayitlar.find(x=>x.id===CUR_KAYIT);
   const yeniDurum=!k.donduruldu;
-  const kayitlar=si.kayitlar.map(x=>x.id!==CUR_KAYIT?x:{...x,donduruldu:yeniDurum});
+  // Dondurma tarihini kayda yazıyoruz — böylece hem ödeme tarihi hem dondurma
+  // tarihi ekranda ayrı ayrı görünür, "Kapsanan Aylar" etiketi dondurma sürerken
+  // bayat kalsa bile kafa karışıklığı olmaz (ne zaman dondurulduğu her zaman açık).
+  const kayitlar=si.kayitlar.map(x=>x.id!==CUR_KAYIT?x:{...x,donduruldu:yeniDurum,dondurulduguTarih:yeniDurum?bugunTarih():null});
   setSyncing(true);
   try{
     await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});
@@ -4044,9 +4054,14 @@ function sinifDondurToggle(siId){
   confirm_(yeniDurum?'Sınıfı Dondur':'Sınıfı Devam Ettir', mesaj, async()=>{
     setSyncing(true);
     try{
-      await db.collection('siniflar').doc(siId).update({donduruldu:yeniDurum});
+      // Dondurma tarihini sınıf kaydına da yazıyoruz — aynı mantık: ödeme tarihi
+      // ile dondurma tarihi ayrı ayrı bilindiğinden, dondurma sürerken "Kapsanan
+      // Aylar" etiketi güncellenmemiş olsa da kafa karışıklığı olmaz.
+      const dondurulduguTarih=yeniDurum?bugunTarih():null;
+      await db.collection('siniflar').doc(siId).update({donduruldu:yeniDurum,dondurulduguTarih});
       await sinifOlayEkle(siId,yeniDurum?'sinif_dondur':'sinif_coz',null,null);
       si.donduruldu=yeniDurum;
+      si.dondurulduguTarih=dondurulduguTarih;
       if(!yeniDurum){
         // Çözüldü — sınıftaki tüm paket öğrencilerin ödeme etiketlerini yenile
         for(const k of (si.kayitlar||[]).filter(x=>x.tip==='paket')){
@@ -4193,13 +4208,21 @@ function toggleClear(btnId,val){const b=document.getElementById(btnId);if(b)b.cl
 function clearSearch(inputId,cb){const el=document.getElementById(inputId);if(el){el.value='';const clr=document.getElementById(inputId+'-clear');if(clr)clr.classList.remove('visible');}if(cb)cb();}
 let BIRLESTIR_KAYNAK=null;
 function openBirlestirModal(siId){
-  BIRLESTIR_KAYNAK=siId;
   const si=S.siniflar.find(s=>s.id===siId);
   if(!si)return;
+  // Dondurulmuş bir sınıf birleştirilemez — birleştirme kaynak sınıfı otomatik
+  // pasife alıyor ve ders-tarihi bazlı ödeme bölme yapıyor; sınıf hâlâ donmuş
+  // haldeyken bu, öğrencilerin güncel (dondurma sonrası kaymış) dönemlerini
+  // yansıtmadan yanlış tarihler üzerinden bölünmeye yol açar. Önce çözülmeli.
+  if(si.donduruldu){
+    showToast(si.ad+' dondurulmuş durumda — birleştirmeden önce sınıfı çözmeniz gerekir.','error');
+    return;
+  }
+  BIRLESTIR_KAYNAK=siId;
   document.getElementById('birlestir-aciklama').textContent='"'+si.ad+'" sınıfındaki öğrenciler seçilen sınıfa taşınacak.';
   const sel=document.getElementById('birlestir-hedef');
   sel.innerHTML=S.siniflar
-    .filter(s=>s.id!==siId&&s.durum!=='pasif')
+    .filter(s=>s.id!==siId&&s.durum!=='pasif'&&!s.donduruldu)
     .sort((a,b)=>a.ad.localeCompare(b.ad,'tr'))
     .map(s=>'<option value="'+s.id+'">'+s.ad+'</option>')
     .join('');
@@ -4211,6 +4234,12 @@ async function sinifBirlestir(){
   const kaynak=S.siniflar.find(s=>s.id===BIRLESTIR_KAYNAK);
   const hedef=S.siniflar.find(s=>s.id===hedefId);
   if(!kaynak||!hedef)return;
+  // Savunma amaçlı ikinci kontrol — modal açıkken sınıf başka bir sekmeden/
+  // kullanıcıdan dondurulmuş olabilir.
+  if(kaynak.donduruldu||hedef.donduruldu){
+    showToast('Dondurulmuş bir sınıf birleştirmeye dahil edilemez — önce çözün.','error');
+    return;
+  }
   const btn=document.getElementById('btn-birlestir');
   btn.disabled=true;
   confirm_('Birleştir',''+kaynak.ad+' → '+hedef.ad+'. Emin misiniz?',async()=>{
@@ -5330,7 +5359,8 @@ function renderSinifDetay(siId){
     </div>`;
   }).join(''):'<div style="font-size:13px;color:var(--text3);padding:14px 0;text-align:center;">'+t('empty_ogrenci')+'</div>';
   const sinifDondu=!!si.donduruldu;
-  document.getElementById('sinif-detay-content').innerHTML=`<div class="grad-card ${gc} sinif-detay-header"><div class="sinif-detay-adi">${sinifDondu?'🧊 ':''}${si.ad}${sinifDondu?' <span style="font-size:11px;font-weight:600;background:#fff3;padding:2px 8px;border-radius:20px;vertical-align:middle;">Dondu</span>':''}</div><div class="sinif-detay-alt"><span>${si.gun} · ${si.saat}</span><span>${(si.paket||0).toLocaleString(LC())} ₺ ${t('paket')}</span><span>${(si.tekders||0).toLocaleString(LC())} ₺ ${t('tek')}</span></div></div><div style="display:flex;gap:8px;margin-bottom:10px;">
+  const dondurmaEtiketi=sinifDondu?' <span style="font-size:11px;font-weight:600;background:#fff3;padding:2px 8px;border-radius:20px;vertical-align:middle;">Dondu'+(si.dondurulduguTarih?' · '+formatDate(si.dondurulduguTarih):'')+'</span>':'';
+  document.getElementById('sinif-detay-content').innerHTML=`<div class="grad-card ${gc} sinif-detay-header"><div class="sinif-detay-adi">${sinifDondu?'🧊 ':''}${si.ad}${dondurmaEtiketi}</div><div class="sinif-detay-alt"><span>${si.gun} · ${si.saat}</span><span>${(si.paket||0).toLocaleString(LC())} ₺ ${t('paket')}</span><span>${(si.tekders||0).toLocaleString(LC())} ₺ ${t('tek')}</span></div></div><div style="display:flex;gap:8px;margin-bottom:10px;">
   <button class="btn btn-accent btn-sm" style="flex:1;" onclick="openSinifOgrenci('${si.id}')">${t('btn_ogrenci_ekle')}</button>
   <button class="btn btn-ghost btn-sm" onclick="openSinifModal('${si.id}')">${t('btn_duzenle')}</button>
 </div>
@@ -5338,8 +5368,12 @@ function renderSinifDetay(siId){
   <button class="btn ${sinifDondu?'btn-green':'btn-cyan'} btn-sm" style="flex:1;" onclick="sinifDondurToggle('${si.id}')">${sinifDondu?'▶ Sınıfı Devam Ettir':'🧊 Sınıfı Dondur'}</button>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:10px;">
-  <button class="btn ${si.durum==='pasif'?'btn-green':'btn-amber'} btn-sm" style="flex:1;" onclick="sinifDurumToggle('${si.id}')">${si.durum==='pasif'?'✓ '+t('aktife_al'):'⏸ '+t('pasife_al')}</button>
-  <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openBirlestirModal('${si.id}')">⇄ ${t('birlestir')}</button>
+  ${sinifDondu&&si.durum!=='pasif'
+    ?`<button class="btn btn-ghost btn-sm" style="flex:1;opacity:.6;cursor:not-allowed;" disabled title="Önce sınıfı çözmeniz gerekir">⏸ ${t('pasife_al')}</button>`
+    :`<button class="btn ${si.durum==='pasif'?'btn-green':'btn-amber'} btn-sm" style="flex:1;" onclick="sinifDurumToggle('${si.id}')">${si.durum==='pasif'?'✓ '+t('aktife_al'):'⏸ '+t('pasife_al')}</button>`}
+  ${sinifDondu
+    ?`<button class="btn btn-ghost btn-sm" style="flex:1;opacity:.6;cursor:not-allowed;" disabled title="Önce sınıfı çözmeniz gerekir">⇄ ${t('birlestir')}</button>`
+    :`<button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openBirlestirModal('${si.id}')">⇄ ${t('birlestir')}</button>`}
   <button class="btn" style="flex:1;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b40;" onclick="silSinif('${si.id}')">🗑 ${t('btn_sil')}</button>
 </div><div style="display:flex;gap:8px;margin-bottom:14px;"><button class="btn btn-cyan btn-sm" style="flex:1;" onclick="qrGoster('${si.id}')">📱 ${t('qr_yoklama')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="yoklamaGecmis('${si.id}')">${t('yoklama_gecmisi')}</button><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openSinifGecmisi('${si.id}')">📜 ${t('gecmis')}</button></div><div class="card" style="padding:0 16px;">${kHTML}</div>`;
 }
@@ -6451,6 +6485,14 @@ async function yoklamaKaydet(sinifId, ogrenciId){
   // Duplicate kontrol
   const var_=S.yoklamalar.find(y=>y.sinifId===sinifId&&y.ogrenciId===ogrenciId&&y.tarih===tarih);
   if(var_)return;
+  // Dondurulmuş bir sınıf için yoklama alınamaz — eğitmen müsait değilken ders
+  // verilmediği için (bkz. sinifDondurToggle) bu süre zaten ders sayılmıyor,
+  // yanlışlıkla yoklama girilmesi "ders verildi" gibi yanlış bir iz bırakır.
+  const si=S.siniflar.find(s=>s.id===sinifId);
+  if(si&&si.donduruldu){
+    showToast(si.ad+' dondurulmuş durumda — yoklama alınamaz.','error');
+    return;
+  }
   setSyncing(true);
   try{
     await db.collection('yoklamalar').add({sinifId,ogrenciId,tarih,olusturma:Date.now()});_poll('yoklamalar');
@@ -6541,11 +6583,11 @@ function renderYoklama(){
       <div style="height:3px;background:${renk};"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 15px;">
         <div style="min-width:0;flex:1;">
-          <div style="font-family:Fraunces,serif;font-size:15px;font-weight:600;">${si.ad}</div>
+          <div style="font-family:Fraunces,serif;font-size:15px;font-weight:600;">${si.donduruldu?'🧊 ':''}${si.ad}</div>
           <div style="font-size:11px;color:var(--text3);margin-top:1px;">${si.saat} · ${aktifOgList.length} ${t('lbl_ogrenci_kucuk')}</div>
         </div>
         <div style="display:flex;align-items:center;gap:7px;flex-shrink:0;">
-          <span class="badge ${alindiMi?(gelenSayisi===aktifOgList.length&&aktifOgList.length>0?'badge-green':'badge-amber'):'badge-gray'}">${alindiMi?gelenSayisi+'/'+aktifOgList.length:t('yoklama_henuz_alinmadi')}</span>
+          <span class="badge ${si.donduruldu?'badge-amber':alindiMi?(gelenSayisi===aktifOgList.length&&aktifOgList.length>0?'badge-green':'badge-amber'):'badge-gray'}">${si.donduruldu?'Dondu':alindiMi?gelenSayisi+'/'+aktifOgList.length:t('yoklama_henuz_alinmadi')}</span>
           ${alindiMi?`<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();yoklamaAlBaslat('${si.id}','${tarih}',true)">✎ ${t('duzenle')}</button>`:''}
           <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();yoklamaGecmis('${si.id}')">${t('gecmis')}</button>
           <span style="font-size:18px;color:var(--text3);">›</span>
@@ -6620,6 +6662,12 @@ function yoklamaAlBaslat(sinifId,tarih,zorlaEdit){
   const mevcutVarMi=S.yoklamalar.some(y=>y.sinifId===sinifId&&y.tarih===tarih);
   if(mevcutVarMi&&!zorlaEdit){yoklamaGoster(sinifId,tarih);return;}
   const si=S.siniflar.find(s=>s.id===sinifId);if(!si)return;
+  if(si.donduruldu){
+    document.getElementById('m-kayit-islem-title').textContent=si.ad;
+    document.getElementById('m-kayit-islem-content').innerHTML=`<div style="text-align:center;padding:24px 10px;color:var(--text3);">🧊<br>Bu sınıf dondurulmuş durumda, yoklama alınamaz.<br>Önce sınıfı çözmeniz gerekir.</div>`;
+    openModal('m-kayit-islem');
+    return;
+  }
   const aktifOgList=yoklamaOgrenciListesi(si,tarih);
   const mevcutGelenler=new Set(S.yoklamalar.filter(y=>y.sinifId===sinifId&&y.tarih===tarih).map(y=>y.ogrenciId));
   const dObj=new Date(tarih+'T00:00:00');
@@ -6663,6 +6711,12 @@ function yoklamaGoster(sinifId,tarih){
   openModal('m-kayit-islem');
 }
 async function yoklamaAlKaydet(sinifId,tarih){
+  // Savunma amaçlı ikinci kontrol — modal açıkken sınıf başka bir sekmeden dondurulmuş olabilir.
+  const si=S.siniflar.find(s=>s.id===sinifId);
+  if(si&&si.donduruldu){
+    showToast(si.ad+' dondurulmuş durumda — yoklama alınamaz.','error');
+    return;
+  }
   const btn=document.getElementById('yal-kaydet-btn');if(btn)btn.disabled=true;
   const secilenler=new Set([...document.querySelectorAll('.yal-cb')].filter(c=>c.checked).map(c=>c.value));
   const mevcut=S.yoklamalar.filter(y=>y.sinifId===sinifId&&y.tarih===tarih);
@@ -6911,6 +6965,13 @@ function yoklamaOgrenciModal(sinifId){
   document.getElementById('m-yok-og-sinif').textContent=
     si.gun+' · '+si.saat+' — '+simdikiZaman().toLocaleDateString(LC(),{day:'numeric',month:'long'});
 
+  if(si.donduruldu){
+    document.getElementById('m-yok-og-liste').innerHTML=
+      '<div style="text-align:center;padding:24px 10px;color:var(--text3);">🧊<br>Bu sınıf dondurulmuş durumda, yoklama alınamaz.</div>';
+    openModal('m-yoklama-ogrenci');
+    return;
+  }
+
   const kayitlar=(si.kayitlar||[]);
   const aktifOgList=kayitlar
     .map(k=>S.ogrenciler.find(o=>o.id===k.ogrenciId))
@@ -6982,10 +7043,16 @@ async function ogrenciQRYoklama(ogrenciId){
   const og=S.ogrenciler.find(o=>o.id===ogrenciId);
   if(!og){alert('Öğrenci bulunamadı.');return;}
 
-  // Öğrencinin kayıtlı olduğu aktif sınıflar
-  const siniflar=S.siniflar.filter(si=>(si.kayitlar||[]).some(k=>k.ogrenciId===ogrenciId));
-  if(!siniflar.length){
+  // Öğrencinin kayıtlı olduğu, DONDURULMAMIŞ sınıflar — dondurulmuş bir sınıf
+  // için yoklama alınmaz (bkz. yoklamaKaydet/yoklamaOgrenciModal'daki aynı kontrol).
+  const siniflarTumu=S.siniflar.filter(si=>(si.kayitlar||[]).some(k=>k.ogrenciId===ogrenciId));
+  if(!siniflarTumu.length){
     alert(og.ad+' henüz bir sınıfa kayıtlı değil.');
+    return;
+  }
+  const siniflar=siniflarTumu.filter(si=>!si.donduruldu);
+  if(!siniflar.length){
+    alert(og.ad+'\'in kayıtlı olduğu sınıf(lar) şu an dondurulmuş durumda — yoklama alınamıyor.');
     return;
   }
 
