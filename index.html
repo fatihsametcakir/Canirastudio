@@ -605,6 +605,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
      3 sütuna diziliyor, geniş popup'taki boş alanı değerlendiriyor. */
   #m-odeme .field-row3{display:grid;grid-column:1 / -1;grid-template-columns:repeat(3,1fr);column-gap:16px;}
 }
+.og-bilgi-pil{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:5px 10px 5px 6px;border-radius:999px;border:1px solid #ff6b6b66;background:linear-gradient(135deg,#ff6b6b33,#ff6b6b14);color:#ff8a8a;font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;animation:ogPil 2.4s ease-in-out infinite;}
+.og-bilgi-pil:active{transform:scale(.96);}
+.og-bilgi-i{width:18px;height:18px;border-radius:50%;background:#ff6b6b;color:#1a1a24;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:Georgia,serif;font-style:italic;}
+@keyframes ogPil{0%,100%{box-shadow:0 0 0 0 #ff6b6b55;}50%{box-shadow:0 0 0 6px #ff6b6b00;}}
+@media (prefers-reduced-motion:reduce){.og-bilgi-pil{animation:none;}}
 </style>
 </head>
 <body>
@@ -780,7 +785,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- ANA SAYFA -->
   <div class="page active" id="pg-anasayfa">
     <div class="stats-row" id="anasayfa-stats-row">
-      <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" style="display:flex;align-items:center;gap:6px;"><span id="lbl-aktif-ogrenci">Aktif Öğrenci</span><button type="button" onclick="ogKartBilgiAc(event)" aria-label="Detay" style="width:20px;height:20px;border-radius:50%;border:1px solid var(--border2,#ffffff30);background:transparent;color:var(--text2);font-size:12px;font-weight:700;line-height:1;cursor:pointer;padding:0;flex-shrink:0;">i</button></div><div class="stat-val" id="st-ogrenci">0</div><div style="display:none;"><span id="st-ogrenci-toplam">0</span><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span><span id="st-kayit-coklu"></span><div id="st-ogrenci-kirilim"></div></div></div>
+      <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-aktif-ogrenci">Aktif Öğrenci</div><div class="stat-val" id="st-ogrenci">0</div><button type="button" class="og-bilgi-pil" onclick="ogKartBilgiAc(event)"><span class="og-bilgi-i">i</span><span data-i18n="og_dagilim_gor">Dağılımı gör</span><span style="opacity:.7;">›</span></button><div style="display:none;"><span id="st-ogrenci-toplam">0</span><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span><span id="st-kayit-coklu"></span><div id="st-ogrenci-kirilim"></div></div></div>
       <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-sinif">Sınıf</div><div class="stat-val" id="st-sinif">0</div></div>
       <div class="stat-card s3" onclick="goTo('gelirgider',document.querySelectorAll('.nav-item')[6])" style="cursor:pointer;"><div class="stat-label" id="lbl-bu-ay-gelir">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="lbl-net">Net</span>: <span id="st-net">0</span></div></div>
       <div class="stat-card s4" onclick="goTo('odemeler',document.querySelectorAll('.nav-item')[5])" style="cursor:pointer;"><div class="stat-label" id="lbl-paket-yenileme">Paket yenileme</div><div class="stat-val" id="st-yaklasan">0</div></div>
@@ -1692,7 +1697,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Düzenle', btn_sil:'Sil', btn_kaydet:'Kaydet', btn_iptal:'İptal',
     empty_ogrenci:'Henüz öğrenci eklenmedi.', empty_sinif:'Henüz sınıf eklenmedi.',
     no_result:'Sonuç bulunamadı', empty_ogrenci_pasif:'Pasif öğrenci yok',
-    btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız', ozel_aktif_paketsiz:'Aktif paketi olmayanlar', asistanlar:'Asistanlar', asistan_flag:'Asistan (sınıfa eklenmez, ödeme alınmaz, aktif öğrenci sayısına dahil değildir; yalnız özel ders girilebilir)',
+    btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız', og_dagilim_gor:'Dağılımı gör', ozel_aktif_paketsiz:'Aktif paketi olmayanlar', asistanlar:'Asistanlar', asistan_flag:'Asistan (sınıfa eklenmez, ödeme alınmaz, aktif öğrenci sayısına dahil değildir; yalnız özel ders girilebilir)',
     sadece_ozel_ders:'Sadece Özel Ders',
     ozel_ders_icin_ogrenci_sec:'Özel Ders İçin Öğrenci Seç', ogrenci_ara:'Öğrenci Ara', ogrenci_ara_ph:'İsim veya telefon yazarak ara...',
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
@@ -1871,7 +1876,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Edit', btn_sil:'Delete', btn_kaydet:'Save', btn_iptal:'Cancel',
     empty_ogrenci:'No students added yet.', empty_sinif:'No classes added yet.',
     no_result:'No results found', empty_ogrenci_pasif:'No inactive students',
-    btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class', ozel_aktif_paketsiz:'No active package', asistanlar:'Assistants', asistan_flag:'Assistant (not added to classes, no payments, not counted as active student; private lessons only)',
+    btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class', og_dagilim_gor:'See breakdown', ozel_aktif_paketsiz:'No active package', asistanlar:'Assistants', asistan_flag:'Assistant (not added to classes, no payments, not counted as active student; private lessons only)',
     sadece_ozel_ders:'Private Lessons Only',
     ozel_ders_icin_ogrenci_sec:'Select Student for Private Lesson', ogrenci_ara:'Search Student', ogrenci_ara_ph:'Search by name or phone...',
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
@@ -2050,7 +2055,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Изменить', btn_sil:'Удалить', btn_kaydet:'Сохранить', btn_iptal:'Отмена',
     empty_ogrenci:'Учеников пока нет.', empty_sinif:'Групп пока нет.',
     no_result:'Результат не найден', empty_ogrenci_pasif:'Нет неактивных учеников',
-    btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы', ozel_aktif_paketsiz:'Без активного пакета', asistanlar:'Ассистенты', asistan_flag:'Ассистент (не добавляется в группы, без оплаты, не считается активным учеником; только индивидуальные занятия)',
+    btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы', og_dagilim_gor:'Показать детали', ozel_aktif_paketsiz:'Без активного пакета', asistanlar:'Ассистенты', asistan_flag:'Ассистент (не добавляется в группы, без оплаты, не считается активным учеником; только индивидуальные занятия)',
     sadece_ozel_ders:'Только частные уроки',
     ozel_ders_icin_ogrenci_sec:'Выбрать ученика для частного урока', ogrenci_ara:'Поиск ученика', ogrenci_ara_ph:'Поиск по имени или телефону...',
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
