@@ -780,7 +780,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- ANA SAYFA -->
   <div class="page active" id="pg-anasayfa">
     <div class="stats-row" id="anasayfa-stats-row">
-      <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-aktif-ogrenci">Aktif Öğrenci</div><div class="stat-val" id="st-ogrenci">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span></div><div id="st-ogrenci-kirilim" style="font-size:10.5px;color:var(--text3);margin-top:3px;line-height:1.35;"></div></div>
+      <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-aktif-ogrenci">Aktif Öğrenci</div><div class="stat-val" id="st-ogrenci">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span><span id="st-kayit-coklu"></span></div><div id="st-ogrenci-kirilim" style="font-size:10.5px;color:var(--text3);margin-top:3px;line-height:1.35;"></div></div>
       <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-sinif">Sınıf</div><div class="stat-val" id="st-sinif">0</div></div>
       <div class="stat-card s3" onclick="goTo('gelirgider',document.querySelectorAll('.nav-item')[6])" style="cursor:pointer;"><div class="stat-label" id="lbl-bu-ay-gelir">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="lbl-net">Net</span>: <span id="st-net">0</span></div></div>
       <div class="stat-card s4" onclick="goTo('odemeler',document.querySelectorAll('.nav-item')[5])" style="cursor:pointer;"><div class="stat-label" id="lbl-paket-yenileme">Paket yenileme</div><div class="stat-val" id="st-yaklasan">0</div></div>
@@ -1682,7 +1682,7 @@ const TRANSLATIONS={
     topbar_sub:'Yönetim Paneli', sync_live:'Canlı', sync_saving:'Kaydediliyor...',
     nav_anasayfa:'Ana Sayfa', nav_ogrenciler:'Öğrenciler', nav_siniflar:'Sınıflar',
     nav_takvim:'Takvim', nav_yoklama:'Yoklama', nav_odemeler:'Ödemeler', nav_gelirgider:'Gelir/Gider',
-    lbl_aktif_ogrenci:'Aktif Öğrenci', lbl_kayit:'kayıt', kirilim_sinif:'sınıf', kirilim_ozel:'özel ders', kirilim_ikisi:'ikisi de', kirilim_diger:'diğer', lbl_sinif:'Sınıf',
+    lbl_aktif_ogrenci:'Aktif Öğrenci', lbl_kayit:'sınıf kaydı', kayit_coklu:'{n} öğrenci birden fazla sınıfta', kirilim_sinif:'sadece sınıf', kirilim_ozel:'sadece özel ders', kirilim_ikisi:'sınıf + özel ders', kirilim_diger:'diğer', lbl_sinif:'Sınıf',
     lbl_bu_ay_gelir:'Bu ay gelir', lbl_net:'Net', lbl_paket_yenileme:'Paket yenileme',
     drawer_ozel:'✦ Özel Dersler', drawer_videolar:'🎬 Ders Videoları', drawer_yoklama:'✓ Yoklama', nav_ozel:'Özel Dersler',
     filter_aktif:'Aktif', filter_pasif:'Pasif', filter_hepsi:'Hepsi',
@@ -1861,7 +1861,7 @@ const TRANSLATIONS={
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
     nav_anasayfa:'Home', nav_ogrenciler:'Students', nav_siniflar:'Classes',
     nav_takvim:'Calendar', nav_yoklama:'Attendance', nav_odemeler:'Payments', nav_gelirgider:'Income/Expense',
-    lbl_aktif_ogrenci:'Active Students', lbl_kayit:'enrollments', kirilim_sinif:'class', kirilim_ozel:'private', kirilim_ikisi:'both', kirilim_diger:'other', lbl_sinif:'Classes',
+    lbl_aktif_ogrenci:'Active Students', lbl_kayit:'class enrollments', kayit_coklu:'{n} students in more than one class', kirilim_sinif:'class only', kirilim_ozel:'private only', kirilim_ikisi:'class + private', kirilim_diger:'other', lbl_sinif:'Classes',
     lbl_bu_ay_gelir:'Income this month', lbl_net:'Net', lbl_paket_yenileme:'Package renewals',
     drawer_ozel:'✦ Private Lessons', drawer_videolar:'🎬 Lesson Videos', drawer_yoklama:'✓ Attendance', nav_ozel:'Private Lessons',
     filter_aktif:'Active', filter_pasif:'Inactive', filter_hepsi:'All',
@@ -2040,7 +2040,7 @@ const TRANSLATIONS={
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
     nav_anasayfa:'Главная', nav_ogrenciler:'Ученики', nav_siniflar:'Группы',
     nav_takvim:'Календарь', nav_yoklama:'Посещаемость', nav_odemeler:'Платежи', nav_gelirgider:'Доходы/Расходы',
-    lbl_aktif_ogrenci:'Активные ученики', lbl_kayit:'записей', kirilim_sinif:'группа', kirilim_ozel:'индивид.', kirilim_ikisi:'оба', kirilim_diger:'другие', lbl_sinif:'Групп',
+    lbl_aktif_ogrenci:'Активные ученики', lbl_kayit:'записей в группы', kayit_coklu:'{n} уч. в нескольких группах', kirilim_sinif:'только группа', kirilim_ozel:'только индивид.', kirilim_ikisi:'группа + индивид.', kirilim_diger:'другие', lbl_sinif:'Групп',
     lbl_bu_ay_gelir:'Доход за месяц', lbl_net:'Чистыми', lbl_paket_yenileme:'Обновление пакетов',
     drawer_ozel:'✦ Частные уроки', drawer_videolar:'🎬 Видео уроков', drawer_yoklama:'✓ Посещаемость', nav_ozel:'Частные уроки',
     filter_aktif:'Активные', filter_pasif:'Неактивные', filter_hepsi:'Все',
@@ -5551,14 +5551,21 @@ function renderAnasayfa(){
   });
   const kirilimEl=document.getElementById('st-ogrenci-kirilim');
   if(kirilimEl)kirilimEl.textContent=[kSinif+' '+t('kirilim_sinif'),kOzel+' '+t('kirilim_ozel'),kIkisi+' '+t('kirilim_ikisi')].concat(kDiger?[kDiger+' '+t('kirilim_diger')]:[]).join(' · ');
-  const aktifKayitSayisi=S.siniflar.reduce((s,si)=>{
-    return s+(si.kayitlar||[]).filter(k=>{
+  // Kayıt = kapalı olmayan sınıflardaki aktif öğrenci kayıtları; birden fazla sınıfa giren öğrenciler ayrıca belirtilir
+  const kayitSayac={};
+  S.siniflar.forEach(si=>{
+    if((si.durum||'aktif')==='pasif')return;
+    (si.kayitlar||[]).forEach(k=>{
       const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);
-      return og&&(og.durum||'aktif')==='aktif';
-    }).length;
-  },0);
+      if(og&&ogSayilanAktifMi(og))kayitSayac[k.ogrenciId]=(kayitSayac[k.ogrenciId]||0)+1;
+    });
+  });
+  const aktifKayitSayisi=Object.values(kayitSayac).reduce((a,b)=>a+b,0);
+  const coklu=Object.values(kayitSayac).filter(n=>n>1).length;
   const kayitEl=document.getElementById('st-kayit');
   if(kayitEl)kayitEl.textContent=aktifKayitSayisi;
+  const kayitColuEl=document.getElementById('st-kayit-coklu');
+  if(kayitColuEl)kayitColuEl.textContent=coklu?' ('+t('kayit_coklu').replace('{n}',coklu)+')':'';
   document.getElementById('st-sinif').textContent=S.siniflar.filter(s=>s.durum!=='pasif').length;
   const yaklasanlar=getYaklasanlar();document.getElementById('st-yaklasan').textContent=yaklasanlar.length;
   const bk=ayKey(simdikiZaman().getFullYear(),simdikiZaman().getMonth()+1);
