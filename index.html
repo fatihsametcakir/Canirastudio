@@ -780,7 +780,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- ANA SAYFA -->
   <div class="page active" id="pg-anasayfa">
     <div class="stats-row" id="anasayfa-stats-row">
-      <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-aktif-ogrenci">Aktif Öğrenci</div><div class="stat-val" id="st-ogrenci">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span><span id="st-kayit-coklu"></span></div><div id="st-ogrenci-kirilim" style="font-size:10.5px;color:var(--text3);margin-top:3px;line-height:1.35;"></div></div>
+      <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" style="display:flex;align-items:center;gap:6px;"><span id="lbl-aktif-ogrenci">Aktif Öğrenci</span><button type="button" onclick="ogKartBilgiAc(event)" aria-label="Detay" style="width:20px;height:20px;border-radius:50%;border:1px solid var(--border2,#ffffff30);background:transparent;color:var(--text2);font-size:12px;font-weight:700;line-height:1;cursor:pointer;padding:0;flex-shrink:0;">i</button></div><div class="stat-val" id="st-ogrenci">0</div><div style="display:none;"><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span><span id="st-kayit-coklu"></span><div id="st-ogrenci-kirilim"></div></div></div>
       <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-sinif">Sınıf</div><div class="stat-val" id="st-sinif">0</div></div>
       <div class="stat-card s3" onclick="goTo('gelirgider',document.querySelectorAll('.nav-item')[6])" style="cursor:pointer;"><div class="stat-label" id="lbl-bu-ay-gelir">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="lbl-net">Net</span>: <span id="st-net">0</span></div></div>
       <div class="stat-card s4" onclick="goTo('odemeler',document.querySelectorAll('.nav-item')[5])" style="cursor:pointer;"><div class="stat-label" id="lbl-paket-yenileme">Paket yenileme</div><div class="stat-val" id="st-yaklasan">0</div></div>
@@ -5536,6 +5536,22 @@ function otOtoDusKontrol(){
 // ── RENDER ─────────────────────────────────────────────
 function getYaklasanlar(){const res=[];S.siniflar.forEach(si=>{if((si.durum||'aktif')==='pasif')return; /* kapalı sınıflar paket yenileme listesinde görünmez */ (si.kayitlar||[]).forEach(k=>{if(k.tip!=='paket')return;if(k.donduruldu)return;const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);if(!og||(og.durum||'aktif')==='pasif')return;const h=hesaplaKayit(k.ogrenciId,si.id);const b=h?h.bitisTarih:k.bitisTarih;const dl=daysLeft(b);if(dl<=7){res.push({og,kayit:k,sinif:si,dl,hesap:h});}});});return res.sort((a,b)=>a.dl-b.dl);}
 
+// Aktif öğrenci kartındaki "i" düğmesi: kırılım ve kayıt bilgisini küçük pencerede gösterir
+function ogKartBilgiAc(ev){
+  if(ev){ev.stopPropagation();ev.preventDefault();}
+  const mevcut=document.getElementById('og-kart-bilgi');if(mevcut){mevcut.remove();return;}
+  const kayit=(document.getElementById('st-kayit')||{}).textContent+' '+(document.getElementById('lbl-kayit')||{}).textContent+((document.getElementById('st-kayit-coklu')||{}).textContent||'');
+  const kirilim=((document.getElementById('st-ogrenci-kirilim')||{}).textContent||'').split(' · ');
+  const ov=document.createElement('div');ov.id='og-kart-bilgi';
+  ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:24px;';
+  ov.onclick=()=>ov.remove();
+  ov.innerHTML='<div onclick="event.stopPropagation()" style="background:var(--surface,#1a1a24);border:1px solid var(--border2,#ffffff25);border-radius:16px;padding:18px 20px;max-width:320px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.5);">'
+    +'<div style="font-size:15px;font-weight:600;margin-bottom:10px;">'+t('lbl_aktif_ogrenci')+': '+(document.getElementById('st-ogrenci')||{}).textContent+'</div>'
+    +kirilim.map(x=>'<div style="font-size:13px;color:var(--text2);padding:3px 0;">• '+x+'</div>').join('')
+    +'<div style="font-size:13px;color:var(--text2);padding:8px 0 0;margin-top:6px;border-top:1px solid var(--border);">'+kayit+'</div>'
+    +'<button class="btn btn-ghost" style="width:100%;margin-top:14px;" onclick="document.getElementById(\'og-kart-bilgi\').remove()">OK</button></div>';
+  document.body.appendChild(ov);
+}
 function renderAnasayfa(){
   const aktifOgSayisi=S.ogrenciler.filter(ogSayilanAktifMi).length;
   document.getElementById('st-ogrenci').textContent=aktifOgSayisi;
