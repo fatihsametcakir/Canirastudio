@@ -1139,6 +1139,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
       <div class="acc-body" id="acc-veri">
         <button class="btn btn-cyan" style="width:100%;margin-bottom:10px;" onclick="telNumaralariniTemizle()">📱 Telefon Numaralarını Düzenle</button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa45;" onclick="openCakisanOdemelerModal()">🔍 Çakışan Ödemeleri Bul</button>
+        <button class="btn" style="width:100%;margin-bottom:10px;background:#34d39922;color:var(--green,#34d399);border:1px solid #34d39945;" onclick="ozelSaatDenetimi()">⏱ Özel Paket Saatlerini Denetle</button>
         <button class="btn btn-danger" style="width:100%;margin-bottom:10px;" onclick="veriSilAc('ogrenci')">👤 Öğrenci Sil</button>
         <button class="btn btn-danger" style="width:100%;margin-bottom:10px;" onclick="veriSilAc('sinif')">🏫 Sınıf Sil</button>
         <div class="drawer-sep"></div>
@@ -1174,6 +1175,10 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <label style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--purplebg);border:1px solid #a78bfa30;border-radius:var(--radius-sm);margin-bottom:16px;cursor:pointer;">
     <input type="checkbox" id="og-sadece-ozel" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--purple);"/>
     <span style="font-size:13px;color:var(--purple);">✦ <span data-i18n="sadece_ozel_ders_flag">Sadece özel ders öğrencisi (sınıfa kayıtlı değil, bekleyen ödeme listesine düşmesin)</span></span>
+  </label>
+  <label style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--bg3,#ffffff0a);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:16px;cursor:pointer;">
+    <input type="checkbox" id="og-asistan" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--cyan,#22d3ee);"/>
+    <span style="font-size:13px;">🤝 <span data-i18n="asistan_flag">Asistan (sınıfa eklenmez, ödeme alınmaz, aktif öğrenci sayısına dahil değildir; yalnız özel ders girilebilir)</span></span>
   </label>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ogrenci')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-og" onclick="saveOgrenci()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
@@ -1687,7 +1692,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Düzenle', btn_sil:'Sil', btn_kaydet:'Kaydet', btn_iptal:'İptal',
     empty_ogrenci:'Henüz öğrenci eklenmedi.', empty_sinif:'Henüz sınıf eklenmedi.',
     no_result:'Sonuç bulunamadı', empty_ogrenci_pasif:'Pasif öğrenci yok',
-    btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız',
+    btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız', asistanlar:'Asistanlar', asistan_flag:'Asistan (sınıfa eklenmez, ödeme alınmaz, aktif öğrenci sayısına dahil değildir; yalnız özel ders girilebilir)',
     sadece_ozel_ders:'Sadece Özel Ders',
     ozel_ders_icin_ogrenci_sec:'Özel Ders İçin Öğrenci Seç', ogrenci_ara:'Öğrenci Ara', ogrenci_ara_ph:'İsim veya telefon yazarak ara...',
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
@@ -1866,7 +1871,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Edit', btn_sil:'Delete', btn_kaydet:'Save', btn_iptal:'Cancel',
     empty_ogrenci:'No students added yet.', empty_sinif:'No classes added yet.',
     no_result:'No results found', empty_ogrenci_pasif:'No inactive students',
-    btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class',
+    btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class', asistanlar:'Assistants', asistan_flag:'Assistant (not added to classes, no payments, not counted as active student; private lessons only)',
     sadece_ozel_ders:'Private Lessons Only',
     ozel_ders_icin_ogrenci_sec:'Select Student for Private Lesson', ogrenci_ara:'Search Student', ogrenci_ara_ph:'Search by name or phone...',
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
@@ -2045,7 +2050,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Изменить', btn_sil:'Удалить', btn_kaydet:'Сохранить', btn_iptal:'Отмена',
     empty_ogrenci:'Учеников пока нет.', empty_sinif:'Групп пока нет.',
     no_result:'Результат не найден', empty_ogrenci_pasif:'Нет неактивных учеников',
-    btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы',
+    btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы', asistanlar:'Ассистенты', asistan_flag:'Ассистент (не добавляется в группы, без оплаты, не считается активным учеником; только индивидуальные занятия)',
     sadece_ozel_ders:'Только частные уроки',
     ozel_ders_icin_ogrenci_sec:'Выбрать ученика для частного урока', ogrenci_ara:'Поиск ученика', ogrenci_ara_ph:'Поиск по имени или телефону...',
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
@@ -2335,6 +2340,9 @@ function initials(a,b){return((a||'')[0]||'').toUpperCase()+((b||'')[0]||'').toU
 // ── ÖZEL DERS / GRUP ÖĞRENCİ BİRLEŞTİRME ────────────────
 // Bir öğrencinin "özel ders öğrencisi" sayılması için tek koşul:
 // S.ogrenciler içindeki kaydına bağlı en az bir ozelPaketler kaydı olması.
+// Asistan: sınıfa eklenmez, ödeme alınmaz, aktif öğrenci sayılmaz (yalnız özel ders girilebilir)
+function ogAsistanMi(o){return !!(o&&o.asistan);}
+function ogSayilanAktifMi(o){return !!o&&(o.durum||'aktif')==='aktif'&&!o.asistan;}
 function ozelDersOgrencileri(){
   const idSet=new Set(S.ozelPaketler.map(p=>p.ogrenciId));
   return S.ogrenciler.filter(o=>idSet.has(o.id));
@@ -2734,7 +2742,7 @@ function waPopupGonder(){
 function yarismayaAc(){
   try{
     const liste=S.ogrenciler
-      .filter(o=>(o.durum||'aktif')==='aktif')
+      .filter(ogSayilanAktifMi)
       .map(o=>({isim:(o.ad+' '+(o.soyad||'')).trim(),cinsiyet:o.cinsiyet==='e'?'E':'K'}))
       .sort((a,b)=>a.isim.localeCompare(b.isim,'tr'));
     localStorage.setItem('canira_ogrenci_listesi',JSON.stringify(liste));
@@ -2900,13 +2908,13 @@ function openOgrenciModal(id){
     document.getElementById('og-soyad').value=og.soyad||'';
     telFormuDoldur(og.tel||'');
     document.getElementById('og-not').value=og.not||'';
-    document.getElementById('og-sadece-ozel').checked=!!og.sadeceOzelDers;
+    document.getElementById('og-sadece-ozel').checked=!!og.sadeceOzelDers;document.getElementById('og-asistan').checked=!!og.asistan;
     setSeg(og.cinsiyet||'k');
     document.getElementById('m-ogrenci-title').textContent=t('ogrenci_duzenle');
   } else {
     ['og-ad','og-soyad','og-not'].forEach(i=>document.getElementById(i).value='');
     telFormuDoldur('');
-    document.getElementById('og-sadece-ozel').checked=false;
+    document.getElementById('og-sadece-ozel').checked=false;document.getElementById('og-asistan').checked=false;
     // Cinsiyet seçili olmasın, kullanıcı seçmek zorunda
     SEG_CINSIYET='';
     document.getElementById('seg-k').classList.remove('active');
@@ -2951,7 +2959,7 @@ async function saveOgrenci(){
   }
   const btn=document.getElementById('btn-save-og');
   if(btn.disabled)return; // Çift tıklamayı önle
-  btn.disabled=true;setSyncing(true);const data={ad,soyad:so,cinsiyet:SEG_CINSIYET,tel,not:document.getElementById('og-not').value.trim(),sadeceOzelDers:document.getElementById('og-sadece-ozel').checked};try{
+  btn.disabled=true;setSyncing(true);const data={ad,soyad:so,cinsiyet:SEG_CINSIYET,tel,not:document.getElementById('og-not').value.trim(),sadeceOzelDers:document.getElementById('og-sadece-ozel').checked,asistan:document.getElementById('og-asistan').checked};try{
     if(EDIT_OG){
       const eski=S.ogrenciler.find(o=>o.id===EDIT_OG);
       await db.collection('ogrenciler').doc(EDIT_OG).update(data);
@@ -3326,7 +3334,7 @@ function openSinifOgrenci(id){
   const si=S.siniflar.find(s=>s.id===id);
   const kayitliIds=new Set((si.kayitlar||[]).map(k=>k.ogrenciId));
   SO_MUSAIT=S.ogrenciler
-    .filter(o=>!kayitliIds.has(o.id)&&(o.durum||'aktif')==='aktif')
+    .filter(o=>!kayitliIds.has(o.id)&&ogSayilanAktifMi(o))
     .sort((a,b)=>(a.ad+' '+(a.soyad||'')).localeCompare(b.ad+' '+(b.soyad||''),'tr'));
   SO_SECILEN=[];
   document.getElementById('so-search').value='';
@@ -5080,6 +5088,28 @@ function ozelEskiIadeUyarisi(seans,plan){
 // kaydedilmişse de Number() ile sayıya çevrilir.
 function ozelPaketKalan(p){return (Number(p.toplamSaat)||0)-(Number(p.yapilanSaat)||0);}
 function ozelPaketAktifMi(p){return ozelPaketKalan(p)>0.0001;}
+// Paketlerin kayıtlı "yapılan saat"i ile düşülmüş derslerin toplamını karşılaştırır.
+// Kayıtlı saat dersler toplamından FAZLAYSA (çift düşme) tek tek sorup düzeltir.
+async function ozelSaatDenetimi(){
+  const dusulen={};
+  S.ozelSeanslar.filter(x=>x.dusuldu).forEach(x=>{
+    if(Array.isArray(x.dusumler))x.dusumler.forEach(d=>{dusulen[d.paketId]=(dusulen[d.paketId]||0)+(Number(d.saat)||0);});
+    else if(x.paketId)dusulen[x.paketId]=(dusulen[x.paketId]||0)+(Number(x.sure)||1);
+  });
+  const farkli=S.ozelPaketler.filter(p=>{const b=dusulen[p.id]||0;return b>0&&(Number(p.yapilanSaat)||0)-b>0.01;});
+  if(!farkli.length){alert('Fazla düşülmüş paket bulunmadı. Tüm paketlerde kayıtlı saat, düşülen derslerle uyumlu (veya eksik).');return;}
+  let duzelen=0;
+  for(const p of farkli){
+    const og=S.ogrenciler.find(o=>o.id===p.ogrenciId);
+    const b=Math.round(dusulen[p.id]*10)/10;
+    const ad=og?((og.ad||'')+' '+(og.soyad||'')).trim():'?';
+    if(!confirm(ad+' · '+(Number(p.toplamSaat)||0)+' saatlik paket ('+formatDate(p.tarih)+')\nKayıtlı yapılan: '+fmtSaat(Number(p.yapilanSaat)||0)+' saat\nDüşülen derslerin toplamı: '+fmtSaat(b)+' saat\n\nYapılan saat '+fmtSaat(b)+' olarak düzeltilsin mi?\n(Dersler dışında elle saat eklediysen İptal de.)'))continue;
+    const top=Number(p.toplamSaat)||0;
+    try{await db.collection('ozelPaketler').doc(p.id).update({yapilanSaat:b,aktif:b<top});p.yapilanSaat=b;p.aktif=b<top;duzelen++;}catch(e){alert('Hata: '+e.message);}
+  }
+  _poll('ozelPaketler');
+  alert(duzelen+' paket düzeltildi.');
+}
 // Kayıtlı bayrak saatlerle uyuşmuyorsa oturum başına bir kez düzeltir ve neyin düzeltildiğini gösterir.
 let _ozelAktifOnarildi=false;
 async function ozelPaketAktifOnar(){
@@ -5343,7 +5373,9 @@ function dpOgrenciChange(){
   const multiWrap=document.getElementById('dp-egitmen-multi-wrap');
   const uyari=document.getElementById('dp-paket-uyari');
   const paket=og?dpAktifPaket(ogId):null;
-  const paketEgitmenler=(paket&&paket.egitmenIds||[]).map(id=>S.egitmenler.find(e=>e.id===id)).filter(Boolean);
+  const asistanMi=ogAsistanMi(og);
+  // Asistanın paketi yoktur: eğitmen listesi tüm eğitmenlerden seçilir
+  const paketEgitmenler=asistanMi?[...S.egitmenler]:(paket&&paket.egitmenIds||[]).map(id=>S.egitmenler.find(e=>e.id===id)).filter(Boolean);
   if(paketEgitmenler.length>=2){
     multiWrap.style.display='block';singleWrap.style.display='none';
     document.getElementById('dp-egitmen-select').innerHTML=paketEgitmenler.map(e=>`<option value="${e.id}">${e.ad}</option>`).join('');
@@ -5352,8 +5384,8 @@ function dpOgrenciChange(){
     const eg=paketEgitmenler.length===1?paketEgitmenler[0]:null;
     document.getElementById('dp-egitmen').value=eg?eg.ad:(og?'— Eğitmen atanmamış —':'');
   }
-  const paketVarMi=!!paket;
-  uyari.style.display=(og&&!paket)?'block':'none';
+  const paketVarMi=!!paket||asistanMi;
+  uyari.style.display=(og&&!paket&&!asistanMi)?'block':'none';
   const saveBtn=document.getElementById('btn-save-dp');
   if(saveBtn)saveBtn.disabled=!!(og&&!paketVarMi);
 }
@@ -5364,9 +5396,10 @@ async function saveDersPlan(){
   const saat=document.getElementById('dp-saat').value;
   const sure=parseFloat(document.getElementById('dp-sure').value);
   if(!saat){alert('Saat girin.');return;}
-  const paket=dpAktifPaket(ogId);
-  if(!paket){alert(t('aktif_paket_olmadan_ders_engel'));return;}
-  const paketEgitmenler=(paket&&paket.egitmenIds||[]).map(id=>S.egitmenler.find(e=>e.id===id)).filter(Boolean);
+  const asistanMi=ogAsistanMi(og);
+  const paket=asistanMi?null:dpAktifPaket(ogId);
+  if(!paket&&!asistanMi){alert(t('aktif_paket_olmadan_ders_engel'));return;}
+  const paketEgitmenler=asistanMi?[...S.egitmenler]:(paket&&paket.egitmenIds||[]).map(id=>S.egitmenler.find(e=>e.id===id)).filter(Boolean);
   let egitmenId=null;
   if(paketEgitmenler.length>=2){
     egitmenId=document.getElementById('dp-egitmen-select').value;
@@ -5461,6 +5494,12 @@ function otOtoDusKontrol(){
     if(isNaN(dt.getTime())||dt.getTime()>simdi)return;
     // paketId kayıtlı değilse (o an aktif paket yoktu ya da değişti), o öğrencinin şu anki aktif paketini bul
     let paketId=s.paketId;
+    if(!paketId&&ogAsistanMi(S.ogrenciler.find(o=>o.id===s.ogrenciId))){
+      // Asistan: paket/ödeme yok; ders saati geçince sadece "yapıldı" işaretlenir
+      OT_ISLENEN.add(s.id);
+      db.collection('ozelSeanslar').doc(s.id).update({dusuldu:true}).then(()=>{s.dusuldu=true;OT_ISLENEN.delete(s.id);if(PAGE==='ozel-takvim')renderOzelTakvim();}).catch(()=>OT_ISLENEN.delete(s.id));
+      return;
+    }
     if(!paketId){
       const aktifPaket=dpAktifPaket(s.ogrenciId);
       if(!aktifPaket)return; // hâlâ aktif paket yoksa bekletmeye devam et, sonraki kontrolde tekrar denenir
@@ -5469,12 +5508,17 @@ function otOtoDusKontrol(){
     OT_ISLENEN.add(s.id);
     (async()=>{
       try{
+        // Başka cihaz/sekme bu dersi zaten düşmüş mü? (çift düşmeyi önler)
+        const taze=await db.collection('ozelSeanslar').doc(s.id).get();
+        if(taze.exists&&taze.data().dusuldu){Object.assign(s,taze.data());return;}
         const p=S.ozelPaketler.find(x=>x.id===paketId);
         if(p){
           const plan=ozelDusumPlani(s.ogrenciId,s.sure||1,paketId);
-          await ozelDusumUygula(plan,null);
           const guncel={dusuldu:true,paketId,dusumler:plan.dusumler,...(plan.fazla>0?{fazla:plan.fazla}:{})};
+          // Önce dersi "düşüldü" olarak işaretle, sonra pakete yansıt; paket güncellenemezse işareti geri al
           await db.collection('ozelSeanslar').doc(s.id).update(guncel);
+          try{await ozelDusumUygula(plan,null);}
+          catch(e){await db.collection('ozelSeanslar').doc(s.id).update({dusuldu:false});throw e;}
           Object.assign(s,guncel); // ekran poll'unu beklemeden güncellensin
         } else {
           await db.collection('ozelSeanslar').doc(s.id).update({dusuldu:true});
@@ -5493,7 +5537,7 @@ function otOtoDusKontrol(){
 function getYaklasanlar(){const res=[];S.siniflar.forEach(si=>{if((si.durum||'aktif')==='pasif')return; /* kapalı sınıflar paket yenileme listesinde görünmez */ (si.kayitlar||[]).forEach(k=>{if(k.tip!=='paket')return;if(k.donduruldu)return;const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);if(!og||(og.durum||'aktif')==='pasif')return;const h=hesaplaKayit(k.ogrenciId,si.id);const b=h?h.bitisTarih:k.bitisTarih;const dl=daysLeft(b);if(dl<=7){res.push({og,kayit:k,sinif:si,dl,hesap:h});}});});return res.sort((a,b)=>a.dl-b.dl);}
 
 function renderAnasayfa(){
-  const aktifOgSayisi=S.ogrenciler.filter(o=>(o.durum||'aktif')==='aktif').length;
+  const aktifOgSayisi=S.ogrenciler.filter(ogSayilanAktifMi).length;
   document.getElementById('st-ogrenci').textContent=aktifOgSayisi;
   // Aktif öğrencilerin kırılımı: yalnız sınıf / yalnız özel ders / ikisi de / diğer.
   // Sınıfta = kapalı olmayan bir sınıfa kayıtlı; özel derste = aktif (saati kalan) özel ders paketi var.
@@ -5501,7 +5545,7 @@ function renderAnasayfa(){
   S.siniflar.forEach(si=>{if((si.durum||'aktif')==='pasif')return;(si.kayitlar||[]).forEach(k=>kirilimSinifta.add(k.ogrenciId));});
   const kirilimOzelde=new Set(S.ozelPaketler.filter(ozelPaketAktifMi).map(p=>p.ogrenciId));
   let kSinif=0,kOzel=0,kIkisi=0,kDiger=0;
-  S.ogrenciler.filter(o=>(o.durum||'aktif')==='aktif').forEach(o=>{
+  S.ogrenciler.filter(ogSayilanAktifMi).forEach(o=>{
     const g=kirilimSinifta.has(o.id),oz=kirilimOzelde.has(o.id);
     if(g&&oz)kIkisi++;else if(g)kSinif++;else if(oz)kOzel++;else kDiger++;
   });
@@ -5633,7 +5677,7 @@ function renderAnasayfa(){
   // Bekleyen Ödeme — sınıfa eklenmiş ama bu ay hiç ödemesi olmayan aktif paket öğrencileri
   const bekGruplar={};
   const bekYeniKayit=[];
-  const aktifOgrenciler=S.ogrenciler.filter(o=>(o.durum||'aktif')==='aktif');
+  const aktifOgrenciler=S.ogrenciler.filter(ogSayilanAktifMi);
   aktifOgrenciler.forEach(og=>{
     const kayitliSiniflar=S.siniflar.filter(si=>(si.kayitlar||[]).some(k=>k.ogrenciId===og.id));
     if(!kayitliSiniflar.length){
@@ -5801,8 +5845,9 @@ function renderOgrenciler(){
   if(arama)liste=liste.filter(o=>(o.ad+' '+(o.soyad||'')+' '+(o.tel||'')).toLowerCase().includes(arama));
   if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">♟</div><div class="empty-text">'+(arama?t('no_result'):OG_FILTER==='pasif'?t('empty_ogrenci_pasif'):t('empty_ogrenci'))+'</div></div>';return;}
   function siniflari(id){return S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===id)).map(s=>s.ad);}
-  const gruplar={};const sinifsizlar=[];const sadeceOzel=[];
+  const gruplar={};const sinifsizlar=[];const sadeceOzel=[];const asistanlar=[];
   liste.forEach(og=>{
+    if(og.asistan){asistanlar.push(og);return;} // asistanlar sınıfsız/özel listelerine karışmaz
     const adlar=siniflari(og.id);
     if(!adlar.length){
       if(ozelDersPaketiVarMi(og.id))sadeceOzel.push(og);
@@ -5812,6 +5857,7 @@ function renderOgrenciler(){
   Object.values(gruplar).forEach(g=>g.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr')));
   sinifsizlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   sadeceOzel.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
+  asistanlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   function row(og,sn,goster,num){
     const p=og.durum==='pasif';
     const snKisa=sn?sn.split(',')[0].trim():'';
@@ -5841,7 +5887,7 @@ function renderOgrenciler(){
     if(OG_SIRALAMA==='son')tumListe.reverse();
     html='<div class="card" style="padding:0 16px;">'+tumListe.map((og,i)=>row(og,siniflari(og.id).join(', '),true,i+1)).join('')+'</div>';
   } else {
-    window._ogSiraArr=[...sira,...(sadeceOzel.length?['__sadeceozel__']:[]),...(sinifsizlar.length?['__sinifsiz__']:[])];
+    window._ogSiraArr=[...sira,...(sadeceOzel.length?['__sadeceozel__']:[]),...(sinifsizlar.length?['__sinifsiz__']:[]),...(asistanlar.length?['__asistan__']:[])];
     if(!window._ogGrupAcik)window._ogGrupAcik=new Set();
     sira.forEach((ad,gi)=>{
       const acik=window._ogGrupAcik.has(ad);
@@ -5876,6 +5922,17 @@ function renderOgrenciler(){
         +'<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><span style="font-size:12px;color:var(--text2);font-weight:400;">'+sinifsizlar.length+' '+t('lbl_ogrenci_kucuk')+'</span><span style="color:var(--text2);transform:'+(sfAcik?'rotate(90deg)':'rotate(0deg)')+';">›</span></div>'
         +'</div>'
         +(sfAcik?'<div class="card" style="padding:0 16px;margin-top:4px;">'+sinifsizlar.map((og,i)=>row(og,'',false,i+1)).join('')+'</div>':'')
+        +'</div>';
+    }
+    if(asistanlar.length){
+      const asIdx=sira.length+(sadeceOzel.length?1:0)+(sinifsizlar.length?1:0);
+      const asAcik=window._ogGrupAcik.has('__asistan__');
+      html+='<div style="margin-bottom:6px;">'
+        +'<div onclick="toggleOgGrupByIdx('+asIdx+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg3,#ffffff0a);border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border);border-left:3px solid var(--text3);">'
+        +'<div style="font-size:13px;font-weight:600;">🤝 '+t('asistanlar')+'</div>'
+        +'<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><span style="font-size:12px;color:var(--text2);font-weight:400;">'+asistanlar.length+'</span><span style="color:var(--text2);transform:'+(asAcik?'rotate(90deg)':'rotate(0deg)')+';">›</span></div>'
+        +'</div>'
+        +(asAcik?'<div class="card" style="padding:0 16px;margin-top:4px;">'+asistanlar.map((og,i)=>row(og,'',false,i+1)).join('')+'</div>':'')
         +'</div>';
     }
   }
@@ -9041,7 +9098,7 @@ function renderRetention(){
   // Tüm öğrencileri akif/pasif olarak değerlendir
   // "Bırakmış" = durum==='pasif' veya sınıftan silinmiş
   // Her sınıf için kayıtlı tüm öğrenciler — aktif olanlar devam ediyor, pasifler bırakmış
-  const toplamAktif=S.ogrenciler.filter(o=>(o.durum||'aktif')==='aktif').length;
+  const toplamAktif=S.ogrenciler.filter(ogSayilanAktifMi).length;
   const toplamPasif=S.ogrenciler.filter(o=>o.durum==='pasif').length;
   const toplamHepsini=toplamAktif+toplamPasif;
   const genelPct=toplamHepsini?Math.round((toplamAktif/toplamHepsini)*100):0;
@@ -10077,7 +10134,7 @@ function renderTatilListe(){
 }
 function demoAra(q){
   const liste=document.getElementById('demo-liste');
-  const aktifler=S.ogrenciler.filter(o=>(o.durum||'aktif')==='aktif');
+  const aktifler=S.ogrenciler.filter(ogSayilanAktifMi);
   const filtre=q.trim().toLowerCase();
   const sonuclar=filtre?aktifler.filter(o=>(o.ad+' '+(o.soyad||'')).toLowerCase().includes(filtre)):aktifler;
   let html=`<div onclick="demoOgrenciSec(null)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface2);cursor:pointer;">
