@@ -5568,13 +5568,22 @@ function ogKartBilgiAc(ev){
   const kayit=(document.getElementById('st-kayit')||{}).textContent+' '+(document.getElementById('lbl-kayit')||{}).textContent+((document.getElementById('st-kayit-coklu')||{}).textContent||'');
   const kirilim=((document.getElementById('st-ogrenci-kirilim')||{}).textContent||'').split(' · ');
   const ov=document.createElement('div');ov.id='og-kart-bilgi';
-  ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:24px;';
+  ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(8,8,14,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;';
   ov.onclick=()=>ov.remove();
-  ov.innerHTML='<div onclick="event.stopPropagation()" style="background:var(--surface,#1a1a24);border:1px solid var(--border2,#ffffff25);border-radius:16px;padding:18px 20px;max-width:320px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.5);">'
-    +'<div style="font-size:15px;font-weight:600;margin-bottom:10px;">'+t('lbl_aktif_ogrenci')+' ('+t('toplam_lbl')+'): '+(document.getElementById('st-ogrenci-toplam')||{}).textContent+'</div>'
-    +kirilim.map(x=>'<div style="font-size:13px;color:var(--text2);padding:3px 0;">• '+x+'</div>').join('')
-    +'<div style="font-size:13px;color:var(--text2);padding:8px 0 0;margin-top:6px;border-top:1px solid var(--border);">'+kayit+'</div>'
-    +'<button class="btn btn-ghost" style="width:100%;margin-top:14px;" onclick="document.getElementById(\'og-kart-bilgi\').remove()">OK</button></div>';
+  const renkler=['var(--purple)','var(--cyan)','var(--amber)','var(--text3)'];
+  const satirlar=kirilim.map((x,i)=>{
+    const m=x.match(/^(\d+)\s*(.*)$/);const sayi=m?m[1]:'',etiket=m?m[2]:x;
+    const r=renkler[Math.min(i,renkler.length-1)];
+    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;margin-bottom:6px;background:var(--surface2);border:1px solid var(--border);border-left:3px solid '+r+';border-radius:var(--radius-sm);">'
+      +'<span style="font-family:Fraunces,serif;font-size:20px;font-weight:600;color:'+r+';min-width:30px;text-shadow:0 0 14px '+r+'55;">'+sayi+'</span>'
+      +'<span style="font-size:13.5px;color:var(--text2);">'+etiket+'</span></div>';
+  }).join('');
+  ov.innerHTML='<div onclick="event.stopPropagation()" style="background:linear-gradient(160deg,#ff6b6b14,var(--surface) 55%);border:1px solid #ff6b6b40;border-radius:var(--radius);padding:20px;max-width:340px;width:100%;box-shadow:0 18px 50px rgba(0,0,0,.6),0 0 40px #ff6b6b14;">'
+    +'<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);">'+t('lbl_aktif_ogrenci')+' · '+t('toplam_lbl')+'</div>'
+    +'<div style="font-family:Fraunces,serif;font-size:38px;font-weight:600;color:var(--accent);text-shadow:0 0 20px #ff6b6b50;line-height:1.1;margin:4px 0 14px;">'+(document.getElementById('st-ogrenci-toplam')||{}).textContent+'</div>'
+    +satirlar
+    +'<div style="font-size:12.5px;color:var(--text2);line-height:1.5;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">'+kayit+'</div>'
+    +'<button class="btn btn-accent" style="width:100%;margin-top:16px;" onclick="document.getElementById(\'og-kart-bilgi\').remove()">OK</button></div>';
   document.body.appendChild(ov);
 }
 function renderAnasayfa(){
