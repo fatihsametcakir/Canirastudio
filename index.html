@@ -1697,7 +1697,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Düzenle', btn_sil:'Sil', btn_kaydet:'Kaydet', btn_iptal:'İptal',
     empty_ogrenci:'Henüz öğrenci eklenmedi.', empty_sinif:'Henüz sınıf eklenmedi.',
     no_result:'Sonuç bulunamadı', empty_ogrenci_pasif:'Pasif öğrenci yok',
-    btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız', og_dagilim_gor:'Dağılımı gör', ozel_aktif_paketsiz:'Aktif paketi olmayanlar', asistanlar:'Asistanlar', asistan_flag:'Asistan (sınıfa eklenmez, ödeme alınmaz, aktif öğrenci sayısına dahil değildir; yalnız özel ders girilebilir)',
+    btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız', ot_sol_serit:'Sol şerit = eğitmen:', ot_kadin:'Kadın', ot_erkek:'Erkek', ot_asistan:'Asistan', og_dagilim_gor:'Dağılımı gör', ozel_aktif_paketsiz:'Aktif paketi olmayanlar', asistanlar:'Asistanlar', asistan_flag:'Asistan (sınıfa eklenmez, ödeme alınmaz, aktif öğrenci sayısına dahil değildir; yalnız özel ders girilebilir)',
     sadece_ozel_ders:'Sadece Özel Ders',
     ozel_ders_icin_ogrenci_sec:'Özel Ders İçin Öğrenci Seç', ogrenci_ara:'Öğrenci Ara', ogrenci_ara_ph:'İsim veya telefon yazarak ara...',
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
@@ -1876,7 +1876,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Edit', btn_sil:'Delete', btn_kaydet:'Save', btn_iptal:'Cancel',
     empty_ogrenci:'No students added yet.', empty_sinif:'No classes added yet.',
     no_result:'No results found', empty_ogrenci_pasif:'No inactive students',
-    btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class', og_dagilim_gor:'See breakdown', ozel_aktif_paketsiz:'No active package', asistanlar:'Assistants', asistan_flag:'Assistant (not added to classes, no payments, not counted as active student; private lessons only)',
+    btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class', ot_sol_serit:'Left stripe = instructor:', ot_kadin:'Female', ot_erkek:'Male', ot_asistan:'Assistant', og_dagilim_gor:'See breakdown', ozel_aktif_paketsiz:'No active package', asistanlar:'Assistants', asistan_flag:'Assistant (not added to classes, no payments, not counted as active student; private lessons only)',
     sadece_ozel_ders:'Private Lessons Only',
     ozel_ders_icin_ogrenci_sec:'Select Student for Private Lesson', ogrenci_ara:'Search Student', ogrenci_ara_ph:'Search by name or phone...',
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
@@ -2055,7 +2055,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Изменить', btn_sil:'Удалить', btn_kaydet:'Сохранить', btn_iptal:'Отмена',
     empty_ogrenci:'Учеников пока нет.', empty_sinif:'Групп пока нет.',
     no_result:'Результат не найден', empty_ogrenci_pasif:'Нет неактивных учеников',
-    btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы', og_dagilim_gor:'Показать детали', ozel_aktif_paketsiz:'Без активного пакета', asistanlar:'Ассистенты', asistan_flag:'Ассистент (не добавляется в группы, без оплаты, не считается активным учеником; только индивидуальные занятия)',
+    btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы', ot_sol_serit:'Полоса слева = тренер:', ot_kadin:'Женщина', ot_erkek:'Мужчина', ot_asistan:'Ассистент', og_dagilim_gor:'Показать детали', ozel_aktif_paketsiz:'Без активного пакета', asistanlar:'Ассистенты', asistan_flag:'Ассистент (не добавляется в группы, без оплаты, не считается активным учеником; только индивидуальные занятия)',
     sadece_ozel_ders:'Только частные уроки',
     ozel_ders_icin_ogrenci_sec:'Выбрать ученика для частного урока', ogrenci_ara:'Поиск ученика', ogrenci_ara_ph:'Поиск по имени или телефону...',
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
@@ -5233,6 +5233,14 @@ function openOzelTakvim(){
   const fab=document.getElementById('mainFab');if(fab)fab.style.display='none';
   renderOzelTakvim();
 }
+// Özel ders takvimi blok rengi: kadın pembe, erkek mavi, asistan turuncu (eğitmen rengi sol şeritte gösterilir)
+function otCinsiyetRenk(og){
+  if(!og)return '#5c5a78';
+  if(og.asistan)return '#fb923c';
+  if(og.cinsiyet==='e')return '#60a5fa';
+  if(og.cinsiyet==='k')return '#f472b6';
+  return '#9a98b8';
+}
 function egitmenRenk(id){
   if(!id)return '#5c5a78';
   const idx=S.egitmenler.findIndex(e=>e.id===id);
@@ -5287,6 +5295,10 @@ function renderOzelTakvim(){
     if(!eg)return'';
     return `<span class="ot-legend-item"><span class="ot-legend-dot" style="background:${egitmenRenk(id)};color:${egitmenRenk(id)};"></span>${eg.ad}</span>`;
   }).join('')||'<span style="font-size:11px;color:var(--text3);">Özel öğrencilere eğitmen atayınca burada renk listesi görünür.</span>';
+  // Blok rengi cinsiyeti/asistanı, sol şerit eğitmeni gösterir
+  legendEl.innerHTML='<span style="font-size:11px;color:var(--text3);margin-right:6px;">'+t('ot_sol_serit')+'</span>'+legendEl.innerHTML
+    +'<div style="flex-basis:100%;height:0;"></div>'
+    +[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('');
 
   // Başlık satırı
   let html=`<div style="grid-column:1;grid-row:1;position:sticky;left:0;z-index:4;background:var(--bg);"></div>`;
@@ -5336,7 +5348,7 @@ function renderOzelTakvim(){
       const span=Math.min(s._span,OT_TOPLAM_SLOT-s._start);
       const etiket=(og?og.ad+' '+(og.soyad||''):'')+' · '+s.saat+' · '+fmtSaat(s.sure||1)+' saat'+(s.dusuldu?' · düşüldü':'');
       const adSoyad=og?(og.ad+' '+(og.soyad||'')).trim():'';
-      html+=`<div class="ot-block" style="grid-column:${dayIdx+2};grid-row:${s._start+2} / span ${span};left:${solYuzde}%;width:${genislikYuzde}%;background:${egitmenRenk(s.egitmenId)};${s.dusuldu?'opacity:.55;':''}"
+      html+=`<div class="ot-block" style="grid-column:${dayIdx+2};grid-row:${s._start+2} / span ${span};left:${solYuzde}%;width:${genislikYuzde}%;background:${otCinsiyetRenk(og)};box-shadow:inset 5px 0 0 ${egitmenRenk(s.egitmenId)};${s.dusuldu?'opacity:.55;':''}"
         onmousedown="otLpBaslat('${tarih}','${s.saat}')" onmouseup="otLpBitir()" onmouseleave="otLpBitir()"
         ontouchstart="otLpBaslat('${tarih}','${s.saat}')" ontouchend="otLpBitir()" ontouchmove="otLpBitir()"
         onclick="event.stopPropagation();if(!OT_LP_TETIKLENDI)otSeansDetay('${s.id}')"
