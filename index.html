@@ -2350,7 +2350,12 @@ function ogAsistanMi(o){return !!(o&&o.asistan);}
 function ogSayilanAktifMi(o){return !!o&&(o.durum||'aktif')==='aktif'&&!o.asistan;}
 function ozelDersOgrencileri(){
   const idSet=new Set(S.ozelPaketler.map(p=>p.ogrenciId));
-  return S.ogrenciler.filter(o=>idSet.has(o.id));
+  return S.ogrenciler.filter(o=>idSet.has(o.id)&&!o.asistan); // asistanlar özel ders listelerinde görünmez
+}
+// Takvimden ders planlarken seçilebilecek öğrenciler: paketi olanlar + aktif asistanlar (asistan için paket gerekmez)
+function dpOgrenciSecenekleri(){
+  const ids=new Set(S.ozelPaketler.map(p=>p.ogrenciId));
+  return S.ogrenciler.filter(o=>o.asistan?(o.durum||'aktif')==='aktif':ids.has(o.id));
 }
 function ozelDersPaketiVarMi(ogrenciId){
   return S.ozelPaketler.some(p=>p.ogrenciId===ogrenciId);
@@ -5357,8 +5362,8 @@ function otHucreTikla(tarih,saat){
   DP_TARIH=tarih;EDIT_DERS_PLAN=null;
   const ogSel=document.getElementById('dp-ogrenci');
   ogSel.innerHTML='<option value="">— Seçin —</option>'+
-    [...ozelDersOgrencileri()].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'))
-      .map(o=>`<option value="${o.id}">${o.ad} ${o.soyad||''}</option>`).join('');
+    [...dpOgrenciSecenekleri()].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'))
+      .map(o=>`<option value="${o.id}">${o.ad} ${o.soyad||''}${o.asistan?' 🤝':''}</option>`).join('');
   document.getElementById('dp-egitmen').value='';
   document.getElementById('dp-egitmen-single-wrap').style.display='block';
   document.getElementById('dp-egitmen-multi-wrap').style.display='none';
@@ -5879,7 +5884,7 @@ function renderOgrenciler(){
   function siniflari(id){return S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===id)).map(s=>s.ad);}
   const gruplar={};const sinifsizlar=[];const sadeceOzel=[];const asistanlar=[];
   liste.forEach(og=>{
-    if(og.asistan){asistanlar.push(og);return;} // asistanlar sınıfsız/özel listelerine karışmaz
+    if(og.asistan){if(arama)asistanlar.push(og);return;} // asistanlar listeyi kalabalıklaştırmaz; yalnız aramada görünür
     const adlar=siniflari(og.id);
     if(!adlar.length){
       if(ozelDersPaketiVarMi(og.id))sadeceOzel.push(og);
