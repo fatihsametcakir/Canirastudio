@@ -3541,23 +3541,26 @@ function hesaplaKayit(ogId,siId){
 
   if(!toplamBitis)return{hak:0,bitisTarih:k.bitisTarih}; // tüm ödemeler iade edilmiş
   const bitisTarih=dateStr(toplamBitis);
-  let kalan=0;
+  // Manuel (+) haklar ödenen paketin SONUNA eklenen ekstra ders günleridir (tatil/iptal/donukluk günleri atlanır).
+  // Ders günü geçtikçe bu haklar da diğer haklar gibi tükenir; sabit bir sayı olarak kalmaz.
+  const manuelHak=k.manuelHak||0;
+  let genisBitis=new Date(toplamBitis.getFullYear(),toplamBitis.getMonth(),toplamBitis.getDate());
+  if(manuelHak>0){
+    for(let i=0;i<manuelHak;i++){
+      genisBitis.setDate(genisBitis.getDate()+7);
+      while(gecersiz(dateStr(genisBitis)))genisBitis.setDate(genisBitis.getDate()+7);
+    }
+  }
+  let kalan=0,kalanManuel=0;
   const tLoop=new Date(ilkDonemBas.getFullYear(),ilkDonemBas.getMonth(),ilkDonemBas.getDate());
-  const bitisLoop=new Date(toplamBitis.getFullYear(),toplamBitis.getMonth(),toplamBitis.getDate());
-  while(tLoop<=bitisLoop){
-    if(!gecersiz(dateStr(tLoop))&&tLoop>=bugun)kalan++;
+  while(tLoop<=genisBitis){
+    if(!gecersiz(dateStr(tLoop))&&tLoop>=bugun){kalan++;if(tLoop>toplamBitis)kalanManuel++;}
     tLoop.setDate(tLoop.getDate()+7);
   }
-
-  const manuelHak=k.manuelHak||0;
-  const hakSonuc=Math.max(0,kalan+manuelHak);
-  let bitisTarihSonuc=bitisTarih;
-  if(manuelHak>0){
-    const btp=bitisTarih.split('-');const bt=new Date(+btp[0],+btp[1]-1,+btp[2]);
-    bt.setDate(bt.getDate()+manuelHak*7);
-    bitisTarihSonuc=dateStr(bt);
-  }
-  return{hak:hakSonuc,bitisTarih:bitisTarihSonuc,manuel:manuelHak};
+  // Negatif manuel hak (nadir) eski davranışla düşülür
+  const hakSonuc=Math.max(0,manuelHak<0?kalan+manuelHak:kalan);
+  const bitisTarihSonuc=manuelHak>0?dateStr(genisBitis):bitisTarih;
+  return{hak:hakSonuc,bitisTarih:bitisTarihSonuc,manuel:manuelHak>0?kalanManuel:manuelHak};
 }
 // Toplam ders hakkının kaç tanesinin elle eklendiğini gösteren kısa etiket: " (+2 manuel)"
 function manuelHakEtiketi(h,uzun){
