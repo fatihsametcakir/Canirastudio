@@ -780,7 +780,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- ANA SAYFA -->
   <div class="page active" id="pg-anasayfa">
     <div class="stats-row" id="anasayfa-stats-row">
-      <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" style="display:flex;align-items:center;gap:6px;"><span id="lbl-aktif-ogrenci">Aktif Öğrenci</span><button type="button" onclick="ogKartBilgiAc(event)" aria-label="Detay" style="width:20px;height:20px;border-radius:50%;border:1px solid var(--border2,#ffffff30);background:transparent;color:var(--text2);font-size:12px;font-weight:700;line-height:1;cursor:pointer;padding:0;flex-shrink:0;">i</button></div><div class="stat-val" id="st-ogrenci">0</div><div style="display:none;"><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span><span id="st-kayit-coklu"></span><div id="st-ogrenci-kirilim"></div></div></div>
+      <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" style="display:flex;align-items:center;gap:6px;"><span id="lbl-aktif-ogrenci">Aktif Öğrenci</span><button type="button" onclick="ogKartBilgiAc(event)" aria-label="Detay" style="width:20px;height:20px;border-radius:50%;border:1px solid var(--border2,#ffffff30);background:transparent;color:var(--text2);font-size:12px;font-weight:700;line-height:1;cursor:pointer;padding:0;flex-shrink:0;">i</button></div><div class="stat-val" id="st-ogrenci">0</div><div style="display:none;"><span id="st-ogrenci-toplam">0</span><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span><span id="st-kayit-coklu"></span><div id="st-ogrenci-kirilim"></div></div></div>
       <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-sinif">Sınıf</div><div class="stat-val" id="st-sinif">0</div></div>
       <div class="stat-card s3" onclick="goTo('gelirgider',document.querySelectorAll('.nav-item')[6])" style="cursor:pointer;"><div class="stat-label" id="lbl-bu-ay-gelir">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="lbl-net">Net</span>: <span id="st-net">0</span></div></div>
       <div class="stat-card s4" onclick="goTo('odemeler',document.querySelectorAll('.nav-item')[5])" style="cursor:pointer;"><div class="stat-label" id="lbl-paket-yenileme">Paket yenileme</div><div class="stat-val" id="st-yaklasan">0</div></div>
@@ -1682,7 +1682,7 @@ const TRANSLATIONS={
     topbar_sub:'Yönetim Paneli', sync_live:'Canlı', sync_saving:'Kaydediliyor...',
     nav_anasayfa:'Ana Sayfa', nav_ogrenciler:'Öğrenciler', nav_siniflar:'Sınıflar',
     nav_takvim:'Takvim', nav_yoklama:'Yoklama', nav_odemeler:'Ödemeler', nav_gelirgider:'Gelir/Gider',
-    lbl_aktif_ogrenci:'Aktif Öğrenci', lbl_kayit:'öğrenci sınıfa kayıtlı', kayit_coklu:'{n} kişi birden fazla sınıfta, toplam {k} kayıt', kirilim_sinif:'sadece sınıf', kirilim_ozel:'sadece özel ders', kirilim_ikisi:'sınıf + özel ders', kirilim_diger:'diğer', lbl_sinif:'Sınıf',
+    lbl_aktif_ogrenci:'Aktif Öğrenci', lbl_kayit:'öğrenci sınıfa kayıtlı', kayit_coklu:'{n} kişi birden fazla sınıfta, toplam {k} kayıt', toplam_lbl:'toplam', kirilim_sinif:'sadece sınıf', kirilim_ozel:'sadece özel ders', kirilim_ikisi:'sınıf + özel ders', kirilim_diger:'diğer', lbl_sinif:'Sınıf',
     lbl_bu_ay_gelir:'Bu ay gelir', lbl_net:'Net', lbl_paket_yenileme:'Paket yenileme',
     drawer_ozel:'✦ Özel Dersler', drawer_videolar:'🎬 Ders Videoları', drawer_yoklama:'✓ Yoklama', nav_ozel:'Özel Dersler',
     filter_aktif:'Aktif', filter_pasif:'Pasif', filter_hepsi:'Hepsi',
@@ -1861,7 +1861,7 @@ const TRANSLATIONS={
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
     nav_anasayfa:'Home', nav_ogrenciler:'Students', nav_siniflar:'Classes',
     nav_takvim:'Calendar', nav_yoklama:'Attendance', nav_odemeler:'Payments', nav_gelirgider:'Income/Expense',
-    lbl_aktif_ogrenci:'Active Students', lbl_kayit:'students enrolled in classes', kayit_coklu:'{n} in more than one class, {k} enrollments in total', kirilim_sinif:'class only', kirilim_ozel:'private only', kirilim_ikisi:'class + private', kirilim_diger:'other', lbl_sinif:'Classes',
+    lbl_aktif_ogrenci:'Active Students', lbl_kayit:'students enrolled in classes', kayit_coklu:'{n} in more than one class, {k} enrollments in total', toplam_lbl:'total', kirilim_sinif:'class only', kirilim_ozel:'private only', kirilim_ikisi:'class + private', kirilim_diger:'other', lbl_sinif:'Classes',
     lbl_bu_ay_gelir:'Income this month', lbl_net:'Net', lbl_paket_yenileme:'Package renewals',
     drawer_ozel:'✦ Private Lessons', drawer_videolar:'🎬 Lesson Videos', drawer_yoklama:'✓ Attendance', nav_ozel:'Private Lessons',
     filter_aktif:'Active', filter_pasif:'Inactive', filter_hepsi:'All',
@@ -2040,7 +2040,7 @@ const TRANSLATIONS={
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
     nav_anasayfa:'Главная', nav_ogrenciler:'Ученики', nav_siniflar:'Группы',
     nav_takvim:'Календарь', nav_yoklama:'Посещаемость', nav_odemeler:'Платежи', nav_gelirgider:'Доходы/Расходы',
-    lbl_aktif_ogrenci:'Активные ученики', lbl_kayit:'учеников в группах', kayit_coklu:'{n} в нескольких группах, всего записей: {k}', kirilim_sinif:'только группа', kirilim_ozel:'только индивид.', kirilim_ikisi:'группа + индивид.', kirilim_diger:'другие', lbl_sinif:'Групп',
+    lbl_aktif_ogrenci:'Активные ученики', lbl_kayit:'учеников в группах', kayit_coklu:'{n} в нескольких группах, всего записей: {k}', toplam_lbl:'всего', kirilim_sinif:'только группа', kirilim_ozel:'только индивид.', kirilim_ikisi:'группа + индивид.', kirilim_diger:'другие', lbl_sinif:'Групп',
     lbl_bu_ay_gelir:'Доход за месяц', lbl_net:'Чистыми', lbl_paket_yenileme:'Обновление пакетов',
     drawer_ozel:'✦ Частные уроки', drawer_videolar:'🎬 Видео уроков', drawer_yoklama:'✓ Посещаемость', nav_ozel:'Частные уроки',
     filter_aktif:'Активные', filter_pasif:'Неактивные', filter_hepsi:'Все',
@@ -5546,7 +5546,7 @@ function ogKartBilgiAc(ev){
   ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:24px;';
   ov.onclick=()=>ov.remove();
   ov.innerHTML='<div onclick="event.stopPropagation()" style="background:var(--surface,#1a1a24);border:1px solid var(--border2,#ffffff25);border-radius:16px;padding:18px 20px;max-width:320px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.5);">'
-    +'<div style="font-size:15px;font-weight:600;margin-bottom:10px;">'+t('lbl_aktif_ogrenci')+': '+(document.getElementById('st-ogrenci')||{}).textContent+'</div>'
+    +'<div style="font-size:15px;font-weight:600;margin-bottom:10px;">'+t('lbl_aktif_ogrenci')+' ('+t('toplam_lbl')+'): '+(document.getElementById('st-ogrenci-toplam')||{}).textContent+'</div>'
     +kirilim.map(x=>'<div style="font-size:13px;color:var(--text2);padding:3px 0;">• '+x+'</div>').join('')
     +'<div style="font-size:13px;color:var(--text2);padding:8px 0 0;margin-top:6px;border-top:1px solid var(--border);">'+kayit+'</div>'
     +'<button class="btn btn-ghost" style="width:100%;margin-top:14px;" onclick="document.getElementById(\'og-kart-bilgi\').remove()">OK</button></div>';
@@ -5554,7 +5554,7 @@ function ogKartBilgiAc(ev){
 }
 function renderAnasayfa(){
   const aktifOgSayisi=S.ogrenciler.filter(ogSayilanAktifMi).length;
-  document.getElementById('st-ogrenci').textContent=aktifOgSayisi;
+  const toplamEl=document.getElementById('st-ogrenci-toplam');if(toplamEl)toplamEl.textContent=aktifOgSayisi; // kırılım penceresinde gösterilen genel toplam
   // Aktif öğrencilerin kırılımı: yalnız sınıf / yalnız özel ders / ikisi de / diğer.
   // Sınıfta = kapalı olmayan bir sınıfa kayıtlı; özel derste = aktif (saati kalan) özel ders paketi var.
   const kirilimSinifta=new Set();
@@ -5580,6 +5580,7 @@ function renderAnasayfa(){
   const coklu=Object.values(kayitSayac).filter(n=>n>1).length;
   const kayitEl=document.getElementById('st-kayit');
   if(kayitEl)kayitEl.textContent=Object.keys(kayitSayac).length; // tekil öğrenci sayısı
+  document.getElementById('st-ogrenci').textContent=Object.keys(kayitSayac).length; // kart: sınıfa kayıtlı tekil kişi sayısı
   const kayitColuEl=document.getElementById('st-kayit-coklu');
   if(kayitColuEl)kayitColuEl.textContent=coklu?' ('+t('kayit_coklu').replace('{n}',coklu).replace('{k}',aktifKayitSayisi)+')':'';
   document.getElementById('st-sinif').textContent=S.siniflar.filter(s=>s.durum!=='pasif').length;
