@@ -1692,7 +1692,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Düzenle', btn_sil:'Sil', btn_kaydet:'Kaydet', btn_iptal:'İptal',
     empty_ogrenci:'Henüz öğrenci eklenmedi.', empty_sinif:'Henüz sınıf eklenmedi.',
     no_result:'Sonuç bulunamadı', empty_ogrenci_pasif:'Pasif öğrenci yok',
-    btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız', asistanlar:'Asistanlar', asistan_flag:'Asistan (sınıfa eklenmez, ödeme alınmaz, aktif öğrenci sayısına dahil değildir; yalnız özel ders girilebilir)',
+    btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız', ozel_aktif_paketsiz:'Aktif paketi olmayanlar', asistanlar:'Asistanlar', asistan_flag:'Asistan (sınıfa eklenmez, ödeme alınmaz, aktif öğrenci sayısına dahil değildir; yalnız özel ders girilebilir)',
     sadece_ozel_ders:'Sadece Özel Ders',
     ozel_ders_icin_ogrenci_sec:'Özel Ders İçin Öğrenci Seç', ogrenci_ara:'Öğrenci Ara', ogrenci_ara_ph:'İsim veya telefon yazarak ara...',
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
@@ -1871,7 +1871,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Edit', btn_sil:'Delete', btn_kaydet:'Save', btn_iptal:'Cancel',
     empty_ogrenci:'No students added yet.', empty_sinif:'No classes added yet.',
     no_result:'No results found', empty_ogrenci_pasif:'No inactive students',
-    btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class', asistanlar:'Assistants', asistan_flag:'Assistant (not added to classes, no payments, not counted as active student; private lessons only)',
+    btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class', ozel_aktif_paketsiz:'No active package', asistanlar:'Assistants', asistan_flag:'Assistant (not added to classes, no payments, not counted as active student; private lessons only)',
     sadece_ozel_ders:'Private Lessons Only',
     ozel_ders_icin_ogrenci_sec:'Select Student for Private Lesson', ogrenci_ara:'Search Student', ogrenci_ara_ph:'Search by name or phone...',
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
@@ -2050,7 +2050,7 @@ const TRANSLATIONS={
     btn_duzenle:'✎ Изменить', btn_sil:'Удалить', btn_kaydet:'Сохранить', btn_iptal:'Отмена',
     empty_ogrenci:'Учеников пока нет.', empty_sinif:'Групп пока нет.',
     no_result:'Результат не найден', empty_ogrenci_pasif:'Нет неактивных учеников',
-    btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы', asistanlar:'Ассистенты', asistan_flag:'Ассистент (не добавляется в группы, без оплаты, не считается активным учеником; только индивидуальные занятия)',
+    btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы', ozel_aktif_paketsiz:'Без активного пакета', asistanlar:'Ассистенты', asistan_flag:'Ассистент (не добавляется в группы, без оплаты, не считается активным учеником; только индивидуальные занятия)',
     sadece_ozel_ders:'Только частные уроки',
     ozel_ders_icin_ogrenci_sec:'Выбрать ученика для частного урока', ogrenci_ara:'Поиск ученика', ogrenci_ara_ph:'Поиск по имени или телефону...',
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
@@ -6094,8 +6094,14 @@ function renderOzel(){
     if(!paketleri.length)return Infinity;
     return paketleri.reduce((min,p)=>Math.min(min,p.olusturma||0),Infinity);
   };
-  const sirali=[...liste].sort((a,b)=>ilkPaketZamani(a)-ilkPaketZamani(b));
+  const siraliHepsi=[...liste].sort((a,b)=>ilkPaketZamani(a)-ilkPaketZamani(b));
+  // Aktif (saati kalan) paketi olanlar üstte; olmayanlar ayrı bir başlıkla en altta
+  const aktifPaketliMi=og=>S.ozelPaketler.some(p=>p.ogrenciId===og.id&&ozelPaketAktifMi(p));
+  const sirali=[...siraliHepsi.filter(aktifPaketliMi),...siraliHepsi.filter(og=>!aktifPaketliMi(og))];
+  const aktifSayisi=siraliHepsi.filter(aktifPaketliMi).length;
   el.innerHTML=sirali.map((og,ozelSira)=>{
+    const baslik=(ozelSira===aktifSayisi&&aktifSayisi<sirali.length)?'<div style="font-size:12px;font-weight:600;color:var(--text2);margin:18px 2px 8px;text-transform:uppercase;letter-spacing:.04em;">'+t('ozel_aktif_paketsiz')+' ('+(sirali.length-aktifSayisi)+')</div>':'';
+    return baslik+(()=>{
     // Bir öğrencinin verisinde beklenmedik bir sorun olsa bile diğer öğrencilerin
     // görünmesini engellemesin diye her kart kendi try/catch'i içinde üretiliyor
     try{
@@ -6150,6 +6156,7 @@ function renderOzel(){
       console.warn('Özel ders kartı render hatası:',og.id,og.ad,e);
       return `<div class="ozel-og-kart" style="border-color:#ff6b6b50;"><div style="font-size:13px;color:var(--accent);">⚠ ${og.ad} ${og.soyad||''} — ${t('kart_render_hata')}</div></div>`;
     }
+    })();
   }).join('');
 }
 function openPaketDersler(paketId){
