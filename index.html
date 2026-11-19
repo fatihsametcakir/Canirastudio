@@ -8039,7 +8039,7 @@ function renderDevamsizPasif(){
           return `<div style="display:flex;align-items:center;gap:10px;padding:10px 11px;margin-bottom:7px;border-radius:var(--radius-sm);background:${sec?'var(--greenbg)':'var(--surface2)'};border:1px solid ${sec?'#34d39950':'var(--border)'};">
             <input type="checkbox" ${sec?'checked':''} onchange="devamsizPasifSecimDegis('${og.id}',this.checked)" style="width:18px;height:18px;accent-color:var(--green);flex-shrink:0;"/>
             <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:30px;height:30px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
-            <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;">${waHtmlEsc(og.ad+' '+(og.soyad||''))}</div>${telGecerliMi(og.tel)?'':'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;"><span style="font-size:11px;color:var(--amber);">'+t('tel_yok_kisa')+'</span>'+(telCepCihaziMi()?'<button type="button" class="btn btn-sm" style="padding:3px 8px;font-size:11px;background:var(--cyanbg);color:var(--cyan);border:1px solid #22d3ee40;" onclick="telRehberdenSec(\''+og.id+'\')">'+(telRehberDestekliMi()?'📇 '+t('rehberden_sec'):'📞 '+t('numara_ekle'))+'</button>':'')+'</div>'}</div>
+            <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;">${waHtmlEsc(og.ad+' '+(og.soyad||''))}</div>${telGecerliMi(og.tel)?'':'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;"><span style="font-size:11px;color:var(--amber);">'+t('tel_yok_kisa')+'</span></div>'}</div>
             ${waBtnPopup(og.tel,og.ad,sinifMetni,null,'kampanya')}
           </div>`;}).join('')}
       </div>
@@ -8047,43 +8047,6 @@ function renderDevamsizPasif(){
   }).join('');
   const scrollEl=el;const st=scrollEl.scrollTop;
   el.innerHTML=html;scrollEl.scrollTop=st;
-}
-
-// Telefon rehberinden kişi seçip numarasını öğrenciye yazar (Contact Picker API: yalnız Android Chrome, HTTPS)
-function telCepCihaziMi(){return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'')||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
-function telRehberDestekliMi(){return ('contacts' in navigator)&&('ContactsManager' in window);}
-async function telRehberdenSec(ogId){
-  const og=S.ogrenciler.find(o=>o.id===ogId);if(!og)return;
-  const ad=((og.ad||'')+' '+(og.soyad||'')).trim();
-  if(!telRehberDestekliMi()){
-    // iPhone/iPad: tarayıcılar rehberi açmayı desteklemiyor; öğrenci kaydındaki telefon alanına geç
-    openOgrenciModal(ogId);
-    return;
-  }
-  let secilen;
-  try{secilen=await navigator.contacts.select(['name','tel'],{multiple:false});}
-  catch(e){alert(t('rehber_acilamadi')+' ('+(e&&e.message?e.message:e)+')');return;}
-  if(!secilen||!secilen.length)return; // kullanıcı vazgeçti
-  const kisi=secilen[0];
-  const numaralar=[...new Set((kisi.tel||[]).map(telNormalizeEt).filter(Boolean))];
-  if(!numaralar.length){alert(t('rehber_numara_yok'));return;}
-  // Birden fazla numara varsa cep numarası (905...) olanı tercih et
-  const numara=numaralar.find(n=>/^905\d{9}$/.test(n))||numaralar[0];
-  const kisiAdi=((kisi.name||[])[0]||'').trim();
-  const baskasi=S.ogrenciler.find(o=>o.id!==ogId&&o.tel&&telNormalizeEt(o.tel)===numara);
-  let mesaj=ad+'\n← '+(kisiAdi||'?')+' (rehber)\n'+numara+(numaralar.length>1?'\n('+numaralar.length+' numara vardı, cep numarası seçildi)':'')+'\n\n'+t('rehber_kaydet_soru');
-  if(baskasi)mesaj='⚠ '+t('rehber_baska_ogrenci')+': '+((baskasi.ad||'')+' '+(baskasi.soyad||'')).trim()+'\n\n'+mesaj;
-  if(!confirm(mesaj))return;
-  setSyncing(true);
-  try{
-    const eski=og.tel||'';
-    await db.collection('ogrenciler').doc(ogId).update({tel:numara});
-    og.tel=numara;
-    ogrenciOlayEkle(ogId,null,null,'tel_degisti',eski||'—',numara);
-    showToast('✓ '+ad+': '+numara,'success');
-  }catch(e){alert('Hata: '+e.message);}
-  setSyncing(false);
-  if(DEVAMSIZ_TAB==='pasif')renderDevamsiz();
 }
 
 // Toplu gönderim: WhatsApp (wa.me) tek seferde tek sohbet açabilir ve mesajı kullanıcı kendisi gönderir;
