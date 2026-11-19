@@ -1389,9 +1389,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-devamsiz')">✕</button>
   <div class="sheet-title" data-i18n="devamsiz_ogrenciler" style="flex-shrink:0;">🚩 Devamsız Öğrenciler</div>
   <div class="tab-row" style="flex-shrink:0;">
-    <button class="tab-btn active" id="devamsiz-tab-2" onclick="devamsizTabSec('2')" data-i18n="iki_hafta_ustuste">2 Hafta Üst Üste</button>
+    <button class="tab-btn active" id="devamsiz-tab-pasif" onclick="devamsizTabSec('pasif')" data-i18n="devamsiz_tab_pasif">Pasif Öğrenciler</button>
+    <button class="tab-btn" id="devamsiz-tab-2" onclick="devamsizTabSec('2')" data-i18n="iki_hafta_ustuste">2 Hafta Üst Üste</button>
     <button class="tab-btn" id="devamsiz-tab-3" onclick="devamsizTabSec('3')" data-i18n="uc_hafta_ustuste">3+ Hafta</button>
-    <button class="tab-btn" id="devamsiz-tab-pasif" onclick="devamsizTabSec('pasif')" data-i18n="devamsiz_tab_pasif">Pasif Öğrenciler</button>
   </div>
   <div id="devamsiz-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
 </div></div>
@@ -7912,9 +7912,9 @@ function devamsizOgrencileriHesapla(){
 let DEVAMSIZ_TAB='2';
 let DEVAMSIZ_ACIK=new Set();
 function openDevamsizModal(){
-  DEVAMSIZ_TAB='2';
   DEVAMSIZ_ACIK=new Set();
-  renderDevamsiz();
+  DEVAMSIZ_SECIM=new Set();
+  devamsizTabSec('pasif'); // her açılışta ilk sekme: Pasif Öğrenciler
   openModal('m-devamsiz');
 }
 function devamsizTabSec(tab){
