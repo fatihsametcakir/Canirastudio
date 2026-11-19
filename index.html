@@ -797,9 +797,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <!-- ÖĞRENCİLER -->
   <div class="page" id="pg-ogrenciler">
     <div style="display:flex;gap:8px;margin-bottom:10px;margin-top:4px;">
-      <button class="btn btn-sm" id="filter-aktif" onclick="setOgrenciFilter('aktif')" style="flex:1;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b40;box-shadow:0 3px 10px -3px #ff6b6b70;"><span id="lbl-filter-aktif">Aktif</span></button>
-      <button class="btn btn-sm" id="filter-pasif" onclick="setOgrenciFilter('pasif')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-pasif">Pasif</span></button>
-      <button class="btn btn-sm" id="filter-hepsi" onclick="setOgrenciFilter('hepsi')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-hepsi">Hepsi</span></button>
+      <button class="btn btn-sm" id="filter-aktif" onclick="setOgrenciFilter('aktif')" style="flex:1;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b40;box-shadow:0 3px 10px -3px #ff6b6b70;"><span id="lbl-filter-aktif">Aktif</span> <span id="cnt-filter-aktif" style="opacity:.75;font-weight:500;"></span></button>
+      <button class="btn btn-sm" id="filter-pasif" onclick="setOgrenciFilter('pasif')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-pasif">Pasif</span> <span id="cnt-filter-pasif" style="opacity:.75;font-weight:500;"></span></button>
+      <button class="btn btn-sm" id="filter-hepsi" onclick="setOgrenciFilter('hepsi')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-hepsi">Hepsi</span> <span id="cnt-filter-hepsi" style="opacity:.75;font-weight:500;"></span></button>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <button id="btn-gruplu" class="btn btn-sm" style="flex:1;background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa40;box-shadow:0 3px 10px -3px #a78bfa70;" onclick="setOgGruplu(true)"><span id="lbl-siniftagore">Sınıfa Göre</span></button>
@@ -5896,6 +5896,10 @@ function renderAnasayfa(){
 
 function renderOgrenciler(){
   const el=document.getElementById('ogrenci-list');
+  // Filtre düğmelerindeki adetler (asistanlar listede görünmediği için sayılmaz)
+  {const sayilan=S.ogrenciler.filter(o=>!o.asistan);
+   const adet={aktif:sayilan.filter(o=>(o.durum||'aktif')==='aktif').length,pasif:sayilan.filter(o=>o.durum==='pasif').length,hepsi:sayilan.length};
+   Object.keys(adet).forEach(k=>{const c=document.getElementById('cnt-filter-'+k);if(c)c.textContent='('+adet[k]+')';});}
   const aramaEl=document.getElementById('og-arama');
   const arama=(aramaEl?aramaEl.value:'').toLowerCase().trim();
   let liste=S.ogrenciler;
