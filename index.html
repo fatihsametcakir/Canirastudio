@@ -2752,6 +2752,8 @@ function waPopupAc(tel,ad,sinif,gun,startKey){
   WA_POPUP_TEL=tel||'';WA_POPUP_AD=ad||'';WA_POPUP_SINIF=sinif||'';WA_POPUP_GUN=gun!=null?gun:'';
   document.getElementById('wa-popup-kime').textContent=ad||'';
   waPopupSablonSec(startKey||'genel');
+  // Kampanya (pasif öğrenci) mesajında diğer şablon sekmeleri gösterilmez
+  const tabsEl=document.getElementById('wa-popup-tabs');if(tabsEl)tabsEl.style.display=(startKey==='kampanya')?'none':'';
   openModal('m-wa-popup');
 }
 function waPopupSablonSec(key){
