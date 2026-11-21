@@ -207,6 +207,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .student-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);}
 .student-item:last-child{border-bottom:none;}
 .student-item.pasif{opacity:.5;}
+.student-item.og-satir{padding:8px 10px;margin-bottom:6px;border:1px solid color-mix(in srgb,var(--sr) 42%,var(--border2));border-left:3px solid var(--sr);border-radius:var(--radius-sm);background:linear-gradient(90deg,color-mix(in srgb,var(--sr) 13%,var(--surface)),color-mix(in srgb,var(--sr) 4%,var(--surface)) 85%);}
+.student-item.og-satir:last-child{border-bottom:1px solid color-mix(in srgb,var(--sr) 42%,var(--border2));margin-bottom:0;}
 .og-grup-liste{background:linear-gradient(135deg,color-mix(in srgb,var(--sr) 11%,var(--surface)),color-mix(in srgb,var(--sr) 4%,var(--surface)) 80%);border:1px solid color-mix(in srgb,var(--sr) 38%,var(--border2));}
 .og-grup-liste .student-item{border-bottom:1px solid color-mix(in srgb,var(--sr) 30%,transparent);}
 .og-grup-liste .student-item:last-child{border-bottom:none;}
@@ -6272,13 +6274,13 @@ function renderOgrenciler(){
   sinifsizlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   sadeceOzel.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   asistanlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
-  function row(og,sn,goster,num){
+  function row(og,sn,goster,num,renk){
     const p=og.durum==='pasif';
     const snKisa=sn?sn.split(',')[0].trim():'';
     const snSpan=goster&&snKisa?'<span style="font-size:10px;color:var(--text3);font-weight:400;"> · '+snKisa+(sinifKapaliMi(snKisa)?' 🔒 '+t('kapali_sinif_etiket'):'')+'</span>':'';
     const pasifBadge=p?'<span class="badge badge-gray" style="font-size:9px;padding:1px 5px;">'+t('filter_pasif')+'</span>':'';
     const notIcon=og.not?' 📝':'';
-    return `<div class="student-item${p?' pasif':''}">
+    return `<div class="student-item${p?' pasif':''}${renk?' og-satir':''}"${renk?` style="--sr:${renk};"`:''}>
       ${num?'<div style="font-size:10px;color:var(--text3);width:18px;text-align:right;flex-shrink:0;">'+num+'</div>':''}<div class="avatar ${p?'av-pasif':og.cinsiyet==='e'?'av-e':'av-k'}" style="width:32px;height:32px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
       <div class="student-info" onclick="openOgDetay('${og.id}')">
         <div class="student-name">${og.ad} ${og.soyad||''}${snSpan}${pasifBadge}${notIcon}</div>
@@ -6303,7 +6305,13 @@ function renderOgrenciler(){
       return (a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr');
     });
     if(OG_SIRALAMA==='son')tumListe.reverse();
-    html='<div class="card" style="padding:0 16px;">'+tumListe.map((og,i)=>row(og,siniflari(og.id).join(', '),true,i+1)).join('')+'</div>';
+    html='<div class="card" style="padding:8px 6px;">'+tumListe.map((og,i)=>{
+      // Satır rengi: öğrencinin ilk (aktif öncelikli) sınıfının rengi; sınıfsızsa mor/gri
+      const ss=S.siniflar.filter(x=>(x.kayitlar||[]).some(k=>k.ogrenciId===og.id));
+      const si0=ss.find(x=>x.durum!=='pasif')||ss[0];
+      const renk=si0?RENK_BAR[S.siniflar.indexOf(si0)%RENK_BAR.length]:'var(--text3)';
+      return row(og,siniflari(og.id).join(', '),true,i+1,renk);
+    }).join('')+'</div>';
   } else {
     window._ogSiraArr=[...sira,...(sadeceOzel.length?['__sadeceozel__']:[]),...(sinifsizlar.length?['__sinifsiz__']:[]),...(asistanlar.length?['__asistan__']:[]),...siraKapali];
     if(!window._ogGrupAcik)window._ogGrupAcik=new Set();
