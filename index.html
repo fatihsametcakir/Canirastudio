@@ -1317,9 +1317,11 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="sheet-title" id="m-ozel-paket-title">Yeni Paket</div>
   <div class="field"><label>Toplam Saat</label><input id="op-toplam" type="number" placeholder="10" min="1" step="0.5"/></div>
   <div class="field" id="op-yapilan-wrap" style="display:none;"><label>Yapılan Saat (düzeltme)</label><input id="op-yapilan" type="number" min="0" step="0.5"/><div style="font-size:11px;color:var(--text3);margin-top:4px;">Sadece bir hatayı düzeltmek için değiştir. Paketten düşülmüş saat sayısıdır; kalan saat = toplam − yapılan.</div></div>
-  <div class="field"><label>Paket Tutarı (₺)</label><input id="op-tutar" type="number" placeholder="2000"/></div>
-  <div class="field"><label>Ödeme Tarihi</label><input id="op-tarih" type="date"/></div>
-  <div class="field"><label data-i18n="lbl_yontem">Yöntem</label><select id="op-yontem"><option value="nakit">Nakit</option><option value="kart">Kart</option><option value="havale">Havale/EFT</option></select></div>
+  <div class="field"><label>Paket Tutarı — toplam (₺)</label><input id="op-tutar" type="number" placeholder="30000"/></div>
+  <div class="field" id="op-odenen-wrap"><label>Şimdi alınan ödeme (₺)</label><input id="op-odenen" type="number" placeholder="Boş bırakırsan tamamı alındı sayılır"/><div style="font-size:11px;color:var(--text3);margin-top:4px;">Parça parça ödeme için ilk alınan tutarı yaz. Kalanı sonra "💰 Ödemeler" düğmesinden eklersin.</div></div>
+  <div id="op-odeme-notu" style="display:none;font-size:12px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:12px;line-height:1.5;">Ödeme tarihi ve tutarları paket kartındaki <b>💰 Ödemeler</b> düğmesinden yönetilir.</div>
+  <div class="field" id="op-tarih-wrap"><label>Ödeme Tarihi</label><input id="op-tarih" type="date"/></div>
+  <div class="field" id="op-yontem-wrap"><label data-i18n="lbl_yontem">Yöntem</label><select id="op-yontem"><option value="nakit">Nakit</option><option value="kart">Kart</option><option value="havale">Havale/EFT</option></select></div>
   <div class="field"><label data-i18n="lbl_not">Not</label><textarea id="op-not" placeholder="Ek not..."></textarea></div>
   <div class="field">
     <label>Eğitmen(ler)</label>
@@ -1327,6 +1329,19 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <div style="font-size:11px;color:var(--text3);margin-top:4px;">Birden fazla eğitmen seçersen, ders düşerken hangisinin dersi olduğunu soracağız.</div>
   </div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ozel-paket')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-op" onclick="saveOzelPaket()" data-i18n="btn_kaydet">Kaydet</button></div>
+</div></div>
+
+<!-- Özel Paket Ödemeleri (parçalı ödeme) -->
+<div class="overlay" id="m-ozel-odeme"><div class="sheet" style="max-height:90vh;overflow-y:auto;">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ozel-odeme')">✕</button>
+  <div class="sheet-title" id="m-ozel-odeme-title">💰 Ödemeler</div>
+  <div id="oo-ozet"></div>
+  <div id="oo-liste" style="margin-top:12px;"></div>
+  <div id="oo-form-baslik" style="font-size:12px;font-weight:600;color:var(--text2);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.06em;">Ödeme ekle</div>
+  <div class="field"><label>Tutar (₺)</label><input id="oo-tutar" type="number"/></div>
+  <div class="field"><label>Ödeme Tarihi</label><input id="oo-tarih" type="date"/></div>
+  <div class="field"><label>Yöntem</label><select id="oo-yontem"><option value="nakit">Nakit</option><option value="kart">Kart</option><option value="havale">Havale/EFT</option></select></div>
+  <div class="form-actions"><button class="btn btn-ghost" id="oo-iptal" style="display:none;" onclick="ooFormHazirla()">Vazgeç</button><button class="btn btn-accent" id="oo-kaydet" onclick="ooKaydet()">＋ Ödeme ekle</button></div>
 </div></div>
 
 <!-- Özel Ders Saat Güncelle -->
@@ -4939,11 +4954,21 @@ function openOzelPaketModal(ogId,paketId){
     document.getElementById('op-tutar').value=p.tutar;
     document.getElementById('op-tarih').value=p.tarih||bugunTarih();
     document.getElementById('op-yontem').value=p.yontem||'nakit';
+    // Parçalı ödeme kaydı olan pakette tarih/tutar "Ödemeler" ekranından yönetilir
+    const parcali=Array.isArray(p.odemeler);
+    document.getElementById('op-odenen-wrap').style.display='none';
+    document.getElementById('op-tarih-wrap').style.display=parcali?'none':'';
+    document.getElementById('op-yontem-wrap').style.display=parcali?'none':'';
+    document.getElementById('op-odeme-notu').style.display=parcali?'block':'none';
     document.getElementById('op-not').value=p.not||'';
     secili=p.egitmenIds||[];
     document.getElementById('m-ozel-paket-title').textContent=t('paketi_duzenle');
   }else{
-    ['op-toplam','op-tutar','op-not'].forEach(i=>document.getElementById(i).value='');
+    ['op-toplam','op-tutar','op-not','op-odenen'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('op-odenen-wrap').style.display='';
+    document.getElementById('op-tarih-wrap').style.display='';
+    document.getElementById('op-yontem-wrap').style.display='';
+    document.getElementById('op-odeme-notu').style.display='none';
     document.getElementById('op-yapilan-wrap').style.display='none';
     document.getElementById('op-tarih').value=bugunTarih();
     document.getElementById('op-yontem').value='nakit';
@@ -4965,13 +4990,24 @@ async function saveOzelPaket(){
       let yapilan=mevcut?mevcut.yapilanSaat||0:0;
       const yEl=document.getElementById('op-yapilan');
       if(yEl&&yEl.value!==''){const v=parseFloat(yEl.value);if(!isNaN(v))yapilan=Math.round(Math.max(0,Math.min(toplam,v))*10)/10;}
-      await db.collection('ozelPaketler').doc(EDIT_OZEL_PAKET).update({
-        yapilanSaat:yapilan,toplamSaat:toplam,tutar,tarih:document.getElementById('op-tarih').value,
-        yontem:document.getElementById('op-yontem').value,not:document.getElementById('op-not').value,
-        egitmenIds,aktif:yapilan<toplam
-      });
+      const alanlar={yapilanSaat:yapilan,toplamSaat:toplam,tutar,not:document.getElementById('op-not').value,egitmenIds,aktif:yapilan<toplam};
+      if(!(mevcut&&Array.isArray(mevcut.odemeler))){
+        // Eski (tek ödemeli) paket: tarih/yöntem burada düzenlenir
+        alanlar.tarih=document.getElementById('op-tarih').value;
+        alanlar.yontem=document.getElementById('op-yontem').value;
+        // Paket tutarı değişirse eskiden alınmış tutar "ödendi" olarak sabitlenir; fark eksik ödeme olur
+        if(mevcut&&Number(tutar)!==Number(mevcut.tutar||0)){
+          alanlar.odemeler=[{id:ooYeniId(),tarih:alanlar.tarih,tutar:Number(mevcut.tutar)||0,yontem:alanlar.yontem}];
+        }
+      }
+      await db.collection('ozelPaketler').doc(EDIT_OZEL_PAKET).update(alanlar);
     }else{
-      await db.collection('ozelPaketler').add({ogrenciId:CUR_OZEL_OG,toplamSaat:toplam,yapilanSaat:0,tutar,tarih:document.getElementById('op-tarih').value,yontem:document.getElementById('op-yontem').value,not:document.getElementById('op-not').value,egitmenIds,olusturma:Date.now(),aktif:true});
+      const odenenHam=document.getElementById('op-odenen').value.trim();
+      const odenen=odenenHam===''?tutar:parseFloat(odenenHam);
+      if(!(odenen>0)){alert('Alınan ödeme 0\'dan büyük olmalı. Ödeme alınmadıysa paket oluşturma.');btn.disabled=false;setSyncing(false);return;}
+      if(odenen>tutar){alert('Alınan ödeme paket tutarından büyük olamaz.');btn.disabled=false;setSyncing(false);return;}
+      const ilkTarih=document.getElementById('op-tarih').value,ilkYontem=document.getElementById('op-yontem').value;
+      await db.collection('ozelPaketler').add({ogrenciId:CUR_OZEL_OG,toplamSaat:toplam,yapilanSaat:0,tutar,odemeler:[{id:ooYeniId(),tarih:ilkTarih,tutar:odenen,yontem:ilkYontem}],tarih:ilkTarih,yontem:ilkYontem,not:document.getElementById('op-not').value,egitmenIds,olusturma:Date.now(),aktif:true});
     }
     closeModal('m-ozel-paket');_poll('ozelPaketler');
     if(EDIT_OZEL_PAKET)setTimeout(()=>openOzelSaatModal(EDIT_OZEL_PAKET),300);
@@ -5134,6 +5170,100 @@ function ozelEskiIadeUyarisi(seans,plan){
 // kaydedilmişse de Number() ile sayıya çevrilir.
 function ozelPaketKalan(p){return (Number(p.toplamSaat)||0)-(Number(p.yapilanSaat)||0);}
 function ozelPaketAktifMi(p){return ozelPaketKalan(p)>0.0001;}
+// ── Özel paket: parçalı ödeme ──────────────────────────────
+// p.tutar = paketin toplam ücreti; p.odemeler = alınan ödemeler [{id,tarih,tutar,yontem}].
+// Eski paketlerde odemeler yoktur: tutarın tamamı p.tarih'te alınmış sayılır.
+function ozelPaketOdemeleri(p){
+  if(Array.isArray(p.odemeler))return p.odemeler;
+  return (Number(p.tutar)||0)>0?[{id:'legacy',tarih:p.tarih,tutar:Number(p.tutar)||0,yontem:p.yontem||'nakit'}]:[];
+}
+function ozelPaketOdenen(p){return ozelPaketOdemeleri(p).reduce((s,o)=>s+(Number(o.tutar)||0),0);}
+function ozelPaketEksikTutar(p){return Math.max(0,(Number(p.tutar)||0)-ozelPaketOdenen(p));}
+// Gelir/hakediş hesapları ödeme tarihine göre çalışır: her alınan ödeme kendi ayında bir kalem olur.
+function ozelGelirKalemleri(){
+  const r=[];
+  S.ozelPaketler.forEach(p=>ozelPaketOdemeleri(p).forEach(o=>{
+    const tutar=Number(o.tutar)||0;
+    if(o.tarih&&tutar)r.push({...p,tarih:o.tarih,tutar,_odemeId:o.id});
+  }));
+  return r;
+}
+function ooYeniId(){return 'od'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+let OO_PAKET=null,OO_EDIT=null;
+function openOzelOdemeModal(paketId){OO_PAKET=paketId;OO_EDIT=null;ooCiz();openModal('m-ozel-odeme');}
+function ooCiz(){
+  const p=S.ozelPaketler.find(x=>x.id===OO_PAKET);if(!p)return;
+  const og=S.ogrenciler.find(o=>o.id===p.ogrenciId);
+  const tl=n=>(Number(n)||0).toLocaleString(LC())+' ₺';
+  const toplam=Number(p.tutar)||0,odenen=ozelPaketOdenen(p),eksik=Math.max(0,toplam-odenen);
+  const yuzde=toplam>0?Math.min(100,Math.round(odenen/toplam*100)):100;
+  document.getElementById('m-ozel-odeme-title').textContent='💰 '+(og?((og.ad||'')+' '+(og.soyad||'')).trim():'')+' · '+fmtSaat(p.toplamSaat)+' saatlik paket';
+  document.getElementById('oo-ozet').innerHTML=`<div style="display:flex;gap:8px;">
+      <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Paket</div><div style="font-weight:600;">${tl(toplam)}</div></div>
+      <div style="flex:1;background:var(--greenbg);border:1px solid #34d39940;border-radius:var(--radius-sm);padding:9px 11px;"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Ödenen</div><div style="font-weight:600;color:var(--green);">${tl(odenen)}</div></div>
+      <div style="flex:1;background:${eksik>0?'var(--accentbg)':'var(--surface2)'};border:1px solid ${eksik>0?'#ff6b6b50':'var(--border)'};border-radius:var(--radius-sm);padding:9px 11px;"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Kalan</div><div style="font-weight:600;color:${eksik>0?'var(--accent)':'var(--text2)'};">${tl(eksik)}</div></div>
+    </div><div style="height:6px;border-radius:3px;margin-top:10px;background:linear-gradient(90deg,var(--green) ${yuzde}%,var(--accent) ${yuzde}%);"></div>`;
+  const liste=[...ozelPaketOdemeleri(p)].sort((a,b)=>(a.tarih||'').localeCompare(b.tarih||''));
+  const yontemAd={nakit:'Nakit',kart:'Kart',havale:'Havale/EFT'};
+  document.getElementById('oo-liste').innerHTML=liste.map(o=>`<div style="display:flex;align-items:center;gap:8px;padding:9px 11px;margin-bottom:6px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);">
+      <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;">${tl(o.tutar)}</div><div style="font-size:11px;color:var(--text3);">${formatDateTamYil(o.tarih)} · ${yontemAd[o.yontem]||o.yontem||''}</div></div>
+      <button class="btn btn-sm btn-ghost" style="padding:4px 9px;" onclick="ooDuzenle('${o.id}')">✎</button>
+      <button class="btn btn-sm btn-danger" style="padding:4px 9px;" onclick="ooSil('${o.id}')">🗑</button></div>`).join('')||'<div style="font-size:13px;color:var(--text3);">Henüz ödeme yok.</div>';
+  ooFormHazirla();
+}
+function ooFormHazirla(){
+  const p=S.ozelPaketler.find(x=>x.id===OO_PAKET);if(!p)return;
+  OO_EDIT=null;
+  const eksik=ozelPaketEksikTutar(p);
+  document.getElementById('oo-tutar').value=eksik>0?eksik:'';
+  document.getElementById('oo-tarih').value=bugunTarih();
+  document.getElementById('oo-yontem').value='nakit';
+  document.getElementById('oo-form-baslik').textContent='Ödeme ekle';
+  document.getElementById('oo-kaydet').textContent='＋ Ödeme ekle';
+  document.getElementById('oo-iptal').style.display='none';
+}
+function ooDuzenle(id){
+  const p=S.ozelPaketler.find(x=>x.id===OO_PAKET);if(!p)return;
+  const o=ozelPaketOdemeleri(p).find(x=>x.id===id);if(!o)return;
+  OO_EDIT=id;
+  document.getElementById('oo-tutar').value=o.tutar;
+  document.getElementById('oo-tarih').value=o.tarih||bugunTarih();
+  document.getElementById('oo-yontem').value=o.yontem||'nakit';
+  document.getElementById('oo-form-baslik').textContent='Ödemeyi düzenle';
+  document.getElementById('oo-kaydet').textContent='✓ Kaydet';
+  document.getElementById('oo-iptal').style.display='';
+}
+async function ooYaz(p,liste){
+  const sirali=[...liste].sort((a,b)=>(a.tarih||'').localeCompare(b.tarih||''));
+  const temiz=liste.map(o=>({...o,id:o.id==='legacy'?ooYeniId():o.id}));
+  setSyncing(true);
+  try{
+    await db.collection('ozelPaketler').doc(p.id).update({odemeler:temiz,tarih:sirali[0].tarih});
+    p.odemeler=temiz;p.tarih=sirali[0].tarih;
+    _poll('ozelPaketler');
+    ooCiz();renderOzel();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
+async function ooKaydet(){
+  const p=S.ozelPaketler.find(x=>x.id===OO_PAKET);if(!p)return;
+  const tutar=parseFloat(document.getElementById('oo-tutar').value);
+  const tarih=document.getElementById('oo-tarih').value,yontem=document.getElementById('oo-yontem').value;
+  if(!(tutar>0)){alert('Tutar giriniz.');return;}
+  if(!tarih){alert('Ödeme tarihini seçin.');return;}
+  let liste=ozelPaketOdemeleri(p).map(o=>({...o}));
+  if(OO_EDIT)liste=liste.map(o=>o.id===OO_EDIT?{...o,tarih,tutar,yontem}:o);
+  else liste.push({id:ooYeniId(),tarih,tutar,yontem});
+  const toplamOdenen=liste.reduce((s,o)=>s+(Number(o.tutar)||0),0),paketTutar=Number(p.tutar)||0;
+  if(toplamOdenen>paketTutar&&!confirm('Toplam ödeme ('+toplamOdenen.toLocaleString(LC())+' ₺) paket tutarını ('+paketTutar.toLocaleString(LC())+' ₺) aşıyor. Yine de kaydedilsin mi?'))return;
+  await ooYaz(p,liste);
+}
+function ooSil(id){
+  const p=S.ozelPaketler.find(x=>x.id===OO_PAKET);if(!p)return;
+  const liste=ozelPaketOdemeleri(p).filter(o=>o.id!==id);
+  if(!liste.length){alert('Pakette en az bir ödeme olmalı. Ödemeyi düzenleyebilirsin; paketi tamamen kaldırmak için paketi sil.');return;}
+  confirm_('Ödemeyi sil','Bu ödeme kaydı silinecek ve gelirden düşecek.',()=>ooYaz(p,liste));
+}
 // Paketlerin kayıtlı "yapılan saat"i ile düşülmüş derslerin toplamını karşılaştırır.
 // Kayıtlı saat dersler toplamından FAZLAYSA (çift düşme) tek tek sorup düzeltir.
 async function ozelSaatDenetimi(){
@@ -5654,7 +5784,7 @@ function renderAnasayfa(){
   const yaklasanlar=getYaklasanlar();document.getElementById('st-yaklasan').textContent=yaklasanlar.length;
   const bk=ayKey(simdikiZaman().getFullYear(),simdikiZaman().getMonth()+1);
   const grupToplam=S.odemeler.filter(o=>{const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===bk;}).reduce((s,o)=>s+(o.tutar||0),0)-iadeAyToplami(bk);
-  const ozelToplam=S.ozelPaketler.filter(p=>{if(!p.tarih)return false;const d=new Date(p.tarih+'T00:00:00');return ayKey(d.getFullYear(),d.getMonth()+1)===bk;}).reduce((s,p)=>s+(p.tutar||0),0);
+  const ozelToplam=ozelGelirKalemleri().filter(p=>{if(!p.tarih)return false;const d=new Date(p.tarih+'T00:00:00');return ayKey(d.getFullYear(),d.getMonth()+1)===bk;}).reduce((s,p)=>s+(p.tutar||0),0);
   const total=grupToplam+ozelToplam;
   const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
   const bugunStr=bugunTarih();
@@ -6167,7 +6297,10 @@ function renderOzel(){
   const aktifPaketliMi=og=>S.ozelPaketler.some(p=>p.ogrenciId===og.id&&ozelPaketAktifMi(p));
   const sirali=[...siraliHepsi.filter(aktifPaketliMi),...siraliHepsi.filter(og=>!aktifPaketliMi(og))];
   const aktifSayisi=siraliHepsi.filter(aktifPaketliMi).length;
-  el.innerHTML=sirali.map((og,ozelSira)=>{
+  const eksikOgSayi=sirali.filter(og=>S.ozelPaketler.some(p=>p.ogrenciId===og.id&&ozelPaketEksikTutar(p)>0)).length;
+  const eksikGenel=S.ozelPaketler.reduce((s,p)=>s+ozelPaketEksikTutar(p),0);
+  const eksikBand=eksikOgSayi?`<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:10px;border-radius:var(--radius-sm);background:var(--accentbg);border:1px solid #ff6b6b50;color:var(--accent);font-size:13px;font-weight:600;">⚠ ${eksikOgSayi} öğrencinin eksik ödemesi var · toplam ${eksikGenel.toLocaleString(LC())} ₺</div>`:'';
+  el.innerHTML=eksikBand+sirali.map((og,ozelSira)=>{
     const baslik=(ozelSira===aktifSayisi&&aktifSayisi<sirali.length)?'<div style="font-size:12px;font-weight:600;color:var(--text2);margin:18px 2px 8px;text-transform:uppercase;letter-spacing:.04em;">'+t('ozel_aktif_paketsiz')+' ('+(sirali.length-aktifSayisi)+')</div>':'';
     return baslik+(()=>{
     // Bir öğrencinin verisinde beklenmedik bir sorun olsa bile diğer öğrencilerin
@@ -6177,22 +6310,32 @@ function renderOzel(){
     const aktifPaket=paketler.find(ozelPaketAktifMi);
     const ogAcik=OZEL_OG_ACIK.has(og.id);
     const ozetMetin=ozelKalanSaatMetni(paketler)||(paketler.length?t('aktif_paket_yok'):t('henuz_paket_yok'));
+    const eksikPaketler=paketler.filter(p=>ozelPaketEksikTutar(p)>0);
+    const eksikToplam=eksikPaketler.reduce((s,p)=>s+ozelPaketEksikTutar(p),0);
+    const eksikPaketTutar=eksikPaketler.reduce((s,p)=>s+(Number(p.tutar)||0),0);
+    const eksikYuzde=eksikPaketTutar>0?Math.round((eksikPaketTutar-eksikToplam)/eksikPaketTutar*100):100;
+    const eksikSatir=eksikToplam>0?`<div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:2px;">⚠ Kalan ödeme: ${eksikToplam.toLocaleString(LC())} ₺</div>`:'';
+    const eksikBar=eksikToplam>0?`<div style="height:5px;border-radius:3px;margin-top:9px;background:linear-gradient(90deg,var(--green) ${eksikYuzde}%,var(--accent) ${eksikYuzde}%);"></div>`:'';
     const paketHTML=paketler.length?paketler.map(p=>{
       const kalan=Math.round((p.toplamSaat-p.yapilanSaat)*10)/10;const pct=Math.min(100,Math.round((p.yapilanSaat/p.toplamSaat)*100));const bitti=kalan<=0;
       const acik=OG_PAKET_ACIK.has(p.id);
+      const pEksik=ozelPaketEksikTutar(p),pToplam=Number(p.tutar)||0,pYuzde=pToplam>0?Math.round((pToplam-pEksik)/pToplam*100):100;
       return `<div class="ozel-paket${!bitti?' aktif-paket':' bitti'}" onclick="togglePaketAcik('${p.id}')">
         <div class="ozel-paket-header">
           <div><span class="ozel-paket-toplam">${(p.tutar||0).toLocaleString(LC())} ₺</span><span style="font-size:11px;color:var(--text2);margin-left:8px;">${fmtSaat(p.toplamSaat)} ${t('saatlik_paket')}</span></div>
           <div style="display:flex;align-items:center;gap:6px;">
+            ${pEksik>0?`<span class="badge badge-red" style="cursor:pointer;" onclick="event.stopPropagation();openOzelOdemeModal('${p.id}')">Kalan ${pEksik.toLocaleString(LC())} ₺</span>`:''}
             <span class="badge ${bitti?'badge-gray':kalan<=1?'badge-amber':'badge-cyan'}">${bitti?t('tamamlandi'):fmtSaat(kalan)+' '+t('saat_kaldi')}</span>
             <span style="font-size:14px;color:var(--text3);transition:transform .15s;display:inline-block;transform:rotate(${acik?90:0}deg);">›</span>
           </div>
         </div>
+        ${pEksik>0?`<div style="height:4px;border-radius:2px;margin-top:8px;background:linear-gradient(90deg,var(--green) ${pYuzde}%,var(--accent) ${pYuzde}%);"></div>`:''}
         ${acik?`
         <div class="ozel-paket-tarih">${formatDate(p.tarih)} · ${fmtSaat(p.yapilanSaat)}/${fmtSaat(p.toplamSaat)} ${t('saat_yapildi')}</div>
         <div class="saat-bar"><div class="saat-bar-fill${bitti?' bitti-renk':kalan<=1?' az':''}" style="width:${pct}%"></div></div>
         <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
           <button class="btn btn-accent btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openOzelSaatModal('${p.id}')">－ ${t('saat_dus_ekle')}</button>
+          <button class="btn btn-sm" style="flex:1;min-width:100px;background:var(--greenbg);color:var(--green);border:1px solid #34d39950;" onclick="event.stopPropagation();openOzelOdemeModal('${p.id}')">💰 Ödemeler</button>
           <button class="btn btn-cyan btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();openOzelPaketModal('${og.id}','${p.id}')">${t('btn_paket_duzenle')}</button>
           <button class="btn btn-sm" style="flex:1;min-width:100px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa50;" onclick="event.stopPropagation();openPaketDersler('${p.id}')">📋 ${t('dersler')}</button>
           <button class="btn btn-danger btn-sm" style="flex:1;min-width:100px;" onclick="event.stopPropagation();silOzelPaket('${p.id}')">🗑 ${t('btn_sil')}</button>
@@ -6208,9 +6351,11 @@ function renderOzel(){
         <div style="flex:1;min-width:0;">
           <div class="ozel-og-isim" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${og.ad} ${og.soyad||''}</div>
           ${!ogAcik?`<div style="font-size:11px;color:var(--text2);margin-top:2px;">${ozetMetin}</div>`:''}
+          ${eksikSatir}
         </div>
         <span style="font-size:16px;color:var(--text3);transition:transform .15s;display:inline-block;transform:rotate(${ogAcik?90:0}deg);flex-shrink:0;">›</span>
       </div>
+      ${eksikBar}
       ${ogAcik?`
       <div style="display:flex;gap:5px;margin-top:10px;">
         <button class="btn btn-cyan btn-sm" style="flex:1;" onclick="event.stopPropagation();openOgrenciModal('${og.id}')">${t('btn_bilgi_duzenle')}</button>
@@ -6344,9 +6489,10 @@ function renderOdemeler(){
     html+=`<div class="odeme-sinif-grup"><div class="odeme-sinif-baslik" onclick="toggleOdemeSinif('_ozel_')" style="--grup-renk:var(--purple);"><div><div class="odeme-sinif-adi" style="color:var(--purple);">${t('ozel_dersler')}</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">${ozelListe.length} ${t('lbl_ogrenci_kucuk')}</div></div><span class="odeme-sinif-chevron${acik?' open':''}" id="odeme-chev-_ozel_">›</span></div><div class="odeme-sinif-body${acik?' open':''}" id="odeme-body-_ozel_">`;
     ozelListe.forEach(og=>{
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
-      const topOzel=paketler.reduce((s,p)=>s+(p.tutar||0),0);
+      const topOzel=paketler.reduce((s,p)=>s+ozelPaketOdenen(p),0);
+      const eksikO=paketler.reduce((s,p)=>s+ozelPaketEksikTutar(p),0);
       const aktif=paketler.find(ozelPaketAktifMi);
-      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text2);">${ozelKalanSaatMetni(paketler)||t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${topOzel.toLocaleString(LC())} ₺</div></div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),t('ozel_dersler'))}</div></div>`;
+      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text2);">${ozelKalanSaatMetni(paketler)||t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${topOzel.toLocaleString(LC())} ₺</div>${eksikO>0?`<div style="font-size:11px;color:var(--accent);font-weight:600;">Kalan ${eksikO.toLocaleString(LC())} ₺</div>`:''}</div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),t('ozel_dersler'))}</div></div>`;
     });
     html+=`</div></div>`;
   }
@@ -6373,8 +6519,8 @@ function renderGelir(){
       ayMap[odKey].gruplar[siAd]+=od.tutar||0;
     }
   });
-  // Özel ders paketleri
-  S.ozelPaketler.forEach(p=>{
+  // Özel ders paketleri (her alınan ödeme kendi ayında)
+  ozelGelirKalemleri().forEach(p=>{
     if(!p.tarih)return;
     const d=new Date(p.tarih+'T00:00:00');
     const k=ayKey(d.getFullYear(),d.getMonth()+1);
@@ -7063,7 +7209,7 @@ function excelIndir(){
         ayMap[odK2].siniflar[sAd]=(ayMap[odK2].siniflar[sAd]||0)+(od.tutar||0);
       }
     });
-    S.ozelPaketler.forEach(p=>{
+    ozelGelirKalemleri().forEach(p=>{
       if(!p.tarih)return;
       const d=new Date(p.tarih+'T00:00:00');
       const k=ayKey(d.getFullYear(),d.getMonth()+1);
@@ -7088,7 +7234,7 @@ function excelIndir(){
     ozelDersOgrencileri().forEach(og=>{
       const paketler=S.ozelPaketler.filter(p=>p.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
       if(!paketler.length){
-        ozelRows.push({'Öğrenci':og.ad+' '+(og.soyad||''),'Telefon':og.tel||'','Toplam Saat':'','Yapılan Saat':'','Kalan Saat':'','Tutar (₺)':'','Ödeme Tarihi':'','Durum':''});
+        ozelRows.push({'Öğrenci':og.ad+' '+(og.soyad||''),'Telefon':og.tel||'','Toplam Saat':'','Yapılan Saat':'','Kalan Saat':'','Tutar (₺)':'','Ödenen (₺)':'','Kalan Ödeme (₺)':'','Ödeme Tarihi':'','Durum':''});
       } else {
         paketler.forEach(p=>{
           const kalan=Math.round((p.toplamSaat-p.yapilanSaat)*10)/10;
@@ -7099,6 +7245,8 @@ function excelIndir(){
             'Yapılan Saat':p.yapilanSaat,
             'Kalan Saat':kalan,
             'Tutar (₺)':p.tutar||0,
+            'Ödenen (₺)':ozelPaketOdenen(p),
+            'Kalan Ödeme (₺)':ozelPaketEksikTutar(p),
             'Ödeme Tarihi':p.tarih||'',
             'Durum':kalan<=0?'Tamamlandı':'Aktif'
           });
@@ -7106,7 +7254,7 @@ function excelIndir(){
       }
     });
     const wsOzel=XLSX.utils.json_to_sheet(ozelRows);
-    wsOzel['!cols']=[{wch:18},{wch:14},{wch:12},{wch:12},{wch:12},{wch:12},{wch:14},{wch:12}];
+    wsOzel['!cols']=[{wch:18},{wch:14},{wch:12},{wch:12},{wch:12},{wch:12},{wch:12},{wch:14},{wch:14},{wch:12}];
     XLSX.utils.book_append_sheet(wb,wsOzel,'Özel Dersler');
 
     // İndir
@@ -9055,7 +9203,7 @@ async function renderGiderRapor(){
 
   // ── Gelir ─────────────────────────────────────────────
   const grupGelir=S.odemeler.filter(o=>{const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===buAyKey;}).reduce((s,o)=>s+(o.tutar||0),0)-iadeAyToplami(buAyKey);
-  const ozelGelir=S.ozelPaketler.filter(p=>{
+  const ozelGelir=ozelGelirKalemleri().filter(p=>{
     if(!p.tarih)return false;
     const d=new Date(p.tarih+'T00:00:00');
     return ayKey(d.getFullYear(),d.getMonth()+1)===buAyKey;
@@ -9204,7 +9352,7 @@ async function renderGiderRapor(){
   }
   // Özel ders gelirini de ilgili baş eğitmenin kârına ekle
   let ozelAtanamamisKar=0;
-  S.ozelPaketler.forEach(p=>{
+  ozelGelirKalemleri().forEach(p=>{
     if(!p.tarih)return;
     const d=new Date(p.tarih+'T00:00:00');
     if(ayKey(d.getFullYear(),d.getMonth()+1)!==buAyKey)return;
@@ -9495,7 +9643,7 @@ function renderGelirTrend(){
       const t=o.tarih;if(!t)return false;
       return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===key;
     });
-    const paketlerBuAy=S.ozelPaketler.filter(p=>{
+    const paketlerBuAy=ozelGelirKalemleri().filter(p=>{
       if(!p.tarih)return false;
       const pd=new Date(p.tarih+'T00:00:00');
       return ayKey(pd.getFullYear(),pd.getMonth()+1)===key;
