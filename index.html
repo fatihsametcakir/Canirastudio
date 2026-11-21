@@ -66,7 +66,7 @@ if('navigation' in window){
 <!-- iOS splash / icon -->
 <link rel="apple-touch-icon" href="./icon-192-v2.png">
 <link rel="icon" href="./icon-192-v2.png">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;1,300&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -612,8 +612,22 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 @keyframes ogPil{0%,100%{box-shadow:0 0 0 0 #ff6b6b55;}50%{box-shadow:0 0 0 6px #ff6b6b00;}}
 @media (prefers-reduced-motion:reduce){.og-bilgi-pil{animation:none;}}
 </style>
+<style>
+#splash{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 38%,#ff6b6b1c,transparent 60%),radial-gradient(ellipse at 50% 100%,#a78bfa1a,transparent 55%),var(--bg);transition:opacity .6s ease;}
+#splash.out{opacity:0;pointer-events:none;}
+#splash .sp-logo{font-family:'Fraunces',serif;font-size:40px;font-weight:600;text-align:center;line-height:1.15;letter-spacing:.01em;color:var(--text);animation:spIn .9s ease both;}
+#splash .sp-logo span{display:block;color:var(--accent);font-style:italic;font-weight:300;font-size:46px;text-shadow:0 0 28px #ff6b6b55;}
+#splash .sp-line{width:84px;height:2px;border-radius:2px;margin:22px 0 0;background:linear-gradient(90deg,transparent,var(--accent),var(--purple),transparent);animation:spIn 1.2s .2s ease both;}
+#splash .sp-imza{position:absolute;left:0;right:0;bottom:calc(max(46px,env(safe-area-inset-bottom)) + 44px);text-align:center;animation:spIn 1.2s .5s ease both;}
+#splash .sp-imza small{display:block;font-size:10.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--text3);opacity:.7;margin-bottom:2px;}
+#splash .sp-imza b{display:block;font-family:'Great Vibes',cursive;font-weight:400;font-size:34px;color:#f2f0fa;text-shadow:0 0 18px #a78bfa66;line-height:1.2;}
+@keyframes spIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
 </head>
 <body>
+<div id="splash"><div class="sp-logo">Can &amp; Irina<span>Studio</span></div><div class="sp-line"></div><div class="sp-imza"><small>Created by</small><b>Fatih Samet Çakır</b></div></div>
+<script>setTimeout(function(){var e=document.getElementById('splash');if(!e)return;e.classList.add('out');setTimeout(function(){e.remove();},650);},3000);</script>
+
 <div id="login-screen" style="padding-top:24px;">
   <div class="login-logo">Can & Irina<br><span>Studio</span></div>
   <div class="login-sub" id="login-sub-text" data-i18n="yonetim_paneli">Yönetim Paneli</div>
