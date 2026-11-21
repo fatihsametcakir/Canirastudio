@@ -668,6 +668,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     </div>
     <!-- Admin alanları -->
     <div id="login-admin-fields">
+      <div class="field"><label>E-posta</label>
+        <input id="login-email" type="email" autocomplete="username" placeholder="E-posta adresiniz" onkeydown="if(event.key==='Enter')document.getElementById('login-sifre').focus()"/>
+      </div>
       <div class="field"><label data-i18n="lbl_sifre">Şifre</label>
         <div style="position:relative;">
           <input id="login-sifre" type="password" placeholder="Şifreyi girin" data-i18n-ph="sifreyi_girin" onkeydown="if(event.key==='Enter')loginDene()" style="padding-right:44px;"/>
@@ -1655,6 +1658,65 @@ const YT_API_KEY='AIzaSyBZYwTKXPhvaetOj8qMCuMbbrqbKyWt0BE';
 const YT_CACHE_MS=10*60*1000; // 10 dakika cache, kota tasarrufu için
 const VIDEO_CACHE={};
 
+// ── Firebase Authentication (REST) — yönetici girişi ──
+// Giriş yapılınca Firestore isteklerine "Authorization: Bearer <token>" eklenir. Kurallar kilitlenince
+// kimliği olmayan hiçbir istek veriye ulaşamaz. (Kurallar henüz açıkken de uygulama sorunsuz çalışır.)
+const AUTH={idToken:null,refresh:null,exp:0,email:null};
+(function(){try{AUTH.refresh=localStorage.getItem('fb_refresh')||sessionStorage.getItem('fb_refresh')||null;}catch(e){}})();
+function authSakla(refresh,kalici){
+  AUTH.refresh=refresh;
+  try{
+    localStorage.removeItem('fb_refresh');sessionStorage.removeItem('fb_refresh');
+    (kalici?localStorage:sessionStorage).setItem('fb_refresh',refresh);
+  }catch(e){}
+}
+function authTemizle(){
+  AUTH.idToken=null;AUTH.refresh=null;AUTH.exp=0;
+  try{localStorage.removeItem('fb_refresh');sessionStorage.removeItem('fb_refresh');}catch(e){}
+}
+async function authGiris(email,sifre){
+  const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+FS_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:sifre,returnSecureToken:true})});
+  const d=await r.json();
+  if(!r.ok||!d.idToken){
+    const kod=(d.error&&d.error.message)||'HATA';
+    const e=new Error(kod);e.kod=kod;throw e;
+  }
+  AUTH.idToken=d.idToken;AUTH.exp=Date.now()+(Number(d.expiresIn)||3600)*1000;AUTH.email=email;
+  return d;
+}
+let _authYenileniyor=null;
+async function authToken(){
+  if(AUTH.idToken&&Date.now()<AUTH.exp-60000)return AUTH.idToken;
+  if(!AUTH.refresh)return null;
+  if(!_authYenileniyor){
+    _authYenileniyor=fetch('https://securetoken.googleapis.com/v1/token?key='+FS_KEY,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(AUTH.refresh)})
+      .then(r=>r.json()).then(d=>{
+        if(d.id_token){AUTH.idToken=d.id_token;AUTH.exp=Date.now()+(Number(d.expires_in)||3600)*1000;if(d.refresh_token&&d.refresh_token!==AUTH.refresh){const kalici=!!localStorage.getItem('fb_refresh');authSakla(d.refresh_token,kalici);}return AUTH.idToken;}
+        return null;
+      }).catch(()=>null).finally(()=>{_authYenileniyor=null;});
+  }
+  return _authYenileniyor;
+}
+// Kilitli veritabanı kimliksiz istekte 401/403 verir → eski (kimliksiz) oturumu kapatıp giriş ekranına dön
+function authGerekli(){
+  try{
+    if(sessionStorage.getItem('auth_yonlendirme')==='1')return;
+    // Yalnızca eski (kimliksiz) bir yönetici oturumu açıkken yönlendir; giriş ekranındayken sayfayı yenileme
+    if(sessionStorage.getItem('giris_yapildi')!=='1'&&localStorage.getItem('giris_kalici')!=='1')return;
+    sessionStorage.setItem('auth_yonlendirme','1');
+    sessionStorage.removeItem('giris_yapildi');localStorage.removeItem('giris_kalici');
+    location.reload();
+  }catch(e){}
+}
+async function fsFetch(url,opts){
+  opts=opts||{};
+  const tok=await authToken();
+  if(tok)opts={...opts,headers:{...(opts.headers||{}),Authorization:'Bearer '+tok}};
+  const r=await fetch(url,opts);
+  if((r.status===401||r.status===403)&&!tok)authGerekli();
+  return r;
+}
+
 // Firestore değer dönüştürücüleri
 function toFS(val){
   if(val===null||val===undefined)return{nullValue:null};
@@ -1721,7 +1783,8 @@ const _listeners={};
 function _poll(col){
   // Tüm dokümanları say sayfalı çek (Firestore REST max 300/sayfa)
   function fetchAll(url,acc){
-    return fetch(url).then(r=>r.json()).then(data=>{
+    return fsFetch(url).then(r=>r.json()).then(data=>{
+      if(data.error)throw new Error(data.error.message||'Firestore hatası');
       const docs=(data.documents||[]).map(docToObj);
       const all=[...acc,...docs];
       if(data.nextPageToken){
@@ -1755,16 +1818,16 @@ window.db={
       _startPoll(col,docs=>{cb({docs:docs.map(d=>({id:d.id,data:()=>({...d}),exists:true})),empty:docs.length===0});});
       return ()=>{clearInterval(_intervals[col]);delete _listeners[col];};
     },
-    add:(data)=>fetch(`${FS_API}/${col}?key=${FS_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return{id:d.name.split('/').pop()};}),
-    get:()=>fetch(`${FS_API}/${col}?pageSize=300&key=${FS_KEY}`).then(r=>r.json()).then(data=>({docs:(data.documents||[]).map(d=>({id:d.name.split('/').pop(),data:()=>docToObj(d),ref:{_col:col,_id:d.name.split('/').pop()}})),empty:!data.documents})),
+    add:(data)=>fsFetch(`${FS_API}/${col}?key=${FS_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return{id:d.name.split('/').pop()};}),
+    get:()=>fsFetch(`${FS_API}/${col}?pageSize=300&key=${FS_KEY}`).then(r=>r.json()).then(data=>({docs:(data.documents||[]).map(d=>({id:d.name.split('/').pop(),data:()=>docToObj(d),ref:{_col:col,_id:d.name.split('/').pop()}})),empty:!data.documents})),
     doc:(id)=>({
       update:(data)=>{
         const mask=Object.keys(data).filter(k=>k!=='id').map(k=>`updateMask.fieldPaths=${k}`).join('&');
-        return fetch(`${FS_API}/${col}/${id}?${mask}&key=${FS_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return d;});
+        return fsFetch(`${FS_API}/${col}/${id}?${mask}&key=${FS_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return d;});
       },
-      set:(data)=>fetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return d;}),
-      delete:()=>fetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`,{method:'DELETE'}),
-      get:()=>fetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`).then(r=>r.ok?r.json().then(d=>({exists:true,data:()=>docToObj(d),id})):Promise.resolve({exists:false,data:()=>({}),id})),
+      set:(data)=>fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return d;}),
+      delete:()=>fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`,{method:'DELETE'}),
+      get:()=>fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`).then(r=>r.ok?r.json().then(d=>({exists:true,data:()=>docToObj(d),id})):Promise.resolve({exists:false,data:()=>({}),id})),
       _col:col,_id:id,
     }),
   }),
@@ -6976,6 +7039,7 @@ function girisHataKaydet(anahtar){
   }catch(e){}
 }
 function girisHataSifirla(anahtar){try{localStorage.removeItem(anahtar);}catch(e){}}
+(function(){try{const e=localStorage.getItem('giris_email');document.addEventListener('DOMContentLoaded',()=>{const i=document.getElementById('login-email');if(i&&e)i.value=e;});}catch(x){}})();
 function girisKilitMesaj(sn){return 'Çok fazla hatalı deneme. '+(sn>60?Math.ceil(sn/60)+' dakika':sn+' saniye')+' sonra tekrar deneyin.';}
 
 async function loginDene(){
@@ -6993,9 +7057,29 @@ async function loginDene(){
     await new Promise(r=>setTimeout(r,2000));
   }
 
-  const dogru=await getSifreAsync();
-  if(girilen===dogru){
+  // E-posta girildiyse Firebase hesabıyla giriş (güvenli yol). Boşsa eski şifre yolu (geçiş dönemi).
+  const eposta=(document.getElementById('login-email').value||'').trim();
+  let fbBasarili=false;
+  if(eposta){
+    try{
+      const d=await authGiris(eposta,girilen);
+      authSakla(d.refreshToken,hatirla);
+      try{localStorage.setItem('giris_email',eposta);}catch(e){}
+      fbBasarili=true;
+    }catch(e){
+      girisHataKaydet('giris_kilit_admin');
+      errEl.textContent=(e.kod==='OPERATION_NOT_ALLOWED'||e.kod==='CONFIGURATION_NOT_FOUND')?'E-posta girişi Firebase\'de etkin değil.':'E-posta veya şifre hatalı.';
+      errEl.style.display='block';
+      document.getElementById('login-sifre').value='';
+      setTimeout(()=>{errEl.style.display='none';errEl.textContent=t('hatali_sifre');},4000);
+      btn.disabled=false;btn.textContent=t('giris_yap');
+      return;
+    }
+  }
+  const dogru=fbBasarili?null:await getSifreAsync();
+  if(fbBasarili||girilen===dogru){
     girisHataSifirla('giris_kilit_admin');
+    try{sessionStorage.removeItem('auth_yonlendirme');}catch(e){}
     if(hatirla) localStorage.setItem('giris_kalici','1');
     else sessionStorage.setItem('giris_yapildi','1');
     document.getElementById('login-screen').style.display='none';
@@ -7017,12 +7101,28 @@ function cikisYap(){
   confirm_('Çıkış Yap','Oturumu kapatmak istiyor musunuz?',()=>{
     sessionStorage.removeItem('giris_yapildi');
     localStorage.removeItem('giris_kalici');
+    authTemizle();
     _cachedSifre=null;
     location.reload();
   });
 }
 
 async function sifreDegistir(){
+  if(AUTH.refresh){
+    const yeni0=document.getElementById('sifre-yeni').value,tekrar0=document.getElementById('sifre-tekrar').value;
+    if(yeni0.length<6){alert('Yeni şifre en az 6 karakter olmalı.');return;}
+    if(yeni0!==tekrar0){alert('Yeni şifreler eşleşmiyor.');return;}
+    try{
+      const tok=await authToken();
+      const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key='+FS_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tok,password:yeni0,returnSecureToken:true})});
+      const d=await r.json();if(!r.ok)throw new Error((d.error&&d.error.message)||'HATA');
+      if(d.refreshToken)authSakla(d.refreshToken,!!localStorage.getItem('fb_refresh'));
+      if(d.idToken){AUTH.idToken=d.idToken;AUTH.exp=Date.now()+(Number(d.expiresIn)||3600)*1000;}
+      ['sifre-eski','sifre-yeni','sifre-tekrar'].forEach(id=>document.getElementById(id).value='');
+      alert('Şifre güncellendi.');
+    }catch(e){alert('Şifre güncellenemedi: '+e.message+' (Çıkış yapıp tekrar girmeyi deneyin.)');}
+    return;
+  }
   const eski=document.getElementById('sifre-eski').value;
   const yeni=document.getElementById('sifre-yeni').value;
   const tekrar=document.getElementById('sifre-tekrar').value;
@@ -7366,7 +7466,7 @@ async function fsTumBelgeler(col){
   let acc=[];
   let url=`${FS_API}/${col}?pageSize=300&key=${FS_KEY}`;
   while(true){
-    const r=await fetch(url);
+    const r=await fsFetch(url);
     const data=await r.json();
     if(data.error)throw new Error(data.error.message||'Firestore hatası');
     acc=acc.concat((data.documents||[]).map(docToObj));
@@ -9957,8 +10057,8 @@ function toggleOgSifreGoster(){
 
 // Portal oturum kontrolü
 function portalLoginKontrol(){
-  const pid=sessionStorage.getItem('portal_og_id');
-  if(pid){PORTAL_OG_ID=pid;return true;}
+  try{sessionStorage.removeItem('portal_og_id');}catch(e){} // portal geçici kapalı
+  return false;
   return false;
 }
 
@@ -9984,6 +10084,9 @@ function demoOgrenciSec(ogId){
   portalTab('bilgiler');
 }
 async function portalLoginDene(){
+  { // Geçici: öğrenci portalı güvenlik çalışması nedeniyle kapalı
+    const e0=document.getElementById('login-error');e0.style.display='block';e0.textContent='Öğrenci portalı geçici olarak bakımda. Lütfen stüdyo ile iletişime geçin.';setTimeout(()=>{e0.style.display='none';e0.textContent=t('hatali_sifre');},5000);return;
+  }
   // Tüm rakam dışı karakterleri temizle, sadece son 10 haneye bak (ülke kodu/başındaki 0 farkını önemsemez)
   const normTel=t=>(t||'').replace(/\D/g,'');
   const son10=t=>normTel(t).slice(-10);
