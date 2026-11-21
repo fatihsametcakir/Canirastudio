@@ -1837,7 +1837,11 @@ window.db={
       },
       set:(data)=>fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return d;}),
       delete:()=>fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`,{method:'DELETE'}),
-      get:()=>fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`).then(r=>r.ok?r.json().then(d=>({exists:true,data:()=>docToObj(d),id})):Promise.resolve({exists:false,data:()=>({}),id})),
+      get:()=>fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`).then(r=>{
+        if(r.ok)return r.json().then(d=>({exists:true,data:()=>docToObj(d),id}));
+        if(r.status===404)return {exists:false,data:()=>({}),id};
+        throw new Error('Firestore okuma hatası ('+r.status+')'); // yetki/ağ hatası "belge yok" sayılmaz
+      }),
       _col:col,_id:id,
     }),
   }),
@@ -2655,6 +2659,7 @@ function startListeners(){
       document.getElementById('app').style.display='flex';
       robotDurumGuncelle();
       setTimeout(iosInstallBanneriGoster,1500);
+      giderAyarlariTazele(true).then(ch=>{if(ch)renderAll();}); // giriş sonrası kira/gider ayarlarını (yeniden) yükle
     }
   };
   function snap(col,key,doneKey){
@@ -2725,6 +2730,8 @@ function openRaporSayfa(id,i18nKey,renderFn){
   PREV_PAGE=PAGE;PAGE=id;showPage(id);setTopbar(true,t(i18nKey));
   const fab=document.getElementById('mainFab');if(fab)fab.style.display='none';
   if(renderFn)renderFn();
+  // Kira/gider ayarları başka cihazda değişmiş ya da yüklenememiş olabilir: güncelini oku, değiştiyse yeniden çiz
+  giderAyarlariTazele(true).then(ch=>{if(ch&&renderFn&&PAGE===id)renderFn();});
 }
 function openAylikGelir(){openRaporSayfa('aylik-gelir','aylik_gelir',renderGelir);}
 function openGiderRaporu(){openRaporSayfa('gider-rapor','gider_raporu',renderGiderRapor);}
@@ -9101,10 +9108,16 @@ async function giderAyarlariniYukle(){
       return veri;
     }
     return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[],ozelKiraGecmisi:[]};
-  }catch(e){return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[],ozelKiraGecmisi:[]};}
+  }catch(e){
+    // Okuma başarısız oldu (yetki/ağ): varsayılan boş ayarlar DÖNDÜRÜLMEZ — aksi halde kira 0 görünür
+    // ve yanlışlıkla bu boş değerler kaydedilebilir. Hata yukarı iletilir, eski önbellek korunur.
+    throw e;
+  }
 }
 
 async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi,pratikKiraGecmisi,pratikIptalTarihleri,ozelKiraGecmisi){
+  // Ayarlar henüz başarıyla okunmadıysa kaydetme: boş varsayılanlar mevcut kira geçmişinin üzerine yazılmasın
+  if(!GIDER_AYARLARI_YUKLENDI){await giderAyarlariTazele(true);if(!GIDER_AYARLARI_YUKLENDI)throw new Error('Gider ayarları yüklenemedi, tekrar deneyin.');}
   const veri={kira:parseFloat(kira)||0,basEgitmenPayPct:parseFloat(pct)||0};
   if(grupKiraGecmisi!==undefined)veri.grupKiraGecmisi=grupKiraGecmisi;
   else if(GIDER_AYARLARI.grupKiraGecmisi)veri.grupKiraGecmisi=GIDER_AYARLARI.grupKiraGecmisi;
@@ -9120,8 +9133,21 @@ async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi,pratikKiraGecmisi,
 // Senkron erişim için önbellek — özel ders stüdyo kirası, grup dersleri kira geçmişi
 // ve Cumartesi pratik kirası geçmişi/iptalleri birçok yerde senkron render fonksiyonunda kullanılıyor
 let GIDER_AYARLARI={kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[],ozelKiraGecmisi:[]};
+let GIDER_AYARLARI_YUKLENDI=false;
+let _giderAyarSon=0;
+// Ayarları sunucudan okuyup önbelleğe alır. Değiştiyse true döner. Başarısızsa eski önbellek korunur.
 async function giderAyarlariniOnbellekleYukle(){
-  GIDER_AYARLARI=await giderAyarlariniYukle();
+  try{
+    const yeni=await giderAyarlariniYukle();
+    const degisti=!GIDER_AYARLARI_YUKLENDI||JSON.stringify(yeni)!==JSON.stringify(GIDER_AYARLARI);
+    GIDER_AYARLARI=yeni;GIDER_AYARLARI_YUKLENDI=true;_giderAyarSon=Date.now();
+    return degisti;
+  }catch(e){console.warn('Gider ayarları okunamadı:',e);return false;}
+}
+// Kısa süre içinde tekrar tekrar okumamak için sınırlı yenileme (force=true: hemen oku)
+async function giderAyarlariTazele(force){
+  if(!force&&GIDER_AYARLARI_YUKLENDI&&Date.now()-_giderAyarSon<60000)return false;
+  return giderAyarlariniOnbellekleYukle();
 }
 
 // Eğitmen yönetim paneli
@@ -9129,8 +9155,8 @@ async function renderEgitmenPanel(){
   renderTatilListe();
   const el=document.getElementById('egitmen-panel-content2')||document.getElementById('egitmen-panel-content');
   if(!el)return;
-  const ayarlar=await giderAyarlariniYukle();
-  GIDER_AYARLARI=ayarlar;
+  await giderAyarlariTazele(true);
+  const ayarlar=GIDER_AYARLARI;
 
   const legacySiniflar=S.siniflar.filter(si=>si.kira);
 
