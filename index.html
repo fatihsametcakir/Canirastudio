@@ -5870,29 +5870,55 @@ function otOtoDusKontrol(){
 // ── RENDER ─────────────────────────────────────────────
 function getYaklasanlar(){const res=[];S.siniflar.forEach(si=>{if((si.durum||'aktif')==='pasif')return; /* kapalı sınıflar paket yenileme listesinde görünmez */ (si.kayitlar||[]).forEach(k=>{if(k.tip!=='paket')return;if(k.donduruldu)return;const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);if(!og||(og.durum||'aktif')==='pasif')return;const h=hesaplaKayit(k.ogrenciId,si.id);const b=h?h.bitisTarih:k.bitisTarih;const dl=daysLeft(b);if(dl<=7){res.push({og,kayit:k,sinif:si,dl,hesap:h});}});});return res.sort((a,b)=>a.dl-b.dl);}
 
-// Aktif öğrenci kartındaki "i" düğmesi: kırılım ve kayıt bilgisini küçük pencerede gösterir
+// Aktif öğrenci kartındaki "i" düğmesi: kişi sayısı, dağılım ve sınıf kayıtlarını ayrı ayrı gösterir
+const OG_BILGI_METIN={
+  tr:{baslik:'Aktif kişi sayısı',alt:'Her kişi yalnızca bir kez sayılır',dag:'Bu kişiler nasıl dağılıyor?',sadeceSinif:'sadece grup sınıfına kayıtlı',sadeceOzel:'sadece özel ders alıyor',ikisi:'hem grup hem özel ders',diger:'diğer (sınıfı ve aktif özel paketi yok)',grup:'Grup sınıfları',sinifKisi:'kişi bir sınıfa kayıtlı',coklu:'kişi birden fazla sınıfta',coklu_ac:'Kimler? (dokun)',kayit:'toplam sınıf kaydı',kayitNot:'Aynı kişi her sınıf için ayrı sayılır: {k} kişi, {f} fazladan kayıt yapıyor.',kisi:'KİŞİ',kayitEt:'KAYIT',yok:'Birden fazla sınıfa kayıtlı kimse yok.'},
+  en:{baslik:'Active people',alt:'Each person is counted once',dag:'How are they split?',sadeceSinif:'in group classes only',sadeceOzel:'private lessons only',ikisi:'both group and private',diger:'other (no class, no active private package)',grup:'Group classes',sinifKisi:'people enrolled in a class',coklu:'people in more than one class',coklu_ac:'Who? (tap)',kayit:'total class enrollments',kayitNot:'The same person is counted once per class: {k} people make {f} extra enrollments.',kisi:'PEOPLE',kayitEt:'ENROLLMENTS',yok:'Nobody is enrolled in more than one class.'},
+  ru:{baslik:'Активных людей',alt:'Каждый человек считается один раз',dag:'Как они распределены?',sadeceSinif:'только групповые занятия',sadeceOzel:'только индивидуальные',ikisi:'и группа, и индивидуальные',diger:'другие (нет группы и активного пакета)',grup:'Групповые занятия',sinifKisi:'человек записаны в группу',coklu:'человек в нескольких группах',coklu_ac:'Кто? (нажмите)',kayit:'всего записей в группы',kayitNot:'Один человек считается за каждую группу: {k} чел. дают {f} лишних записей.',kisi:'ЛЮДИ',kayitEt:'ЗАПИСИ',yok:'Нет записанных в несколько групп.'}
+};
+function ogDagilimHesapla(){
+  const aktifler=S.ogrenciler.filter(ogSayilanAktifMi);
+  const sinifIds={};  // ogrenciId -> [sınıf adları] (yalnız kapalı olmayan sınıflar)
+  S.siniflar.forEach(si=>{if((si.durum||'aktif')==='pasif')return;(si.kayitlar||[]).forEach(k=>{(sinifIds[k.ogrenciId]=sinifIds[k.ogrenciId]||[]);if(!sinifIds[k.ogrenciId].includes(si.ad))sinifIds[k.ogrenciId].push(si.ad);});});
+  const ozelde=new Set(S.ozelPaketler.filter(ozelPaketAktifMi).map(p=>p.ogrenciId));
+  let kSinif=0,kOzel=0,kIkisi=0,kDiger=0,sinifKisi=0,kayitToplam=0;const coklu=[];
+  aktifler.forEach(o=>{
+    const sl=sinifIds[o.id]||[];const g=sl.length>0,oz=ozelde.has(o.id);
+    if(g&&oz)kIkisi++;else if(g)kSinif++;else if(oz)kOzel++;else kDiger++;
+    if(g){sinifKisi++;kayitToplam+=sl.length;if(sl.length>1)coklu.push({ad:(o.ad+' '+(o.soyad||'')).trim(),siniflar:sl});}
+  });
+  coklu.sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
+  return {toplam:aktifler.length,kSinif,kOzel,kIkisi,kDiger,sinifKisi,kayitToplam,coklu};
+}
 function ogKartBilgiAc(ev){
   if(ev){ev.stopPropagation();ev.preventDefault();}
   const mevcut=document.getElementById('og-kart-bilgi');if(mevcut){mevcut.remove();return;}
-  const kayit=(document.getElementById('st-kayit')||{}).textContent+' '+(document.getElementById('lbl-kayit')||{}).textContent+((document.getElementById('st-kayit-coklu')||{}).textContent||'');
-  const kirilim=((document.getElementById('st-ogrenci-kirilim')||{}).textContent||'').split(' · ');
+  const T=OG_BILGI_METIN[LANG]||OG_BILGI_METIN.tr;
+  const d=ogDagilimHesapla();
   const ov=document.createElement('div');ov.id='og-kart-bilgi';
-  ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(8,8,14,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;';
+  ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(8,8,14,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:20px;';
   ov.onclick=()=>ov.remove();
-  const renkler=['var(--purple)','var(--cyan)','var(--amber)','var(--text3)'];
-  const satirlar=kirilim.map((x,i)=>{
-    const m=x.match(/^(\d+)\s*(.*)$/);const sayi=m?m[1]:'',etiket=m?m[2]:x;
-    const r=renkler[Math.min(i,renkler.length-1)];
-    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;margin-bottom:6px;background:var(--surface2);border:1px solid var(--border);border-left:3px solid '+r+';border-radius:var(--radius-sm);">'
-      +'<span style="font-family:Fraunces,serif;font-size:20px;font-weight:600;color:'+r+';min-width:30px;text-shadow:0 0 14px '+r+'55;">'+sayi+'</span>'
-      +'<span style="font-size:13.5px;color:var(--text2);">'+etiket+'</span></div>';
-  }).join('');
-  ov.innerHTML='<div onclick="event.stopPropagation()" style="background:linear-gradient(160deg,#ff6b6b14,var(--surface) 55%);border:1px solid #ff6b6b40;border-radius:var(--radius);padding:20px;max-width:340px;width:100%;box-shadow:0 18px 50px rgba(0,0,0,.6),0 0 40px #ff6b6b14;">'
-    +'<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);">'+t('lbl_aktif_ogrenci')+' · '+t('toplam_lbl')+'</div>'
-    +'<div style="font-family:Fraunces,serif;font-size:38px;font-weight:600;color:var(--accent);text-shadow:0 0 20px #ff6b6b50;line-height:1.1;margin:4px 0 14px;">'+(document.getElementById('st-ogrenci-toplam')||{}).textContent+'</div>'
-    +satirlar
-    +'<div style="font-size:12.5px;color:var(--text2);line-height:1.5;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">'+kayit+'</div>'
-    +'<button class="btn btn-accent" style="width:100%;margin-top:16px;" onclick="document.getElementById(\'og-kart-bilgi\').remove()">OK</button></div>';
+  const satir=(sayi,etiket,renk)=>'<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;margin-bottom:6px;background:var(--surface2);border:1px solid var(--border);border-left:3px solid '+renk+';border-radius:var(--radius-sm);">'
+    +'<span style="font-family:Fraunces,serif;font-size:20px;font-weight:600;color:'+renk+';min-width:34px;text-shadow:0 0 14px '+renk+'55;">'+sayi+'</span>'
+    +'<span style="font-size:13.5px;color:var(--text2);line-height:1.3;">'+etiket+'</span></div>';
+  const etiket=(txt,renk)=>'<span style="font-size:9px;font-weight:700;letter-spacing:.08em;padding:2px 6px;border-radius:6px;background:'+renk+'22;color:'+renk+';margin-left:6px;vertical-align:middle;">'+txt+'</span>';
+  let dagilim=satir(d.kSinif,T.sadeceSinif,'var(--purple)')+satir(d.kOzel,T.sadeceOzel,'var(--cyan)')+satir(d.kIkisi,T.ikisi,'var(--amber)');
+  if(d.kDiger)dagilim+=satir(d.kDiger,T.diger,'var(--text3)');
+  const cokluListe=d.coklu.length?d.coklu.map(c=>'<div style="padding:5px 0;border-top:1px solid var(--border);font-size:12.5px;"><b style="font-weight:600;">'+waHtmlEsc(c.ad)+'</b><div style="color:var(--text3);font-size:11.5px;">'+c.siniflar.map(waHtmlEsc).join(' · ')+'</div></div>').join(''):'<div style="font-size:12px;color:var(--text3);">'+T.yok+'</div>';
+  ov.innerHTML='<div onclick="event.stopPropagation()" style="background:linear-gradient(160deg,#ff6b6b14,var(--surface) 55%);border:1px solid #ff6b6b40;border-radius:var(--radius);padding:18px;max-width:350px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 18px 50px rgba(0,0,0,.6),0 0 30px #ff6b6b18;">'
+    +'<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);">'+T.baslik+etiket(T.kisi,'#ff6b6b')+'</div>'
+    +'<div style="font-family:Fraunces,serif;font-size:42px;font-weight:600;color:var(--accent);text-shadow:0 0 20px #ff6b6b50;line-height:1.1;margin:2px 0;">'+d.toplam+'</div>'
+    +'<div style="font-size:11.5px;color:var(--text3);margin-bottom:12px;">'+T.alt+'</div>'
+    +'<div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;">'+T.dag+'</div>'
+    +dagilim
+    +'<div style="height:1px;background:var(--border2);margin:14px 0 12px;"></div>'
+    +'<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);margin-bottom:8px;">'+T.grup+'</div>'
+    +satir(d.sinifKisi,T.sinifKisi+etiket(T.kisi,'#ff6b6b'),'var(--purple)')
+    +satir(d.coklu.length,T.coklu+etiket(T.kisi,'#ff6b6b'),'var(--green)')
+    +'<details style="margin:-2px 0 8px 4px;"><summary style="font-size:12px;color:var(--accent);cursor:pointer;padding:3px 0;">'+T.coklu_ac+'</summary><div style="margin-top:4px;">'+cokluListe+'</div></details>'
+    +satir(d.kayitToplam,T.kayit+etiket(T.kayitEt,'#a78bfa'),'var(--accent)')
+    +'<div style="font-size:11.5px;color:var(--text3);line-height:1.5;">'+T.kayitNot.replace('{k}',d.coklu.length).replace('{f}',d.kayitToplam-d.sinifKisi)+'</div>'
+    +'<button class="btn btn-accent" style="width:100%;margin-top:14px;" onclick="document.getElementById(\'og-kart-bilgi\').remove()">OK</button></div>';
   document.body.appendChild(ov);
 }
 function renderAnasayfa(){
