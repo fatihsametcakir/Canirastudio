@@ -1924,7 +1924,6 @@ const TRANSLATIONS={
     ios_install_banner_metin:'Bu uygulamayı ana ekranına ekleyebilirsin: Paylaş ↑ simgesine dokun, sonra "Ana Ekrana Ekle" seç.',
     lbl_ad:'Ad', lbl_soyad:'Soyad', lbl_telefon:'Telefon', lbl_not:'Not', lbl_yontem:'Yöntem', lbl_cinsiyet:'Cinsiyet',
     kadin:'Kadın', erkek:'Erkek',
-    sifre_aciklama:'Şifre tüm cihazlarda geçerli olur. Varsayılan: dans2024',
     mevcut_sifre:'Mevcut Şifre', mevcut_sifre_ph:'Mevcut şifre', yeni_sifre:'Yeni Şifre', en_az_6:'En az 6 karakter',
     tekrar:'Tekrar', tekrar_girin:'Tekrar girin', sifreyi_guncelle:'Şifreyi Güncelle',
     degiskenler:'Değişkenler', suresi_dolmus:'Süresi Dolmuş', gun_3_icinde:'3 Gün İçinde',
@@ -2103,7 +2102,6 @@ const TRANSLATIONS={
     ios_install_banner_metin:'You can add this app to your Home Screen: tap Share ↑, then choose "Add to Home Screen".',
     lbl_ad:'First Name', lbl_soyad:'Last Name', lbl_telefon:'Phone', lbl_not:'Note', lbl_yontem:'Method', lbl_cinsiyet:'Gender',
     kadin:'Female', erkek:'Male',
-    sifre_aciklama:'The password applies on all devices. Default: dans2024',
     mevcut_sifre:'Current Password', mevcut_sifre_ph:'Current password', yeni_sifre:'New Password', en_az_6:'At least 6 characters',
     tekrar:'Confirm', tekrar_girin:'Re-enter', sifreyi_guncelle:'Update Password',
     degiskenler:'Variables', suresi_dolmus:'Expired', gun_3_icinde:'Within 3 Days',
@@ -2282,7 +2280,6 @@ const TRANSLATIONS={
     ios_install_banner_metin:'Вы можете добавить это приложение на главный экран: нажмите Поделиться ↑, затем «На экран «Домой»».',
     lbl_ad:'Имя', lbl_soyad:'Фамилия', lbl_telefon:'Телефон', lbl_not:'Заметка', lbl_yontem:'Способ', lbl_cinsiyet:'Пол',
     kadin:'Женский', erkek:'Мужской',
-    sifre_aciklama:'Пароль действует на всех устройствах. По умолчанию: dans2024',
     mevcut_sifre:'Текущий пароль', mevcut_sifre_ph:'Текущий пароль', yeni_sifre:'Новый пароль', en_az_6:'Минимум 6 символов',
     tekrar:'Повтор', tekrar_girin:'Введите ещё раз', sifreyi_guncelle:'Обновить пароль',
     degiskenler:'Переменные', suresi_dolmus:'Истёк срок', gun_3_icinde:'В течение 3 дней',
@@ -4407,10 +4404,14 @@ async function veriSilOnayla(){
   const btn=document.getElementById('veri-sil-btn');
   if(btn.disabled)return;
   btn.disabled=true;
-  // Şifre başka cihazda değişmiş olabilir: önbelleği atıp güncel şifreyi oku
-  _cachedSifre=null;
-  const dogru=await getSifreAsync();
-  if(girilen!==dogru){
+  // Giriş şifresi, Firebase hesabıyla yeniden doğrulanır
+  let sifreDogru=false;
+  {
+    let em=AUTH.email;try{if(!em)em=localStorage.getItem('giris_email');}catch(e){}
+    if(girisKilitSaniye('giris_kilit_admin')>0){hata.textContent=girisKilitMesaj(girisKilitSaniye('giris_kilit_admin'));hata.style.display='block';btn.disabled=false;return;}
+    if(em){try{await authGiris(em,girilen);sifreDogru=true;girisHataSifirla('giris_kilit_admin');}catch(e){girisHataKaydet('giris_kilit_admin');}}
+  }
+  if(!sifreDogru){
     hata.textContent='Şifre hatalı.';hata.style.display='block';
     document.getElementById('veri-sil-sifre').value='';
     document.getElementById('veri-sil-sifre').focus();
@@ -6998,8 +6999,6 @@ function renderAll(){
   }
 }
 // ── LOGIN SİSTEMİ ──────────────────────────────────────
-const VARSAYILAN_SIFRE='dans2024';
-let _cachedSifre=null;
 
 function toggleSifreGoster(){
   const inp=document.getElementById('login-sifre');
@@ -7008,20 +7007,9 @@ function toggleSifreGoster(){
   else{inp.type='password';btn.textContent='👁';}
 }
 
-async function getSifreAsync(){
-  if(_cachedSifre!==null)return _cachedSifre;
-  try{
-    const snap=await db.collection('ayarlar').doc('sifre').get();
-    if(snap.exists&&snap.data()&&snap.data().deger){
-      _cachedSifre=snap.data().deger;
-      return _cachedSifre;
-    }
-  }catch(e){console.warn('Şifre okunamadı:',e);}
-  _cachedSifre=VARSAYILAN_SIFRE;
-  return _cachedSifre;
-}
-
 function loginKontrol(){
+  // Kimliksiz (eski) oturumlar geçersiz: e-postayla giriş zorunlu
+  if(!AUTH.refresh){try{localStorage.removeItem('giris_kalici');sessionStorage.removeItem('giris_yapildi');}catch(e){}return false;}
   // Beni hatırla — localStorage'da kalıcı oturum
   if(localStorage.getItem('giris_kalici')==='1'){
     document.getElementById('login-screen').style.display='none';
@@ -7067,10 +7055,15 @@ async function loginDene(){
     await new Promise(r=>setTimeout(r,2000));
   }
 
-  // E-posta girildiyse Firebase hesabıyla giriş (güvenli yol). Boşsa eski şifre yolu (geçiş dönemi).
+  // Giriş yalnızca Firebase hesabıyla (e-posta + şifre)
   const eposta=(document.getElementById('login-email').value||'').trim();
+  if(!eposta){
+    errEl.textContent='E-posta adresini yaz.';errEl.style.display='block';
+    setTimeout(()=>{errEl.style.display='none';errEl.textContent=t('hatali_sifre');},3000);
+    btn.disabled=false;btn.textContent=t('giris_yap');document.getElementById('login-email').focus();return;
+  }
   let fbBasarili=false;
-  if(eposta){
+  {
     try{
       const d=await authGiris(eposta,girilen);
       authSakla(d.refreshToken,hatirla);
@@ -7086,8 +7079,7 @@ async function loginDene(){
       return;
     }
   }
-  const dogru=fbBasarili?null:await getSifreAsync();
-  if(fbBasarili||girilen===dogru){
+  if(fbBasarili){
     girisHataSifirla('giris_kilit_admin');
     try{sessionStorage.removeItem('auth_yonlendirme');}catch(e){}
     if(hatirla) localStorage.setItem('giris_kalici','1');
@@ -7096,15 +7088,15 @@ async function loginDene(){
     waSablonYukle();
     startListeners();
     urlYoklamaKontrol();
-  } else {
-    girisHataKaydet('giris_kilit_admin');
-    errEl.style.display='block';
-    document.getElementById('login-sifre').value='';
-    document.getElementById('login-sifre').focus();
-    setTimeout(()=>errEl.style.display='none',3000);
-    btn.disabled=false;
-    btn.textContent=t('giris_yap');
+    eskiSifreBelgesiniSil();
   }
+}
+// Eski (düz metin) yönetici şifresi belgesi artık kullanılmıyor — bir kez silinir
+function eskiSifreBelgesiniSil(){
+  try{
+    if(localStorage.getItem('eski_sifre_silindi')==='1')return;
+    db.collection('ayarlar').doc('sifre').delete().then(()=>{localStorage.setItem('eski_sifre_silindi','1');}).catch(()=>{});
+  }catch(e){}
 }
 
 async function sifremiUnuttum(){
@@ -7129,7 +7121,6 @@ function cikisYap(){
     sessionStorage.removeItem('giris_yapildi');
     localStorage.removeItem('giris_kalici');
     authTemizle();
-    _cachedSifre=null;
     location.reload();
   });
 }
@@ -7207,42 +7198,6 @@ async function kullaniciSifreSifirla(id){
     const d=await r.json();if(!r.ok)throw new Error((d.error&&d.error.message)||'Gönderilemedi');
     toastGoster('✓ Şifre sıfırlama e-postası gönderildi');
   }catch(e){alert('Hata: '+e.message);}
-}
-
-async function sifreDegistir(){
-  if(AUTH.refresh){
-    const yeni0=document.getElementById('sifre-yeni').value,tekrar0=document.getElementById('sifre-tekrar').value;
-    if(yeni0.length<6){alert('Yeni şifre en az 6 karakter olmalı.');return;}
-    if(yeni0!==tekrar0){alert('Yeni şifreler eşleşmiyor.');return;}
-    try{
-      const tok=await authToken();
-      const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key='+FS_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tok,password:yeni0,returnSecureToken:true})});
-      const d=await r.json();if(!r.ok)throw new Error((d.error&&d.error.message)||'HATA');
-      if(d.refreshToken)authSakla(d.refreshToken,!!localStorage.getItem('fb_refresh'));
-      if(d.idToken){AUTH.idToken=d.idToken;AUTH.exp=Date.now()+(Number(d.expiresIn)||3600)*1000;}
-      ['sifre-eski','sifre-yeni','sifre-tekrar'].forEach(id=>document.getElementById(id).value='');
-      alert('Şifre güncellendi.');
-    }catch(e){alert('Şifre güncellenemedi: '+e.message+' (Çıkış yapıp tekrar girmeyi deneyin.)');}
-    return;
-  }
-  const eski=document.getElementById('sifre-eski').value;
-  const yeni=document.getElementById('sifre-yeni').value;
-  const tekrar=document.getElementById('sifre-tekrar').value;
-  const dogru=await getSifreAsync();
-  if(eski!==dogru){alert('Mevcut şifre hatalı.');return;}
-  if(yeni.length<6){alert('Yeni şifre en az 6 karakter olmalı.');return;}
-  if(yeni!==tekrar){alert('Yeni şifreler eşleşmiyor.');return;}
-  setSyncing(true);
-  try{
-    await db.collection('ayarlar').doc('sifre').update({deger:yeni});
-  }catch(e){
-    try{await db.collection('ayarlar').doc('sifre').set({deger:yeni});}
-    catch(e2){alert('Hata: '+e2.message);setSyncing(false);return;}
-  }
-  _cachedSifre=yeni;
-  setSyncing(false);
-  ['sifre-eski','sifre-yeni','sifre-tekrar'].forEach(id=>document.getElementById(id).value='');
-  alert('Şifre tüm cihazlarda güncellendi!');
 }
 
 // ── TEMA SİSTEMİ ───────────────────────────────────────
