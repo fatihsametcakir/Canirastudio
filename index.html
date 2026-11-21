@@ -6,7 +6,8 @@
 // Geri tuşuna basılınca:
 //   1) Açık bir popup/modal varsa onu kapatır (uygulamadan çıkmaz)
 //   2) Hamburger menü açıksa onu kapatır (uygulamadan çıkmaz)
-//   3) Ana Sayfa'da değilsek Ana Sayfa'ya döner (uygulamadan çıkmaz)
+//   3) Gelir/Gider rapor sayfasındaysak Gelir/Gider kartlarına döner;
+//      diğer sayfalarda Ana Sayfa'ya döner (uygulamadan çıkmaz)
 //   4) Ana Sayfa'dayken ve hiçbir şey açık değilken: hiç müdahale edilmez,
 //      doğal davranışa bırakılır — yani direkt kapanır. Bu bilerek böyle:
 //      uzun uğraşlar sonucunda "çıkmadan önce sor" kısmı güvenilir şekilde
@@ -28,6 +29,7 @@ if('navigation' in window){
     e.intercept({handler:function(){
       if(acikModal)closeModal(acikModal.id);
       else if(drawerAcik)drawerKapat();
+      else if(typeof RAPOR_SAYFA_ID_LISTESI!=='undefined'&&RAPOR_SAYFA_ID_LISTESI.includes(PAGE))goBack(); // rapor sayfası → Gelir/Gider kartlarına dön
       else if(PAGE!=='anasayfa')goTo('anasayfa',document.querySelector('.nav-item'));
       geriTusuTamponDoldur(1);
       return Promise.resolve();
@@ -45,6 +47,7 @@ if('navigation' in window){
     if(acikModal){closeModal(acikModal.id);geriTusuTamponDoldur(1);return;}
     const drawer=document.getElementById('drawer');
     if(drawer&&drawer.classList.contains('open')){drawerKapat();geriTusuTamponDoldur(1);return;}
+    if(typeof RAPOR_SAYFA_ID_LISTESI!=='undefined'&&RAPOR_SAYFA_ID_LISTESI.includes(PAGE)){goBack();geriTusuTamponDoldur(1);return;}
     if(PAGE!=='anasayfa'){goTo('anasayfa',document.querySelector('.nav-item'));geriTusuTamponDoldur(1);return;}
     // Ana Sayfa'da, hiçbir şey açık değil — hiç müdahale etme, doğal kapanış
   });
