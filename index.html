@@ -335,8 +335,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .odeme-gecmis-item:active{transform:scale(.98);}
 
 /* Özel ders öğrenci kartı */
-.ozel-og-kart{background:linear-gradient(135deg,#a78bfa10,var(--surface) 55%);border:1px solid #a78bfa30;border-left:3px solid var(--purple);border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;}
-.ozel-og-kart:active{transform:scale(.98);box-shadow:0 6px 18px -6px #a78bfa50;}
+.ozel-og-kart{--og-renk:var(--purple);background:linear-gradient(135deg,color-mix(in srgb,var(--og-renk) 15%,var(--surface)),color-mix(in srgb,var(--og-renk) 4%,var(--surface)) 70%);border:1px solid color-mix(in srgb,var(--og-renk) 55%,transparent);border-left:4px solid var(--og-renk);border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;box-shadow:0 3px 14px -8px var(--og-renk);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;}
+.ozel-og-kart:active{transform:scale(.98);box-shadow:0 6px 18px -6px var(--og-renk);}
 .ozel-og-header{display:flex;align-items:center;gap:10px;}
 .ozel-og-isim{font-size:14px;font-weight:600;}
 .ozel-og-tel{font-size:12px;color:var(--text3);}
@@ -6496,6 +6496,13 @@ function toggleOzelOgAcik(id){
   if(OZEL_OG_ACIK.has(id))OZEL_OG_ACIK.delete(id);else OZEL_OG_ACIK.add(id);
   renderOzel();
 }
+// Her öğrenciye ayrı renk: kayıt sırasına (ilk paket tarihine) göre dağıtılır, böylece hiçbir iki öğrenci aynı rengi almaz.
+// Yeni öğrenci eklenince mevcutların rengi değişmez; ilk 14 renk elle seçilmiş, sonrası altın açıyla üretilir.
+const OZEL_OG_PALET=['#ff6b6b','#fbbf24','#34d399','#22d3ee','#a78bfa','#f472b6','#fb923c','#60a5fa','#a3e635','#e879f9','#2dd4bf','#818cf8','#f87171','#facc15'];
+function ozelOgRenk(sira){
+  if(sira<OZEL_OG_PALET.length)return OZEL_OG_PALET[sira];
+  return 'hsl('+Math.round((sira*137.508)%360)+',72%,64%)';
+}
 function renderOzel(){
   const el=document.getElementById('ozel-list');
   const liste=ozelDersOgrencileri();
@@ -6557,7 +6564,7 @@ function renderOzel(){
         </div>`:''}
       </div>`;
     }).join(''):`<div style="font-size:13px;color:var(--text3);padding:8px 0;">${t('henuz_paket_yok')}</div>`;
-    return `<div class="ozel-og-kart">
+    return `<div class="ozel-og-kart" style="--og-renk:${ozelOgRenk(siraliHepsi.indexOf(og))};">
       <div class="ozel-og-header" onclick="toggleOzelOgAcik('${og.id}')" style="cursor:pointer;">
         <div style="position:relative;flex-shrink:0;">
           <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}">${initials(og.ad,og.soyad||'')}</div>
