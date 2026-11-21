@@ -11038,7 +11038,9 @@ function sonOdemelerFiltre(tip){
     const si=S.siniflar.find(s=>s.id===od.sinifId);
     const tarihFmt=new Date(od.olusturma).toLocaleDateString(LC(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
     const ayFmt=(od.aylar||[]).map(a=>ayLabel(a)).join(', ');
-    return `<div class="odeme-gecmis-item" style="cursor:pointer;" onclick="closeModal('m-son-odemeler');openOdemeModal('${od.ogrenciId}','${od.sinifId}','${od.id}')">
+    const siIdx=si?S.siniflar.indexOf(si):-1;
+    const kRenk=siIdx>=0?RENK_BAR[siIdx%RENK_BAR.length]:'var(--purple)'; // sınıf rengi; sınıfsız (özel ders vb.) mor
+    return `<div class="odeme-gecmis-item" style="cursor:pointer;--k:${kRenk};background:linear-gradient(135deg,color-mix(in srgb,var(--k) 15%,var(--surface2)),color-mix(in srgb,var(--k) 4%,var(--surface)) 75%);border:1px solid color-mix(in srgb,var(--k) 45%,var(--border2));border-left:3px solid var(--k);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;" onclick="closeModal('m-son-odemeler');openOdemeModal('${od.ogrenciId}','${od.sinifId}','${od.id}')">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
         <div style="font-size:14px;font-weight:600;">${og?og.ad+' '+(og.soyad||''):'—'}</div>
         <span style="color:var(--green);font-size:15px;font-weight:700;">${(od.tutar||0).toLocaleString(LC())} ₺</span>
