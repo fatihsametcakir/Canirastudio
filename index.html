@@ -211,7 +211,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .student-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .student-meta{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .student-actions{display:flex;gap:4px;flex-shrink:0;align-items:center;}
-.sinif-karti{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:0;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;}
+.sinif-karti{background:linear-gradient(135deg,color-mix(in srgb,var(--card-color,transparent) 16%,var(--surface)),color-mix(in srgb,var(--card-color,transparent) 4%,var(--surface)) 80%);border:1px solid color-mix(in srgb,var(--card-color,transparent) 22%,var(--border2));border-radius:var(--radius);padding:0;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;}
 .sinif-karti:active{transform:scale(.97);box-shadow:0 8px 22px -6px var(--card-color,#00000060);}
 .sinif-karti:active{opacity:.85;}
 .sinif-karti-renk-bar{height:4px;width:100%;}
