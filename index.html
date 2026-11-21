@@ -1103,6 +1103,16 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
         <div class="field"><label data-i18n="yeni_sifre">Yeni Şifre</label><input id="sifre-yeni" type="password" placeholder="En az 6 karakter" data-i18n-ph="en_az_6"/></div>
         <div class="field"><label data-i18n="tekrar">Tekrar</label><input id="sifre-tekrar" type="password" placeholder="Tekrar girin" data-i18n-ph="tekrar_girin"/></div>
         <button class="btn btn-accent" style="width:100%;margin-bottom:10px;" onclick="sifreDegistir()" data-i18n="sifreyi_guncelle">Şifreyi Güncelle</button>
+        <div style="height:1px;background:var(--border2);margin:14px 0;"></div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px;">👥 Kullanıcılar</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;">Uygulamayı kullanan kişiler. Yeni kullanıcı eklenince e-posta ve şifresiyle giriş yapabilir; kaldırılınca erişimi hemen kapanır.</div>
+        <div id="kullanici-liste" style="margin-bottom:12px;"></div>
+        <div id="kullanici-ekle-alan">
+          <div class="field"><label>Ad</label><input id="ku-ad" type="text" placeholder="Örn. Irina"/></div>
+          <div class="field"><label>E-posta</label><input id="ku-email" type="email" placeholder="kisi@ornek.com" autocomplete="off"/></div>
+          <div class="field"><label>Geçici şifre</label><input id="ku-sifre" type="text" placeholder="En az 6 karakter" autocomplete="off"/></div>
+          <button class="btn btn-purple" style="width:100%;" onclick="kullaniciEkle()">+ Kullanıcı Ekle</button>
+        </div>
       </div>
     </div>
 
@@ -2985,6 +2995,7 @@ function accToggle(id){
   if(!body)return;
   const acik=body.classList.toggle('open');
   if(arr)arr.classList.toggle('open',acik);
+  if(acik&&id==='acc-guvenlik'&&typeof kullaniciListele==='function')kullaniciListele();
 }
 function goToAyarlar(){drawerAc();}
 
@@ -7105,6 +7116,71 @@ function cikisYap(){
     _cachedSifre=null;
     location.reload();
   });
+}
+
+// ── Kullanıcı yönetimi (Firebase Authentication + yoneticiler koleksiyonu) ──
+// Yeni kullanıcı: Firebase'de hesap açılır, uid'si 'yoneticiler' koleksiyonuna yazılır.
+// (Kurallar kilitlendiğinde yalnızca bu koleksiyondakiler veriye erişebilir.)
+async function kullaniciListele(){
+  const kutu=document.getElementById('kullanici-liste');
+  const ekle=document.getElementById('kullanici-ekle-alan');
+  if(!kutu)return;
+  if(!AUTH.refresh){
+    kutu.innerHTML='<div style="font-size:12px;color:var(--amber);">Kullanıcı yönetimi için çıkış yapıp E-POSTA ile giriş yapmalısın.</div>';
+    if(ekle)ekle.style.display='none';return;
+  }
+  if(ekle)ekle.style.display='block';
+  kutu.innerHTML='<div style="font-size:12px;color:var(--text3);">Yükleniyor…</div>';
+  try{
+    const liste=await fsTumBelgeler('yoneticiler');
+    kutu.innerHTML=liste.length?liste.map(k=>`<div style="display:flex;align-items:center;gap:8px;padding:9px 10px;margin-bottom:6px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;">
+      <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">${waHtmlEsc(k.ad||'—')}</div><div style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;">${waHtmlEsc(k.email||'')}</div></div>
+      <button class="btn btn-ghost btn-sm" onclick="kullaniciSifreSifirla('${k.id}')">Şifre e-postası</button>
+      <button class="btn btn-danger btn-sm" onclick="kullaniciKaldir('${k.id}')">Kaldır</button>
+    </div>`).join(''):'<div style="font-size:12px;color:var(--text3);">Henüz ek kullanıcı yok.</div>';
+  }catch(e){kutu.innerHTML='<div style="font-size:12px;color:var(--accent);">Liste alınamadı: '+waHtmlEsc(e.message)+'</div>';}
+}
+async function kullaniciEkle(){
+  const ad=document.getElementById('ku-ad').value.trim();
+  const email=document.getElementById('ku-email').value.trim().toLowerCase();
+  const sifre=document.getElementById('ku-sifre').value;
+  if(!ad||!email){alert('Ad ve e-posta zorunlu.');return;}
+  if(sifre.length<6){alert('Şifre en az 6 karakter olmalı.');return;}
+  setSyncing(true);
+  try{
+    let uid=null;
+    const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+FS_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:sifre,returnSecureToken:false})});
+    const d=await r.json();
+    if(r.ok&&d.localId)uid=d.localId;
+    else if(d.error&&d.error.message==='EMAIL_EXISTS'){
+      // Hesap zaten var: girilen şifre doğruysa uid'sini al
+      const r2=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+FS_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:sifre,returnSecureToken:true})});
+      const d2=await r2.json();
+      if(r2.ok&&d2.localId)uid=d2.localId;
+      else throw new Error('Bu e-posta zaten kayıtlı. Mevcut şifresini yazarsan listeye eklerim.');
+    } else throw new Error((d.error&&d.error.message)||'Hesap oluşturulamadı');
+    await db.collection('yoneticiler').doc(uid).set({ad,email,ekleyen:AUTH.email||'',tarih:Date.now()});
+    ['ku-ad','ku-email','ku-sifre'].forEach(id=>document.getElementById(id).value='');
+    toastGoster('✓ Kullanıcı eklendi');
+    kullaniciListele();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
+function kullaniciKaldir(id){
+  confirm_('Kullanıcıyı kaldır','Bu kullanıcının uygulamaya erişimi kapatılacak. Emin misin?',async()=>{
+    try{await db.collection('yoneticiler').doc(id).delete();toastGoster('✓ Kaldırıldı');kullaniciListele();}
+    catch(e){alert('Hata: '+e.message);}
+  });
+}
+async function kullaniciSifreSifirla(id){
+  try{
+    const snap=await db.collection('yoneticiler').doc(id).get();
+    const email=snap.exists&&snap.data().email;
+    if(!email)throw new Error('E-posta bulunamadı');
+    const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key='+FS_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({requestType:'PASSWORD_RESET',email})});
+    const d=await r.json();if(!r.ok)throw new Error((d.error&&d.error.message)||'Gönderilemedi');
+    toastGoster('✓ Şifre sıfırlama e-postası gönderildi');
+  }catch(e){alert('Hata: '+e.message);}
 }
 
 async function sifreDegistir(){
