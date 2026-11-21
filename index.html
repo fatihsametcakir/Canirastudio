@@ -656,6 +656,15 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 #splash .sp-gold{display:block;background:linear-gradient(100deg,#f8e7ae,#d9ac52 40%,#f4dc92 65%,#b0842f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:600;}
 @keyframes spDraw{to{stroke-dashoffset:0}}
 @keyframes spPop{0%{opacity:0;transform:scale(0)}70%{opacity:1;transform:scale(1.5)}100%{opacity:1;transform:scale(1)}}
+/* Açık tema: yazılar koyulaşır, altın tonu derinleşir */
+:root[data-acik="1"] #splash .sp-gold{background:linear-gradient(100deg,#8a6112,#b8872a 40%,#9a6f1c 65%,#6e4c0c);-webkit-background-clip:text;background-clip:text;}
+:root[data-acik="1"] #splash .sp-logo span{color:#c23b3b;text-shadow:none;}
+:root[data-acik="1"] #splash .sp-logo em{color:#3d3a4f;opacity:1;}
+:root[data-acik="1"] #splash .sp-imza small{color:#3d3a4f;opacity:.9;}
+:root[data-acik="1"] #splash .sp-imza b{color:#2b2540;text-shadow:none;}
+:root[data-acik="1"] #splash .sp-mark{filter:drop-shadow(0 1px 4px #8a611240);}
+:root[data-acik="1"] #spg stop:nth-child(1){stop-color:#a87a1e}:root[data-acik="1"] #spg stop:nth-child(2){stop-color:#8a611a}:root[data-acik="1"] #spg stop:nth-child(3){stop-color:#b8872a}:root[data-acik="1"] #spg stop:nth-child(4){stop-color:#6e4c0c}
+:root[data-acik="1"] #splash .sp-dot{background:#b8872a;}
 @media(max-height:760px){#splash .sp-mark{width:84px;height:78px;margin-bottom:8px}#splash .sp-imza{bottom:calc(max(26px,env(safe-area-inset-bottom)) + 28px)}#splash .sp-line{margin-top:16px}}
 @keyframes spIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 </style>
@@ -7396,6 +7405,9 @@ function temaUygula(temaAdi){
   r.setProperty('--accent',t.accent);
   r.setProperty('--accentbg',t.accent+'22');
   document.body.style.background=t.bg;
+  // Açık (beyaz) tema mı? Açılış ekranı kontrastı buna göre ayarlanır
+  {const h=(t.bg||'#000').replace('#','');const rgb=[0,2,4].map(i=>parseInt(h.substr(i,2),16)||0);
+   document.documentElement.dataset.acik=((0.299*rgb[0]+0.587*rgb[1]+0.114*rgb[2])>150)?'1':'0';}
   // Tema grid'ini güncelle
   const grid=document.getElementById('tema-grid');
   if(grid)renderTemaGrid();
