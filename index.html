@@ -1684,9 +1684,30 @@ function fromFS(val){
   }
   return null;
 }
+// ── Güvenlik: veritabanından gelen metinlerdeki HTML/JS enjeksiyonunu etkisizleştirir ──
+// Uygulama birçok yerde veriyi innerHTML ile basıyor. Biri (ör. öğrenci notu) <script>, onerror=,
+// tırnak kaçışı gibi bir şey yazarsa çalışmasın diye tehlikeli karakterler görsel olarak aynı
+// görünen güvenli karşılıklarına çevrilir. Normal adlar/notlar etkilenmez.
+// Şifre alanları ve ayarlar belgeleri HARİÇ (şifre karşılaştırması bozulmasın).
+const _GUVENLI_ATLA_KOLEKSIYON=['ayarlar','ogrenci_hesaplar'];
+const _GUVENLI_ATLA_ALAN=['sifre','deger'];
+function guvenliMetin(s){
+  return s.replace(/[<>"`\\']/g,c=>({'<':'\uFF1C','>':'\uFF1E','"':'\uFF02','`':'\uFF40','\\':'\uFF3C',"'":'\u2019'}[c]))
+          .replace(/&(?=#|[A-Za-z]+;)/g,'\uFF06');
+}
+function guvenliDeger(v,k){
+  if(typeof v==='string')return _GUVENLI_ATLA_ALAN.includes(k)?v:guvenliMetin(v);
+  if(Array.isArray(v))return v.map(x=>guvenliDeger(x,k));
+  if(v&&typeof v==='object'){const o={};for(const kk in v)o[kk]=guvenliDeger(v[kk],kk);return o;}
+  return v;
+}
 function docToObj(doc){
-  const o={id:doc.name.split('/').pop()};
-  for(const k in doc.fields||{})o[k]=fromFS(doc.fields[k]);
+  const yol=doc.name.split('/');
+  const kol=yol[yol.length-2];
+  const atla=_GUVENLI_ATLA_KOLEKSIYON.includes(kol);
+  const id=yol[yol.length-1];
+  const o={id:atla?id:id.replace(/[<>"'`\\]/g,'_')};
+  for(const k in doc.fields||{}){const v=fromFS(doc.fields[k]);o[k]=atla?v:guvenliDeger(v,k);}
   return o;
 }
 function objToFields(obj){
@@ -6941,12 +6962,30 @@ function loginKontrol(){
   return false;
 }
 
+// ── Güvenlik: art arda hatalı girişte geçici kilit (5 hatadan sonra 1 dk, sonra katlanarak, en çok 15 dk) ──
+function girisKilitSaniye(anahtar){
+  try{const k=JSON.parse(localStorage.getItem(anahtar)||'{}');if(k.until&&Date.now()<k.until)return Math.ceil((k.until-Date.now())/1000);}catch(e){}
+  return 0;
+}
+function girisHataKaydet(anahtar){
+  try{
+    const k=JSON.parse(localStorage.getItem(anahtar)||'{}');
+    k.n=(k.n||0)+1;
+    if(k.n>=5)k.until=Date.now()+Math.min(15*60,60*Math.pow(2,k.n-5))*1000;
+    localStorage.setItem(anahtar,JSON.stringify(k));
+  }catch(e){}
+}
+function girisHataSifirla(anahtar){try{localStorage.removeItem(anahtar);}catch(e){}}
+function girisKilitMesaj(sn){return 'Çok fazla hatalı deneme. '+(sn>60?Math.ceil(sn/60)+' dakika':sn+' saniye')+' sonra tekrar deneyin.';}
+
 async function loginDene(){
   const girilen=document.getElementById('login-sifre').value.trim();
   const hatirla=document.getElementById('beni-hatirla').checked;
   const errEl=document.getElementById('login-error');
   const btn=document.querySelector('#login-screen .btn-accent');
   if(!girilen)return;
+  const kilit=girisKilitSaniye('giris_kilit_admin');
+  if(kilit>0){errEl.textContent=girisKilitMesaj(kilit);errEl.style.display='block';setTimeout(()=>{errEl.style.display='none';errEl.textContent=t('hatali_sifre');},4000);return;}
   btn.disabled=true;
   btn.textContent=t('kontrol_ediliyor');
 
@@ -6956,6 +6995,7 @@ async function loginDene(){
 
   const dogru=await getSifreAsync();
   if(girilen===dogru){
+    girisHataSifirla('giris_kilit_admin');
     if(hatirla) localStorage.setItem('giris_kalici','1');
     else sessionStorage.setItem('giris_yapildi','1');
     document.getElementById('login-screen').style.display='none';
@@ -6963,6 +7003,7 @@ async function loginDene(){
     startListeners();
     urlYoklamaKontrol();
   } else {
+    girisHataKaydet('giris_kilit_admin');
     errEl.style.display='block';
     document.getElementById('login-sifre').value='';
     document.getElementById('login-sifre').focus();
@@ -9952,6 +9993,8 @@ async function portalLoginDene(){
   const errEl=document.getElementById('login-error');
   if(!tel10||!sifre){errEl.style.display='block';errEl.textContent=t('tel_sifre_zorunlu');return;}
 
+  const pKilit=girisKilitSaniye('giris_kilit_portal');
+  if(pKilit>0){errEl.style.display='block';errEl.textContent=girisKilitMesaj(pKilit);setTimeout(()=>errEl.style.display='none',4000);return;}
   const btn=document.querySelector('#login-ogrenci-fields .btn');
   btn.disabled=true;btn.textContent=t('kontrol_ediliyor');
 
@@ -9980,10 +10023,12 @@ async function portalLoginDene(){
     }
 
     if(sifre!==mevcutSifre){
+      girisHataKaydet('giris_kilit_portal');
       throw new Error(ilkGiris?'İlk girişte şifreniz telefon numaranızın son 4 hanesidir.':'Şifre hatalı.');
     }
 
     // Başarılı giriş
+    girisHataSifirla('giris_kilit_portal');
     PORTAL_OG_ID=ogId;
     sessionStorage.setItem('portal_og_id',ogId);
     document.getElementById('login-screen').style.display='none';
@@ -10262,7 +10307,7 @@ function renderPortalNot(el,og){
       if(!notlar.length){notEl.innerHTML='';return;}
       notEl.innerHTML=`<div class="sec-title" style="margin-bottom:8px;">${t('gonderilen_notlar')}</div>`+
         notlar.map(n=>`<div class="portal-not-item">
-          <div style="font-size:13px;margin-bottom:4px;">${n.mesaj}</div>
+          <div style="font-size:13px;margin-bottom:4px;">${waHtmlEsc(n.mesaj)}</div>
           <div style="font-size:11px;color:var(--text3);">${formatDate(n.tarih)}</div>
         </div>`).join('');
     }).catch(()=>{});
@@ -10347,11 +10392,11 @@ async function bildirimlerAc(){
   } else {
     html=notlar.map(n=>`<div class="portal-not-item" style="${!n.okundu?'border-color:var(--purple);':''}" onclick="notiOkundu('${n.id}',this)">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-        <div style="font-size:13px;font-weight:600;flex:1;">${n.ad}</div>
+        <div style="font-size:13px;font-weight:600;flex:1;">${waHtmlEsc(n.ad)}</div>
         ${!n.okundu?`<span class="badge badge-purple" style="font-size:10px;">${t('yeni')}</span>`:''}
         <span style="font-size:11px;color:var(--text3);">${formatDate(n.tarih)}</span>
       </div>
-      <div style="font-size:13px;color:var(--text2);line-height:1.5;">${n.mesaj}</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.5;">${waHtmlEsc(n.mesaj)}</div>
     </div>`).join('');
   }
 
