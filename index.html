@@ -682,6 +682,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
         <span data-i18n="beni_hatirla">Beni hatırla</span>
       </label>
       <button class="btn btn-accent" style="width:100%;padding:13px;" onclick="loginDene()" data-i18n="giris_yap">Giriş Yap</button>
+      <div style="text-align:center;margin-top:12px;"><button type="button" onclick="sifremiUnuttum()" style="background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;text-decoration:underline;padding:6px;">Şifremi unuttum</button></div>
     </div>
     <!-- Öğrenci alanları -->
     <div id="login-ogrenci-fields" style="display:none;">
@@ -7106,6 +7107,23 @@ async function loginDene(){
   }
 }
 
+async function sifremiUnuttum(){
+  const errEl=document.getElementById('login-error');
+  const goster=(msg,iyi)=>{errEl.textContent=msg;errEl.style.color=iyi?'var(--green)':'';errEl.style.display='block';setTimeout(()=>{errEl.style.display='none';errEl.style.color='';errEl.textContent=t('hatali_sifre');},6000);};
+  const email=(document.getElementById('login-email').value||'').trim();
+  if(!email||email.indexOf('@')<1){goster('Önce yukarıdaki E-posta alanına e-posta adresini yaz, sonra tekrar dokun.',false);return;}
+  try{
+    const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key='+FS_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({requestType:'PASSWORD_RESET',email})});
+    const d=await r.json();
+    if(!r.ok){
+      const k=(d.error&&d.error.message)||'';
+      if(k.indexOf('EMAIL_NOT_FOUND')===0){goster('Bu e-posta ile kayıtlı bir hesap bulunamadı.',false);return;}
+      if(k.indexOf('TOO_MANY_ATTEMPTS')===0){goster('Çok fazla deneme yapıldı, biraz bekleyip tekrar dene.',false);return;}
+      throw new Error(k||'Gönderilemedi');
+    }
+    goster('Şifre sıfırlama bağlantısı e-postana gönderildi. Spam klasörüne de bak.',true);
+  }catch(e){goster('Gönderilemedi: '+e.message,false);}
+}
 function cikisYap(){
   confirm_('Çıkış Yap','Oturumu kapatmak istiyor musunuz?',()=>{
     sessionStorage.removeItem('giris_yapildi');
