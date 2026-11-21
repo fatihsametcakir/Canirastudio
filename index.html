@@ -207,6 +207,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .student-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);}
 .student-item:last-child{border-bottom:none;}
 .student-item.pasif{opacity:.5;}
+.og-grup-liste{background:linear-gradient(135deg,color-mix(in srgb,var(--sr) 11%,var(--surface)),color-mix(in srgb,var(--sr) 4%,var(--surface)) 80%);border:1px solid color-mix(in srgb,var(--sr) 38%,var(--border2));}
+.og-grup-liste .student-item{border-bottom:1px solid color-mix(in srgb,var(--sr) 30%,transparent);}
+.og-grup-liste .student-item:last-child{border-bottom:none;}
 .student-info{flex:1;min-width:0;cursor:pointer;}
 .student-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .student-meta{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -6314,7 +6317,7 @@ function renderOgrenciler(){
         +'<div style="font-size:13px;font-weight:600;">'+ad+'</div>'
         +'<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><span style="font-size:12px;color:var(--text2);font-weight:400;">'+sayi+' '+t('lbl_ogrenci_kucuk')+'</span><span style="color:var(--text2);transition:transform .2s;transform:'+(acik?'rotate(90deg)':'rotate(0deg)')+';">›</span></div>'
         +'</div>'
-        +(acik?'<div class="card" style="padding:0 16px;margin-top:4px;border-radius:var(--radius-sm);">'+gruplar[ad].map((og,i)=>row(og,ad,false,i+1)).join('')+'</div>':'')
+        +(acik?'<div class="card og-grup-liste" style="--sr:'+grupRenk+';padding:0 16px;margin-top:4px;border-radius:var(--radius-sm);">'+gruplar[ad].map((og,i)=>row(og,ad,false,i+1)).join('')+'</div>':'')
         +'</div>';
     });
     if(sadeceOzel.length){
