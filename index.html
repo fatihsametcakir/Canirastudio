@@ -3529,7 +3529,7 @@ function renderVideolar(){
 // Sınıf geçmişi günlüğü — ad/gün/saat/eğitmen/ücret/pasife-alma değişikliklerini tarihiyle tutar
 async function sinifOlayEkle(sinifId,olay,eskiDeger,yeniDeger){
   try{
-    const yeniKayit={sinifId,olay,eskiDeger:eskiDeger??null,yeniDeger:yeniDeger??null,tarih:bugunTarih(),olusturma:Date.now()};
+    const yeniKayit={sinifId,olay,eskiDeger:eskiDeger??null,yeniDeger:yeniDeger??null,tarih:bugunTarih(),olusturma:Date.now(),kullanici:(typeof AUTH!=='undefined'&&AUTH&&AUTH.email)||null};
     const result=await db.collection('sinifGecmisi').add(yeniKayit);
     S.sinifGecmisi.push({...yeniKayit,id:result.id});
   }catch(e){/* günlük tutulamazsa sessizce geç, ana işlemi engellemez */}
@@ -4255,7 +4255,7 @@ function openKayitIslem(siId,kayitId){
 // Öğrenci geçmişi günlüğü — dondurma/çözme/çıkış/giriş/pasif/aktif gibi tüm olayları tek merkezi koleksiyonda tutar
 async function ogrenciOlayEkle(ogrenciId,sinifId,sinifAdi,olay,eskiDeger,yeniDeger){
   try{
-    const yeniKayit={ogrenciId,sinifId:sinifId||null,sinifAdi:sinifAdi||null,olay,eskiDeger:eskiDeger??null,yeniDeger:yeniDeger??null,tarih:bugunTarih(),olusturma:Date.now()};
+    const yeniKayit={ogrenciId,sinifId:sinifId||null,sinifAdi:sinifAdi||null,olay,eskiDeger:eskiDeger??null,yeniDeger:yeniDeger??null,tarih:bugunTarih(),olusturma:Date.now(),kullanici:(typeof AUTH!=='undefined'&&AUTH&&AUTH.email)||null};
     const result=await db.collection('ogrenciGecmisi').add(yeniKayit);
     S.ogrenciGecmisi.push({...yeniKayit,id:result.id});
   }catch(e){/* günlük tutulamazsa sessizce geç, ana işlemi engellemez */}
@@ -8687,7 +8687,7 @@ function openOgrenciGecmisi(ogId){
       <div style="flex:1;min-width:0;">
         <div style="font-size:14px;font-weight:500;color:${bilgi.renk};">${bilgi.metin}${g.sinifAdi?' · '+g.sinifAdi:''}</div>
         ${degisimVar?`<div style="font-size:12px;color:var(--text2);margin-top:2px;">${g.eskiDeger} → ${g.yeniDeger}</div>`:''}
-        <div style="font-size:11px;color:var(--text3);margin-top:1px;">${dObj.toLocaleDateString(LC(),{day:'numeric',month:'long',year:'numeric'})}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:1px;">${dObj.toLocaleDateString(LC(),{day:'numeric',month:'long',year:'numeric'})}${g.olusturma?' · '+new Date(g.olusturma).toLocaleTimeString(LC(),{hour:'2-digit',minute:'2-digit'}):''}${g.kullanici?' · 👤 '+g.kullanici:''}</div>
       </div>
     </div>`;
   }).join('');
@@ -8724,7 +8724,7 @@ function openSinifGecmisi(sinifId){
       <div style="flex:1;min-width:0;">
         <div style="font-size:14px;font-weight:500;color:${bilgi.renk};">${bilgi.metin}</div>
         ${degisimVar?`<div style="font-size:12px;color:var(--text2);margin-top:2px;">${g.eskiDeger} → ${g.yeniDeger}</div>`:''}
-        <div style="font-size:11px;color:var(--text3);margin-top:1px;">${dObj.toLocaleDateString(LC(),{day:'numeric',month:'long',year:'numeric'})}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:1px;">${dObj.toLocaleDateString(LC(),{day:'numeric',month:'long',year:'numeric'})}${g.olusturma?' · '+new Date(g.olusturma).toLocaleTimeString(LC(),{hour:'2-digit',minute:'2-digit'}):''}${g.kullanici?' · 👤 '+g.kullanici:''}</div>
       </div>
     </div>`;
   }).join('');
