@@ -3011,9 +3011,15 @@ async function saveOgrenci(){
     (o.soyad||'').toLowerCase()===(so||'').toLowerCase()
   );
   if(adSoyadEsles){showToast('"'+ad+' '+so+'" adında öğrenci zaten var.','error');return;}
+  // Yeni öğrenci kaydında telefon zorunlu (asistanlar hariç)
+  const asistanMi=document.getElementById('og-asistan').checked;
+  if(!EDIT_OG&&!asistanMi&&!telGecerliMi(tel)){showToast('Telefon numarası zorunludur.','error');return;}
   if(tel){
-    const telEsles=S.ogrenciler.find(o=>o.id!==EDIT_OG&&o.tel&&o.tel.replace(/\s/g,'')===tel.replace(/\s/g,''));
-    if(telEsles){showToast('Bu cep no "'+telEsles.ad+' '+(telEsles.soyad||'')+'" adına kayıtlı.','error');return;}
+    if(tel.startsWith('90')&&tel.length!==12){showToast('Telefon numarası geçersiz: 90 ile başlayan numara 12 haneli olmalı (10 haneli cep numarası girin).','error');return;}
+    // Aynı numara başka bir öğrencide kayıtlı olamaz (biçimden bağımsız karşılaştırılır)
+    const telYeni=telNormalizeEt(tel);
+    const telEsles=S.ogrenciler.find(o=>o.id!==EDIT_OG&&o.tel&&telNormalizeEt(o.tel)===telYeni);
+    if(telEsles){showToast('Bu numara "'+telEsles.ad+' '+(telEsles.soyad||'')+'" adına kayıtlı. Aynı numarayla ikinci öğrenci eklenemez.','error');return;}
   }
   const btn=document.getElementById('btn-save-og');
   if(btn.disabled)return; // Çift tıklamayı önle
