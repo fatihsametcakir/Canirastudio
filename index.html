@@ -835,7 +835,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
   <div class="page active" id="pg-anasayfa">
     <div class="stats-row" id="anasayfa-stats-row">
       <div class="stat-card s1" onclick="goTo('ogrenciler',document.querySelector('.nav-item:nth-child(2)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-aktif-ogrenci">Aktif Öğrenci</div><div class="stat-val" id="st-ogrenci">0</div><button type="button" class="og-bilgi-pil" onclick="ogKartBilgiAc(event)"><span class="og-bilgi-i">i</span><span data-i18n="og_dagilim_gor">Dağılımı gör</span><span style="opacity:.7;">›</span></button><div style="display:none;"><span id="st-ogrenci-toplam">0</span><span id="st-kayit">0</span> <span id="lbl-kayit">kayıt</span><span id="st-kayit-coklu"></span><div id="st-ogrenci-kirilim"></div></div></div>
-      <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-sinif">Sınıf</div><div class="stat-val" id="st-sinif">0</div></div>
+      <div class="stat-card s2" onclick="goTo('siniflar',document.querySelector('.nav-item:nth-child(3)'))" style="cursor:pointer;"><div class="stat-label" id="lbl-sinif">Sınıf</div><div class="stat-val" id="st-sinif">0</div><div id="st-sinif-detay" style="font-size:11px;color:var(--text3);margin-top:6px;line-height:1.7;"></div></div>
       <div class="stat-card s3" onclick="goTo('gelirgider',document.querySelectorAll('.nav-item')[5])" style="cursor:pointer;"><div class="stat-label" id="lbl-bu-ay-gelir">Bu ay gelir</div><div class="stat-val" id="st-odeme">0</div><div style="font-size:11px;color:var(--text3);margin-top:2px;"><span id="lbl-net">Net</span>: <span id="st-net">0</span></div></div>
       <div class="stat-card s4" onclick="goTo('odemeler',document.querySelectorAll('.nav-item')[4])" style="cursor:pointer;"><div class="stat-label" id="lbl-paket-yenileme">Paket yenileme</div><div class="stat-val" id="st-yaklasan">0</div></div>
     </div>
@@ -1883,7 +1883,7 @@ const TRANSLATIONS={
     ozel_ders_icin_ogrenci_sec:'Özel Ders İçin Öğrenci Seç', ogrenci_ara:'Öğrenci Ara', ogrenci_ara_ph:'İsim veya telefon yazarak ara...',
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
     zaten_ozel_ders:'zaten özel ders alıyor', sec_yonlendir:'seç ›', eslesme_yok_yeni_devam:'Eşleşme bulunamadı — "Yeni Öğrenci Ekle" ile devam edebilirsin.',
-    kayitli:'kayıtlı', badge_aktif:'aktif', tek:'tek', pasif_siniflar:'Kapalı Sınıflar', kapali_sinif_etiket:'kapalı sınıf',
+    kayitli:'kayıtlı', badge_aktif:'aktif', tek:'tek', pasif_siniflar:'Kapalı Sınıflar', sinif_kucuk_ders:'sınıf', kapali_sinif_etiket:'kapalı sınıf',
     tatil_gunleri:'🎌 Tatil Günleri', ph_tatil_ad:'Açıklama (örn: Kurban Bayramı)', btn_tatil_ekle:'＋ Tatil Ekle',
     haftalik:'Haftalık', aylik:'Aylık', bu_hafta:'Bu Hafta',
     btn_ogrenci_ekle:'＋ Öğrenci Ekle', btn_haftalik_takvim:'📅 Haftalık Takvim',
@@ -2061,7 +2061,7 @@ const TRANSLATIONS={
     ozel_ders_icin_ogrenci_sec:'Select Student for Private Lesson', ogrenci_ara:'Search Student', ogrenci_ara_ph:'Search by name or phone...',
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
     zaten_ozel_ders:'already has private lessons', sec_yonlendir:'select ›', eslesme_yok_yeni_devam:'No match found — you can continue with "Add New Student".',
-    kayitli:'enrolled', badge_aktif:'active', tek:'drop-in', pasif_siniflar:'Closed Classes', kapali_sinif_etiket:'closed class',
+    kayitli:'enrolled', badge_aktif:'active', tek:'drop-in', pasif_siniflar:'Closed Classes', sinif_kucuk_ders:'classes', kapali_sinif_etiket:'closed class',
     tatil_gunleri:'🎌 Holidays', ph_tatil_ad:'Description (e.g. Eid Holiday)', btn_tatil_ekle:'＋ Add Holiday',
     haftalik:'Weekly', aylik:'Monthly', bu_hafta:'This Week',
     btn_ogrenci_ekle:'＋ Add Student', btn_haftalik_takvim:'📅 Weekly Calendar',
@@ -2239,7 +2239,7 @@ const TRANSLATIONS={
     ozel_ders_icin_ogrenci_sec:'Выбрать ученика для частного урока', ogrenci_ara:'Поиск ученика', ogrenci_ara_ph:'Поиск по имени или телефону...',
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
     zaten_ozel_ders:'уже посещает частные уроки', sec_yonlendir:'выбрать ›', eslesme_yok_yeni_devam:'Совпадений не найдено — можно продолжить через "Добавить нового ученика".',
-    kayitli:'записано', badge_aktif:'активно', tek:'разовое', pasif_siniflar:'Закрытые группы', kapali_sinif_etiket:'закрыта',
+    kayitli:'записано', badge_aktif:'активно', tek:'разовое', pasif_siniflar:'Закрытые группы', sinif_kucuk_ders:'групп', kapali_sinif_etiket:'закрыта',
     tatil_gunleri:'🎌 Праздничные дни', ph_tatil_ad:'Описание (напр. Ураза-байрам)', btn_tatil_ekle:'＋ Добавить праздник',
     haftalik:'Неделя', aylik:'Месяц', bu_hafta:'Эта неделя',
     btn_ogrenci_ekle:'＋ Добавить ученика', btn_haftalik_takvim:'📅 Недельный календарь',
@@ -5953,6 +5953,14 @@ function renderAnasayfa(){
   const kayitColuEl=document.getElementById('st-kayit-coklu');
   if(kayitColuEl)kayitColuEl.textContent=coklu?' ('+t('kayit_coklu').replace('{n}',coklu).replace('{k}',aktifKayitSayisi)+')':'';
   document.getElementById('st-sinif').textContent=S.siniflar.filter(s=>s.durum!=='pasif').length;
+  {
+    const sAktif=S.siniflar.filter(s=>s.durum!=='pasif'),sKapali=S.siniflar.length-sAktif.length;
+    const gunAd=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'][simdikiZaman().getDay()];
+    const bugunDers=sAktif.filter(s=>s.gun===gunAd).length;
+    const sd=document.getElementById('st-sinif-detay');
+    if(sd)sd.innerHTML='<div><span style="color:var(--green);">●</span> '+sAktif.length+' '+t('badge_aktif')+' &nbsp;<span style="opacity:.6;">○</span> '+sKapali+' '+t('kapali_kisa')+'</div>'
+      +'<div>📅 '+t('bugun')+': <b style="color:var(--text2);font-weight:600;">'+bugunDers+' '+t('sinif_kucuk_ders')+'</b></div>';
+  }
   const yaklasanlar=getYaklasanlar();document.getElementById('st-yaklasan').textContent=yaklasanlar.length;
   const bk=ayKey(simdikiZaman().getFullYear(),simdikiZaman().getMonth()+1);
   const grupToplam=S.odemeler.filter(o=>{const t=o.tarih;if(!t)return false;return ayKey(new Date(t+'T00:00:00').getFullYear(),new Date(t+'T00:00:00').getMonth()+1)===bk;}).reduce((s,o)=>s+(o.tutar||0),0)-iadeAyToplami(bk);
