@@ -263,6 +263,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .odeme-card:active{transform:scale(.98);}
 .odeme-sinif-grup{--gr:var(--grup-renk,var(--border2));margin-bottom:10px;border-radius:var(--radius);overflow:hidden;background:linear-gradient(135deg,color-mix(in srgb,var(--gr) 16%,var(--surface)),color-mix(in srgb,var(--gr) 4%,var(--surface)) 80%);border:1px solid color-mix(in srgb,var(--gr) 50%,var(--border2));box-shadow:0 4px 14px -8px rgba(0,0,0,.5);}
 .odeme-sinif-baslik{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;cursor:pointer;background:transparent;user-select:none;transition:transform .15s;border-left:3px solid var(--grup-renk,var(--border2));}
+.odeme-sinif-grup .pay-alert{background:linear-gradient(135deg,color-mix(in srgb,var(--gr) 14%,var(--surface2)),color-mix(in srgb,var(--gr) 4%,var(--surface)) 75%);border:1px solid color-mix(in srgb,var(--gr) 40%,var(--border2));}
 .odeme-sinif-baslik:active{transform:scale(.98);}
 .odeme-sinif-adi{font-family:'Fraunces',serif;font-size:15px;font-weight:600;}
 .odeme-sinif-chevron{font-size:18px;color:var(--text2);transition:transform .2s cubic-bezier(.34,1.56,.64,1);flex-shrink:0;}
@@ -6015,8 +6016,7 @@ function renderAnasayfa(){
         <div style="display:flex;gap:6px;">${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),sinif.ad,dl,dl<=0?'doldu':dl<=3?'yakin':'hatirla')}<button class="btn btn-green btn-sm" onclick="openOdemeModal('${og.id}','${sinif.id}')">＋ ${t('odeme_al')}</button></div>
       </div>`;
     }).join('');
-    return `<div class="odeme-sinif-grup" style="margin-bottom:8px;overflow:hidden;">
-      ${renkBar?`<div style="height:3px;background:${renkBar};width:100%;"></div>`:''}
+    return `<div class="odeme-sinif-grup" style="margin-bottom:8px;overflow:hidden;${renkBar?`--grup-renk:${renkBar};`:''}">
       <div class="odeme-sinif-baslik" onclick="toggleYenGrup('${grupId}')" style="padding:12px 14px;">
         <div style="min-width:0;">
           <div style="font-size:14px;font-weight:600;color:var(--text);">${baslik}</div>
@@ -6160,8 +6160,7 @@ function renderAnasayfa(){
 
   function accordionGrup(grupId,baslik,items,badgeHtml='',renkBar=''){
     const acik=BEK_ACIK.has(grupId);
-    return `<div class="odeme-sinif-grup" style="margin-bottom:8px;overflow:hidden;">
-      ${renkBar?`<div style="height:3px;background:${renkBar};width:100%;"></div>`:''}
+    return `<div class="odeme-sinif-grup" style="margin-bottom:8px;overflow:hidden;${renkBar?`--grup-renk:${renkBar};`:''}">
       <div class="odeme-sinif-baslik" onclick="toggleBekGrup('${grupId}')" style="padding:12px 14px;">
         <div style="min-width:0;">
           <div style="font-size:14px;font-weight:600;color:var(--text);">${baslik}</div>
