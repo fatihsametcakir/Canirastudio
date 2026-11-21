@@ -726,7 +726,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
     <div style="display:flex;gap:8px;padding:0 0 14px;flex-shrink:0;">
       <button id="so-hafta-btn" class="btn btn-accent btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('hafta')" data-i18n="son_1_hafta">Son 1 Hafta</button>
       <button id="so-ay-btn" class="btn btn-ghost btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('ay')" data-i18n="son_1_ay">Son 1 Ay</button>
-      <button id="so-tumü-btn" class="btn btn-ghost btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('tumu')" data-i18n="tumu">Tümü</button>
+      <button id="so-tumu-btn" class="btn btn-ghost btn-sm" style="flex:1;" onclick="sonOdemelerFiltre('tumu')" data-i18n="tumu">Tümü</button>
     </div>
     <div style="position:relative;margin-bottom:12px;flex-shrink:0;">
       <input type="text" id="so-arama-input" placeholder="🔍 Öğrenci ara..." oninput="soAramaDegisti(this.value)" style="width:100%;padding:10px 36px 10px 14px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:14px;">
@@ -11015,7 +11015,7 @@ function soAramaTemizle(){SO_ARAMA='';sonOdemelerFiltre(SO_TIP);}
 function sonOdemelerFiltre(tip){
   SO_TIP=tip;
   ['hafta','ay','tumu'].forEach(t=>{
-    const b=document.getElementById('so-'+t+(t==='tumu'?'ü':'')+'-btn');
+    const b=document.getElementById('so-'+t+'-btn');
     if(b){b.className='btn btn-'+(tip===t?'accent':'ghost')+' btn-sm';b.style.flex='1';}
   });
   const temizleBtn=document.getElementById('so-arama-temizle');
