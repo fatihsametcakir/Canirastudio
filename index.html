@@ -6304,7 +6304,7 @@ function renderOgrenciler(){
       const grupSi=S.siniflar.find(s=>s.ad===ad);
       const grupRenk=grupSi?RENK_BAR[S.siniflar.indexOf(grupSi)%RENK_BAR.length]:'var(--border2)';
       html+='<div style="margin-bottom:6px;">'
-        +'<div onclick="toggleOgGrupByIdx('+gi+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border2);border-left:3px solid '+grupRenk+';">'
+        +'<div onclick="toggleOgGrupByIdx('+gi+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:linear-gradient(90deg,color-mix(in srgb,'+grupRenk+' 17%,var(--surface2)),color-mix(in srgb,'+grupRenk+' 5%,var(--surface2)) 85%);border-radius:var(--radius-sm);cursor:pointer;border:1px solid color-mix(in srgb,'+grupRenk+' 22%,var(--border2));border-left:3px solid '+grupRenk+';">'
         +'<div style="font-size:13px;font-weight:600;">'+ad+'</div>'
         +'<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><span style="font-size:12px;color:var(--text2);font-weight:400;">'+sayi+' '+t('lbl_ogrenci_kucuk')+'</span><span style="color:var(--text2);transition:transform .2s;transform:'+(acik?'rotate(90deg)':'rotate(0deg)')+';">›</span></div>'
         +'</div>'
