@@ -2740,7 +2740,7 @@ function goTo(p,btn){
   const yon=(eskiIdx>=0&&yeniIdx>=0&&yeniIdx<eskiIdx)?'gec-geri':'gec-ileri';
   const ayniSayfa=(p===PAGE);
   PREV_PAGE=PAGE;PAGE=p;showPage(p);
-  if(!ayniSayfa){const pg=document.getElementById('pg-'+p);if(pg){pg.classList.remove('gec-ileri','gec-geri');void pg.offsetWidth;pg.classList.add(yon);}}
+  if(!ayniSayfa){const pg=document.getElementById('pg-'+p);if(pg){pg.classList.remove('gec-ileri','gec-geri');void pg.offsetWidth;pg.classList.add(yon);clearTimeout(pg._gecT);pg._gecT=setTimeout(()=>pg.classList.remove('gec-ileri','gec-geri'),800);}} // animasyon bitince sınıf kalkar: veri yenilenince kartlar yeniden belirip kaybolmasın
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
   if(btn){btn.classList.add('active');if(!ayniSayfa){btn.classList.remove('nav-pop');void btn.offsetWidth;btn.classList.add('nav-pop');}}
   setTopbar(false);
