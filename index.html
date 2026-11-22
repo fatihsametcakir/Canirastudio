@@ -5688,7 +5688,19 @@ function otHaftaDegistir(dir){OT_WEEK_START=new Date(OT_WEEK_START.getTime()+dir
 function openOzelTakvim(){
   PREV_PAGE=PAGE;PAGE='ozel-takvim';showPage('ozel-takvim');setTopbar(true,t('btn_haftalik_takvim').replace('📅 ',''));
   const fab=document.getElementById('mainFab');if(fab)fab.style.display='none';
+  OT_WEEK_START=otGetMonday(simdikiZaman()); // her açılışta bu hafta
   renderOzelTakvim();
+  otBugunuGoster();
+}
+// Takvim yatay kaydırılabilir: açılınca bugünün sütunu görünür olsun (Pazartesi başta, Pazar sonda kalır)
+function otBugunuGoster(){
+  const kap=document.querySelector('#pg-ozel-takvim .yatay-kaydirma-alani');
+  const basliklar=document.querySelectorAll('#ot-grid .ot-gun-header');
+  if(!kap||!basliklar.length)return;
+  const idx=(simdikiZaman().getDay()+6)%7; // Pzt=0 ... Paz=6
+  const h=basliklar[idx];if(!h)return;
+  const dene=()=>{kap.scrollLeft=Math.max(0,h.offsetLeft-44);};
+  dene();requestAnimationFrame(dene);setTimeout(dene,250); // sayfa geçiş animasyonu bitince de yerinde kalsın
 }
 // Özel ders takvimi blok rengi: kadın pembe, erkek mavi, asistan turuncu (eğitmen rengi sol şeritte gösterilir)
 function otCinsiyetRenk(og){
