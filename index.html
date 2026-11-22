@@ -10646,6 +10646,7 @@ function egRenderOgrenciler(el){
   html+=egOgrenciListeHtml(ara)+'</div>';
   el.innerHTML=html;
 }
+const egSinifRenk=id=>RENK_BAR[Math.max(0,EG.siniflar.findIndex(x=>x.id===id))%RENK_BAR.length];
 function egOgKartToggle(id,suAnAcik){EG_OG_ACIK[id]=!suAnAcik;egRender();}
 function egAraYenile(){const l=document.getElementById('eg-liste');if(l)l.innerHTML=egOgrenciListeHtml(EG_ARA.toLocaleLowerCase('tr'));}
 function egOgrenciListeHtml(ara){
@@ -10663,8 +10664,8 @@ function egOgrenciListeHtml(ara){
     toplam+=satirlar.length;
     satirlar.sort((a,b)=>egAdSirala(a.o,b.o));
     const acik=ara?true:(EG_OG_ACIK[si.id]!==undefined?EG_OG_ACIK[si.id]:EG.siniflar.length===1); // tek sınıf: açık; çok sınıf: kapalı başlar, istenirse açılır
-    html+=`<div class="portal-card"><div class="eg-baslik" onclick="egOgKartToggle('${si.id}',${acik})"><div style="flex:1;min-width:0;font-weight:600;font-size:14px;">${egEsc(si.ad)} <span style="font-size:12px;color:var(--text3);font-weight:400;">· ${satirlar.length} ${t('eg_kisi')}</span></div><span class="eg-chev ${acik?'acik':''}">▼</span></div>`+
-      (acik?'<div style="margin-top:10px;">'+satirlar.map(({o,k})=>`<div class="eg-ogsatir ${egCins(o)}">${egAvatar(o)}<div style="flex:1;min-width:0;">${egAd(o)}${egTelHtml(o)}</div>${egDurumRozet(o,k)}</div>`).join('')+'</div>':'')+'</div>';
+    html+=`<div class="odeme-sinif-grup" style="--grup-renk:${egSinifRenk(si.id)};"><div class="odeme-sinif-baslik" onclick="egOgKartToggle('${si.id}',${acik})"><div style="flex:1;min-width:0;"><span class="odeme-sinif-adi">${egEsc(si.ad)}</span> <span style="font-size:12px;color:var(--text2);font-weight:400;">· ${satirlar.length} ${t('eg_kisi')}</span></div><span class="eg-chev ${acik?'acik':''}">▼</span></div>`+
+      (acik?'<div style="padding:2px 12px 12px;">'+satirlar.map(({o,k})=>`<div class="eg-ogsatir ${egCins(o)}">${egAvatar(o)}<div style="flex:1;min-width:0;">${egAd(o)}${egTelHtml(o)}</div>${egDurumRozet(o,k)}</div>`).join('')+'</div>':'')+'</div>';
   });
   return html||'<div class="portal-card" style="text-align:center;color:var(--text3);">'+t('eg_gosterilecek_yok')+'</div>';
 }
@@ -10675,12 +10676,12 @@ function egRenderSiniflar(el){
     const aktifSayi=ogler.filter(x=>!egPasifMi(x.o,x.k)&&!x.o.asistan).length;
     const acik=!!EG_ACIK[si.id];
     const ortak=(si.egitmenAdlari||[]).filter(a=>a!==EG.egitmen.ad);
-    return `<div class="portal-card" style="${si.durum==='pasif'?'opacity:.7;':''}">
-      <div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="EG_ACIK['${si.id}']=!EG_ACIK['${si.id}'];egRender()">
-        <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:15px;">${egEsc(si.ad)}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${egEsc(si.gun||'')} ${egEsc(si.saat||'')} · ${aktifSayi} ${t('eg_aktif_ogrenci')}${ortak.length?' · '+t('eg_birlikte')+': '+egEsc(ortak.join(', ')):''}</div></div>
+    return `<div class="odeme-sinif-grup" style="--grup-renk:${egSinifRenk(si.id)};${si.durum==='pasif'?'opacity:.7;':''}">
+      <div class="odeme-sinif-baslik" onclick="EG_ACIK['${si.id}']=!EG_ACIK['${si.id}'];egRender()">
+        <div style="flex:1;min-width:0;"><div class="odeme-sinif-adi">${egEsc(si.ad)}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px;">${egEsc(si.gun||'')} ${egEsc(si.saat||'')} · ${aktifSayi} ${t('eg_aktif_ogrenci')}${ortak.length?' · '+t('eg_birlikte')+': '+egEsc(ortak.join(', ')):''}</div></div>
         ${si.durum==='pasif'?'<span class="badge badge-gray">'+t('eg_kapali')+'</span>':''}<span class="eg-chev ${acik?'acik':''}">▼</span></div>
-      ${acik?'<div style="margin-top:8px;">'+(ogler.length?ogler.map(({o,k})=>`<div class="eg-ogsatir ${egCins(o)}">${egAvatar(o)}<div style="flex:1;min-width:0;">${egAd(o)}${egTelHtml(o)}</div>${egDurumRozet(o,k)}</div>`).join(''):'<div style="font-size:12px;color:var(--text3);">'+t('eg_kayitli_yok')+'</div>')+'</div>':''}
+      ${acik?'<div style="padding:2px 12px 12px;">'+(ogler.length?ogler.map(({o,k})=>`<div class="eg-ogsatir ${egCins(o)}">${egAvatar(o)}<div style="flex:1;min-width:0;">${egAd(o)}${egTelHtml(o)}</div>${egDurumRozet(o,k)}</div>`).join(''):'<div style="font-size:12px;color:var(--text3);">'+t('eg_kayitli_yok')+'</div>')+'</div>':''}
     </div>`;
   }).join('');
 }
