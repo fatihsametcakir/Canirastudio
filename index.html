@@ -952,9 +952,12 @@ body.portal-modu .overlay{z-index:9500;}
 
   <!-- SINIFLAR -->
   <div class="page" id="pg-siniflar">
-    <div style="position:relative;margin:4px 0 12px;">
+    <div style="display:flex;gap:8px;margin:4px 0 12px;align-items:stretch;">
+    <div style="position:relative;flex:1;min-width:0;">
       <div class="search-wrap"><input id="si-arama" placeholder="Sınıf ara..." oninput="renderSiniflar();toggleClear('si-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s;"/><button id="si-arama-clear" class="search-clear" onclick="clearSearch('si-arama',renderSiniflar)">✕</button></div>
       <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
+    </div>
+    <button class="btn btn-accent btn-sm" style="flex-shrink:0;padding:0 14px;white-space:nowrap;" onclick="openSinifModal()" data-i18n="btn_yeni_sinif">＋ Yeni Sınıf</button>
     </div>
     <div id="sinif-gun-chips" style="display:flex;gap:5px;overflow-x:auto;margin:0 0 12px;padding-bottom:2px;-webkit-overflow-scrolling:touch;"></div>
     <div id="sinif-list"></div>
@@ -1971,6 +1974,7 @@ const TRANSLATIONS={
     sadece_ozel_ders:'Sadece Özel Ders',
     ozel_ders_icin_ogrenci_sec:'Özel Ders İçin Öğrenci Seç', ogrenci_ara:'Öğrenci Ara', ogrenci_ara_ph:'İsim veya telefon yazarak ara...',
     btn_yeni_ozel:'＋ Yeni Özel Ders',
+    btn_yeni_sinif:'＋ Yeni Sınıf',
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
     zaten_ozel_ders:'zaten özel ders alıyor', sec_yonlendir:'seç ›', eslesme_yok_yeni_devam:'Eşleşme bulunamadı — "Yeni Öğrenci Ekle" ile devam edebilirsin.',
     kayitli:'kayıtlı', badge_aktif:'aktif', tek:'tek', pasif_siniflar:'Kapalı Sınıflar', sinif_kucuk_ders:'sınıf', kapali_sinif_etiket:'kapalı sınıf',
@@ -2154,6 +2158,7 @@ const TRANSLATIONS={
     sadece_ozel_ders:'Private Lessons Only',
     ozel_ders_icin_ogrenci_sec:'Select Student for Private Lesson', ogrenci_ara:'Search Student', ogrenci_ara_ph:'Search by name or phone...',
     btn_yeni_ozel:'＋ New Private Lesson',
+    btn_yeni_sinif:'＋ New Class',
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
     zaten_ozel_ders:'already has private lessons', sec_yonlendir:'select ›', eslesme_yok_yeni_devam:'No match found — you can continue with "Add New Student".',
     kayitli:'enrolled', badge_aktif:'active', tek:'drop-in', pasif_siniflar:'Closed Classes', sinif_kucuk_ders:'classes', kapali_sinif_etiket:'closed class',
@@ -2337,6 +2342,7 @@ const TRANSLATIONS={
     sadece_ozel_ders:'Только частные уроки',
     ozel_ders_icin_ogrenci_sec:'Выбрать ученика для частного урока', ogrenci_ara:'Поиск ученика', ogrenci_ara_ph:'Поиск по имени или телефону...',
     btn_yeni_ozel:'＋ Новый урок',
+    btn_yeni_sinif:'＋ Новый класс',
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
     zaten_ozel_ders:'уже посещает частные уроки', sec_yonlendir:'выбрать ›', eslesme_yok_yeni_devam:'Совпадений не найдено — можно продолжить через "Добавить нового ученика".',
     kayitli:'записано', badge_aktif:'активно', tek:'разовое', pasif_siniflar:'Закрытые группы', sinif_kucuk_ders:'групп', kapali_sinif_etiket:'закрыта',
@@ -2833,7 +2839,7 @@ function goTo(p,btn){
   if(btn){btn.classList.add('active');if(!ayniSayfa){btn.classList.remove('nav-pop');void btn.offsetWidth;btn.classList.add('nav-pop');}}
   setTopbar(false);
   const fab=document.getElementById('mainFab');
-  if(fab)fab.style.display=(p==='anasayfa'||p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider'||p==='odemeler'||p==='ozel')?'none':'flex';
+  if(fab)fab.style.display=(p==='anasayfa'||p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider'||p==='odemeler'||p==='ozel'||p==='siniflar')?'none':'flex';
   renderAll();
 }
 function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
@@ -2860,7 +2866,7 @@ function goBack(){
   const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:-1,ozel:3,odemeler:4,gelirgider:5,yoklama:-1};
   document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',i===(map[bt]??-1)));
   const fab=document.getElementById('mainFab');
-  if(fab)fab.style.display=(bt==='anasayfa'||bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider'||bt==='odemeler'||bt==='ozel')?'none':'flex';
+  if(fab)fab.style.display=(bt==='anasayfa'||bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider'||bt==='odemeler'||bt==='ozel'||bt==='siniflar')?'none':'flex';
   renderAll();
 }
 function setTopbar(d,t=''){
