@@ -929,7 +929,14 @@ body.portal-modu .overlay{z-index:9500;}
 
   <!-- ÖĞRENCİLER -->
   <div class="page" id="pg-ogrenciler">
-    <div style="display:flex;gap:8px;margin-bottom:10px;margin-top:4px;">
+    <div style="display:flex;gap:8px;margin:4px 0 10px;align-items:stretch;">
+    <div style="position:relative;flex:1;min-width:0;">
+      <div class="search-wrap"><input id="og-arama" placeholder="İsim veya telefon ara..." oninput="renderOgrenciler();toggleClear('og-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s;"/><button id="og-arama-clear" class="search-clear" onclick="clearSearch('og-arama',renderOgrenciler)">✕</button></div>
+      <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
+    </div>
+    <button class="btn btn-accent btn-sm" style="flex-shrink:0;padding:0 14px;white-space:nowrap;" onclick="openOgrenciModal()" data-i18n="btn_yeni_ogrenci">＋ Yeni Öğrenci</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
       <button class="btn btn-sm" id="filter-aktif" onclick="setOgrenciFilter('aktif')" style="flex:1;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b40;box-shadow:0 3px 10px -3px #ff6b6b70;"><span id="lbl-filter-aktif">Aktif</span> <span id="cnt-filter-aktif" style="opacity:.75;font-weight:500;"></span></button>
       <button class="btn btn-sm" id="filter-pasif" onclick="setOgrenciFilter('pasif')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-pasif">Pasif</span> <span id="cnt-filter-pasif" style="opacity:.75;font-weight:500;"></span></button>
       <button class="btn btn-sm" id="filter-hepsi" onclick="setOgrenciFilter('hepsi')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-hepsi">Hepsi</span> <span id="cnt-filter-hepsi" style="opacity:.75;font-weight:500;"></span></button>
@@ -942,13 +949,6 @@ body.portal-modu .overlay{z-index:9500;}
       <button class="btn btn-sm" id="sir-ad" onclick="setOgSiralama('ad')" style="font-size:11px;background:var(--cyanbg);color:var(--cyan);border:1px solid #22d3ee40;box-shadow:0 3px 10px -3px #22d3ee70;">A-Z</button>
       <button class="btn btn-sm btn-ghost" id="sir-son" onclick="setOgSiralama('son')" style="font-size:11px;"><span id="lbl-sonEklenen">Son Eklenen</span></button>
       <button class="btn btn-sm btn-ghost" id="sir-ilk" onclick="setOgSiralama('ilk')" style="font-size:11px;"><span id="lbl-ilkEklenen">İlk Eklenen</span></button>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:stretch;">
-    <div style="position:relative;flex:1;min-width:0;">
-      <div class="search-wrap"><input id="og-arama" placeholder="İsim veya telefon ara..." oninput="renderOgrenciler();toggleClear('og-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s;"/><button id="og-arama-clear" class="search-clear" onclick="clearSearch('og-arama',renderOgrenciler)">✕</button></div>
-      <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
-    </div>
-    <button class="btn btn-accent btn-sm" style="flex-shrink:0;padding:0 14px;white-space:nowrap;" onclick="openOgrenciModal()" data-i18n="btn_yeni_ogrenci">＋ Yeni Öğrenci</button>
     </div>
     <div id="ogrenci-list"></div>
   </div>
@@ -982,10 +982,16 @@ body.portal-modu .overlay{z-index:9500;}
 
   <!-- ÖZEL DERSLER -->
   <div class="page" id="pg-ozel">
+    <div style="display:flex;gap:8px;margin:4px 0 10px;align-items:stretch;">
+    <div style="position:relative;flex:1;min-width:0;">
+      <div class="search-wrap"><input id="ozel-arama" placeholder="İsim veya telefon ara..." oninput="OZEL_ARA=this.value;renderOzel();toggleClear('ozel-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-size:14px;font-family:inherit;outline:none;"/><button class="search-clear" id="ozel-arama-clear" onclick="clearSearch('ozel-arama',()=>{OZEL_ARA='';renderOzel();})">✕</button></div>
+      <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
+    </div>
+    <button class="btn btn-accent btn-sm" style="flex-shrink:0;padding:0 14px;white-space:nowrap;" onclick="ozelEkleBaslat()" data-i18n="btn_yeni_ozel">＋ Yeni Özel Ders</button>
+    </div>
     <div class="tab-row">
       <button class="tab-btn active" data-i18n="nav_ogrenciler">Öğrenciler</button>
       <button class="tab-btn" onclick="openOzelTakvim()" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
-      <button class="tab-btn" style="color:var(--green,#34d399);background:var(--greenbg,rgba(52,211,153,.12));border-color:#34d39940;" onclick="ozelEkleBaslat()" data-i18n="btn_yeni_ozel">＋ Yeni Özel Ders</button>
     </div>
     <div id="ozel-list"></div>
   </div>
@@ -1979,6 +1985,7 @@ const TRANSLATIONS={
     btn_yeni_ozel:'＋ Yeni Özel Ders',
     btn_yeni_sinif:'＋ Yeni Sınıf',
     btn_yeni_ogrenci:'＋ Yeni Öğrenci',
+    ogrenci_bulunamadi:'Eşleşen öğrenci bulunamadı.',
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
     zaten_ozel_ders:'zaten özel ders alıyor', sec_yonlendir:'seç ›', eslesme_yok_yeni_devam:'Eşleşme bulunamadı — "Yeni Öğrenci Ekle" ile devam edebilirsin.',
     kayitli:'kayıtlı', badge_aktif:'aktif', tek:'tek', pasif_siniflar:'Kapalı Sınıflar', sinif_kucuk_ders:'sınıf', kapali_sinif_etiket:'kapalı sınıf',
@@ -2164,6 +2171,7 @@ const TRANSLATIONS={
     btn_yeni_ozel:'＋ New Private Lesson',
     btn_yeni_sinif:'＋ New Class',
     btn_yeni_ogrenci:'＋ New Student',
+    ogrenci_bulunamadi:'No matching student found.',
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
     zaten_ozel_ders:'already has private lessons', sec_yonlendir:'select ›', eslesme_yok_yeni_devam:'No match found — you can continue with "Add New Student".',
     kayitli:'enrolled', badge_aktif:'active', tek:'drop-in', pasif_siniflar:'Closed Classes', sinif_kucuk_ders:'classes', kapali_sinif_etiket:'closed class',
@@ -2349,6 +2357,7 @@ const TRANSLATIONS={
     btn_yeni_ozel:'＋ Новый урок',
     btn_yeni_sinif:'＋ Новый класс',
     btn_yeni_ogrenci:'＋ Новый ученик',
+    ogrenci_bulunamadi:'Ученик не найден.',
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
     zaten_ozel_ders:'уже посещает частные уроки', sec_yonlendir:'выбрать ›', eslesme_yok_yeni_devam:'Совпадений не найдено — можно продолжить через "Добавить нового ученика".',
     kayitli:'записано', badge_aktif:'активно', tek:'разовое', pasif_siniflar:'Закрытые группы', sinif_kucuk_ders:'групп', kapali_sinif_etiket:'закрыта',
@@ -6610,6 +6619,7 @@ function ozelOgRenk(sira){
   if(sira<OZEL_OG_PALET.length)return OZEL_OG_PALET[sira];
   return 'hsl('+Math.round((sira*137.508)%360)+',72%,64%)';
 }
+let OZEL_ARA='';
 function renderOzel(){
   const el=document.getElementById('ozel-list');
   const liste=ozelDersOgrencileri();
@@ -6624,8 +6634,11 @@ function renderOzel(){
   const siraliHepsi=[...liste].sort((a,b)=>ilkPaketZamani(a)-ilkPaketZamani(b));
   // Aktif (saati kalan) paketi olanlar üstte; olmayanlar ayrı bir başlıkla en altta
   const aktifPaketliMi=og=>S.ozelPaketler.some(p=>p.ogrenciId===og.id&&ozelPaketAktifMi(p));
-  const sirali=[...siraliHepsi.filter(aktifPaketliMi),...siraliHepsi.filter(og=>!aktifPaketliMi(og))];
-  const aktifSayisi=siraliHepsi.filter(aktifPaketliMi).length;
+  const araQ=OZEL_ARA.trim().toLocaleLowerCase('tr'),araRakam=araQ.replace(/\D/g,'');
+  const aramaUyar=og=>!araQ||((og.ad||'')+' '+(og.soyad||'')).toLocaleLowerCase('tr').includes(araQ)||(araRakam.length>=3&&String(og.tel||'').replace(/\D/g,'').includes(araRakam));
+  const sirali=[...siraliHepsi.filter(aktifPaketliMi),...siraliHepsi.filter(og=>!aktifPaketliMi(og))].filter(aramaUyar);
+  if(!sirali.length){el.innerHTML='<div class="empty"><div class="empty-text">'+t('ogrenci_bulunamadi')+'</div></div>';return;}
+  const aktifSayisi=sirali.filter(aktifPaketliMi).length;
   const eksikOgSayi=sirali.filter(og=>S.ozelPaketler.some(p=>p.ogrenciId===og.id&&ozelPaketEksikTutar(p)>0)).length;
   const eksikGenel=S.ozelPaketler.reduce((s,p)=>s+ozelPaketEksikTutar(p),0);
   const eksikBand=eksikOgSayi?`<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:10px;border-radius:var(--radius-sm);background:var(--accentbg);border:1px solid #ff6b6b50;color:var(--accent);font-size:13px;font-weight:600;">⚠ ${eksikOgSayi} öğrencinin eksik ödemesi var · toplam ${eksikGenel.toLocaleString(LC())} ₺</div>`:'';
