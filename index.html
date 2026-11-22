@@ -304,10 +304,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 /* Portal ekranı (z-index 9000) açıkken pencereler onun önünde görünsün */
 body.portal-modu .overlay{z-index:9500;}
 #egitmen-screen{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:9000;overflow-y:auto;}
-.eg-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:calc(100% - 24px);max-width:456px;display:flex;gap:4px;padding:6px;background:var(--surface);border:1px solid var(--border2);border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);z-index:9100;}
-.eg-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border:none;background:none;border-radius:16px;font-size:18px;color:var(--text2);cursor:pointer;font-family:inherit;}
-.eg-nav button span{font-size:11px;font-weight:600;}
-.eg-nav button.active{background:var(--cyanbg,rgba(34,211,238,.14));color:var(--cyan);}
+#egitmen-screen .bottom-nav{z-index:9100;}
 .eg-chip{padding:7px 14px;border-radius:99px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
 .eg-chip.active{background:var(--cyanbg,rgba(34,211,238,.14));border-color:#22d3ee60;color:var(--cyan);}
 .eg-ogsatir{display:flex;align-items:center;gap:10px;padding:9px 12px;margin-bottom:7px;background:var(--surface2);border:1px solid var(--border2);border-left:4px solid var(--border2);border-radius:12px;font-size:14px;}
@@ -873,12 +870,12 @@ body.portal-modu .overlay{z-index:9500;}
     </div>
     <div id="eg-icerik"></div>
   </div>
-  <div class="eg-nav">
-    <button id="egtab-ogrenciler" onclick="egTab('ogrenciler')">👤<span data-i18n="nav_ogrenciler">Öğrenciler</span></button>
-    <button id="egtab-siniflar" onclick="egTab('siniflar')">🎵<span data-i18n="nav_siniflar">Sınıflar</span></button>
-    <button id="egtab-ozel" onclick="egTab('ozel')">⭐<span data-i18n="nav_ozel">Özel Ders</span></button>
-    <button id="egtab-gelir" onclick="egTab('gelir')">💰<span data-i18n="eg_gelir">Gelir</span></button>
-  </div>
+  <nav class="bottom-nav">
+    <button class="nav-item c-og active" id="egtab-ogrenciler" onclick="egTab('ogrenciler')"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.5" r="1.8"/><circle cx="16" cy="5.5" r="1.8"/><path d="M8 9c-1.5 1-2 2.5-1.5 5l1 6"/><path d="M16 9c1.5 1 2 2.5 1.5 5l-1 6"/><path d="M8 9c1.5 1.5 4.5 1.5 6 0"/><path d="M9.5 13.5h3"/></svg></div><span class="nav-label" data-i18n="nav_ogrenciler">Öğrenciler</span></button>
+    <button class="nav-item c-si" id="egtab-siniflar" onclick="egTab('siniflar')"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="2.5"/><circle cx="16" cy="15" r="2.5"/><path d="M9.5 17V5.5L18.5 4v11"/><path d="M9.5 9L18.5 7.5"/></svg></div><span class="nav-label" data-i18n="nav_siniflar">Sınıflar</span></button>
+    <button class="nav-item c-ozel" id="egtab-ozel" onclick="egTab('ozel')"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.5 1.5-6.8-5.2-4.7 6.9-.7z"/></svg></div><span class="nav-label" data-i18n="nav_ozel">Özel Dersler</span></button>
+    <button class="nav-item c-od" id="egtab-gelir" onclick="egTab('gelir')"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M5.5 9v.01M18.5 15v.01"/></svg></div><span class="nav-label" data-i18n="eg_gelir">Gelir</span></button>
+  </nav>
 </div>
 
 <!-- Admin Bildirimler Modal -->
@@ -2510,7 +2507,7 @@ function applyLang(){
   const langBtnPortal=document.getElementById('langBtnPortal');if(langBtnPortal)langBtnPortal.textContent=LANG.toUpperCase();
   ['langBtnEg','langBtnLogin'].forEach(i=>{const b=document.getElementById(i);if(b)b.textContent=LANG.toUpperCase();});
   const loginMod=document.getElementById('lmode-egitmen')?.classList.contains('active');const lst=document.getElementById('login-sub-text');if(lst&&loginMod)lst.textContent=t('eg_panel');
-  if(typeof EG_TOKEN!=='undefined'&&EG_TOKEN&&document.getElementById('egitmen-screen').style.display==='flex'&&document.querySelector('.eg-nav').style.display!=='none'){try{egTab(EG_TAB);}catch(e){}}
+  if(typeof EG_TOKEN!=='undefined'&&EG_TOKEN&&document.getElementById('egitmen-screen').style.display==='flex'&&document.querySelector('#egitmen-screen .bottom-nav').style.display!=='none'){try{egTab(EG_TAB);}catch(e){}}
   document.documentElement.lang=LANG;
   if(typeof renderAll==='function'&&document.getElementById('app')&&document.getElementById('app').style.display!=='none'){
     try{renderAll();}catch(e){}
@@ -10573,10 +10570,10 @@ async function egitmenBaslat(ilkGiris,ad){
   if(ilkGiris){
     document.getElementById('eg-baslik').textContent=t('merhaba')+(ad?', '+ad:'')+'!';
     document.getElementById('eg-icerik').innerHTML=`<div class="portal-card" style="text-align:center;padding:28px 18px;"><div style="font-size:34px;margin-bottom:8px;">🔑</div><div style="font-size:15px;font-weight:600;margin-bottom:6px;">'+t('portal_devam_sifre')+'</div><button class="btn btn-purple" style="margin-top:12px;" onclick="egSifreModal(true)">${t('sifre_belirle')}</button></div>`;
-    document.querySelector('.eg-nav').style.display='none';
+    document.querySelector('#egitmen-screen .bottom-nav').style.display='none';
     egSifreModal(true);return;
   }
-  document.querySelector('.eg-nav').style.display='flex';
+  document.querySelector('#egitmen-screen .bottom-nav').style.display='flex';
   egTab(EG_TAB);
 }
 function egVeriYerlestir(d){
@@ -10614,7 +10611,7 @@ function egBuDonemPay(){
 }
 function egTab(k){
   EG_TAB=k;
-  ['ogrenciler','siniflar','ozel','gelir'].forEach(x=>document.getElementById('egtab-'+x).classList.toggle('active',x===k));
+  ['ogrenciler','siniflar','ozel','gelir'].forEach(x=>{const b=document.getElementById('egtab-'+x);const oncekiAktif=b.classList.contains('active');b.classList.toggle('active',x===k);if(x===k&&!oncekiAktif){b.classList.remove('nav-pop');void b.offsetWidth;b.classList.add('nav-pop');}});
   document.getElementById('eg-baslik').textContent=t('merhaba')+', '+(EG.egitmen?.ad||'')+'!';
   const altYazi=t({ogrenciler:'eg_ogrencilerim',siniflar:'eg_siniflarim',ozel:'eg_ozel_plan',gelir:'eg_gelirim'}[k]);
   const pay=egBuDonemPay();
