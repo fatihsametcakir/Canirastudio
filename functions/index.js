@@ -282,7 +282,7 @@ async function egitmenVeri(req, res, ot) {
   ]);
   const egAd = {}; egSnap.docs.forEach((d) => { egAd[d.id] = d.data().ad || ''; });
   const ogMap = {}; ogSnap.docs.forEach((d) => { ogMap[d.id] = { id: d.id, ...d.data() }; });
-  const ogGoster = (o) => ({ id: o.id, ad: o.ad || '', soyad: o.soyad || '', cinsiyet: o.cinsiyet || '', durum: o.durum || 'aktif', asistan: !!o.asistan });
+  const ogGoster = (o) => ({ id: o.id, ad: o.ad || '', soyad: o.soyad || '', cinsiyet: o.cinsiyet || '', tel: String(o.tel || '').replace(/\D/g, ''), durum: o.durum || 'aktif', asistan: !!o.asistan });
 
   const benimSiniflar = siniflarSnap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((s) => s.egitmenId === E || s.egitmen2Id === E);
   const sinifIdler = new Set(benimSiniflar.map((s) => s.id));

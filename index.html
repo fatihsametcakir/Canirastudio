@@ -694,14 +694,15 @@ body.portal-modu .overlay{z-index:9500;}
 <div id="splash"><div class="sp-glow"></div><i class="sp-dot" style="left:8%;width:2px;height:2px;animation-duration:5.5s;animation-delay:0.1s"></i><i class="sp-dot" style="left:18%;width:3px;height:3px;animation-duration:6.5s;animation-delay:0.8s"></i><i class="sp-dot" style="left:30%;width:2px;height:2px;animation-duration:5.0s;animation-delay:0.3s"></i><i class="sp-dot" style="left:42%;width:3px;height:3px;animation-duration:7.0s;animation-delay:1.2s"></i><i class="sp-dot" style="left:55%;width:2px;height:2px;animation-duration:5.8s;animation-delay:0.5s"></i><i class="sp-dot" style="left:66%;width:3px;height:3px;animation-duration:6.2s;animation-delay:1.0s"></i><i class="sp-dot" style="left:78%;width:2px;height:2px;animation-duration:5.2s;animation-delay:0.2s"></i><i class="sp-dot" style="left:90%;width:3px;height:3px;animation-duration:6.8s;animation-delay:0.9s"></i><div class="sp-logo"><svg class="sp-mark" viewBox="20 30 150 140" width="112" height="104" aria-hidden="true"><defs><linearGradient id="spg" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="170" y2="180"><stop offset="0" stop-color="#f8e7ae"/><stop offset=".38" stop-color="#d9ac52"/><stop offset=".62" stop-color="#f4dc92"/><stop offset="1" stop-color="#b0842f"/></linearGradient></defs><g fill="none" stroke="url(#spg)" stroke-linecap="round"><path class="d1" pathLength="1" d="M146 60 A56 56 0 1 0 146 140" stroke-width="3.2"/><path class="d2" pathLength="1" d="M138 70 A44 44 0 1 0 138 130" stroke-width="1.6"/><line class="d3" pathLength="1" x1="112" y1="52" x2="112" y2="148" stroke-width="3.2"/><line class="d4" pathLength="1" x1="121" y1="62" x2="121" y2="138" stroke-width="1.6"/></g><circle class="d5" cx="150" cy="100" r="3" fill="url(#spg)"/></svg><b class="sp-gold">Can &amp; Irina</b><span>Dance Studio</span><em>Management</em></div><div class="sp-line"></div><div class="sp-imza"><small>Created by</small><b>Fatih Samet Çakır</b></div></div>
 <script>setTimeout(function(){var e=document.getElementById('splash');if(!e)return;e.classList.add('out');setTimeout(function(){e.remove();},1200);},4300);</script>
 
-<div id="login-screen" style="padding-top:24px;">
+<div id="login-screen" style="padding-top:24px;position:relative;">
+  <button id="langBtnLogin" onclick="cycleLang()" title="Dil / Language / Язык" style="position:absolute;top:14px;right:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:99px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text);z-index:2;">TR</button>
   <div class="login-logo">Can & Irina<br><span>Studio</span></div>
   <div class="login-sub" id="login-sub-text" data-i18n="yonetim_paneli">Yönetim Paneli</div>
   <div class="login-box">
     <div class="login-mode-toggle">
       <button class="login-mode-btn active" id="lmode-admin" onclick="loginModeSet('admin')" data-i18n="yonetici">Yönetici</button>
       <button class="login-mode-btn" id="lmode-ogrenci" onclick="loginModeSet('ogrenci')" data-i18n="nav_ogrenciler_tekil">Öğrenci</button>
-      <button class="login-mode-btn" id="lmode-egitmen" onclick="loginModeSet('egitmen')">Eğitmen</button>
+      <button class="login-mode-btn" id="lmode-egitmen" onclick="loginModeSet('egitmen')" data-i18n="eg_tab">Eğitmen</button>
     </div>
     <!-- Admin alanları -->
     <div id="login-admin-fields">
@@ -740,17 +741,17 @@ body.portal-modu .overlay{z-index:9500;}
     </div>
     <!-- Eğitmen alanları -->
     <div id="login-egitmen-fields" style="display:none;">
-      <div class="field"><label>Telefon No</label>
-        <input id="login-eg-tel" type="tel" autocomplete="username" placeholder="Telefon numaranız" onkeydown="if(event.key==='Enter')document.getElementById('login-eg-sifre').focus()"/>
+      <div class="field"><label data-i18n="telefon_no">Telefon No</label>
+        <input id="login-eg-tel" type="tel" autocomplete="username" data-i18n-ph="eg_tel_ph" placeholder="Telefon numaranız" onkeydown="if(event.key==='Enter')document.getElementById('login-eg-sifre').focus()"/>
       </div>
-      <div class="field"><label>Şifre</label>
-        <input id="login-eg-sifre" type="password" autocomplete="current-password" placeholder="Şifreniz (ilk girişte son 4 hane)" onkeydown="if(event.key==='Enter')egitmenLoginDene();"/>
+      <div class="field"><label data-i18n="lbl_sifre">Şifre</label>
+        <input id="login-eg-sifre" type="password" autocomplete="current-password" data-i18n-ph="sifreniz_ph" placeholder="Şifreniz (ilk girişte son 4 hane)" onkeydown="if(event.key==='Enter')egitmenLoginDene();"/>
       </div>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;cursor:pointer;font-size:13px;color:var(--text2);">
         <input type="checkbox" id="eg-beni-hatirla" checked style="width:16px;height:16px;accent-color:var(--cyan);cursor:pointer;"/>
-        <span>Beni hatırla</span>
+        <span data-i18n="beni_hatirla">Beni hatırla</span>
       </label>
-      <button class="btn" id="eg-giris-btn" style="width:100%;padding:13px;background:var(--cyanbg);color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenLoginDene()">Eğitmen Girişi</button>
+      <button class="btn" id="eg-giris-btn" data-i18n="eg_giris_btn" style="width:100%;padding:13px;background:var(--cyanbg);color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenLoginDene()">Eğitmen Girişi</button>
     </div>
     <div class="login-error" id="login-error" data-i18n="hatali_sifre">Hatalı şifre, tekrar deneyin.</div>
   </div>
@@ -853,8 +854,9 @@ body.portal-modu .overlay{z-index:9500;}
   <div class="portal-header">
     <div class="portal-logo">Can & Irina <span>Studio</span></div>
     <div style="display:flex;align-items:center;gap:8px;">
-      <button class="btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);font-size:12px;padding:7px 11px;border-radius:8px;" onclick="egSifreModal(false)" title="Şifre değiştir">🔑</button>
-      <button class="btn" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-size:12px;padding:7px 13px;border-radius:8px;font-weight:600;" onclick="egitmenCikis()">Çıkış</button>
+      <button id="langBtnEg" onclick="cycleLang()" title="Dil / Language / Язык" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text);">TR</button>
+      <button class="btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);font-size:12px;padding:7px 11px;border-radius:8px;" onclick="egSifreModal(false)">🔑</button>
+      <button class="btn" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-size:12px;padding:7px 13px;border-radius:8px;font-weight:600;" onclick="egitmenCikis()" data-i18n="eg_cikis">Çıkış</button>
     </div>
   </div>
   <div class="portal-body" style="padding-bottom:96px;">
@@ -865,9 +867,9 @@ body.portal-modu .overlay{z-index:9500;}
     <div id="eg-icerik"></div>
   </div>
   <div class="eg-nav">
-    <button id="egtab-ogrenciler" onclick="egTab('ogrenciler')">👤<span>Öğrenciler</span></button>
-    <button id="egtab-siniflar" onclick="egTab('siniflar')">🎵<span>Sınıflar</span></button>
-    <button id="egtab-ozel" onclick="egTab('ozel')">⭐<span>Özel Ders</span></button>
+    <button id="egtab-ogrenciler" onclick="egTab('ogrenciler')">👤<span data-i18n="nav_ogrenciler">Öğrenciler</span></button>
+    <button id="egtab-siniflar" onclick="egTab('siniflar')">🎵<span data-i18n="nav_siniflar">Sınıflar</span></button>
+    <button id="egtab-ozel" onclick="egTab('ozel')">⭐<span data-i18n="nav_ozel">Özel Ders</span></button>
   </div>
 </div>
 
@@ -1931,6 +1933,7 @@ let PAGE='anasayfa', PREV_PAGE='anasayfa';
 let LANG=localStorage.getItem('appLang')||'tr';
 const TRANSLATIONS={
   tr:{
+    eg_tab:'Eğitmen', eg_panel:'Eğitmen Paneli', eg_giris_btn:'Eğitmen Girişi', eg_giris_basarisiz:'Giriş başarısız.', eg_tel_ph:'Telefon numaranız', eg_cikis:'Çıkış', eg_ogrencilerim:'Öğrencilerim', eg_siniflarim:'Sınıflarım', eg_ozel_plan:'Özel ders planlaması', eg_ara:'Öğrenci ara', eg_hepsi:'Hepsi', eg_aktif_c:'Aktif', eg_pasif_c:'Pasif', eg_aktif:'aktif', eg_pasif:'pasif', eg_asistan:'asistan', eg_kisi:'kişi', eg_gosterilecek_yok:'Gösterilecek öğrenci yok.', eg_sinif_yok:'Size atanmış sınıf yok.', eg_aktif_ogrenci:'aktif öğrenci', eg_birlikte:'birlikte', eg_kapali:'kapalı', eg_kayitli_yok:'Kayıtlı öğrenci yok.', eg_saat_kisa:'saat', eg_islendi:'işlendi', eg_islenmedi:'işlenmedi', eg_ders_planla:'Ders planla', eg_aktif_paket_yok_ogr:'Aktif özel ders paketi olan öğrenciniz yok.', eg_paketlerim:'Paketlerim', eg_saat_kaldi:'saat kaldı', eg_aktif_paket_yok:'Aktif paket yok.', eg_planlanan:'Planlanan dersler', eg_planlanmis_yok:'Planlanmış ders yok.', eg_gecmis:'Geçmiş dersler', eg_ders_duzenle:'Dersi düzenle', eg_tarih:'Tarih', eg_saat:'Saat', eg_sure:'Süre (saat)', eg_ders_not:'Ders, öğrencinin aktif paketine bağlanır. Saat geçince paketten stüdyo tarafından düşülür.', eg_tarih_saat_gir:'Tarih ve saat girin.', eg_ogrenci_sec:'Öğrenci seçin.', eg_ders_kaydedildi:'Ders kaydedildi', eg_ders_sil_aciklama:'Planlanan ders silinecek. Emin misiniz?', eg_ders_silindi:'Ders silindi', eg_sifre_ilk_aciklama:'İlk girişte kendi şifrenizi belirlemeniz gerekir (en az 6 karakter, telefonun son 4 hanesi olmasın).', portal_devam_sifre:'Devam etmek için şifre belirleyin', portal_devam_aciklama:'İlk girişte kendinize özel bir şifre belirlemeniz gerekiyor. Bilgileriniz şifre belirlendikten sonra görünür.', portal_bolum_yuklenemedi:'Bu bölüm yüklenemedi', portal_henuz_sinif_yok:'Henüz sınıf kaydı yok', portal_demo:'Demo hesabı', portal_demo_sifre:'Demo modunda şifre değiştirilmez', srv_ag_hata:'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin ya da daha sonra tekrar deneyin.', srv_islem_basarisiz:'İşlem başarısız', srv_hatali_giris:'Telefon numarası veya şifre hatalı.', srv_oturum:'Oturum süresi doldu. Lütfen tekrar giriş yapın.', srv_kayit_yok:'Kayıt bulunamadı.', srv_eski_hatali:'Mevcut şifre hatalı.', srv_son4:'Yeni şifre telefon numaranızın son 4 hanesi olamaz.', srv_once_sifre:'Önce şifrenizi değiştirin.', srv_mesaj_bos:'Mesaj boş olamaz.', srv_mesaj_limit:'Bugün için mesaj sınırına ulaştınız.', srv_yetkisiz:'Yetkisiz.', srv_sunucu:'Sunucu hatası. Lütfen tekrar deneyin.', srv_tarih_saat:'Tarih ve saat geçerli olmalı.', srv_sure:'Süre 0,5 ile 4 saat arasında, yarım saat adımlarıyla olmalı.', srv_gecmis:'Geçmiş bir tarihe ders planlanamaz.', srv_paket_yok:'Bu öğrencinin sizinle aktif bir özel ders paketi yok.', srv_cakisma:'Bu saatte başka bir dersiniz var.', srv_ders_yok:'Ders bulunamadı.', srv_dusulmus:'Paketten düşülmüş ders değiştirilemez.', srv_kilit:'Çok fazla hatalı deneme. {n} {b} sonra tekrar deneyin.', srv_dk:'dakika', srv_sn:'saniye', egf_tel:'Telefon (eğitmen paneli girişi için)', egf_tel_not:'İlk şifre telefonun son 4 hanesidir; ilk girişte eğitmen kendi şifresini belirler.', egf_sifirla:'🔑 Eğitmen şifresini sıfırla', egf_sifirla_baslik:'Eğitmen şifresini sıfırla', egf_sifirla_acik:'için şifre telefonun son 4 hanesine döndürülecek, açık oturumları kapanacak.', egf_sifirlandi:'Şifre sıfırlandı', egf_tel_min:'Telefon numarası en az 10 haneli olmalı.', egf_tel_cakisma:'Bu telefon başka bir eğitmende kayıtlı.',
     topbar_sub:'Yönetim Paneli', sync_live:'Canlı', sync_saving:'Kaydediliyor...',
     nav_anasayfa:'Ana Sayfa', nav_ogrenciler:'Öğrenciler', nav_siniflar:'Sınıflar',
     nav_takvim:'Takvim', nav_yoklama:'Yoklama', nav_odemeler:'Ödemeler', nav_gelirgider:'Gelir/Gider',
@@ -2109,6 +2112,7 @@ const TRANSLATIONS={
     aylik_ortak_kira:'Aylık Ortak Kira (₺)', nin_ozel_dersleri:'{ad}\'in Özel Dersleri', atanmamis_ozel_dersler:'Atanmamış Özel Dersler',
   },
   en:{
+    eg_tab:'Instructor', eg_panel:'Instructor Panel', eg_giris_btn:'Instructor Login', eg_giris_basarisiz:'Login failed.', eg_tel_ph:'Your phone number', eg_cikis:'Log out', eg_ogrencilerim:'My students', eg_siniflarim:'My classes', eg_ozel_plan:'Private lesson scheduling', eg_ara:'Search students', eg_hepsi:'All', eg_aktif_c:'Active', eg_pasif_c:'Inactive', eg_aktif:'active', eg_pasif:'inactive', eg_asistan:'assistant', eg_kisi:'people', eg_gosterilecek_yok:'No students to show.', eg_sinif_yok:'No classes assigned to you.', eg_aktif_ogrenci:'active students', eg_birlikte:'with', eg_kapali:'closed', eg_kayitli_yok:'No enrolled students.', eg_saat_kisa:'h', eg_islendi:'completed', eg_islenmedi:'not yet', eg_ders_planla:'Schedule lesson', eg_aktif_paket_yok_ogr:'You have no students with an active private package.', eg_paketlerim:'My packages', eg_saat_kaldi:'hours left', eg_aktif_paket_yok:'No active package.', eg_planlanan:'Scheduled lessons', eg_planlanmis_yok:'No scheduled lessons.', eg_gecmis:'Past lessons', eg_ders_duzenle:'Edit lesson', eg_tarih:'Date', eg_saat:'Time', eg_sure:'Duration (hours)', eg_ders_not:'The lesson is linked to the student\'s active package. The studio deducts it from the package after the time has passed.', eg_tarih_saat_gir:'Enter date and time.', eg_ogrenci_sec:'Select a student.', eg_ders_kaydedildi:'Lesson saved', eg_ders_sil_aciklama:'The scheduled lesson will be deleted. Are you sure?', eg_ders_silindi:'Lesson deleted', eg_sifre_ilk_aciklama:'On first login you must set your own password (at least 6 characters, not the last 4 digits of your phone).', portal_devam_sifre:'Set a password to continue', portal_devam_aciklama:'On first login you need to set your own password. Your information appears after the password is set.', portal_bolum_yuklenemedi:'This section could not be loaded', portal_henuz_sinif_yok:'No class enrollment yet', portal_demo:'Demo account', portal_demo_sifre:'Password is not changed in demo mode', srv_ag_hata:'Could not reach the server. Check your internet connection or try again later.', srv_islem_basarisiz:'Request failed', srv_hatali_giris:'Phone number or password is incorrect.', srv_oturum:'Session expired. Please log in again.', srv_kayit_yok:'Record not found.', srv_eski_hatali:'Current password is incorrect.', srv_son4:'New password cannot be the last 4 digits of your phone number.', srv_once_sifre:'Please change your password first.', srv_mesaj_bos:'Message cannot be empty.', srv_mesaj_limit:'You have reached the message limit for today.', srv_yetkisiz:'Not authorized.', srv_sunucu:'Server error. Please try again.', srv_tarih_saat:'Date and time must be valid.', srv_sure:'Duration must be between 0.5 and 4 hours in half-hour steps.', srv_gecmis:'Lessons cannot be scheduled in the past.', srv_paket_yok:'This student has no active private package with you.', srv_cakisma:'You already have a lesson at this time.', srv_ders_yok:'Lesson not found.', srv_dusulmus:'A lesson already deducted from the package cannot be changed.', srv_kilit:'Too many failed attempts. Try again in {n} {b}.', srv_dk:'minutes', srv_sn:'seconds', egf_tel:'Phone (for instructor panel login)', egf_tel_not:'The first password is the last 4 digits of the phone; the instructor sets their own on first login.', egf_sifirla:'🔑 Reset instructor password', egf_sifirla_baslik:'Reset instructor password', egf_sifirla_acik:'\'s password will be reset to the last 4 digits of their phone and open sessions will be closed.', egf_sifirlandi:'Password reset', egf_tel_min:'Phone number must have at least 10 digits.', egf_tel_cakisma:'This phone is already used by another instructor.',
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
     nav_anasayfa:'Home', nav_ogrenciler:'Students', nav_siniflar:'Classes',
     nav_takvim:'Calendar', nav_yoklama:'Attendance', nav_odemeler:'Payments', nav_gelirgider:'Income/Expense',
@@ -2287,6 +2291,7 @@ const TRANSLATIONS={
     aylik_ortak_kira:'Shared Monthly Rent (₺)', nin_ozel_dersleri:'{ad}\'s Private Lessons', atanmamis_ozel_dersler:'Unassigned Private Lessons',
   },
   ru:{
+    eg_tab:'Преподаватель', eg_panel:'Панель преподавателя', eg_giris_btn:'Вход для преподавателя', eg_giris_basarisiz:'Не удалось войти.', eg_tel_ph:'Ваш номер телефона', eg_cikis:'Выйти', eg_ogrencilerim:'Мои ученики', eg_siniflarim:'Мои группы', eg_ozel_plan:'Планирование индивидуальных уроков', eg_ara:'Поиск учеников', eg_hepsi:'Все', eg_aktif_c:'Активные', eg_pasif_c:'Неактивные', eg_aktif:'активен', eg_pasif:'неактивен', eg_asistan:'ассистент', eg_kisi:'чел.', eg_gosterilecek_yok:'Нет учеников для показа.', eg_sinif_yok:'Вам не назначено групп.', eg_aktif_ogrenci:'активных учеников', eg_birlikte:'вместе с', eg_kapali:'закрыта', eg_kayitli_yok:'Нет записанных учеников.', eg_saat_kisa:'ч', eg_islendi:'проведён', eg_islenmedi:'не проведён', eg_ders_planla:'Запланировать урок', eg_aktif_paket_yok_ogr:'Нет учеников с активным пакетом индивидуальных уроков.', eg_paketlerim:'Мои пакеты', eg_saat_kaldi:'ч осталось', eg_aktif_paket_yok:'Нет активных пакетов.', eg_planlanan:'Запланированные уроки', eg_planlanmis_yok:'Нет запланированных уроков.', eg_gecmis:'Прошедшие уроки', eg_ders_duzenle:'Изменить урок', eg_tarih:'Дата', eg_saat:'Время', eg_sure:'Длительность (ч)', eg_ders_not:'Урок привязывается к активному пакету ученика. После прошедшего времени студия списывает его с пакета.', eg_tarih_saat_gir:'Введите дату и время.', eg_ogrenci_sec:'Выберите ученика.', eg_ders_kaydedildi:'Урок сохранён', eg_ders_sil_aciklama:'Запланированный урок будет удалён. Вы уверены?', eg_ders_silindi:'Урок удалён', eg_sifre_ilk_aciklama:'При первом входе нужно задать свой пароль (минимум 6 символов, не последние 4 цифры телефона).', portal_devam_sifre:'Задайте пароль, чтобы продолжить', portal_devam_aciklama:'При первом входе нужно задать свой пароль. Ваши данные появятся после этого.', portal_bolum_yuklenemedi:'Не удалось загрузить раздел', portal_henuz_sinif_yok:'Пока нет записи в группы', portal_demo:'Демо-аккаунт', portal_demo_sifre:'В демо-режиме пароль не меняется', srv_ag_hata:'Не удалось связаться с сервером. Проверьте интернет или повторите позже.', srv_islem_basarisiz:'Операция не выполнена', srv_hatali_giris:'Неверный номер телефона или пароль.', srv_oturum:'Сеанс истёк. Войдите снова.', srv_kayit_yok:'Запись не найдена.', srv_eski_hatali:'Текущий пароль неверен.', srv_son4:'Новый пароль не может быть последними 4 цифрами телефона.', srv_once_sifre:'Сначала смените пароль.', srv_mesaj_bos:'Сообщение не может быть пустым.', srv_mesaj_limit:'Вы достигли лимита сообщений на сегодня.', srv_sunucu:'Ошибка сервера. Повторите попытку.', srv_tarih_saat:'Укажите корректные дату и время.', srv_sure:'Длительность — от 0,5 до 4 часов с шагом в полчаса.', srv_gecmis:'Нельзя планировать урок в прошлом.', srv_paket_yok:'У этого ученика нет активного пакета с вами.', srv_cakisma:'В это время у вас уже есть урок.', srv_ders_yok:'Урок не найден.', srv_dusulmus:'Урок, уже списанный с пакета, изменить нельзя.', srv_kilit:'Слишком много неудачных попыток. Повторите через {n} {b}.', srv_dk:'мин.', srv_sn:'сек.', egf_tel:'Телефон (для входа в панель преподавателя)', egf_tel_not:'Первый пароль — последние 4 цифры телефона; при первом входе преподаватель задаёт свой.', egf_sifirla:'🔑 Сбросить пароль преподавателя', egf_sifirla_baslik:'Сбросить пароль преподавателя', egf_sifirla_acik:': пароль будет сброшен на последние 4 цифры телефона, открытые сеансы закроются.', egf_sifirlandi:'Пароль сброшен', egf_tel_min:'Номер телефона — не менее 10 цифр.', egf_tel_cakisma:'Этот телефон уже указан у другого преподавателя.', srv_yetkisiz:'Нет доступа.',
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
     nav_anasayfa:'Главная', nav_ogrenciler:'Ученики', nav_siniflar:'Группы',
     nav_takvim:'Календарь', nav_yoklama:'Посещаемость', nav_odemeler:'Платежи', nav_gelirgider:'Доходы/Расходы',
@@ -2489,6 +2494,9 @@ function applyLang(){
   if(syncText)syncText.textContent=syncText.textContent==='Kaydediliyor...'||syncText.textContent==='Saving...'||syncText.textContent==='Сохранение...'?t('sync_saving'):t('sync_live');
   const langBtn=document.getElementById('langBtn');if(langBtn)langBtn.textContent=LANG.toUpperCase();
   const langBtnPortal=document.getElementById('langBtnPortal');if(langBtnPortal)langBtnPortal.textContent=LANG.toUpperCase();
+  ['langBtnEg','langBtnLogin'].forEach(i=>{const b=document.getElementById(i);if(b)b.textContent=LANG.toUpperCase();});
+  const loginMod=document.getElementById('lmode-egitmen')?.classList.contains('active');const lst=document.getElementById('login-sub-text');if(lst&&loginMod)lst.textContent=t('eg_panel');
+  if(typeof EG_TOKEN!=='undefined'&&EG_TOKEN&&document.getElementById('egitmen-screen').style.display==='flex'&&document.querySelector('.eg-nav').style.display!=='none'){try{egTab(EG_TAB);}catch(e){}}
   document.documentElement.lang=LANG;
   if(typeof renderAll==='function'&&document.getElementById('app')&&document.getElementById('app').style.display!=='none'){
     try{renderAll();}catch(e){}
@@ -9738,10 +9746,10 @@ function egitmenEkleModal(id){
       <input id="eg-ad" value="${e?e.ad:''}" placeholder="${t('ad_soyad')}" style="background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:DM Sans,sans-serif;font-size:14px;outline:none;width:100%;"/>
     </div>
     <div style="margin-bottom:14px;">
-      <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:6px;">Telefon (eğitmen paneli girişi için)</label>
+      <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:6px;">${t('egf_tel')}</label>
       <input id="eg-tel" type="tel" value="${e&&e.tel?e.tel:''}" placeholder="905551112233" style="background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:DM Sans,sans-serif;font-size:14px;outline:none;width:100%;"/>
-      <div style="font-size:11px;color:var(--text3);margin-top:4px;">İlk şifre telefonun son 4 hanesidir; ilk girişte eğitmen kendi şifresini belirler.</div>
-      ${e&&e.tel?`<button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="egitmenSifreSifirla('${e.id}')">🔑 Eğitmen şifresini sıfırla</button>`:''}
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;">${t('egf_tel_not')}</div>
+      ${e&&e.tel?`<button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="egitmenSifreSifirla('${e.id}')">${t('egf_sifirla')}</button>`:''}
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <input type="checkbox" id="eg-bas" ${e?.basEgitmen?'checked':''} style="width:18px;height:18px;accent-color:var(--purple);cursor:pointer;"/>
@@ -9758,7 +9766,7 @@ function egitmenEkleModal(id){
 function egitmenDuzenle(id){egitmenEkleModal(id);}
 function egitmenSifreSifirla(id){
   const e=S.egitmenler.find(x=>x.id===id);if(!e)return;
-  confirm_('Eğitmen şifresini sıfırla',e.ad+' için şifre telefonun son 4 hanesine döndürülecek, açık oturumları kapanacak.',async()=>{
+  confirm_(t('egf_sifirla_baslik'),e.ad+(LANG==='ru'?t('egf_sifirla_acik'):' '+t('egf_sifirla_acik').replace(/^'/,'\u2019')),async()=>{
     setSyncing(true);
     try{
       await db.collection('egitmen_hesaplar').doc(id).delete();
@@ -9768,7 +9776,7 @@ function egitmenSifreSifirla(id){
         const t10=String(e.tel||'').replace(/\D/g,'').slice(-10);
         if(t10)await db.collection('portal_kilit').doc('etel_'+t10).delete();
       }catch(e2){console.warn('Oturum temizliği yapılamadı:',e2);}
-      toastGoster('✓ Şifre sıfırlandı');
+      toastGoster('✓ '+t('egf_sifirlandi'));
     }catch(err){alert('Hata: '+err.message);}
     setSyncing(false);
   });
@@ -9779,8 +9787,8 @@ async function egitmenKaydet(){
   const basEgitmen=document.getElementById('eg-bas')?.checked||false;
   const tel=(document.getElementById('eg-tel')?.value||'').replace(/[^\d+]/g,'').slice(0,20);
   if(!ad){alert(t('ad_zorunlu'));return;}
-  if(tel&&tel.replace(/\D/g,'').length<10){alert('Telefon numarası en az 10 haneli olmalı.');return;}
-  {const t10=tel.replace(/\D/g,'').slice(-10);if(t10&&S.egitmenler.some(x=>x.id!==EDIT_EGITMEN&&String(x.tel||'').replace(/\D/g,'').slice(-10)===t10)){alert('Bu telefon başka bir eğitmende kayıtlı.');return;}}
+  if(tel&&tel.replace(/\D/g,'').length<10){alert(t('egf_tel_min'));return;}
+  {const t10=tel.replace(/\D/g,'').slice(-10);if(t10&&S.egitmenler.some(x=>x.id!==EDIT_EGITMEN&&String(x.tel||'').replace(/\D/g,'').slice(-10)===t10)){alert(t('egf_tel_cakisma'));return;}}
   setSyncing(true);
   try{
     if(EDIT_EGITMEN){
@@ -10475,6 +10483,15 @@ function renderGelirTrend(){
 }
 
 
+// Sunucu (Türkçe) hata mesajlarını seçili dile çevirir
+const SRV_MESAJLAR={'Telefon ve şifre zorunludur.':'tel_sifre_zorunlu','Telefon numarası veya şifre hatalı.':'srv_hatali_giris','Oturum süresi doldu. Lütfen tekrar giriş yapın.':'srv_oturum','Kayıt bulunamadı.':'srv_kayit_yok','Eğitmen kaydı bulunamadı.':'srv_kayit_yok','Yeni şifre en az 6 karakter olmalı.':'en_az_6_uyari','Mevcut şifre hatalı.':'srv_eski_hatali','Yeni şifre telefon numaranızın son 4 hanesi olamaz.':'srv_son4','Önce şifrenizi değiştirin.':'srv_once_sifre','Mesaj boş olamaz.':'srv_mesaj_bos','Bugün için mesaj sınırına ulaştınız.':'srv_mesaj_limit','Yetkisiz.':'srv_yetkisiz','Sunucu hatası. Lütfen tekrar deneyin.':'srv_sunucu','Geçersiz istek.':'srv_sunucu','Bilinmeyen işlem.':'srv_sunucu','Yalnızca POST.':'srv_sunucu','Tarih ve saat geçerli olmalı.':'srv_tarih_saat','Süre 0,5 ile 4 saat arasında, yarım saat adımlarıyla olmalı.':'srv_sure','Geçmiş bir tarihe ders planlanamaz.':'srv_gecmis','Bu öğrencinin sizinle aktif bir özel ders paketi yok.':'srv_paket_yok','Bu saatte başka bir dersiniz var.':'srv_cakisma','Ders bulunamadı.':'srv_ders_yok','Paketten düşülmüş ders değiştirilemez.':'srv_dusulmus'};
+function srvMsg(m){
+  if(!m)return '';
+  const k=SRV_MESAJLAR[m];if(k)return t(k);
+  const x=/^Çok fazla hatalı deneme\. (\d+) (dakika|saniye)/.exec(m);
+  if(x)return t('srv_kilit').replace('{n}',x[1]).replace('{b}',t(x[2]==='dakika'?'srv_dk':'srv_sn'));
+  return m;
+}
 // ════════════════════════════════════════════════════════════
 // EĞİTMEN PANELİ (sunucu fonksiyonu üzerinden; yalnızca kendi verisi gelir)
 // ════════════════════════════════════════════════════════════
@@ -10487,11 +10504,11 @@ function egitmenLoginKontrol(){
 async function egApi(islem,ekstra){
   let r;
   try{r=await fetch(PORTAL_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({islem,token:EG_TOKEN,...(ekstra||{})})});}
-  catch(e){throw new Error('Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin.');}
+  catch(e){throw new Error(t('srv_ag_hata'));}
   let d={};try{d=await r.json();}catch(e){}
   if(!r.ok){
     if(r.status===401&&d.oturum===false){egOturumDustu();}
-    const err=new Error(d.hata||'İşlem başarısız ('+r.status+')');err.durum=r.status;throw err;
+    const err=new Error(srvMsg(d.hata)||t('srv_islem_basarisiz')+' ('+r.status+')');err.durum=r.status;throw err;
   }
   return d;
 }
@@ -10499,8 +10516,8 @@ function egOturumDustu(){try{sessionStorage.removeItem('egitmen_token');localSto
 async function egitmenLoginDene(){
   const tel=document.getElementById('login-eg-tel').value,sifre=document.getElementById('login-eg-sifre').value.trim();
   const errEl=document.getElementById('login-error'),btn=document.getElementById('eg-giris-btn');
-  if(!tel.trim()||!sifre){errEl.style.display='block';errEl.textContent='Telefon ve şifre zorunludur.';return;}
-  btn.disabled=true;btn.textContent='Kontrol ediliyor…';
+  if(!tel.trim()||!sifre){errEl.style.display='block';errEl.textContent=t('tel_sifre_zorunlu');return;}
+  btn.disabled=true;btn.textContent=t('kontrol_ediliyor');
   try{
     const hatirla=!!document.getElementById('eg-beni-hatirla')?.checked;
     const d=await portalApiAnonim('egitmen_giris',{tel,sifre,hatirla});
@@ -10509,15 +10526,15 @@ async function egitmenLoginDene(){
     document.getElementById('login-screen').style.display='none';
     await egitmenBaslat(d.ilkGiris,d.ad);
   }catch(e){
-    errEl.style.display='block';errEl.textContent=e.message||'Giriş başarısız.';setTimeout(()=>errEl.style.display='none',5000);
-    btn.disabled=false;btn.textContent='Eğitmen Girişi';
+    errEl.style.display='block';errEl.textContent=e.message||t('eg_giris_basarisiz');setTimeout(()=>errEl.style.display='none',5000);
+    btn.disabled=false;btn.textContent=t('eg_giris_btn');
   }
 }
 async function portalApiAnonim(islem,ekstra){ // oturumsuz çağrı (giriş)
   let r;try{r=await fetch(PORTAL_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({islem,...(ekstra||{})})});}
-  catch(e){throw new Error('Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin.');}
+  catch(e){throw new Error(t('srv_ag_hata'));}
   let d={};try{d=await r.json();}catch(e){}
-  if(!r.ok)throw new Error(d.hata||'İşlem başarısız ('+r.status+')');
+  if(!r.ok)throw new Error(srvMsg(d.hata)||t('srv_islem_basarisiz')+' ('+r.status+')');
   return d;
 }
 async function egitmenBaslat(ilkGiris,ad){
@@ -10527,8 +10544,8 @@ async function egitmenBaslat(ilkGiris,ad){
     try{const d=await egApi('e_veri');if(d.ilkGiris)ilkGiris=true;else egVeriYerlestir(d);}catch(e){egOturumDustu();return;}
   }else if(!ilkGiris){await egVeriTazele();}
   if(ilkGiris){
-    document.getElementById('eg-baslik').textContent='Merhaba'+(ad?', '+ad:'')+'!';
-    document.getElementById('eg-icerik').innerHTML='<div class="portal-card" style="text-align:center;padding:28px 18px;"><div style="font-size:34px;margin-bottom:8px;">🔑</div><div style="font-size:15px;font-weight:600;margin-bottom:6px;">Devam etmek için şifre belirleyin</div><button class="btn btn-purple" style="margin-top:12px;" onclick="egSifreModal(true)">Şifre belirle</button></div>';
+    document.getElementById('eg-baslik').textContent=t('merhaba')+(ad?', '+ad:'')+'!';
+    document.getElementById('eg-icerik').innerHTML=`<div class="portal-card" style="text-align:center;padding:28px 18px;"><div style="font-size:34px;margin-bottom:8px;">🔑</div><div style="font-size:15px;font-weight:600;margin-bottom:6px;">'+t('portal_devam_sifre')+'</div><button class="btn btn-purple" style="margin-top:12px;" onclick="egSifreModal(true)">${t('sifre_belirle')}</button></div>`;
     document.querySelector('.eg-nav').style.display='none';
     egSifreModal(true);return;
   }
@@ -10545,50 +10562,54 @@ function egitmenCikis(){
   EG_TOKEN=null;location.reload();
 }
 function egSifreModal(ilk){
-  document.getElementById('m-kayit-islem-title').textContent=ilk?'Şifre belirle':'Şifre değiştir';
-  document.getElementById('m-kayit-islem-content').innerHTML=`<div style="font-size:13px;color:var(--text2);margin-bottom:14px;">${ilk?'İlk girişte kendi şifrenizi belirlemeniz gerekir (en az 6 karakter, telefonun son 4 hanesi olmasın).':'Yeni şifrenizi girin (en az 6 karakter).'}</div>
-    ${ilk?'':'<div class="field"><label>Mevcut şifre</label><input class="eg-in" id="egs-eski" type="password" autocomplete="current-password"/></div>'}
-    <div class="field"><label>Yeni şifre</label><input class="eg-in" id="egs-yeni" type="password" autocomplete="new-password"/></div>
-    <div class="field"><label>Tekrar</label><input class="eg-in" id="egs-tekrar" type="password" autocomplete="new-password"/></div>
-    <div style="display:flex;gap:8px;margin-top:14px;">${ilk?'':'<button class="btn btn-ghost" style="flex:1;" onclick="closeModal(\'m-kayit-islem\')">İptal</button>'}<button class="btn btn-purple" style="flex:1;" onclick="egSifreKaydet(${ilk})">Kaydet</button></div>`;
+  document.getElementById('m-kayit-islem-title').textContent=ilk?t('sifre_belirle'):t('sifre_degistir');
+  document.getElementById('m-kayit-islem-content').innerHTML=`<div style="font-size:13px;color:var(--text2);margin-bottom:14px;">${ilk?t('eg_sifre_ilk_aciklama'):t('yeni_sifre_gir_mesaj')}</div>
+    ${ilk?'':'<div class="field"><label>'+t('mevcut_sifre')+'</label><input class="eg-in" id="egs-eski" type="password" autocomplete="current-password"/></div>'}
+    <div class="field"><label>${t('yeni_sifre')}</label><input class="eg-in" id="egs-yeni" type="password" autocomplete="new-password"/></div>
+    <div class="field"><label>${t('tekrar')}</label><input class="eg-in" id="egs-tekrar" type="password" autocomplete="new-password"/></div>
+    <div style="display:flex;gap:8px;margin-top:14px;">${ilk?'':'<button class="btn btn-ghost" style="flex:1;" onclick="closeModal(\'m-kayit-islem\')">'+t('btn_iptal')+'</button>'}<button class="btn btn-purple" style="flex:1;" onclick="egSifreKaydet(${ilk})">${t('btn_kaydet')}</button></div>`;
   openModal('m-kayit-islem');
 }
 async function egSifreKaydet(ilk){
   const yeni=document.getElementById('egs-yeni').value.trim(),tekrar=document.getElementById('egs-tekrar').value.trim();
-  if(yeni.length<6){alert('Şifre en az 6 karakter olmalı.');return;}
-  if(yeni!==tekrar){alert('Şifreler eşleşmiyor.');return;}
+  if(yeni.length<6){alert(t('en_az_6_uyari'));return;}
+  if(yeni!==tekrar){alert(t('sifreler_eslesmiyor'));return;}
   try{
     await egApi('e_sifre',{yeni,eski:document.getElementById('egs-eski')?.value||''});
-    closeModal('m-kayit-islem');toastGoster('✓ Şifre güncellendi');
+    closeModal('m-kayit-islem');toastGoster('✓ '+t('sifre_guncellendi'));
     if(ilk)await egitmenBaslat(false);
-  }catch(e){alert('Hata: '+e.message);}
+  }catch(e){alert(t('hata')+': '+e.message);}
 }
-function egTab(t){
-  EG_TAB=t;
-  ['ogrenciler','siniflar','ozel'].forEach(k=>document.getElementById('egtab-'+k).classList.toggle('active',k===t));
-  document.getElementById('eg-baslik').textContent='Merhaba, '+(EG.egitmen?.ad||'')+'!';
-  document.getElementById('eg-alt').textContent={ogrenciler:'Öğrencilerim',siniflar:'Sınıflarım',ozel:'Özel ders planlaması'}[t];
+function egTab(k){
+  EG_TAB=k;
+  ['ogrenciler','siniflar','ozel'].forEach(x=>document.getElementById('egtab-'+x).classList.toggle('active',x===k));
+  document.getElementById('eg-baslik').textContent=t('merhaba')+', '+(EG.egitmen?.ad||'')+'!';
+  document.getElementById('eg-alt').textContent=t({ogrenciler:'eg_ogrencilerim',siniflar:'eg_siniflarim',ozel:'eg_ozel_plan'}[k]);
   egRender();
 }
 function egRender(){
   const el=document.getElementById('eg-icerik');if(!el)return;
   try{({ogrenciler:egRenderOgrenciler,siniflar:egRenderSiniflar,ozel:egRenderOzel})[EG_TAB](el);}
-  catch(e){console.error(e);el.innerHTML='<div class="portal-card" style="text-align:center;">Bu bölüm yüklenemedi.</div>';}
+  catch(e){console.error(e);el.innerHTML='<div class="portal-card" style="text-align:center;">'+t('portal_bolum_yuklenemedi')+'</div>';}
+}
+function egTelHtml(o){
+  const d=String(o.tel||'').replace(/\D/g,'');if(!d)return '';
+  return `<div style="font-size:12px;margin-top:2px;display:flex;gap:10px;align-items:center;"><a href="tel:+${d}" style="color:var(--cyan);text-decoration:none;">📞 +${d}</a><a href="https://wa.me/${d}" target="_blank" rel="noopener" style="color:var(--green);text-decoration:none;">💬 WhatsApp</a></div>`;
 }
 const egAd=o=>egEsc((o.ad||'')+' '+(o.soyad||'')).trim();
 const egAdSirala=(a,b)=>((a.ad||'')+(a.soyad||'')).localeCompare((b.ad||'')+(b.soyad||''),'tr');
 function egDurumRozet(o,kayit){
-  if(o.asistan)return '<span class="badge badge-purple">asistan</span>';
-  if(kayit&&kayit.dondu)return '<span class="badge badge-cyan">dondurulmuş</span>';
+  if(o.asistan)return '<span class="badge badge-purple">'+t('eg_asistan')+'</span>';
+  if(kayit&&kayit.dondu)return '<span class="badge badge-cyan">'+t('donduruldu_kucuk')+'</span>';
   const pasif=o.durum==='pasif'||(kayit&&!kayit.kayitli);
-  return pasif?'<span class="badge badge-gray">pasif</span>':'<span class="badge badge-green">aktif</span>';
+  return pasif?'<span class="badge badge-gray">'+t('eg_pasif')+'</span>':'<span class="badge badge-green">'+t('eg_aktif')+'</span>';
 }
 function egPasifMi(o,kayit){return o.durum==='pasif'||(kayit&&!kayit.kayitli);}
 function egRenderOgrenciler(el){
   const ara=EG_ARA.toLocaleLowerCase('tr');
   const chip=(k,ad)=>`<button class="eg-chip ${EG_FILTRE===k?'active':''}" onclick="EG_FILTRE='${k}';egRender()">${ad}</button>`;
-  let html=`<input class="eg-in" placeholder="🔍 Öğrenci ara" value="${egEsc(EG_ARA)}" oninput="EG_ARA=this.value;egAraYenile()" style="margin-bottom:10px;"/>
-    <div style="display:flex;gap:6px;margin-bottom:14px;">${chip('hepsi','Hepsi')}${chip('aktif','Aktif')}${chip('pasif','Pasif')}</div><div id="eg-liste">`;
+  let html=`<input class="eg-in" placeholder="🔍 ${t('eg_ara')}" value="${egEsc(EG_ARA)}" oninput="EG_ARA=this.value;egAraYenile()" style="margin-bottom:10px;"/>
+    <div style="display:flex;gap:6px;margin-bottom:14px;">${chip('hepsi',t('eg_hepsi'))}${chip('aktif',t('eg_aktif_c'))}${chip('pasif',t('eg_pasif_c'))}</div><div id="eg-liste">`;
   html+=egOgrenciListeHtml(ara)+'</div>';
   el.innerHTML=html;
 }
@@ -10607,13 +10628,13 @@ function egOgrenciListeHtml(ara){
     if(!satirlar.length)return;
     toplam+=satirlar.length;
     satirlar.sort((a,b)=>egAdSirala(a.o,b.o));
-    html+=`<div class="portal-card"><div style="font-weight:600;font-size:14px;margin-bottom:6px;">${egEsc(si.ad)} <span style="font-size:12px;color:var(--text3);font-weight:400;">· ${satirlar.length} kişi</span></div>`+
-      satirlar.map(({o,k})=>`<div class="eg-ogsatir"><div style="flex:1;min-width:0;">${egAd(o)}</div>${egDurumRozet(o,k)}</div>`).join('')+'</div>';
+    html+=`<div class="portal-card"><div style="font-weight:600;font-size:14px;margin-bottom:6px;">${egEsc(si.ad)} <span style="font-size:12px;color:var(--text3);font-weight:400;">· ${satirlar.length} ${t('eg_kisi')}</span></div>`+
+      satirlar.map(({o,k})=>`<div class="eg-ogsatir"><div style="flex:1;min-width:0;">${egAd(o)}${egTelHtml(o)}</div>${egDurumRozet(o,k)}</div>`).join('')+'</div>';
   });
-  return html||'<div class="portal-card" style="text-align:center;color:var(--text3);">Gösterilecek öğrenci yok.</div>';
+  return html||'<div class="portal-card" style="text-align:center;color:var(--text3);">'+t('eg_gosterilecek_yok')+'</div>';
 }
 function egRenderSiniflar(el){
-  if(!EG.siniflar.length){el.innerHTML='<div class="portal-card" style="text-align:center;color:var(--text3);">Size atanmış sınıf yok.</div>';return;}
+  if(!EG.siniflar.length){el.innerHTML='<div class="portal-card" style="text-align:center;color:var(--text3);">'+t('eg_sinif_yok')+'</div>';return;}
   el.innerHTML=[...EG.siniflar].sort((a,b)=>(a.durum==='pasif')-(b.durum==='pasif')||a.ad.localeCompare(b.ad,'tr')).map(si=>{
     const ogler=EG.ogrenciler.map(o=>({o,k:(o.siniflar||[]).find(x=>x.id===si.id)})).filter(x=>x.k&&x.k.kayitli).sort((a,b)=>egAdSirala(a.o,b.o));
     const aktifSayi=ogler.filter(x=>!egPasifMi(x.o,x.k)&&!x.o.asistan).length;
@@ -10622,9 +10643,9 @@ function egRenderSiniflar(el){
     return `<div class="portal-card" style="${si.durum==='pasif'?'opacity:.7;':''}">
       <div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="EG_ACIK['${si.id}']=!EG_ACIK['${si.id}'];egRender()">
         <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:15px;">${egEsc(si.ad)}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${egEsc(si.gun||'')} ${egEsc(si.saat||'')} · ${aktifSayi} aktif öğrenci${ortak.length?' · birlikte: '+egEsc(ortak.join(', ')):''}</div></div>
-        ${si.durum==='pasif'?'<span class="badge badge-gray">kapalı</span>':''}<span style="color:var(--text3);">${acik?'▲':'▼'}</span></div>
-      ${acik?'<div style="margin-top:8px;">'+(ogler.length?ogler.map(({o,k})=>`<div class="eg-ogsatir"><div style="flex:1;min-width:0;">${egAd(o)}</div>${egDurumRozet(o,k)}</div>`).join(''):'<div style="font-size:12px;color:var(--text3);">Kayıtlı öğrenci yok.</div>')+'</div>':''}
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${egEsc(si.gun||'')} ${egEsc(si.saat||'')} · ${aktifSayi} ${t('eg_aktif_ogrenci')}${ortak.length?' · '+t('eg_birlikte')+': '+egEsc(ortak.join(', ')):''}</div></div>
+        ${si.durum==='pasif'?'<span class="badge badge-gray">'+t('eg_kapali')+'</span>':''}<span style="color:var(--text3);">${acik?'▲':'▼'}</span></div>
+      ${acik?'<div style="margin-top:8px;">'+(ogler.length?ogler.map(({o,k})=>`<div class="eg-ogsatir"><div style="flex:1;min-width:0;">${egAd(o)}${egTelHtml(o)}</div>${egDurumRozet(o,k)}</div>`).join(''):'<div style="font-size:12px;color:var(--text3);">'+t('eg_kayitli_yok')+'</div>')+'</div>':''}
     </div>`;
   }).join('');
 }
@@ -10632,51 +10653,51 @@ function egRenderSiniflar(el){
 const egKalan=p=>(Number(p.toplamSaat)||0)-(Number(p.yapilanSaat)||0);
 function egOgAdi(id){const o=EG.ozelOgrenciler.find(x=>x.id===id);return o?egAd(o):'—';}
 function egBugun(){const d=new Date(Date.now()+ (new Date().getTimezoneOffset()*-60000));return d.toISOString().slice(0,10);}
-function egTarihYaz(t){try{return new Date(t+'T00:00:00').toLocaleDateString('tr-TR',{weekday:'short',day:'numeric',month:'short'});}catch(e){return t;}}
-function egSaatYaz(s){return s%1===0?String(s):Math.floor(s)+',5';}
+function egTarihYaz(t){try{return new Date(t+'T00:00:00').toLocaleDateString(LC(),{weekday:'short',day:'numeric',month:'short'});}catch(e){return t;}}
+function egSaatYaz(s){return s%1===0?String(s):Math.floor(s)+(LANG==='tr'||LANG==='ru'?',5':'.5');}
 function egRenderOzel(el){
   const aktifPaketler=EG.paketler.filter(p=>egKalan(p)>0.0001);
   const bugun=egBugun();
   const gelecek=EG.seanslar.filter(x=>x.tarih>=bugun).sort((a,b)=>(a.tarih+a.saat).localeCompare(b.tarih+b.saat));
   const gecmis=EG.seanslar.filter(x=>x.tarih<bugun).sort((a,b)=>(b.tarih+b.saat).localeCompare(a.tarih+a.saat)).slice(0,15);
-  const satir=(x,duzenlenebilir)=>`<div class="eg-ogsatir"><div style="flex:1;min-width:0;"><div>${egOgAdi(x.ogrenciId)}</div><div style="font-size:12px;color:var(--text3);">${egTarihYaz(x.tarih)} · ${egEsc(x.saat)} · ${egSaatYaz(x.sure)} saat</div></div>
-    ${x.dusuldu?'<span class="badge badge-green">işlendi</span>':(duzenlenebilir?`<button class="btn btn-ghost btn-sm" onclick="egDersForm('${x.id}')">✎</button><button class="btn btn-danger btn-sm" onclick="egDersSil('${x.id}')">🗑</button>`:'<span class="badge badge-gray">işlenmedi</span>')}</div>`;
+  const satir=(x,duzenlenebilir)=>`<div class="eg-ogsatir"><div style="flex:1;min-width:0;"><div>${egOgAdi(x.ogrenciId)}</div><div style="font-size:12px;color:var(--text3);">${egTarihYaz(x.tarih)} · ${egEsc(x.saat)} · ${egSaatYaz(x.sure)} ${t('eg_saat_kisa')}</div></div>
+    ${x.dusuldu?'<span class="badge badge-green">'+t('eg_islendi')+'</span>':(duzenlenebilir?`<button class="btn btn-ghost btn-sm" onclick="egDersForm('${x.id}')">✎</button><button class="btn btn-danger btn-sm" onclick="egDersSil('${x.id}')">🗑</button>`:'<span class="badge badge-gray">'+t('eg_islenmedi')+'</span>')}</div>`;
   el.innerHTML=`
-    <button class="btn" style="width:100%;padding:13px;background:var(--cyanbg,rgba(34,211,238,.14));color:var(--cyan);border:1px solid #22d3ee40;margin-bottom:14px;" onclick="egDersForm()" ${aktifPaketler.length?'':'disabled'}>＋ Ders planla</button>
-    ${aktifPaketler.length?'':'<div style="font-size:12px;color:var(--text3);margin:-6px 0 14px;">Aktif özel ders paketi olan öğrenciniz yok.</div>'}
-    <div class="portal-card"><div style="font-weight:600;margin-bottom:6px;">Paketlerim</div>${
-      aktifPaketler.length?aktifPaketler.map(p=>`<div class="eg-ogsatir"><div style="flex:1;">${egOgAdi(p.ogrenciId)}</div><span style="font-size:13px;color:var(--text2);">${egSaatYaz(egKalan(p))} / ${egSaatYaz(p.toplamSaat)} saat kaldı</span></div>`).join(''):'<div style="font-size:12px;color:var(--text3);">Aktif paket yok.</div>'}</div>
-    <div class="portal-card"><div style="font-weight:600;margin-bottom:6px;">Planlanan dersler</div>${gelecek.length?gelecek.map(x=>satir(x,true)).join(''):'<div style="font-size:12px;color:var(--text3);">Planlanmış ders yok.</div>'}</div>
-    ${gecmis.length?`<div class="portal-card"><div style="font-weight:600;margin-bottom:6px;">Geçmiş dersler</div>${gecmis.map(x=>satir(x,false)).join('')}</div>`:''}`;
+    <button class="btn" style="width:100%;padding:13px;background:var(--cyanbg,rgba(34,211,238,.14));color:var(--cyan);border:1px solid #22d3ee40;margin-bottom:14px;" onclick="egDersForm()" ${aktifPaketler.length?'':'disabled'}>＋ ${t('eg_ders_planla')}</button>
+    ${aktifPaketler.length?'':'<div style="font-size:12px;color:var(--text3);margin:-6px 0 14px;">'+t('eg_aktif_paket_yok_ogr')+'</div>'}
+    <div class="portal-card"><div style="font-weight:600;margin-bottom:6px;">${t('eg_paketlerim')}</div>${
+      aktifPaketler.length?aktifPaketler.map(p=>`<div class="eg-ogsatir"><div style="flex:1;">${egOgAdi(p.ogrenciId)}</div><span style="font-size:13px;color:var(--text2);">${egSaatYaz(egKalan(p))} / ${egSaatYaz(p.toplamSaat)} ${t('eg_saat_kaldi')}</span></div>`).join(''):'<div style="font-size:12px;color:var(--text3);">'+t('eg_aktif_paket_yok')+'</div>'}</div>
+    <div class="portal-card"><div style="font-weight:600;margin-bottom:6px;">${t('eg_planlanan')}</div>${gelecek.length?gelecek.map(x=>satir(x,true)).join(''):'<div style="font-size:12px;color:var(--text3);">'+t('eg_planlanmis_yok')+'</div>'}</div>
+    ${gecmis.length?`<div class="portal-card"><div style="font-weight:600;margin-bottom:6px;">${t('eg_gecmis')}</div>${gecmis.map(x=>satir(x,false)).join('')}</div>`:''}`;
 }
 function egDersForm(id){
   EG_DUZENLE=id||null;
   const x=id?EG.seanslar.find(s=>s.id===id):null;
   const ogs=[...new Set(EG.paketler.filter(p=>egKalan(p)>0.0001).map(p=>p.ogrenciId))];
-  document.getElementById('m-kayit-islem-title').textContent=x?'Dersi düzenle':'Ders planla';
+  document.getElementById('m-kayit-islem-title').textContent=x?t('eg_ders_duzenle'):t('eg_ders_planla');
   document.getElementById('m-kayit-islem-content').innerHTML=`
-    <div class="field"><label>Öğrenci</label>${x?`<div class="eg-in">${egOgAdi(x.ogrenciId)}</div>`:`<select class="eg-in" id="egd-og">${ogs.map(i=>`<option value="${i}">${egOgAdi(i)}</option>`).join('')}</select>`}</div>
-    <div class="field"><label>Tarih</label><input class="eg-in" id="egd-tarih" type="date" min="${egBugun()}" value="${x?x.tarih:egBugun()}"/></div>
-    <div style="display:flex;gap:10px;"><div class="field" style="flex:1;"><label>Saat</label><input class="eg-in" id="egd-saat" type="time" step="900" value="${x?x.saat:'19:00'}"/></div>
-      <div class="field" style="flex:1;"><label>Süre (saat)</label><select class="eg-in" id="egd-sure">${[0.5,1,1.5,2,2.5,3].map(v=>`<option value="${v}" ${(x?x.sure:1)==v?'selected':''}>${egSaatYaz(v)}</option>`).join('')}</select></div></div>
-    <div style="font-size:11px;color:var(--text3);margin:4px 0 12px;">Ders, öğrencinin aktif paketine bağlanır. Saat geçince paketten stüdyo tarafından düşülür.</div>
-    <div style="display:flex;gap:8px;"><button class="btn btn-ghost" style="flex:1;" onclick="closeModal('m-kayit-islem')">İptal</button><button class="btn btn-purple" style="flex:1;" id="egd-kaydet" onclick="egDersKaydet()">Kaydet</button></div>`;
+    <div class="field"><label>${t('lbl_ogrenci')}</label>${x?`<div class="eg-in">${egOgAdi(x.ogrenciId)}</div>`:`<select class="eg-in" id="egd-og">${ogs.map(i=>`<option value="${i}">${egOgAdi(i)}</option>`).join('')}</select>`}</div>
+    <div class="field"><label>${t('eg_tarih')}</label><input class="eg-in" id="egd-tarih" type="date" min="${egBugun()}" value="${x?x.tarih:egBugun()}"/></div>
+    <div style="display:flex;gap:10px;"><div class="field" style="flex:1;"><label>${t('eg_saat')}</label><input class="eg-in" id="egd-saat" type="time" step="900" value="${x?x.saat:'19:00'}"/></div>
+      <div class="field" style="flex:1;"><label>${t('eg_sure')}</label><select class="eg-in" id="egd-sure">${[0.5,1,1.5,2,2.5,3].map(v=>`<option value="${v}" ${(x?x.sure:1)==v?'selected':''}>${egSaatYaz(v)}</option>`).join('')}</select></div></div>
+    <div style="font-size:11px;color:var(--text3);margin:4px 0 12px;">${t('eg_ders_not')}</div>
+    <div style="display:flex;gap:8px;"><button class="btn btn-ghost" style="flex:1;" onclick="closeModal('m-kayit-islem')">${t('btn_iptal')}</button><button class="btn btn-purple" style="flex:1;" id="egd-kaydet" onclick="egDersKaydet()">${t('btn_kaydet')}</button></div>`;
   openModal('m-kayit-islem');
 }
 async function egDersKaydet(){
   const tarih=document.getElementById('egd-tarih').value,saat=document.getElementById('egd-saat').value,sure=parseFloat(document.getElementById('egd-sure').value);
-  if(!tarih||!saat){alert('Tarih ve saat girin.');return;}
+  if(!tarih||!saat){alert(t('eg_tarih_saat_gir'));return;}
   const btn=document.getElementById('egd-kaydet');btn.disabled=true;
   try{
     if(EG_DUZENLE)await egApi('e_plan_duzenle',{id:EG_DUZENLE,tarih,saat,sure});
-    else{const ogrenciId=document.getElementById('egd-og')?.value;if(!ogrenciId){alert('Öğrenci seçin.');btn.disabled=false;return;}await egApi('e_planla',{ogrenciId,tarih,saat,sure});}
-    closeModal('m-kayit-islem');toastGoster('✓ Ders kaydedildi');
+    else{const ogrenciId=document.getElementById('egd-og')?.value;if(!ogrenciId){alert(t('eg_ogrenci_sec'));btn.disabled=false;return;}await egApi('e_planla',{ogrenciId,tarih,saat,sure});}
+    closeModal('m-kayit-islem');toastGoster('✓ '+t('eg_ders_kaydedildi'));
     await egVeriTazele();egRender();
   }catch(e){alert(e.message);btn.disabled=false;}
 }
 function egDersSil(id){
-  confirm_('Dersi sil','Planlanan ders silinecek. Emin misiniz?',async()=>{
-    try{await egApi('e_plan_sil',{id});await egVeriTazele();egRender();toastGoster('✓ Ders silindi');}catch(e){alert(e.message);}
+  confirm_(t('dersi_sil'),t('eg_ders_sil_aciklama'),async()=>{
+    try{await egApi('e_plan_sil',{id});await egVeriTazele();egRender();toastGoster('✓ '+t('eg_ders_silindi'));}catch(e){alert(e.message);}
   });
 }
 setInterval(()=>{if(EG_TOKEN&&!document.hidden&&document.getElementById('egitmen-screen').style.display==='flex'&&!document.querySelector('.overlay.open')){egVeriTazele().then(()=>egRender()).catch(()=>{});}},60000);
@@ -10690,7 +10711,7 @@ function loginModeSet(mod){
   document.getElementById('login-admin-fields').style.display=mod==='admin'?'block':'none';
   document.getElementById('login-ogrenci-fields').style.display=mod==='ogrenci'?'block':'none';
   document.getElementById('login-egitmen-fields').style.display=mod==='egitmen'?'block':'none';
-  document.getElementById('login-sub-text').textContent=mod==='admin'?t('yonetim_paneli'):(mod==='egitmen'?'Eğitmen Paneli':t('ogrenci_portali'));
+  document.getElementById('login-sub-text').textContent=mod==='admin'?t('yonetim_paneli'):(mod==='egitmen'?t('eg_panel'):t('ogrenci_portali'));
   document.getElementById('lmode-admin').classList.toggle('active',mod==='admin');
   document.getElementById('lmode-ogrenci').classList.toggle('active',mod==='ogrenci');
   document.getElementById('lmode-egitmen').classList.toggle('active',mod==='egitmen');
@@ -10709,11 +10730,11 @@ let PORTAL_TOKEN=null;
 async function portalApi(islem,ekstra){
   let r;
   try{r=await fetch(PORTAL_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({islem,token:PORTAL_TOKEN,...(ekstra||{})})});}
-  catch(e){throw new Error('Portal şu anda kullanılamıyor. İnternet bağlantınızı kontrol edin ya da daha sonra tekrar deneyin.');}
+  catch(e){throw new Error(t('srv_ag_hata'));}
   let d={};try{d=await r.json();}catch(e){}
   if(!r.ok){
     if(r.status===401&&d.oturum===false){portalOturumDustu();}
-    const err=new Error(d.hata||'İşlem başarısız ('+r.status+')');err.durum=r.status;throw err;
+    const err=new Error(srvMsg(d.hata)||t('srv_islem_basarisiz')+' ('+r.status+')');err.durum=r.status;throw err;
   }
   return d;
 }
@@ -10746,7 +10767,7 @@ async function portalOturumBaslat(){
     const r=await portalVeriYukle();
     const og=S.ogrenciler[0];
     if(r.ilkGiris){portalIlkGirisAc('');return;}
-    if(!og)throw new Error('Kayıt bulunamadı');
+    if(!og)throw new Error(t('srv_kayit_yok'));
     PORTAL_OG_ID=og.id;portalAc();
   }catch(e){portalOturumDustu();}
 }
@@ -10757,7 +10778,7 @@ function portalIlkGirisAc(ad){
   document.getElementById('portal-ad').textContent=t('merhaba')+(ad?', '+ad:'')+'!';
   document.getElementById('portal-siniflar').textContent='';
   // Şifre belirlenmeden veri gösterilmez; pencere kapatılsa bile ekranda belirgin bir düğme kalır
-  document.getElementById('portal-icerik').innerHTML='<div class="portal-card" style="text-align:center;padding:28px 18px;"><div style="font-size:34px;margin-bottom:8px;">🔑</div><div style="font-size:15px;font-weight:600;margin-bottom:6px;">Devam etmek için şifre belirleyin</div><div style="font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.5;">İlk girişte kendinize özel bir şifre belirlemeniz gerekiyor. Bilgileriniz şifre belirlendikten sonra görünür.</div><button class="btn" style="width:100%;padding:13px;background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa40;" onclick="portalSifreDegistirModal(true)">Şifre belirle</button></div>';
+  document.getElementById('portal-icerik').innerHTML='<div class="portal-card" style="text-align:center;padding:28px 18px;"><div style="font-size:34px;margin-bottom:8px;">🔑</div><div style="font-size:15px;font-weight:600;margin-bottom:6px;">'+t('portal_devam_sifre')+'</div><div style="font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.5;">'+t('portal_devam_aciklama')+'</div><button class="btn" style="width:100%;padding:13px;background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa40;" onclick="portalSifreDegistirModal(true)">'+t('sifre_belirle')+'</button></div>';
   document.querySelectorAll('.portal-tab-row').forEach(e=>e.style.display='none');
   portalSifreDegistirModal(true);
 }
@@ -10786,7 +10807,7 @@ function demoOgrenciSec(ogId){
   document.getElementById('login-screen').style.display='none';
   const ps=document.getElementById('portal-screen');ps.style.display='flex';
   document.getElementById('portal-ad').textContent=t('merhaba')+', '+og.ad+' '+(og.soyad||'')+' 👋';
-  document.getElementById('portal-siniflar').textContent=ogId?siniflar.map(s=>s.ad).join(' · '):'Demo hesabı';
+  document.getElementById('portal-siniflar').textContent=ogId?siniflar.map(s=>s.ad).join(' · '):t('portal_demo');
   portalTab('bilgiler');
 }
 async function portalLoginDene(){
@@ -10813,7 +10834,7 @@ async function portalLoginDene(){
     portalAc();
   }catch(e){
     errEl.style.display='block';
-    errEl.textContent=e.message||'Giriş başarısız.';
+    errEl.textContent=e.message||t('eg_giris_basarisiz');
     setTimeout(()=>errEl.style.display='none',5000);
     btn.disabled=false;btn.textContent=t('ogrenci_girisi');
   }
@@ -10825,7 +10846,7 @@ function portalAc(){
   if(!og)return;
   const siniflar=S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===og.id));
   document.getElementById('portal-ad').textContent=t('merhaba')+', '+og.ad+' '+( og.soyad||'')+'!';
-  document.getElementById('portal-siniflar').textContent=siniflar.length?siniflar.map(s=>s.ad).join(' · '):'Henüz sınıf kaydı yok';
+  document.getElementById('portal-siniflar').textContent=siniflar.length?siniflar.map(s=>s.ad).join(' · '):t('portal_henuz_sinif_yok');
   document.getElementById('portal-screen').style.display='flex';
   portalTab('bilgiler');
   if(!PORTAL_TOKEN)portalIlkGirisSifreDegistirKontrol(og); // yalnız yönetici demo modunda
@@ -10876,7 +10897,7 @@ function renderPortalIcerik(){
     }
   }catch(e){
     console.error(e);
-    el.innerHTML='<div class="portal-card" style="text-align:center;padding:22px;"><div style="font-size:14px;font-weight:600;margin-bottom:6px;">Bu bölüm yüklenemedi</div><div style="font-size:12px;color:var(--text3);word-break:break-word;">'+String(e&&e.message||e).replace(/[<>&]/g,' ')+'</div></div>';
+    el.innerHTML='<div class="portal-card" style="text-align:center;padding:22px;"><div style="font-size:14px;font-weight:600;margin-bottom:6px;">'+t('portal_bolum_yuklenemedi')+'</div><div style="font-size:12px;color:var(--text3);word-break:break-word;">'+String(e&&e.message||e).replace(/[<>&]/g,' ')+'</div></div>';
   }
 }
 
@@ -11120,7 +11141,7 @@ function portalSifreDegistirModal(ilkGiris=false){
     :t('yeni_sifre_gir_mesaj');
 
   const html=`<div style="font-size:13px;color:var(--text2);margin-bottom:16px;">${mesaj}</div>
-    ${(!ilkGiris&&PORTAL_TOKEN)?`<div class="field"><label>Mevcut şifre</label><input id="ps-eski" type="password" autocomplete="current-password" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-size:15px;"/></div>`:''}
+    ${(!ilkGiris&&PORTAL_TOKEN)?`<div class="field"><label>${t('mevcut_sifre')}</label><input id="ps-eski" type="password" autocomplete="current-password" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-size:15px;"/></div>`:''}
     <div class="field"><label>${t('yeni_sifre')}</label><input id="ps-yeni" type="password" placeholder="${t('en_az_6')}" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:15px;outline:none;"/></div>
     <div class="field"><label>${t('tekrar')}</label><input id="ps-tekrar" type="password" placeholder="${t('tekrar_girin')}" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:15px;outline:none;"/></div>
     <div style="display:flex;gap:8px;margin-top:16px;">
@@ -11149,8 +11170,8 @@ async function portalSifreKaydet(ilkGiris){
     }
     // Yönetici demo modu (gerçek öğrenci hesabı değiştirilmez)
     closeModal('m-kayit-islem');
-    toastGoster('Demo modunda şifre değiştirilmez');
-  }catch(e){alert('Hata: '+e.message);}
+    toastGoster(t('portal_demo_sifre'));
+  }catch(e){alert(t('hata')+': '+e.message);}
 }
 
 // ── Admin — Öğrenci Notları Bildirimleri ───────────────
