@@ -10522,7 +10522,7 @@ function srvMsg(m){
 // EĞİTMEN PANELİ (sunucu fonksiyonu üzerinden; yalnızca kendi verisi gelir)
 // ════════════════════════════════════════════════════════════
 let EG_GELIR_OFS=0, EG_OG_ACIK={};
-let EG_TOKEN=null, EG={gelir:null,egitmen:null,siniflar:[],ogrenciler:[],paketler:[],seanslar:[],ozelOgrenciler:[]}, EG_TAB='ogrenciler', EG_FILTRE='hepsi', EG_ARA='', EG_ACIK={}, EG_DUZENLE=null;
+let EG_TOKEN=null, EG={gelir:null,egitmen:null,siniflar:[],ogrenciler:[],paketler:[],seanslar:[],ozelOgrenciler:[]}, EG_TAB='ogrenciler', EG_FILTRE='aktif', EG_ARA='', EG_ACIK={}, EG_DUZENLE=null;
 const egEsc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function egitmenLoginKontrol(){
   try{const tk=sessionStorage.getItem('egitmen_token')||localStorage.getItem('egitmen_token');if(tk){EG_TOKEN=tk;document.getElementById('login-screen').style.display='none';return true;}}catch(e){}
