@@ -551,6 +551,7 @@ body.portal-modu .overlay{z-index:9500;}
 .search-wrap{position:relative;display:flex;align-items:center;}
 #og-arama:focus{border-color:#ff6b6b70;box-shadow:0 0 0 3px #ff6b6b1a;}
 #si-arama:focus{border-color:#a78bfa70;box-shadow:0 0 0 3px #a78bfa1a;}
+.ust-ekle-btn{flex:0 0 132px;width:132px;height:40px;padding:0 8px;white-space:nowrap;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;}
 .search-clear{position:absolute;right:10px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px;display:none;line-height:1;}
 .search-clear.visible{display:block;}
 
@@ -934,7 +935,7 @@ body.portal-modu .overlay{z-index:9500;}
       <div class="search-wrap"><input id="og-arama" placeholder="İsim veya telefon ara..." oninput="renderOgrenciler();toggleClear('og-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s;"/><button id="og-arama-clear" class="search-clear" onclick="clearSearch('og-arama',renderOgrenciler)">✕</button></div>
       <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
     </div>
-    <button class="btn btn-accent btn-sm" style="flex-shrink:0;padding:0 14px;white-space:nowrap;" onclick="openOgrenciModal()" data-i18n="btn_yeni_ogrenci">＋ Yeni Öğrenci</button>
+    <button class="btn btn-accent btn-sm ust-ekle-btn" onclick="openOgrenciModal()" data-i18n="btn_yeni_ogrenci">＋ Yeni Öğrenci</button>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <button class="btn btn-sm" id="filter-aktif" onclick="setOgrenciFilter('aktif')" style="flex:1;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b40;box-shadow:0 3px 10px -3px #ff6b6b70;"><span id="lbl-filter-aktif">Aktif</span> <span id="cnt-filter-aktif" style="opacity:.75;font-weight:500;"></span></button>
@@ -960,7 +961,7 @@ body.portal-modu .overlay{z-index:9500;}
       <div class="search-wrap"><input id="si-arama" placeholder="Sınıf ara..." oninput="renderSiniflar();toggleClear('si-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s;"/><button id="si-arama-clear" class="search-clear" onclick="clearSearch('si-arama',renderSiniflar)">✕</button></div>
       <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
     </div>
-    <button class="btn btn-accent btn-sm" style="flex-shrink:0;padding:0 14px;white-space:nowrap;" onclick="openSinifModal()" data-i18n="btn_yeni_sinif">＋ Yeni Sınıf</button>
+    <button class="btn btn-accent btn-sm ust-ekle-btn" onclick="openSinifModal()" data-i18n="btn_yeni_sinif">＋ Yeni Sınıf</button>
     </div>
     <div id="sinif-gun-chips" style="display:flex;gap:5px;overflow-x:auto;margin:0 0 12px;padding-bottom:2px;-webkit-overflow-scrolling:touch;"></div>
     <div id="sinif-list"></div>
@@ -987,7 +988,7 @@ body.portal-modu .overlay{z-index:9500;}
       <div class="search-wrap"><input id="ozel-arama" placeholder="İsim veya telefon ara..." oninput="OZEL_ARA=this.value;renderOzel();toggleClear('ozel-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-size:14px;font-family:inherit;outline:none;"/><button class="search-clear" id="ozel-arama-clear" onclick="clearSearch('ozel-arama',()=>{OZEL_ARA='';renderOzel();})">✕</button></div>
       <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
     </div>
-    <button class="btn btn-accent btn-sm" style="flex-shrink:0;padding:0 14px;white-space:nowrap;" onclick="ozelEkleBaslat()" data-i18n="btn_yeni_ozel">＋ Yeni Özel Ders</button>
+    <button class="btn btn-accent btn-sm ust-ekle-btn" onclick="ozelEkleBaslat()" data-i18n="btn_yeni_ozel">＋ Yeni Özel Ders</button>
     </div>
     <div class="tab-row">
       <button class="tab-btn active" data-i18n="nav_ogrenciler">Öğrenciler</button>
