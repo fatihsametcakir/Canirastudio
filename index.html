@@ -501,19 +501,22 @@ body.portal-modu .overlay{z-index:9500;}
 /* Slide-over panel */
 .drawer-overlay{position:fixed;inset:0;background:#00000070;z-index:300;display:none;backdrop-filter:blur(3px);}
 .drawer-overlay.open{display:block;}
-.drawer{position:fixed;top:10px;left:10px;bottom:10px;width:min(300px,85vw);background:color-mix(in srgb,var(--surface) 86%,transparent);border:1.5px solid color-mix(in srgb,var(--text) 30%,transparent);border-radius:30px;box-shadow:0 18px 50px -10px rgba(0,0,0,.85),0 2px 12px -2px rgba(0,0,0,.5),inset 0 1px 0 color-mix(in srgb,var(--text) 14%,transparent);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);z-index:301;transform:translateX(calc(-100% - 20px));transition:transform .28s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;}
+.drawer{position:fixed;top:10px;left:10px;bottom:10px;width:min(300px,85vw);background:color-mix(in srgb,var(--surface) 86%,transparent);border:1.5px solid color-mix(in srgb,var(--text) 30%,transparent);border-radius:30px;box-shadow:0 18px 50px -10px rgba(0,0,0,.85),0 2px 12px -2px rgba(0,0,0,.5),inset 0 1px 0 color-mix(in srgb,var(--text) 14%,transparent);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);z-index:301;transform:translateX(calc(-100% - 20px));transition:transform .28s cubic-bezier(.4,0,.2,1);overflow:hidden;display:flex;flex-direction:column;}
 .drawer .drawer-hizli .drawer-btn{border-radius:20px !important;}
 .drawer .acc-item{border-radius:22px;}
 .drawer-header{padding-top:18px;}
 .drawer.open{transform:translateX(0);}
 .drawer-header{padding:14px 20px 12px;position:relative;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .drawer-header::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1.5px;background:linear-gradient(90deg,var(--accent),var(--purple,#a78bfa),transparent);opacity:.5;}
-.drawer-logo{font-family:'Cormorant Garamond','Fraunces',serif;font-size:21px;font-weight:600;line-height:1.02;letter-spacing:.03em;}
-.drawer-logo .tb-gold{display:block;background:linear-gradient(100deg,#f8e7ae,#d9ac52 40%,#f4dc92 65%,#b0842f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;}
-.drawer-logo span{display:block;color:var(--accent);font-style:italic;font-size:19px;}
+.drawer-logo{font-family:'Cormorant Garamond','Fraunces',serif;font-size:17.5px;font-weight:600;line-height:1.1;letter-spacing:.01em;white-space:nowrap;min-width:0;}
+.drawer-logo .tb-gold{display:inline;background:linear-gradient(100deg,#f8e7ae,#d9ac52 40%,#f4dc92 65%,#b0842f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;}
+.drawer-logo span{display:inline;color:var(--accent);font-style:italic;font-size:17.5px;}
 .drawer-close{width:32px;height:32px;border-radius:50%;background:var(--accentbg);border:1px solid #ff6b6b35;color:var(--accent);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
 .drawer-close:active{transform:scale(.85) rotate(90deg);}
-.drawer-body{flex:1;padding:8px 0 24px;}
+.drawer-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:8px 0 24px;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--text) 25%,transparent) transparent;}
+.drawer-body::-webkit-scrollbar{width:5px;}
+.drawer-body::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--text) 25%,transparent);border-radius:99px;}
+.drawer-body::-webkit-scrollbar-track{background:transparent;margin:6px 0;}
 /* Accordion */
 .acc-item{--ic:var(--item-color,var(--accent));margin:5px 12px;border-radius:14px;overflow:hidden;border:1px solid color-mix(in srgb,var(--ic) 38%,var(--border2));border-left:4px solid var(--ic);background:linear-gradient(135deg,color-mix(in srgb,var(--ic) 14%,var(--surface)),color-mix(in srgb,var(--ic) 4%,var(--surface)) 80%);box-shadow:0 6px 16px -10px var(--ic);transition:background .25s,box-shadow .25s,border-color .25s,transform .15s;}
 .acc-item:has(.acc-body.open){border-color:color-mix(in srgb,var(--ic) 70%,var(--border2));background:linear-gradient(135deg,color-mix(in srgb,var(--ic) 22%,var(--surface)),color-mix(in srgb,var(--ic) 6%,var(--surface)) 85%);box-shadow:0 8px 22px -8px var(--ic);}
@@ -1156,7 +1159,7 @@ body.portal-modu .overlay{z-index:9500;}
 <!-- Drawer panel -->
 <div class="drawer" id="drawer">
   <div class="drawer-header">
-    <div class="drawer-logo"><b class="tb-gold">Can &amp; Irina</b><span>Dance Studio</span></div>
+    <div class="drawer-logo"><b class="tb-gold">Can &amp; Irina</b> <span>Dance Studio</span></div>
     <button class="drawer-close" onclick="drawerKapat()">✕</button>
   </div>
   <div class="drawer-body">
