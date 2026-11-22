@@ -1987,7 +1987,7 @@ const TRANSLATIONS={
     btn_yeni_sinif:'＋ Yeni Sınıf',
     btn_yeni_ogrenci:'＋ Yeni Öğrenci',
     ogrenci_bulunamadi:'Eşleşen öğrenci bulunamadı.',
-    ders_yapilan_baslik:'Yapılan dersler', ders_planli_baslik:'Planlanan (henüz yapılmadı, saat düşülmedi)', ders_planli_rozet:'Planlı',
+    ders_yapilan_baslik:'Yapılan dersler', ders_planli_baslik:'Planlanan (henüz yapılmadı)', ders_planli_rozet:'Planlı',
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
     zaten_ozel_ders:'zaten özel ders alıyor', sec_yonlendir:'seç ›', eslesme_yok_yeni_devam:'Eşleşme bulunamadı — "Yeni Öğrenci Ekle" ile devam edebilirsin.',
     kayitli:'kayıtlı', badge_aktif:'aktif', tek:'tek', pasif_siniflar:'Kapalı Sınıflar', sinif_kucuk_ders:'sınıf', kapali_sinif_etiket:'kapalı sınıf',
@@ -2174,7 +2174,7 @@ const TRANSLATIONS={
     btn_yeni_sinif:'＋ New Class',
     btn_yeni_ogrenci:'＋ New Student',
     ogrenci_bulunamadi:'No matching student found.',
-    ders_yapilan_baslik:'Completed lessons', ders_planli_baslik:'Planned (not yet done, hours not deducted)', ders_planli_rozet:'Planned',
+    ders_yapilan_baslik:'Completed lessons', ders_planli_baslik:'Planned (not yet done)', ders_planli_rozet:'Planned',
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
     zaten_ozel_ders:'already has private lessons', sec_yonlendir:'select ›', eslesme_yok_yeni_devam:'No match found — you can continue with "Add New Student".',
     kayitli:'enrolled', badge_aktif:'active', tek:'drop-in', pasif_siniflar:'Closed Classes', sinif_kucuk_ders:'classes', kapali_sinif_etiket:'closed class',
@@ -2361,7 +2361,7 @@ const TRANSLATIONS={
     btn_yeni_sinif:'＋ Новый класс',
     btn_yeni_ogrenci:'＋ Новый ученик',
     ogrenci_bulunamadi:'Ученик не найден.',
-    ders_yapilan_baslik:'Проведённые занятия', ders_planli_baslik:'Запланированные (ещё не проведены, часы не списаны)', ders_planli_rozet:'План',
+    ders_yapilan_baslik:'Проведённые занятия', ders_planli_baslik:'Запланированные (ещё не проведены)', ders_planli_rozet:'План',
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
     zaten_ozel_ders:'уже посещает частные уроки', sec_yonlendir:'выбрать ›', eslesme_yok_yeni_devam:'Совпадений не найдено — можно продолжить через "Добавить нового ученика".',
     kayitli:'записано', badge_aktif:'активно', tek:'разовое', pasif_siniflar:'Закрытые группы', sinif_kucuk_ders:'групп', kapali_sinif_etiket:'закрыта',
@@ -6729,17 +6729,18 @@ function openPaketDersler(paketId){
   }else{
     const satir=(s,planli)=>{
       const eg=S.egitmenler.find(e=>e.id===s.egitmenId);
-      return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);${planli?'opacity:.65;':''}">
-        <div>
-          <div style="font-size:13px;font-weight:600;">${formatDate(s.tarih)}${s.saat?' · '+s.saat:''}${planli?' <span class="badge badge-gray" style="font-size:10px;">'+t('ders_planli_rozet')+'</span>':''}</div>
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:7px;border-radius:var(--radius-sm);background:${planli?'rgba(251,191,36,.10)':'rgba(52,211,153,.12)'};border:1px solid ${planli?'#fbbf2455':'#34d39955'};border-left:4px solid ${planli?'var(--amber)':'var(--green)'};">
+        <span style="width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:${planli?'13px':'15px'};font-weight:800;background:${planli?'var(--amber)':'var(--green)'};color:#0d0d14;">${planli?'🕐':'✓'}</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;">${formatDate(s.tarih)}${s.saat?' · '+s.saat:''}${planli?' <span class="badge badge-amber" style="font-size:10px;">'+t('ders_planli_rozet')+'</span>':' <span class="badge badge-green" style="font-size:10px;">'+t('eg_islendi')+'</span>'}</div>
           <div style="font-size:11px;color:var(--text3);">${fmtSaat(ozelDersPaketSaati(s,paketId))} ${t('saat')}${Array.isArray(s.dusumler)&&Math.abs(ozelDersPaketSaati(s,paketId)-(s.sure||1))>0.01?' (toplam '+fmtSaat(s.sure||1)+' saatlik ders, kalanı diğer paketten)':''}${eg?' · '+eg.ad:''}${s.kaynak==='takvim'?' · '+t('takvimden'):''}</div>
         </div>
         <button class="btn btn-danger btn-sm" onclick="dersKaydiSil('${s.id}')">${t('btn_sil')}</button>
       </div>`;
     };
     const yapilan=seanslar.filter(x=>x.dusuldu),planli=seanslar.filter(x=>!x.dusuldu).sort((a,b)=>(a.tarih||'').localeCompare(b.tarih||'')||(a.saat||'').localeCompare(b.saat||''));
-    const baslik=(m,n)=>'<div style="font-size:12px;font-weight:600;color:var(--text2);margin:14px 0 2px;text-transform:uppercase;letter-spacing:.04em;">'+m+' ('+n+')</div>';
-    el.innerHTML=(yapilan.length?baslik(t('ders_yapilan_baslik'),yapilan.length)+yapilan.map(x=>satir(x,false)).join(''):'')+(planli.length?baslik(t('ders_planli_baslik'),planli.length)+planli.map(x=>satir(x,true)).join(''):'');
+    const baslik=(m,n,renk)=>'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:700;color:'+renk+';margin:16px 0 8px;padding:8px 12px;border-radius:var(--radius-sm);background:color-mix(in srgb,'+renk+' 14%,transparent);text-transform:uppercase;letter-spacing:.04em;"><span>'+m+'</span><span style="font-size:13px;">'+n+'</span></div>';
+    el.innerHTML=(yapilan.length?baslik('✓ '+t('ders_yapilan_baslik'),yapilan.length,'var(--green)')+yapilan.map(x=>satir(x,false)).join(''):'')+(planli.length?baslik('🕐 '+t('ders_planli_baslik'),planli.length,'var(--amber)')+planli.map(x=>satir(x,true)).join(''):'');
   }
   openModal('m-paket-dersler');
 }
