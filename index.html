@@ -143,6 +143,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .page.active :is(.sinif-karti,.odeme-sinif-grup,.gg-card,.ozel-og-kart):nth-child(5){animation-delay:.2s}
 .page.active :is(.sinif-karti,.odeme-sinif-grup,.gg-card,.ozel-og-kart):nth-child(n+6){animation-delay:.25s}
 .nav-item.nav-pop .nav-icon-wrap{animation:navPop .5s cubic-bezier(.34,1.56,.64,1);}
+/* geçiş bitince taban sayfa animasyonu yeniden oynamasın (sınıf değişince animasyon adı değişip tekrar başlıyordu = titreme) */
+.page.active.gec-bitti{animation:none;}
 @media(prefers-reduced-motion:reduce){.page.active.gec-ileri,.page.active.gec-geri,.page.active :is(.sinif-karti,.odeme-sinif-grup,.gg-card,.ozel-og-kart),.nav-item.nav-pop .nav-icon-wrap{animation:none!important;}}
 @keyframes sayfaGecisEfekti{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .grad-card{border-radius:var(--radius);padding:16px;margin-bottom:10px;}
@@ -2737,7 +2739,10 @@ function startListeners(){
   };
   function snap(col,key,doneKey){
     db.collection(col).onSnapshot(
-      snap=>{S[key]=snap.docs.map(d=>{const obj=d.data?d.data():{...d};return{...obj,id:d.id};});done[doneKey]=true;check();renderAll();},
+      snap=>{
+        const yeni=snap.docs.map(d=>{const obj=d.data?d.data():{...d};return{...obj,id:d.id};});
+        if(done[doneKey]&&JSON.stringify(S[key])===JSON.stringify(yeni)){return;} // yoklamada veri aynıysa ekranı yeniden çizme (titreme/kaydırma sıfırlanması olmasın)
+        S[key]=yeni;done[doneKey]=true;check();renderAll();},
       err=>{console.warn(col,err);done[doneKey]=true;check();}
     );
   }
@@ -2796,7 +2801,7 @@ function goTo(p,btn){
   const yon=(eskiIdx>=0&&yeniIdx>=0&&yeniIdx<eskiIdx)?'gec-geri':'gec-ileri';
   const ayniSayfa=(p===PAGE);
   PREV_PAGE=PAGE;PAGE=p;showPage(p);
-  if(!ayniSayfa){const pg=document.getElementById('pg-'+p);if(pg){pg.classList.remove('gec-ileri','gec-geri');void pg.offsetWidth;pg.classList.add(yon);clearTimeout(pg._gecT);pg._gecT=setTimeout(()=>pg.classList.remove('gec-ileri','gec-geri'),800);}} // animasyon bitince sınıf kalkar: veri yenilenince kartlar yeniden belirip kaybolmasın
+  if(!ayniSayfa){const pg=document.getElementById('pg-'+p);if(pg){pg.classList.remove('gec-ileri','gec-geri','gec-bitti');void pg.offsetWidth;pg.classList.add(yon);clearTimeout(pg._gecT);pg._gecT=setTimeout(()=>{pg.classList.remove('gec-ileri','gec-geri');pg.classList.add('gec-bitti');},800);}} // animasyon bitince sınıf kalkar: veri yenilenince kartlar yeniden belirip kaybolmasın
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
   if(btn){btn.classList.add('active');if(!ayniSayfa){btn.classList.remove('nav-pop');void btn.offsetWidth;btn.classList.add('nav-pop');}}
   setTopbar(false);
