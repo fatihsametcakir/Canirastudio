@@ -97,7 +97,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .back-btn:active{transform:scale(.9);}
 .topbar-title{font-family:'Cormorant Garamond','Fraunces',serif;font-size:17px;font-weight:600;line-height:1.02;letter-spacing:.03em;white-space:nowrap;}
 .topbar-title .tb-gold{display:block;background:linear-gradient(100deg,#f8e7ae,#d9ac52 40%,#f4dc92 65%,#b0842f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;}
-:root[data-acik="1"] .topbar-title .tb-gold{background:linear-gradient(100deg,#8a6112,#b8872a 40%,#9a6f1c 65%,#6e4c0c);-webkit-background-clip:text;background-clip:text;}
+:root[data-acik="1"] .topbar-title .tb-gold,:root[data-acik="1"] .drawer-logo .tb-gold{background:linear-gradient(100deg,#8a6112,#b8872a 40%,#9a6f1c 65%,#6e4c0c);-webkit-background-clip:text;background-clip:text;}
 .topbar-title span{display:block;color:var(--accent);font-style:italic;font-weight:600;font-size:16px;letter-spacing:.05em;}
 .tb-mark{flex-shrink:0;}
 .topbar-sub{display:none;}
@@ -1211,8 +1211,8 @@ body.portal-modu .overlay{z-index:9500;}
       </div>
       <div class="acc-body" id="acc-tema">
         <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Bir tema seçin. Değişiklikler anında uygulanır.</div>
-        <div id="tema-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
-        <button class="drawer-btn" style="margin-top:10px;opacity:.7;font-size:13px;" onclick="temaUygula('varsayilan')">↺ Varsayılana Dön</button>
+        <div id="tema-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
+        <button class="drawer-btn" style="margin-top:10px;opacity:.7;font-size:13px;" onclick="temaUygula('sistem')">↺ Varsayılana Dön</button>
       </div>
     </div>
 
@@ -2001,6 +2001,7 @@ const TRANSLATIONS={
     ogrenci_bulunamadi:'Eşleşen öğrenci bulunamadı.',
     ders_yapilan_baslik:'Yapılan dersler', ders_planli_baslik:'Planlanan (henüz yapılmadı)', ders_planli_rozet:'Planlı',
     okundu_yap:'Okundu yap', okundu_yapildi:'Okundu yapıldı',
+    tema_sistem:'Sistem', tema_koyu:'Koyu', tema_acik:'Açık',
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
     zaten_ozel_ders:'zaten özel ders alıyor', sec_yonlendir:'seç ›', eslesme_yok_yeni_devam:'Eşleşme bulunamadı — "Yeni Öğrenci Ekle" ile devam edebilirsin.',
     kayitli:'kayıtlı', badge_aktif:'aktif', tek:'tek', pasif_siniflar:'Kapalı Sınıflar', sinif_kucuk_ders:'sınıf', kapali_sinif_etiket:'kapalı sınıf',
@@ -2189,6 +2190,7 @@ const TRANSLATIONS={
     ogrenci_bulunamadi:'No matching student found.',
     ders_yapilan_baslik:'Completed lessons', ders_planli_baslik:'Planned (not yet done)', ders_planli_rozet:'Planned',
     okundu_yap:'Mark as read', okundu_yapildi:'Marked as read',
+    tema_sistem:'System', tema_koyu:'Dark', tema_acik:'Light',
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
     zaten_ozel_ders:'already has private lessons', sec_yonlendir:'select ›', eslesme_yok_yeni_devam:'No match found — you can continue with "Add New Student".',
     kayitli:'enrolled', badge_aktif:'active', tek:'drop-in', pasif_siniflar:'Closed Classes', sinif_kucuk_ders:'classes', kapali_sinif_etiket:'closed class',
@@ -2377,6 +2379,7 @@ const TRANSLATIONS={
     ogrenci_bulunamadi:'Ученик не найден.',
     ders_yapilan_baslik:'Проведённые занятия', ders_planli_baslik:'Запланированные (ещё не проведены)', ders_planli_rozet:'План',
     okundu_yap:'Отметить прочитанным', okundu_yapildi:'Отмечено прочитанным',
+    tema_sistem:'Система', tema_koyu:'Тёмная', tema_acik:'Светлая',
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
     zaten_ozel_ders:'уже посещает частные уроки', sec_yonlendir:'выбрать ›', eslesme_yok_yeni_devam:'Совпадений не найдено — можно продолжить через "Добавить нового ученика".',
     kayitli:'записано', badge_aktif:'активно', tek:'разовое', pasif_siniflar:'Закрытые группы', sinif_kucuk_ders:'групп', kapali_sinif_etiket:'закрыта',
@@ -7594,88 +7597,24 @@ async function kullaniciSifreSifirla(id){
 // ── TEMA SİSTEMİ ───────────────────────────────────────
 const TEMALAR={
   varsayilan:{
-    ad:'Varsayılan',
+    ad:'Koyu',
     bg:'#0d0d14',surface:'#16161f',surface2:'#1e1e2a',
     border:'#ffffff14',border2:'#ffffff22',
     text:'#f2f0fa',text2:'#d5d3e6',text3:'#c7c4dc',
     accent:'#ff6b6b',
     renkler:['#0d0d14','#16161f','#ff6b6b','#a78bfa']
   },
-  dark:{
-    ad:'Saf Siyah',
-    bg:'#000000',surface:'#111111',surface2:'#1a1a1a',
-    border:'#ffffff12',border2:'#ffffff20',
-    text:'#ffffff',text2:'#dcdcdc',text3:'#c8c8c8',
-    accent:'#ff6b6b',
-    renkler:['#000000','#111111','#ff6b6b','#333333']
-  },
   white:{
-    ad:'Beyaz',
+    ad:'Açık',
     bg:'#f5f5f7',surface:'#ffffff',surface2:'#f0f0f5',
     border:'#00000010',border2:'#00000018',
     text:'#1a1a2e',text2:'#38385a',text3:'#4a4a6e',
     accent:'#ff6b6b',
     renkler:['#f5f5f7','#ffffff','#ff6b6b','#e0e0ea']
   },
-  okyanus:{
-    ad:'Okyanus',
-    bg:'#0a1628',surface:'#0f2040',surface2:'#162a50',
-    border:'#4466aa22',border2:'#4466aa33',
-    text:'#e0eaff',text2:'#c2d6f2',text3:'#a8c4e8',
-    accent:'#38bdf8',
-    renkler:['#0a1628','#0f2040','#38bdf8','#1e3a6a']
-  },
-  orman:{
-    ad:'Orman',
-    bg:'#0a1a0f',surface:'#0f2a18',surface2:'#163622',
-    border:'#22dd6622',border2:'#22dd6633',
-    text:'#d4f5e0',text2:'#aedcbe',text3:'#8ecca8',
-    accent:'#34d399',
-    renkler:['#0a1a0f','#0f2a18','#34d399','#1a4428']
-  },
-  gunbatimi:{
-    ad:'Gün Batımı',
-    bg:'#1a0a00',surface:'#2a1200',surface2:'#3a1a05',
-    border:'#ff880022',border2:'#ff880033',
-    text:'#fff0e0',text2:'#eec18c',text3:'#e0a868',
-    accent:'#fb923c',
-    renkler:['#1a0a00','#2a1200','#fb923c','#ff6600']
-  },
-  lavanta:{
-    ad:'Lavanta',
-    bg:'#120f1f',surface:'#1e1830',surface2:'#281f3f',
-    border:'#a78bfa22',border2:'#a78bfa33',
-    text:'#ede0ff',text2:'#d4c0ec',text3:'#bfa3e0',
-    accent:'#a78bfa',
-    renkler:['#120f1f','#1e1830','#a78bfa','#7c3aed']
-  },
-  gece:{
-    ad:'Gece Mavisi',
-    bg:'#050d1a',surface:'#0a1628',surface2:'#0f2040',
-    border:'#22d3ee22',border2:'#22d3ee33',
-    text:'#e0f7fa',text2:'#a8ddec',text3:'#7fcce3',
-    accent:'#22d3ee',
-    renkler:['#050d1a','#0a1628','#22d3ee','#0e4d66']
-  },
-  gul:{
-    ad:'Gül',
-    bg:'#1a0a10',surface:'#2a1020',surface2:'#3a1530',
-    border:'#f472b622',border2:'#f472b633',
-    text:'#ffe0ee',text2:'#edb5cf',text3:'#e094b8',
-    accent:'#f472b6',
-    renkler:['#1a0a10','#2a1020','#f472b6','#be185d']
-  },
-  sehir:{
-    ad:'Şehir',
-    bg:'#0f0f0f',surface:'#1c1c1c',surface2:'#252525',
-    border:'#ffffff15',border2:'#ffffff25',
-    text:'#f0f0f0',text2:'#dcdcdc',text3:'#c4c4c4',
-    accent:'#facc15',
-    renkler:['#0f0f0f','#1c1c1c','#facc15','#333333']
-  },
 };
 
-let AKTİF_TEMA=localStorage.getItem('aktif_tema')||'varsayilan';
+let AKTİF_TEMA=localStorage.getItem('aktif_tema')||'sistem'; // 'sistem' = telefonun koyu/açık ayarını izler
 
 // ── Tema kontrast ayarı (WCAG) ─────────────────────────
 // Her temada yazı ve renkli etiket/buton metinleri zeminlerine karşı yeterli kontrasta (≥4.5) getirilir.
@@ -7720,10 +7659,13 @@ function temaKontrastUygula(t){
   r.setProperty('--on-accent',_kontrast(ac,[255,255,255])>=_kontrast(ac,[13,13,20])?'#fff':'#0d0d14');
 }
 
-function temaUygula(temaAdi){
-  const t=TEMALAR[temaAdi];if(!t)return;
-  AKTİF_TEMA=temaAdi;
-  localStorage.setItem('aktif_tema',temaAdi);
+function sistemKoyuMu(){try{return window.matchMedia('(prefers-color-scheme: dark)').matches;}catch(e){return true;}}
+function temaUygula(secim){
+  if(secim!=='sistem'&&!TEMALAR[secim])secim='varsayilan'; // kaldırılan eski temalar koyu temaya düşer
+  AKTİF_TEMA=secim;
+  try{localStorage.setItem('aktif_tema',secim);}catch(e){}
+  const temaAdi=secim==='sistem'?(sistemKoyuMu()?'varsayilan':'white'):secim;
+  const t=TEMALAR[temaAdi];
   const r=document.documentElement.style;
   r.setProperty('--bg',t.bg);
   r.setProperty('--surface',t.surface);
@@ -7748,16 +7690,24 @@ function temaUygula(temaAdi){
 function renderTemaGrid(){
   const grid=document.getElementById('tema-grid');
   if(!grid)return;
-  grid.innerHTML=Object.entries(TEMALAR).map(([key,t])=>`
-    <div class="tema-kart${AKTİF_TEMA===key?' aktif':''}" onclick="temaUygula('${key}')"
-      style="background:${t.surface};border-color:${AKTİF_TEMA===key?t.accent:'transparent'};">
+  const K=TEMALAR.varsayilan,A=TEMALAR.white;
+  const secenekler=[
+    {key:'sistem',ad:t('tema_sistem'),bg:'var(--surface2)',renk:'var(--text)',vurgu:'var(--accent)',dots:[K.bg,K.accent,A.bg]},
+    {key:'varsayilan',ad:t('tema_koyu'),bg:K.surface,renk:K.text,vurgu:K.accent,dots:K.renkler.slice(0,3)},
+    {key:'white',ad:t('tema_acik'),bg:A.surface,renk:A.text,vurgu:A.accent,dots:A.renkler.slice(0,3)}
+  ];
+  grid.innerHTML=secenekler.map(o=>`
+    <div class="tema-kart${AKTİF_TEMA===o.key?' aktif':''}" onclick="temaUygula('${o.key}')"
+      style="background:${o.bg};border-color:${AKTİF_TEMA===o.key?o.vurgu:'transparent'};">
       <div class="tema-renkler">
-        ${t.renkler.map(r=>`<div class="tema-renk-dot" style="background:${r};border:1px solid #ffffff22;"></div>`).join('')}
+        ${o.dots.map(r=>`<div class="tema-renk-dot" style="background:${r};border:1px solid #ffffff22;"></div>`).join('')}
       </div>
-      <div class="tema-kart-adi" style="color:${t.text};">${t.ad}</div>
+      <div class="tema-kart-adi" style="color:${o.renk};">${o.ad}</div>
     </div>
   `).join('');
 }
+// Telefonun koyu/açık ayarı değişince ('Sistem' seçiliyse) tema da değişsin
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(AKTİF_TEMA==='sistem')temaUygula('sistem');});}catch(e){}
 
 function githubTokenSifirla(){
   localStorage.removeItem('gh_token');
