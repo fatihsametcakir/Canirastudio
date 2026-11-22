@@ -1870,15 +1870,16 @@ window.db={
       _startPoll(col,docs=>{cb({docs:docs.map(d=>({id:d.id,data:()=>({...d}),exists:true})),empty:docs.length===0});});
       return ()=>{clearInterval(_intervals[col]);delete _listeners[col];};
     },
-    add:(data)=>fsFetch(`${FS_API}/${col}?key=${FS_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return{id:d.name.split('/').pop()};}),
+    add:(data)=>yazmaReddi(col,'add',data)||fsFetch(`${FS_API}/${col}?key=${FS_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return{id:d.name.split('/').pop()};}),
     get:()=>fsFetch(`${FS_API}/${col}?pageSize=300&key=${FS_KEY}`).then(r=>r.json()).then(data=>({docs:(data.documents||[]).map(d=>({id:d.name.split('/').pop(),data:()=>docToObj(d),ref:{_col:col,_id:d.name.split('/').pop()}})),empty:!data.documents})),
     doc:(id)=>({
       update:(data)=>{
+        { const red=yazmaReddi(col,'update',data);if(red)return red; }
         const mask=Object.keys(data).filter(k=>k!=='id').map(k=>`updateMask.fieldPaths=${k}`).join('&');
         return fsFetch(`${FS_API}/${col}/${id}?${mask}&key=${FS_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return d;});
       },
-      set:(data)=>fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return d;}),
-      delete:()=>fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`,{method:'DELETE'}),
+      set:(data)=>yazmaReddi(col,'set',data)||fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:objToFields(data)})}).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error.message||'Firestore hatası');return d;}),
+      delete:()=>yazmaReddi(col,'delete')||fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`,{method:'DELETE'}),
       get:()=>fsFetch(`${FS_API}/${col}/${id}?key=${FS_KEY}`).then(r=>{
         if(r.ok)return r.json().then(d=>({exists:true,data:()=>docToObj(d),id}));
         if(r.status===404)return {exists:false,data:()=>({}),id};
@@ -2633,7 +2634,11 @@ async function ozelOgrencileriBirlestir(){
   setTimeout(()=>renderAll(),300);
 }
 function setSyncing(v){const d=document.getElementById('syncDot'),tx=document.getElementById('syncText');if(v){d.classList.add('syncing');tx.textContent=t('sync_saving');}else{d.classList.remove('syncing');tx.textContent=t('sync_live');}}
-function openModal(id){document.getElementById(id).classList.add('open');}
+function openModal(id){
+  const gk=YAZMA_MODAL[id];
+  if(gk&&!yazabilir(gk)){toastGoster('🔒 '+YAZMA_RED_MESAJ);return;}
+  document.getElementById(id).classList.add('open');
+}
 function confirm_(title,desc,cb){
   CONFIRM_CB=cb;
   document.getElementById('confirm-title').textContent=title;
@@ -5493,7 +5498,7 @@ async function ozelSaatDenetimi(){
 // Kayıtlı bayrak saatlerle uyuşmuyorsa oturum başına bir kez düzeltir ve neyin düzeltildiğini gösterir.
 let _ozelAktifOnarildi=false;
 async function ozelPaketAktifOnar(){
-  if(_ozelAktifOnarildi||PORTAL_OG_ID||!S.ozelPaketler.length)return;
+  if(_ozelAktifOnarildi||PORTAL_OG_ID||!S.ozelPaketler.length||!yazabilir('ozel'))return;
   _ozelAktifOnarildi=true;
   const bozuklar=S.ozelPaketler.filter(p=>!!p.aktif!==ozelPaketAktifMi(p));
   if(!bozuklar.length)return;
@@ -5877,6 +5882,7 @@ function otSeansSil(id){
 // Ders saati geçen takvim seanslarını otomatik olarak paketten düşer
 let OT_ISLENEN=new Set();
 function otOtoDusKontrol(){
+  if(!yazabilir('ozel'))return; // salt okunur kullanıcıda otomatik düşme yapılmaz (yetkili bir kullanıcının ekranı yapar)
   ozelPaketAktifOnar(); // bayrağı bozuk paket varsa oturum başına bir kez düzelt
   const simdi=Date.now();
   S.ozelSeanslar.forEach(s=>{
@@ -7283,6 +7289,52 @@ const YETKI_LISTE=[
 ];
 const YETKI_VARSAYILAN_GIZLI=['guvenlik','yedek','veri','birlestir'];
 let YETKI_GIZLI=new Set();let YETKI_SAHIP_MI=false;let YETKI_EPOSTA='';
+// ── YAZMA yetkisi: hangi kategorilerde kayıt ekleyip değiştirebilir? ──
+// 'yoneticiler/{uid}.yazma' = izin verilen kategoriler listesi. Alan yoksa kısıtsız (mevcut kullanıcılar etkilenmez).
+// Boş liste = salt okunur. Sahip her zaman yazabilir. Tüm yazmalar db katmanından geçtiği için tek noktada denetlenir.
+const YAZMA_KATEGORILER=[
+  {k:'ogrenci',ad:'👤 Öğrenci ekle/düzenle/sil, sınıfa kaydet, dondur, hak ekle, portal şifre sıfırla'},
+  {k:'sinif',ad:'🎵 Sınıf oluştur/düzenle/birleştir/kapat/sil, tatiller, ders iptali'},
+  {k:'odeme',ad:'💳 Ödeme gir/düzenle/sil, iade'},
+  {k:'yoklama',ad:'✓ Yoklama al/düzenle'},
+  {k:'ozel',ad:'⭐ Özel ders paketleri ve seansları'},
+  {k:'video',ad:'🎬 Ders videoları'},
+  {k:'ayar',ad:'⚙ Ayarlar: eğitmenler, kira/gider, WhatsApp şablonları, ödeme bilgileri'},
+];
+const YAZMA_HARITA={ogrenciler:'ogrenci',ogrenci_hesaplar:'ogrenci',portal_oturum:'ogrenci',portal_kilit:'ogrenci',
+  ogrenciGecmisi:'*',sinifGecmisi:'*',siniflar:'sinif',tatiller:'sinif',odemeler:'odeme',yoklamalar:'yoklama',
+  ozelPaketler:'ozel',ozelSeanslar:'ozel',ozelOgrenciler:'ozel',videoSiniflar:'video',
+  egitmenler:'ayar',ayarlar:'ayar',gider_ayarlari:'ayar',ogrenci_notlar:'serbest'};
+// Modal → gereken yazma kategorisi (yetkisiz kullanıcı formu hiç açamaz)
+const YAZMA_MODAL={'m-ogrenci':'ogrenci','m-og-ekle-sec':'ogrenci','m-sinif-ogrenci':'ogrenci','m-sinif':'sinif','m-birlestir':'sinif','m-ders-iptal':'sinif',
+  'm-odeme':'odeme','m-pasif-iade':'odeme','m-ozel-ekle':'ozel','m-ozel-paket':'ozel','m-ozel-odeme':'ozel','m-ozel-saat':'ozel','m-ders-planla':'ozel',
+  'm-video-sinif':'video','m-wa-sablon':'ayar','m-grup-kira':'ayar','m-pratik-kira':'ayar','m-ozel-kira':'ayar','m-pratik-iptal':'ayar','m-yoklama-ogrenci':'yoklama','m-veri-sil':'sahip','m-onarim':'sahip'};
+let YETKI_YAZMA=null;let YETKI_HAZIR=false;
+const YAZMA_RED_MESAJ='Bu işlem için yetkiniz yok (salt okunur hesap). Yetki için hesap sahibine başvurun.';
+function yazmaIzni(col,islem,data){
+  if(!YETKI_HAZIR||YETKI_SAHIP_MI||YETKI_YAZMA===null)return true;
+  if(col==='yoneticiler')return false;
+  const k=YAZMA_HARITA[col];
+  if(k==='serbest')return true;
+  if(k==='*')return YETKI_YAZMA.size>0;       // günlük kayıtları: herhangi bir yazma yetkisi olan kullanıcı
+  if(!k)return false;                          // bilinmeyen koleksiyon: kapalı
+  if(YETKI_YAZMA.has(k))return true;
+  // Öğrenci kayıt/yoklama/ödeme/özel ders işlemleri sınıfın yalnızca "kayitlar/iptalTarihleri" alanını günceller
+  if(col==='siniflar'&&islem==='update'&&data){
+    const keys=Object.keys(data).filter(x=>x!=='id');
+    if(keys.every(x=>x==='kayitlar'||x==='iptalTarihleri')&&['ogrenci','yoklama','odeme','ozel'].some(c=>YETKI_YAZMA.has(c)))return true;
+  }
+  return false;
+}
+function yazmaReddi(col,islem,data){
+  if(yazmaIzni(col,islem,data))return null;
+  return Promise.reject(new Error(YAZMA_RED_MESAJ));
+}
+function yazabilir(kategori){
+  if(!YETKI_HAZIR||YETKI_SAHIP_MI||YETKI_YAZMA===null)return true;
+  if(kategori==='sahip')return false;
+  return YETKI_YAZMA.has(kategori);
+}
 function yetkiJwtEposta(tk){try{const p=JSON.parse(atob(tk.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));return String(p.email||'').toLowerCase();}catch(e){return '';}}
 function yetkiUygula(){
   const gizli=YETKI_GIZLI;
@@ -7293,6 +7345,14 @@ function yetkiUygula(){
   const gg=gizli.has('gelirgider');
   document.querySelectorAll('.nav-item.c-gg').forEach(e=>e.classList.toggle('yetki-gizli',gg));
   const hs=document.getElementById('st-odeme');const hk=hs&&hs.closest('.stat-card');if(hk)hk.classList.toggle('yetki-gizli',gg);
+  // Salt okunur hesap: ekle düğmesi gizlenir, menüde rozet gösterilir
+  const salt=!YETKI_SAHIP_MI&&YETKI_YAZMA!==null&&YETKI_YAZMA.size===0;
+  const fab=document.getElementById('mainFab');if(fab)fab.classList.toggle('yetki-gizli',salt);
+  const dl=document.querySelector('.drawer-logo');
+  if(dl){let r=document.getElementById('yetki-rozet');
+    if(!r){r=document.createElement('div');r.id='yetki-rozet';r.style.cssText='font-size:10px;font-weight:600;margin-top:4px;letter-spacing:.04em;';dl.appendChild(r);}
+    r.textContent=salt?'👁 Salt okunur hesap':(!YETKI_SAHIP_MI&&YETKI_YAZMA!==null?'✎ Kısıtlı yazma yetkisi':'');
+    r.style.color=salt?'var(--amber)':'var(--text3)';}
   // Gizli bir sayfadaysa ana sayfaya dön
   if(gg&&['gelirgider','aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani'].includes(PAGE)){goTo('anasayfa',document.querySelector('.nav-item'));}
 }
@@ -7301,37 +7361,53 @@ async function yetkiYukle(){
     const tk=await authToken();if(!tk)return;
     const email=yetkiJwtEposta(tk);YETKI_EPOSTA=email;
     YETKI_SAHIP_MI=(email===YETKI_SAHIP);
-    let gizli=[];
+    let gizli=[],yazma=null;
     if(!YETKI_SAHIP_MI){
       const liste=await fsTumBelgeler('yoneticiler');
       const k=liste.find(x=>String(x.email||'').toLowerCase()===email);
       gizli=(k&&Array.isArray(k.gizli))?k.gizli:YETKI_VARSAYILAN_GIZLI;
+      yazma=(k&&Array.isArray(k.yazma))?k.yazma:null; // alan yok: kısıtsız
     }
     YETKI_GIZLI=new Set(gizli);
-    try{localStorage.setItem('yetki_gizli',JSON.stringify(gizli));}catch(e){}
+    YETKI_YAZMA=yazma===null?null:new Set(yazma);YETKI_HAZIR=true;
+    try{localStorage.setItem('yetki_gizli',JSON.stringify(gizli));localStorage.setItem('yetki_yazma',JSON.stringify(yazma));localStorage.setItem('yetki_sahip',YETKI_SAHIP_MI?'1':'0');}catch(e){}
     yetkiUygula();
   }catch(e){console.warn('Yetki yüklenemedi:',e);}
 }
 // Açılışta son bilinen yetkiyi hemen uygula (sunucu yanıtı gelene kadar gizli öğeler görünmesin)
-try{const c=JSON.parse(localStorage.getItem('yetki_gizli')||'null');if(Array.isArray(c))YETKI_GIZLI=new Set(c);}catch(e){}
+try{
+  const c=JSON.parse(localStorage.getItem('yetki_gizli')||'null');
+  if(Array.isArray(c)){
+    YETKI_GIZLI=new Set(c);
+    const y=JSON.parse(localStorage.getItem('yetki_yazma')||'null');
+    YETKI_YAZMA=Array.isArray(y)?new Set(y):null;YETKI_SAHIP_MI=localStorage.getItem('yetki_sahip')==='1';YETKI_HAZIR=true;
+  }
+}catch(e){}
 document.addEventListener('DOMContentLoaded',()=>{yetkiUygula();});
 function yetkiPanelAc(id){
   const kutu=document.getElementById('yetki-panel-'+id);if(!kutu)return;
   if(kutu.dataset.acik==='1'){kutu.dataset.acik='0';kutu.innerHTML='';return;}
   const k=(window._kullaniciListesi||[]).find(x=>x.id===id);if(!k)return;
   const gizli=new Set(Array.isArray(k.gizli)?k.gizli:YETKI_VARSAYILAN_GIZLI);
+  const yazma=Array.isArray(k.yazma)?new Set(k.yazma):new Set(YAZMA_KATEGORILER.map(y=>y.k)); // alan yoksa kısıtsız
+  const kutuHtml=(attr,k2,ad,isaretli)=>`<label style="display:flex;align-items:flex-start;gap:8px;padding:5px 2px;font-size:13px;cursor:pointer;"><input type="checkbox" ${attr}="${k2}" ${isaretli?'checked':''} style="width:16px;height:16px;flex-shrink:0;margin-top:1px;accent-color:var(--purple);"/> <span>${ad}</span></label>`;
   kutu.dataset.acik='1';
-  kutu.innerHTML=`<div style="font-size:11px;color:var(--text3);margin:8px 0 6px;">İşaretli olanları bu kullanıcı görebilir:</div>`+
-    YETKI_LISTE.map(y=>`<label style="display:flex;align-items:center;gap:8px;padding:5px 2px;font-size:13px;cursor:pointer;"><input type="checkbox" data-yk="${y.k}" ${gizli.has(y.k)?'':'checked'} style="width:16px;height:16px;accent-color:var(--purple);"/> ${y.ad}</label>`).join('')+
-    `<button class="btn btn-purple btn-sm" style="width:100%;margin-top:8px;" onclick="yetkiKaydet('${id}')">Yetkileri kaydet</button>`;
+  kutu.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--text2);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.06em;">Görebileceği menüler</div>`+
+    YETKI_LISTE.map(y=>kutuHtml('data-yk',y.k,y.ad,!gizli.has(y.k))).join('')+
+    `<div style="font-size:11px;font-weight:700;color:var(--text2);margin:14px 0 2px;text-transform:uppercase;letter-spacing:.06em;">Kayıt ekleyip değiştirebileceği alanlar</div>
+     <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Hiçbiri işaretli değilse hesap salt okunur olur (her şeyi görür, değiştiremez).</div>`+
+    YAZMA_KATEGORILER.map(y=>kutuHtml('data-yz',y.k,y.ad,yazma.has(y.k))).join('')+
+    `<div style="display:flex;gap:6px;margin-top:8px;"><button class="btn btn-ghost btn-sm" style="flex:1;" onclick="document.querySelectorAll('#yetki-panel-${id} input[data-yz]').forEach(c=>c.checked=false)">Salt okunur yap</button>
+     <button class="btn btn-purple btn-sm" style="flex:1;" onclick="yetkiKaydet('${id}')">Yetkileri kaydet</button></div>`;
 }
 async function yetkiKaydet(id){
   const kutu=document.getElementById('yetki-panel-'+id);if(!kutu)return;
   const gizli=[...kutu.querySelectorAll('input[data-yk]')].filter(c=>!c.checked).map(c=>c.dataset.yk);
+  const yazma=[...kutu.querySelectorAll('input[data-yz]')].filter(c=>c.checked).map(c=>c.dataset.yz);
   setSyncing(true);
   try{
-    await db.collection('yoneticiler').doc(id).update({gizli});
-    const k=(window._kullaniciListesi||[]).find(x=>x.id===id);if(k)k.gizli=gizli;
+    await db.collection('yoneticiler').doc(id).update({gizli,yazma});
+    const k=(window._kullaniciListesi||[]).find(x=>x.id===id);if(k){k.gizli=gizli;k.yazma=yazma;}
     toastGoster('✓ Yetkiler kaydedildi');
     kutu.dataset.acik='0';kutu.innerHTML='';
   }catch(e){alert('Hata: '+e.message);}
@@ -7384,7 +7460,7 @@ async function kullaniciEkle(){
       if(r2.ok&&d2.localId)uid=d2.localId;
       else throw new Error('Bu e-posta zaten kayıtlı. Mevcut şifresini yazarsan listeye eklerim.');
     } else throw new Error((d.error&&d.error.message)||'Hesap oluşturulamadı');
-    await db.collection('yoneticiler').doc(uid).set({ad,email,ekleyen:AUTH.email||'',tarih:Date.now()});
+    await db.collection('yoneticiler').doc(uid).set({ad,email,ekleyen:AUTH.email||'',tarih:Date.now(),yazma:[]}); // yeni kullanıcı salt okunur başlar; yetkiyi sen açarsın
     ['ku-ad','ku-email','ku-sifre'].forEach(id=>document.getElementById(id).value='');
     toastGoster('✓ Kullanıcı eklendi');
     kullaniciListele();
