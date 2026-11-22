@@ -108,29 +108,33 @@ async function giris(req, res) {
   if (kilit > 0) return hata(res, 429, kilitMesaj(kilit), { kilit });
 
   const ogSnap = await db.collection('ogrenciler').get();
-  const og = ogSnap.docs.map((d) => ({ id: d.id, ...d.data() })).find((o) => son10(o.tel) === tel);
+  // Aynı telefonu paylaşan öğrenciler olabilir (kardeş/aile): şifresi uyan kayıt seçilir
+  const adaylar = ogSnap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((o) => son10(o.tel) === tel);
   // Kullanıcı var/yok bilgisini sızdırmamak için aynı hata
   const GENEL = 'Telefon numarası veya şifre hatalı.';
-  if (!og) { await hataKaydet(ipAnahtar, IP_ESIK); return hata(res, 401, GENEL); }
+  if (!adaylar.length) { await hataKaydet(ipAnahtar, IP_ESIK); return hata(res, 401, GENEL); }
 
-  const hesapRef = db.collection('ogrenci_hesaplar').doc(og.id);
-  const hesap = await hesapRef.get();
-  const h = hesap.exists ? hesap.data() : {};
-  let dogru = false, ilkGiris = false;
-
-  if (h.hash && h.tuz) {
-    dogru = sifreDogruMu(sifre, h);
-  } else if (h.sifre) {
-    // Eski düz metin şifre: doğrulanırsa özetli forma çevir, düz metni sil
-    dogru = String(h.sifre) === sifre;
-    if (dogru) {
-      const o = sifreOzetle(sifre);
-      await hesapRef.set({ hash: o.hash, tuz: o.tuz, guncelleme: Date.now() });
+  let og = null, dogru = false, ilkGiris = false;
+  for (const aday of adaylar) {
+    const hesapRef = db.collection('ogrenci_hesaplar').doc(aday.id);
+    const hesap = await hesapRef.get();
+    const h = hesap.exists ? hesap.data() : {};
+    let ok = false, ilk = false;
+    if (h.hash && h.tuz) {
+      ok = sifreDogruMu(sifre, h);
+    } else if (h.sifre) {
+      // Eski düz metin şifre: doğrulanırsa özetli forma çevir, düz metni sil
+      ok = String(h.sifre) === sifre;
+      if (ok) {
+        const o = sifreOzetle(sifre);
+        await hesapRef.set({ hash: o.hash, tuz: o.tuz, guncelleme: Date.now() });
+      }
+    } else {
+      // Hiç şifre belirlenmemiş: ilk şifre telefonun son 4 hanesi, ilk girişte değiştirilmek zorunda
+      ok = sifre === son4(aday.tel);
+      ilk = true;
     }
-  } else {
-    // Hiç şifre belirlenmemiş: ilk şifre telefonun son 4 hanesi, ilk girişte değiştirilmek zorunda
-    dogru = sifre === son4(og.tel);
-    ilkGiris = true;
+    if (ok) { og = aday; dogru = true; ilkGiris = ilk; break; }
   }
 
   if (!dogru) {

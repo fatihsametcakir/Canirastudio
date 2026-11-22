@@ -10361,7 +10361,9 @@ function portalIlkGirisAc(ad){
   const ps=document.getElementById('portal-screen');ps.style.display='flex';
   document.getElementById('portal-ad').textContent=t('merhaba')+(ad?', '+ad:'')+'!';
   document.getElementById('portal-siniflar').textContent='';
-  document.getElementById('portal-icerik').innerHTML='';
+  // Şifre belirlenmeden veri gösterilmez; pencere kapatılsa bile ekranda belirgin bir düğme kalır
+  document.getElementById('portal-icerik').innerHTML='<div class="portal-card" style="text-align:center;padding:28px 18px;"><div style="font-size:34px;margin-bottom:8px;">🔑</div><div style="font-size:15px;font-weight:600;margin-bottom:6px;">Devam etmek için şifre belirleyin</div><div style="font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.5;">İlk girişte kendinize özel bir şifre belirlemeniz gerekiyor. Bilgileriniz şifre belirlendikten sonra görünür.</div><button class="btn" style="width:100%;padding:13px;background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa40;" onclick="portalSifreDegistirModal(true)">Şifre belirle</button></div>';
+  document.querySelectorAll('.portal-tab-row').forEach(e=>e.style.display='none');
   portalSifreDegistirModal(true);
 }
 setInterval(()=>{ // açık portalda veriyi tazele
@@ -10739,7 +10741,7 @@ async function portalSifreKaydet(ilkGiris){
       await portalApi('sifre',{yeni,eski:document.getElementById('ps-eski')?.value||''});
       closeModal('m-kayit-islem');
       toastGoster('✓ '+t('sifre_guncellendi'));
-      if(ilkGiris){const r=await portalVeriYukle();PORTAL_OG_ID=S.ogrenciler[0].id;portalAc();}
+      if(ilkGiris){document.querySelectorAll('.portal-tab-row').forEach(e=>e.style.display='');const r=await portalVeriYukle();PORTAL_OG_ID=S.ogrenciler[0].id;portalAc();}
       return;
     }
     // Yönetici demo modu (gerçek öğrenci hesabı değiştirilmez)
