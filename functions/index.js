@@ -18,6 +18,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 const OTURUM_SURESI_MS = 12 * 60 * 60 * 1000;      // 12 saat
+const KALICI_OTURUM_MS = 60 * 24 * 60 * 60 * 1000; // "Beni hatırla": 60 gün (her kullanımda uzar)
 const KILIT_ESIK = 5;                               // 5 hatalı denemede kilit
 const KILIT_SURELERI_DK = [5, 15, 60, 240];         // artan kilit süreleri
 const IP_ESIK = 40;                                // ortak ağlarda (stüdyo Wi-Fi'ı, operatör) herkesi kilitlememek için yüksek
@@ -78,10 +79,10 @@ async function kilitSifirla(anahtar) {
 const kilitMesaj = (sn) => `Çok fazla hatalı deneme. ${sn > 90 ? Math.ceil(sn / 60) + ' dakika' : sn + ' saniye'} sonra tekrar deneyin.`;
 
 // ── Oturum ──
-async function oturumAc(ogrenciId, ilkGiris) {
+async function oturumAc(ogrenciId, ilkGiris, kalici) {
   const anahtar = crypto.randomBytes(32).toString('hex');
   await db.collection('portal_oturum').doc(sha(anahtar)).set({
-    ogrenciId, ilkGiris: !!ilkGiris, exp: Date.now() + OTURUM_SURESI_MS, olusturma: Date.now(),
+    ogrenciId, ilkGiris: !!ilkGiris, kalici: !!kalici, exp: Date.now() + (kalici ? KALICI_OTURUM_MS : OTURUM_SURESI_MS), olusturma: Date.now(),
   });
   return anahtar;
 }
@@ -92,6 +93,11 @@ async function oturumBul(anahtar) {
   if (!snap.exists) return null;
   const d = snap.data();
   if ((d.exp || 0) < Date.now()) { await ref.delete().catch(() => {}); return null; }
+  // Kalıcı oturum her kullanımda yeniden uzar (günde en fazla bir kez yazılır)
+  if (d.kalici && (d.exp - Date.now()) < KALICI_OTURUM_MS - 24 * 3600 * 1000) {
+    d.exp = Date.now() + KALICI_OTURUM_MS;
+    await ref.update({ exp: d.exp }).catch(() => {});
+  }
   return { ref, ...d };
 }
 
@@ -142,7 +148,7 @@ async function giris(req, res) {
     return hata(res, 401, GENEL);
   }
   await kilitSifirla(telAnahtar);
-  const anahtar = await oturumAc(og.id, ilkGiris);
+  const anahtar = await oturumAc(og.id, ilkGiris, !!req.body.hatirla);
   res.json({ ok: true, token: anahtar, ilkGiris, ad: og.ad || '', soyad: og.soyad || '' });
 }
 

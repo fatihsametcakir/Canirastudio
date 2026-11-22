@@ -732,6 +732,10 @@ body.portal-modu .overlay{z-index:9500;}
           <button onclick="toggleOgSifreGoster()" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px;line-height:1;">👁</button>
         </div>
       </div>
+      <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;cursor:pointer;font-size:13px;color:var(--text2);">
+        <input type="checkbox" id="og-beni-hatirla" checked style="width:16px;height:16px;accent-color:var(--purple);cursor:pointer;"/>
+        <span data-i18n="beni_hatirla">Beni hatırla</span>
+      </label>
       <button class="btn" style="width:100%;padding:13px;background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa40;" onclick="portalLoginDene()" data-i18n="ogrenci_girisi">Öğrenci Girişi</button>
     </div>
     <div class="login-error" id="login-error" data-i18n="hatali_sifre">Hatalı şifre, tekrar deneyin.</div>
@@ -7169,6 +7173,7 @@ function girisHataKaydet(anahtar){
   }catch(e){}
 }
 function girisHataSifirla(anahtar){try{localStorage.removeItem(anahtar);}catch(e){}}
+(function(){try{const t=localStorage.getItem('portal_tel');document.addEventListener('DOMContentLoaded',()=>{const i=document.getElementById('login-tel');if(i&&t)i.value=t;});}catch(x){}})();
 (function(){try{const e=localStorage.getItem('giris_email');document.addEventListener('DOMContentLoaded',()=>{const i=document.getElementById('login-email');if(i&&e)i.value=e;});}catch(x){}})();
 function girisKilitMesaj(sn){return 'Çok fazla hatalı deneme. '+(sn>60?Math.ceil(sn/60)+' dakika':sn+' saniye')+' sonra tekrar deneyin.';}
 
@@ -10326,7 +10331,7 @@ async function portalApi(islem,ekstra){
   return d;
 }
 function portalOturumDustu(){
-  try{sessionStorage.removeItem('portal_token');}catch(e){}
+  try{sessionStorage.removeItem('portal_token');localStorage.removeItem('portal_token');}catch(e){}
   PORTAL_TOKEN=null;PORTAL_OG_ID=null;
   location.reload();
 }
@@ -10343,7 +10348,7 @@ async function portalVeriYukle(){
 function portalLoginKontrol(){
   try{
     sessionStorage.removeItem('portal_og_id'); // eski biçim
-    const tk=sessionStorage.getItem('portal_token');
+    const tk=sessionStorage.getItem('portal_token')||localStorage.getItem('portal_token');
     if(tk){PORTAL_TOKEN=tk;document.getElementById('login-screen').style.display='none';return true;}
   }catch(e){}
   return false;
@@ -10405,9 +10410,15 @@ async function portalLoginDene(){
   const btn=document.querySelector('#login-ogrenci-fields .btn');
   btn.disabled=true;btn.textContent=t('kontrol_ediliyor');
   try{
-    const d=await portalApi('giris',{tel:girilenTel,sifre});
+    const hatirla=!!document.getElementById('og-beni-hatirla')?.checked;
+    const d=await portalApi('giris',{tel:girilenTel,sifre,hatirla});
     PORTAL_TOKEN=d.token;
-    try{sessionStorage.setItem('portal_token',d.token);}catch(e){}
+    // "Beni hatırla": şifre değil, sunucuda süreli oturum anahtarı saklanır (60 gün); telefon numarası forma otomatik yazılır
+    try{
+      sessionStorage.removeItem('portal_token');localStorage.removeItem('portal_token');
+      (hatirla?localStorage:sessionStorage).setItem('portal_token',d.token);
+      if(hatirla)localStorage.setItem('portal_tel',girilenTel);else localStorage.removeItem('portal_tel');
+    }catch(e){}
     document.getElementById('login-screen').style.display='none';
     if(d.ilkGiris){portalIlkGirisAc(d.ad);return;}
     const r=await portalVeriYukle();
@@ -10444,7 +10455,7 @@ async function portalIlkGirisSifreDegistirKontrol(og){
 
 function portalCikis(){
   if(PORTAL_TOKEN){try{fetch(PORTAL_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({islem:'cikis',token:PORTAL_TOKEN}),keepalive:true});}catch(e){}}
-  try{sessionStorage.removeItem('portal_token');}catch(e){}
+  try{sessionStorage.removeItem('portal_token');localStorage.removeItem('portal_token');}catch(e){}
   PORTAL_TOKEN=null;PORTAL_OG_ID=null;
   document.getElementById('portal-screen').style.display='none';
   location.reload();
