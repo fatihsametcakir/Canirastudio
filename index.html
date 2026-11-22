@@ -10623,6 +10623,7 @@ function srvMsg(m){
 let EG_GELIR_OFS=0, EG_OG_ACIK={};
 let EG_TOKEN=null, EG={gelir:null,egitmen:null,siniflar:[],ogrenciler:[],paketler:[],seanslar:[],ozelOgrenciler:[]}, EG_TAB='ogrenciler', EG_FILTRE='aktif', EG_ARA='', EG_ACIK={}, EG_DUZENLE=null;
 const egEsc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+(function(){try{const t=localStorage.getItem('egitmen_tel');document.addEventListener('DOMContentLoaded',()=>{const i=document.getElementById('login-eg-tel');if(i&&t)i.value=t;});}catch(x){}})();
 function egitmenLoginKontrol(){
   try{const tk=sessionStorage.getItem('egitmen_token')||localStorage.getItem('egitmen_token');if(tk){EG_TOKEN=tk;document.getElementById('login-screen').style.display='none';return true;}}catch(e){}
   return false;
