@@ -10305,11 +10305,66 @@ function toggleOgSifreGoster(){
 }
 
 // Portal oturum kontrolü
+// Güvenli portal: tüm işlemler sunucu fonksiyonundan geçer (veritabanına doğrudan erişim yok)
+const PORTAL_API='https://europe-west1-canirinastudio.cloudfunctions.net/portal';
+let PORTAL_TOKEN=null;
+async function portalApi(islem,ekstra){
+  let r;
+  try{r=await fetch(PORTAL_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({islem,token:PORTAL_TOKEN,...(ekstra||{})})});}
+  catch(e){throw new Error('Portal şu anda kullanılamıyor. İnternet bağlantınızı kontrol edin ya da daha sonra tekrar deneyin.');}
+  let d={};try{d=await r.json();}catch(e){}
+  if(!r.ok){
+    if(r.status===401&&d.oturum===false){portalOturumDustu();}
+    const err=new Error(d.hata||'İşlem başarısız ('+r.status+')');err.durum=r.status;throw err;
+  }
+  return d;
+}
+function portalOturumDustu(){
+  try{sessionStorage.removeItem('portal_token');}catch(e){}
+  PORTAL_TOKEN=null;PORTAL_OG_ID=null;
+  location.reload();
+}
+// Sunucudan yalnızca bu öğrencinin verisi gelir; S'ye yerleştirilir
+async function portalVeriYukle(){
+  const d=await portalApi('veri');
+  if(d.ilkGiris)return {ilkGiris:true};
+  const g=guvenliDeger;
+  for(const k of ['ogrenciler','siniflar','odemeler','yoklamalar','ozelPaketler','ozelSeanslar','ogrenciGecmisi','tatiller','egitmenler'])S[k]=(d[k]||[]).map(x=>g(x));
+  S._portalNotlar=(d.notlarim||[]).map(x=>g(x));
+  S._odemeBilgileri=d.odemeBilgileri||null; // IBAN/QR: sadece görüntülenir
+  return {ilkGiris:false};
+}
 function portalLoginKontrol(){
-  try{sessionStorage.removeItem('portal_og_id');}catch(e){} // portal geçici kapalı
-  return false;
+  try{
+    sessionStorage.removeItem('portal_og_id'); // eski biçim
+    const tk=sessionStorage.getItem('portal_token');
+    if(tk){PORTAL_TOKEN=tk;document.getElementById('login-screen').style.display='none';return true;}
+  }catch(e){}
   return false;
 }
+// Sayfa yenilenince / açılışta kayıtlı portal oturumunu sürdür
+async function portalOturumBaslat(){
+  try{
+    const r=await portalVeriYukle();
+    const og=S.ogrenciler[0];
+    if(r.ilkGiris){portalIlkGirisAc('');return;}
+    if(!og)throw new Error('Kayıt bulunamadı');
+    PORTAL_OG_ID=og.id;portalAc();
+  }catch(e){portalOturumDustu();}
+}
+function portalIlkGirisAc(ad){
+  document.getElementById('login-screen').style.display='none';
+  const ps=document.getElementById('portal-screen');ps.style.display='flex';
+  document.getElementById('portal-ad').textContent=t('merhaba')+(ad?', '+ad:'')+'!';
+  document.getElementById('portal-siniflar').textContent='';
+  document.getElementById('portal-icerik').innerHTML='';
+  portalSifreDegistirModal(true);
+}
+setInterval(()=>{ // açık portalda veriyi tazele
+  if(PORTAL_TOKEN&&PORTAL_OG_ID&&!document.hidden&&document.getElementById('portal-screen').style.display!=='none'){
+    portalVeriYukle().then(r=>{if(!r.ilkGiris)renderPortalIcerik();}).catch(()=>{});
+  }
+},60000);
 
 function demoGiris(){
   document.getElementById('demo-search').value='';
@@ -10333,71 +10388,25 @@ function demoOgrenciSec(ogId){
   portalTab('bilgiler');
 }
 async function portalLoginDene(){
-  { // Geçici: öğrenci portalı güvenlik çalışması nedeniyle kapalı
-    const e0=document.getElementById('login-error');e0.style.display='block';e0.textContent='Öğrenci portalı geçici olarak bakımda. Lütfen stüdyo ile iletişime geçin.';setTimeout(()=>{e0.style.display='none';e0.textContent=t('hatali_sifre');},5000);return;
-  }
-  // Tüm rakam dışı karakterleri temizle, sadece son 10 haneye bak (ülke kodu/başındaki 0 farkını önemsemez)
-  const normTel=t=>(t||'').replace(/\D/g,'');
-  const son10=t=>normTel(t).slice(-10);
   const girilenTel=document.getElementById('login-tel').value;
-  const tel10=son10(girilenTel);
   const sifre=document.getElementById('login-og-sifre').value.trim();
   const errEl=document.getElementById('login-error');
-  if(!tel10||!sifre){errEl.style.display='block';errEl.textContent=t('tel_sifre_zorunlu');return;}
-
-  const pKilit=girisKilitSaniye('giris_kilit_portal');
-  if(pKilit>0){errEl.style.display='block';errEl.textContent=girisKilitMesaj(pKilit);setTimeout(()=>errEl.style.display='none',4000);return;}
+  if(!girilenTel.trim()||!sifre){errEl.style.display='block';errEl.textContent=t('tel_sifre_zorunlu');return;}
   const btn=document.querySelector('#login-ogrenci-fields .btn');
   btn.disabled=true;btn.textContent=t('kontrol_ediliyor');
-
-  // Firebase hazır olana dek bekle
-  if(!window._firebaseReady||!window.db){
-    await new Promise(r=>setTimeout(r,2000));
-  }
-
   try{
-    // State'ten bul, yoksa direkt çek — son 10 haneye göre eşleştir
-    let og=S.ogrenciler.find(o=>son10(o.tel)===tel10);
-    if(!og){
-      const tumOgrenciler=await fsTumBelgeler('ogrenciler');
-      og=tumOgrenciler.find(o=>son10(o.tel)===tel10);
-    }
-    if(!og){throw new Error('Bu telefon numarasıyla kayıtlı öğrenci bulunamadı.');}
-    const ogId=og.id;
-
-    // Hesap dokümanını kontrol et
-    const hesapSnap=await db.collection('ogrenci_hesaplar').doc(ogId).get();
-    let mevcutSifre=normTel(og.tel).slice(-4); // İlk şifre = kayıtlı telefonun son 4 hanesi
-    let ilkGiris=true;
-    if(hesapSnap.exists&&hesapSnap.data().sifre){
-      mevcutSifre=hesapSnap.data().sifre;
-      ilkGiris=false;
-    }
-
-    if(sifre!==mevcutSifre){
-      girisHataKaydet('giris_kilit_portal');
-      throw new Error(ilkGiris?'İlk girişte şifreniz telefon numaranızın son 4 hanesidir.':'Şifre hatalı.');
-    }
-
-    // Başarılı giriş
-    girisHataSifirla('giris_kilit_portal');
-    PORTAL_OG_ID=ogId;
-    sessionStorage.setItem('portal_og_id',ogId);
+    const d=await portalApi('giris',{tel:girilenTel,sifre});
+    PORTAL_TOKEN=d.token;
+    try{sessionStorage.setItem('portal_token',d.token);}catch(e){}
     document.getElementById('login-screen').style.display='none';
-
-    // Veriler yüklendiyse portali aç, yoksa yükle
-    if(!window._firebaseReady||!S.ogrenciler.length){
-      startListeners();
-      const bk=setInterval(()=>{if(S.ogrenciler.length>0){clearInterval(bk);portalAc();}},300);
-      setTimeout(()=>clearInterval(bk),10000);
-    } else {
-      portalAc();
-    }
-
+    if(d.ilkGiris){portalIlkGirisAc(d.ad);return;}
+    const r=await portalVeriYukle();
+    PORTAL_OG_ID=S.ogrenciler[0].id;
+    portalAc();
   }catch(e){
     errEl.style.display='block';
     errEl.textContent=e.message||'Giriş başarısız.';
-    setTimeout(()=>errEl.style.display='none',4000);
+    setTimeout(()=>errEl.style.display='none',5000);
     btn.disabled=false;btn.textContent=t('ogrenci_girisi');
   }
 }
@@ -10410,7 +10419,7 @@ function portalAc(){
   document.getElementById('portal-siniflar').textContent=siniflar.length?siniflar.map(s=>s.ad).join(' · '):'Henüz sınıf kaydı yok';
   document.getElementById('portal-screen').style.display='flex';
   portalTab('bilgiler');
-  portalIlkGirisSifreDegistirKontrol(og);
+  if(!PORTAL_TOKEN)portalIlkGirisSifreDegistirKontrol(og); // yalnız yönetici demo modunda
 }
 
 // İlk girişte şifre değiştirme isteği
@@ -10423,8 +10432,9 @@ async function portalIlkGirisSifreDegistirKontrol(og){
 }
 
 function portalCikis(){
-  sessionStorage.removeItem('portal_og_id');
-  PORTAL_OG_ID=null;
+  if(PORTAL_TOKEN){try{fetch(PORTAL_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({islem:'cikis',token:PORTAL_TOKEN}),keepalive:true});}catch(e){}}
+  try{sessionStorage.removeItem('portal_token');}catch(e){}
+  PORTAL_TOKEN=null;PORTAL_OG_ID=null;
   document.getElementById('portal-screen').style.display='none';
   location.reload();
 }
@@ -10536,7 +10546,7 @@ async function renderPortalOdemeler(el,og){
   const toplam=odemeler.reduce((s,o)=>s+(o.tutar||0),0);
   let obHtml='';
   try{
-    const obSnap=await db.collection('ayarlar').doc('odemeBilgileri').get();
+    const obSnap=PORTAL_TOKEN?{exists:!!S._odemeBilgileri,data:()=>S._odemeBilgileri||{}}:await db.collection('ayarlar').doc('odemeBilgileri').get();
     if(obSnap.exists){
       const ob=obSnap.data();
       if(ob.iban||ob.adSoyad){
@@ -10649,7 +10659,7 @@ function renderPortalNot(el,og){
   <div id="portal-onceki-notlar"></div>`;
 
   // Önceki notları yükle (sayfalama dahil, 300 sınırı yok)
-  fsTumBelgeler('ogrenci_notlar')
+  (PORTAL_TOKEN?Promise.resolve(S._portalNotlar||[]):fsTumBelgeler('ogrenci_notlar'))
     .then(tumNotlar=>{
       const notlar=tumNotlar
         .filter(n=>n.ogrenciId===og.id)
@@ -10671,10 +10681,15 @@ async function portalNotGonder(ogId,ad){
   const btn=document.querySelector('#portal-icerik .btn');
   if(btn){btn.disabled=true;btn.textContent=t('gonderiliyor');}
   try{
-    await db.collection('ogrenci_notlar').add({
-      ogrenciId:ogId,ad,mesaj:metin,
-      tarih:bugunTarih(),olusturma:Date.now(),okundu:false
-    });
+    if(PORTAL_TOKEN){
+      await portalApi('not',{mesaj:metin});
+      await portalVeriYukle();
+    }else{
+      await db.collection('ogrenci_notlar').add({
+        ogrenciId:ogId,ad,mesaj:metin,
+        tarih:bugunTarih(),olusturma:Date.now(),okundu:false
+      });
+    }
     toastGoster('✓ '+t('notunuz_iletildi'));
     document.getElementById('portal-not-metin').value='';
     renderPortalIcerik(); // listeyi tazele
@@ -10691,6 +10706,7 @@ function portalSifreDegistirModal(ilkGiris=false){
     :t('yeni_sifre_gir_mesaj');
 
   const html=`<div style="font-size:13px;color:var(--text2);margin-bottom:16px;">${mesaj}</div>
+    ${(!ilkGiris&&PORTAL_TOKEN)?`<div class="field"><label>Mevcut şifre</label><input id="ps-eski" type="password" autocomplete="current-password" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-size:15px;"/></div>`:''}
     <div class="field"><label>${t('yeni_sifre')}</label><input id="ps-yeni" type="password" placeholder="${t('en_az_6')}" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:15px;outline:none;"/></div>
     <div class="field"><label>${t('tekrar')}</label><input id="ps-tekrar" type="password" placeholder="${t('tekrar_girin')}" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:15px;outline:none;"/></div>
     <div style="display:flex;gap:8px;margin-top:16px;">
@@ -10710,9 +10726,16 @@ async function portalSifreKaydet(ilkGiris){
   if(!yeni||yeni.length<6){alert(t('en_az_6_uyari'));return;}
   if(yeni!==tekrar){alert(t('sifreler_eslesmiyor'));return;}
   try{
-    await db.collection('ogrenci_hesaplar').doc(PORTAL_OG_ID).set({sifre:yeni,guncelleme:Date.now()});
+    if(PORTAL_TOKEN){
+      await portalApi('sifre',{yeni,eski:document.getElementById('ps-eski')?.value||''});
+      closeModal('m-kayit-islem');
+      toastGoster('✓ '+t('sifre_guncellendi'));
+      if(ilkGiris){const r=await portalVeriYukle();PORTAL_OG_ID=S.ogrenciler[0].id;portalAc();}
+      return;
+    }
+    // Yönetici demo modu (gerçek öğrenci hesabı değiştirilmez)
     closeModal('m-kayit-islem');
-    toastGoster('✓ '+t('sifre_guncellendi'));
+    toastGoster('Demo modunda şifre değiştirilmez');
   }catch(e){alert('Hata: '+e.message);}
 }
 
@@ -10775,10 +10798,8 @@ giderAyarlariniOnbellekleYukle();
 waSablonYukle();
 temaUygula(AKTİF_TEMA); // Kayıtlı temayı uygula
 if(portalLoginKontrol()){
-  // Öğrenci oturumu aktif — veri yükle, sonra portal aç
-  startListeners();
-  const bk=setInterval(()=>{if(S.ogrenciler.length>0){clearInterval(bk);portalAc();}},300);
-  setTimeout(()=>clearInterval(bk),10000);
+  // Öğrenci oturumu aktif — yalnızca kendi verisini sunucudan al, sonra portalı aç
+  portalOturumBaslat();
 } else if(loginKontrol()){
   startListeners();
   urlYoklamaKontrol();

@@ -1,0 +1,11 @@
+{
+  "name": "canirastudio-portal",
+  "private": true,
+  "description": "Öğrenci portalı için güvenli sunucu fonksiyonu",
+  "main": "index.js",
+  "engines": { "node": "22" },
+  "dependencies": {
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^6.1.0"
+  }
+}
