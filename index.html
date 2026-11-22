@@ -8416,6 +8416,14 @@ function adminSifreSifirla(ogId, ad){
     setSyncing(true);
     try{
       await db.collection('ogrenci_hesaplar').doc(ogId).delete();
+      // Açık/"beni hatırla" oturumlarını kapat ve hatalı deneme kilidini kaldır (sunucu tarafında tutulan kayıtlar)
+      try{
+        const oturumlar=(await fsTumBelgeler('portal_oturum')).filter(o=>o.ogrenciId===ogId);
+        for(const o of oturumlar)await db.collection('portal_oturum').doc(o.id).delete();
+        const og=S.ogrenciler.find(x=>x.id===ogId);
+        const t10=String((og&&og.tel)||'').replace(/\D/g,'').slice(-10);
+        if(t10)await db.collection('portal_kilit').doc('tel_'+t10).delete();
+      }catch(e2){console.warn('Oturum temizliği yapılamadı:',e2);}
       toastGoster('✓ '+ad+' şifresi sıfırlandı');
     }catch(e){
       alert('Hata: '+e.message);
