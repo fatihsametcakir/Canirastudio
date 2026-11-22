@@ -717,7 +717,7 @@ body.portal-modu .overlay{z-index:9500;}
       <div class="field"><label data-i18n="lbl_sifre">Şifre</label>
         <div style="position:relative;">
           <input id="login-sifre" type="password" placeholder="Şifreyi girin" data-i18n-ph="sifreyi_girin" onkeydown="if(event.key==='Enter')loginDene()" style="padding-right:44px;"/>
-          <button onclick="toggleSifreGoster()" id="sifre-goz" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px;line-height:1;">👁</button>
+          <button onclick="sifreGozToggle('login-sifre',this)" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px;line-height:1;">👁</button>
         </div>
       </div>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;cursor:pointer;font-size:13px;color:var(--text2);">
@@ -735,14 +735,14 @@ body.portal-modu .overlay{z-index:9500;}
       <div class="field"><label data-i18n="lbl_sifre">Şifre</label>
         <div style="position:relative;">
           <input id="login-og-sifre" type="password" placeholder="Şifreniz (ilk girişte son 4 hane)" data-i18n-ph="sifreniz_ph" onkeydown="if(event.key==='Enter')portalLoginDene();" style="padding-right:44px;"/>
-          <button onclick="toggleOgSifreGoster()" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px;line-height:1;">👁</button>
+          <button onclick="sifreGozToggle('login-og-sifre',this)" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px;line-height:1;">👁</button>
         </div>
       </div>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;cursor:pointer;font-size:13px;color:var(--text2);">
-        <input type="checkbox" id="og-beni-hatirla" checked style="width:16px;height:16px;accent-color:var(--purple);cursor:pointer;"/>
+        <input type="checkbox" id="og-beni-hatirla" checked style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;"/>
         <span data-i18n="beni_hatirla">Beni hatırla</span>
       </label>
-      <button class="btn" style="width:100%;padding:13px;background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa40;" onclick="portalLoginDene()" data-i18n="ogrenci_girisi">Öğrenci Girişi</button>
+      <button class="btn btn-accent" style="width:100%;padding:13px;" onclick="portalLoginDene()" data-i18n="giris_yap">Giriş Yap</button>
     </div>
     <!-- Eğitmen alanları -->
     <div id="login-egitmen-fields" style="display:none;">
@@ -750,13 +750,16 @@ body.portal-modu .overlay{z-index:9500;}
         <input id="login-eg-tel" type="tel" autocomplete="username" data-i18n-ph="eg_tel_ph" placeholder="Telefon numaranız" onkeydown="if(event.key==='Enter')document.getElementById('login-eg-sifre').focus()"/>
       </div>
       <div class="field"><label data-i18n="lbl_sifre">Şifre</label>
-        <input id="login-eg-sifre" type="password" autocomplete="current-password" data-i18n-ph="sifreniz_ph" placeholder="Şifreniz (ilk girişte son 4 hane)" onkeydown="if(event.key==='Enter')egitmenLoginDene();"/>
+        <div style="position:relative;">
+          <input id="login-eg-sifre" type="password" autocomplete="current-password" data-i18n-ph="sifreniz_ph" placeholder="Şifreniz (ilk girişte son 4 hane)" onkeydown="if(event.key==='Enter')egitmenLoginDene();" style="padding-right:44px;"/>
+          <button onclick="sifreGozToggle('login-eg-sifre',this)" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px;line-height:1;">👁</button>
+        </div>
       </div>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;cursor:pointer;font-size:13px;color:var(--text2);">
-        <input type="checkbox" id="eg-beni-hatirla" checked style="width:16px;height:16px;accent-color:var(--cyan);cursor:pointer;"/>
+        <input type="checkbox" id="eg-beni-hatirla" checked style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;"/>
         <span data-i18n="beni_hatirla">Beni hatırla</span>
       </label>
-      <button class="btn" id="eg-giris-btn" data-i18n="eg_giris_btn" style="width:100%;padding:13px;background:var(--cyanbg);color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenLoginDene()">Eğitmen Girişi</button>
+      <button class="btn btn-accent" id="eg-giris-btn" data-i18n="giris_yap" style="width:100%;padding:13px;" onclick="egitmenLoginDene()">Giriş Yap</button>
     </div>
     <div class="login-error" id="login-error" data-i18n="hatali_sifre">Hatalı şifre, tekrar deneyin.</div>
   </div>
@@ -7208,6 +7211,7 @@ function renderAll(){
 }
 // ── LOGIN SİSTEMİ ──────────────────────────────────────
 
+function sifreGozToggle(id,btn){const i=document.getElementById(id);if(!i)return;const gizli=i.type==='password';i.type=gizli?'text':'password';if(btn)btn.textContent=gizli?'🙈':'👁';}
 function toggleSifreGoster(){
   const inp=document.getElementById('login-sifre');
   const btn=document.getElementById('sifre-goz');
@@ -10649,7 +10653,7 @@ async function egitmenLoginDene(){
     await egitmenBaslat(d.ilkGiris,d.ad);
   }catch(e){
     errEl.style.display='block';errEl.textContent=e.message||t('eg_giris_basarisiz');setTimeout(()=>errEl.style.display='none',5000);
-    btn.disabled=false;btn.textContent=t('eg_giris_btn');
+    btn.disabled=false;btn.textContent=t('giris_yap');
   }
 }
 async function portalApiAnonim(islem,ekstra){ // oturumsuz çağrı (giriş)
@@ -11060,7 +11064,7 @@ async function portalLoginDene(){
     errEl.style.display='block';
     errEl.textContent=e.message||t('eg_giris_basarisiz');
     setTimeout(()=>errEl.style.display='none',5000);
-    btn.disabled=false;btn.textContent=t('ogrenci_girisi');
+    btn.disabled=false;btn.textContent=t('giris_yap');
   }
 }
 
