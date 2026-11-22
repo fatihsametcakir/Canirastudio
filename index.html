@@ -10453,16 +10453,21 @@ function renderPortalIcerik(){
   const og=S.ogrenciler.find(o=>o.id===PORTAL_OG_ID);
   if(!og||!el)return;
 
-  if(PORTAL_TAB==='bilgiler'){
-    renderPortalBilgiler(el,og);
-  } else if(PORTAL_TAB==='takvim'){
-    renderPortalTakvim(el,og);
-  } else if(PORTAL_TAB==='odemeler'){
-    renderPortalOdemeler(el,og);
-  } else if(PORTAL_TAB==='yoklama'){
-    renderPortalYoklama(el,og);
-  } else if(PORTAL_TAB==='not'){
-    renderPortalNot(el,og);
+  try{
+    if(PORTAL_TAB==='bilgiler'){
+      renderPortalBilgiler(el,og);
+    } else if(PORTAL_TAB==='takvim'){
+      renderPortalTakvim(el,og);
+    } else if(PORTAL_TAB==='odemeler'){
+      renderPortalOdemeler(el,og);
+    } else if(PORTAL_TAB==='yoklama'){
+      renderPortalYoklama(el,og);
+    } else if(PORTAL_TAB==='not'){
+      renderPortalNot(el,og);
+    }
+  }catch(e){
+    console.error(e);
+    el.innerHTML='<div class="portal-card" style="text-align:center;padding:22px;"><div style="font-size:14px;font-weight:600;margin-bottom:6px;">Bu bölüm yüklenemedi</div><div style="font-size:12px;color:var(--text3);word-break:break-word;">'+String(e&&e.message||e).replace(/[<>&]/g,' ')+'</div></div>';
   }
 }
 
