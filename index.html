@@ -1143,6 +1143,7 @@ body.portal-modu .overlay{z-index:9500;}
       <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('yoklama',null)">✓ Yoklama</button>
       <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
+      <button class="drawer-btn" id="drawerBtnYoklamaLog" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();yoklamaLogAc()">📝 Yoklama Günlüğü</button>
       <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
       <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()">🏆 Yarışma (Jack & Jill)</button>
     </div>
@@ -1537,6 +1538,16 @@ body.portal-modu .overlay{z-index:9500;}
 </div></div>
 
 <!-- Devamsız Öğrenciler -->
+<div class="overlay" id="m-yoklama-log"><div class="sheet" style="height:85vh;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
+  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-yoklama-log')">✕</button>
+  <div class="sheet-title" style="flex-shrink:0;">📝 Yoklama Günlüğü</div>
+  <div class="tab-row" style="flex-shrink:0;">
+    <button class="tab-btn active" id="ylog-f-hepsi" onclick="yoklamaLogFiltre('hepsi')">Hepsi</button>
+    <button class="tab-btn" id="ylog-f-egitmen" onclick="yoklamaLogFiltre('egitmen')">Eğitmen</button>
+    <button class="tab-btn" id="ylog-f-yonetici" onclick="yoklamaLogFiltre('yonetici')">Yönetici</button>
+  </div>
+  <div id="ylog-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
+</div></div>
 <div class="overlay" id="m-devamsiz"><div class="sheet" style="height:85vh;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-devamsiz')">✕</button>
   <div class="sheet-title" data-i18n="devamsiz_ogrenciler" style="flex-shrink:0;">🚩 Devamsız Öğrenciler</div>
@@ -7353,6 +7364,7 @@ function yetkiUygula(){
   const gizli=YETKI_GIZLI;
   const map={takvim:'#drawerBtnTakvim',yoklama:'#drawerBtnYoklama',videolar:'#drawerBtnVideolar',devamsiz:'#drawerBtnDevamsiz',wasablon:'#drawerBtnWaSablon',yarisma:'#drawerBtnYarisma'};
   Object.entries(map).forEach(([k,sel])=>{const e=document.querySelector(sel);if(e)e.classList.toggle('yetki-gizli',gizli.has(k));});
+  {const yl=document.getElementById('drawerBtnYoklamaLog');if(yl)yl.classList.toggle('yetki-gizli',gizli.has('yoklama'));}
   const acc={tema:'acc-tema',guvenlik:'acc-guvenlik',yedek:'acc-yedek',excel:'acc-excel',pwa:'acc-pwa',birlestir:'acc-birlestir',veri:'acc-veri'};
   Object.entries(acc).forEach(([k,id])=>{const h=document.querySelector(`.acc-head[onclick*="'${id}'"]`);const e=h&&h.closest('.acc-item');if(e)e.classList.toggle('yetki-gizli',gizli.has(k));});
   const gg=gizli.has('gelirgider');
@@ -8256,6 +8268,44 @@ async function yoklamaAlKaydet(sinifId,tarih){
   }catch(e){alert('Hata: '+e.message);}
   if(btn)btn.disabled=false;
   setSyncing(false);
+}
+
+
+// ── Yoklama Günlüğü: kim, ne zaman, hangi sınıf/tarih için yoklama kaydetti (yönetici / eğitmen) ──
+let YLOG=[],YLOG_FILTRE='hepsi';
+async function yoklamaLogAc(){
+  YLOG_FILTRE='hepsi';
+  ['hepsi','egitmen','yonetici'].forEach(k=>document.getElementById('ylog-f-'+k).classList.toggle('active',k==='hepsi'));
+  document.getElementById('ylog-content').innerHTML='<div style="padding:30px 0;text-align:center;color:var(--text3);">…</div>';
+  openModal('m-yoklama-log');
+  try{
+    const snap=await db.collection('yoklama_log').get();
+    YLOG=snap.docs.map(d=>({...(d.data?d.data():{}),id:d.id})).sort((a,b)=>(b.zaman||0)-(a.zaman||0)).slice(0,300);
+    yoklamaLogCiz();
+  }catch(e){document.getElementById('ylog-content').innerHTML='<div style="padding:24px 0;text-align:center;color:var(--accent);">Günlük yüklenemedi: '+(e.message||e)+'</div>';}
+}
+function yoklamaLogFiltre(k){
+  YLOG_FILTRE=k;
+  ['hepsi','egitmen','yonetici'].forEach(x=>document.getElementById('ylog-f-'+x).classList.toggle('active',x===k));
+  yoklamaLogCiz();
+}
+function yoklamaLogCiz(){
+  const el=document.getElementById('ylog-content');
+  const liste=YLOG.filter(l=>YLOG_FILTRE==='hepsi'||l.kaydeden===YLOG_FILTRE);
+  if(!liste.length){el.innerHTML='<div class="empty" style="padding:30px 0;"><div class="empty-text">Henüz günlük kaydı yok. Bu özellikten sonra kaydedilen yoklamalar burada görünür.</div></div>';return;}
+  const esc=x=>String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  el.innerHTML=liste.map(l=>{
+    const eg=l.kaydeden==='egitmen';
+    const renk=eg?'var(--cyan,#22d3ee)':'var(--purple)';
+    let tarih='';try{tarih=new Date(l.tarih+'T00:00:00').toLocaleDateString(LC(),{weekday:'short',day:'numeric',month:'long'});}catch(e){tarih=l.tarih||'';}
+    let zaman='';try{zaman=new Date(l.zaman).toLocaleString(LC(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}catch(e){}
+    const ozet=l.ilk?'İlk kez alındı':((l.ekle?'+'+l.ekle+' geldi':'')+(l.ekle&&l.cikar?' · ':'')+(l.cikar?'−'+l.cikar+' kaldırıldı':'')||'Değişiklik');
+    return `<div style="padding:11px 12px;margin-bottom:8px;border-radius:var(--radius-sm);background:var(--surface2);border-left:3px solid ${renk};">
+      <div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;min-width:0;font-weight:600;font-size:14px;">${esc(l.sinifAdi||'Sınıf')} <span style="font-weight:400;font-size:12px;color:var(--text2);">· ${esc(tarih)}</span></div>
+        <span class="badge ${eg?'badge-cyan':'badge-purple'}">${eg?'Eğitmen':'Yönetici'}</span></div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px;">${esc(l.kaydedenAd||'—')} · ${esc(zaman)}</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:2px;">${esc(ozet)} · toplam ${l.gelenSayisi||0} kişi geldi</div></div>`;
+  }).join('');
 }
 
 // ── Yoklama Geçmişi — haftalık görünüm ─────────────────
