@@ -979,6 +979,7 @@ body.portal-modu .overlay{z-index:9500;}
     <div class="tab-row">
       <button class="tab-btn active" data-i18n="nav_ogrenciler">Öğrenciler</button>
       <button class="tab-btn" onclick="openOzelTakvim()" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
+      <button class="tab-btn" style="color:var(--green,#34d399);background:var(--greenbg,rgba(52,211,153,.12));border-color:#34d39940;" onclick="ozelEkleBaslat()" data-i18n="btn_yeni_ozel">＋ Yeni Özel Ders</button>
     </div>
     <div id="ozel-list"></div>
   </div>
@@ -1969,6 +1970,7 @@ const TRANSLATIONS={
     btn_detay:'Detay', btn_duzenle_kisa:'Düzenle', lbl_ogrenci_kucuk:'öğrenci', sinifsiz:'Sınıfsız', tel_eksik_btn:'Numarası Eksik Öğrenciler', tel_eksik_yok:'Numarası eksik öğrenci yok 🎉', tel_gecersiz_kisa:'geçersiz', numara_ekle:'Numara ekle', rehberden_sec:'Rehberden seç', rehber_desteklenmiyor:'Bu cihaz/tarayıcı rehberi açmayı desteklemiyor (Android Chrome gerekir; iPhone desteklemez). Öğrenci kaydını açıp numarayı elle yazmak ister misin?', rehber_acilamadi:'Rehber açılamadı', rehber_numara_yok:'Seçtiğin kişinin kayıtlı telefon numarası yok.', rehber_kaydet_soru:'Bu numara öğrenciye kaydedilsin mi?', rehber_baska_ogrenci:'Bu numara başka bir öğrencide kayıtlı', tel_yok_kisa:'Telefon yok', devamsiz_tab_pasif:'Pasif Öğrenciler', wa_kampanya_etiket:'Pasif Öğrenci Kampanyası', wa_sablon_kampanya:'Kampanya', tumunu_sec:'Tümünü seç', secililere_gonder:'Seçililere gönder', pasif_ogrenci_yok:'Pasif öğrenci yok', wa_kuyruk_baslik:'Toplu WhatsApp Mesajı', wa_kuyruk_aciklama:'WhatsApp mesajları otomatik gönderemez: her öğrenci için sohbet açılır, sen Gönder\'e basarsın. Sonra buraya dönüp sıradakine geçersin.', wa_kuyruk_metin:'Mesaj ({ad} her öğrenci için değişir)', wa_kuyruk_ac:'WhatsApp\'ta aç ve sıradakine geç', wa_kuyruk_atla:'Bu öğrenciyi atla', wa_kuyruk_siradaki:'Sıradaki', wa_kuyruk_bitti:'Sıra tamamlandı', wa_kuyruk_numarasiz:'Numarası olmadığı için atlananlar', ot_sol_serit:'Sol şerit = eğitmen:', ot_kadin:'Kadın', ot_erkek:'Erkek', ot_asistan:'Asistan', og_dagilim_gor:'Dağılımı gör', ozel_aktif_paketsiz:'Aktif paketi olmayanlar', asistanlar:'Asistanlar', asistan_flag:'Asistan (sınıfa eklenmez, ödeme alınmaz, aktif öğrenci sayısına dahil değildir; yalnız özel ders girilebilir)',
     sadece_ozel_ders:'Sadece Özel Ders',
     ozel_ders_icin_ogrenci_sec:'Özel Ders İçin Öğrenci Seç', ogrenci_ara:'Öğrenci Ara', ogrenci_ara_ph:'İsim veya telefon yazarak ara...',
+    btn_yeni_ozel:'＋ Yeni Özel Ders',
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
     zaten_ozel_ders:'zaten özel ders alıyor', sec_yonlendir:'seç ›', eslesme_yok_yeni_devam:'Eşleşme bulunamadı — "Yeni Öğrenci Ekle" ile devam edebilirsin.',
     kayitli:'kayıtlı', badge_aktif:'aktif', tek:'tek', pasif_siniflar:'Kapalı Sınıflar', sinif_kucuk_ders:'sınıf', kapali_sinif_etiket:'kapalı sınıf',
@@ -2151,6 +2153,7 @@ const TRANSLATIONS={
     btn_detay:'Details', btn_duzenle_kisa:'Edit', lbl_ogrenci_kucuk:'students', sinifsiz:'No Class', tel_eksik_btn:'Students Missing a Phone Number', tel_eksik_yok:'No students missing a phone number 🎉', tel_gecersiz_kisa:'invalid', numara_ekle:'Add number', rehberden_sec:'From contacts', rehber_desteklenmiyor:'This device/browser cannot open contacts (needs Android Chrome; iPhone is not supported). Open the student record and type the number manually?', rehber_acilamadi:'Could not open contacts', rehber_numara_yok:'The selected contact has no phone number.', rehber_kaydet_soru:'Save this number to the student?', rehber_baska_ogrenci:'This number is already saved on another student', tel_yok_kisa:'No phone', devamsiz_tab_pasif:'Inactive Students', wa_kampanya_etiket:'Inactive Student Campaign', wa_sablon_kampanya:'Campaign', tumunu_sec:'Select all', secililere_gonder:'Send to selected', pasif_ogrenci_yok:'No inactive students', wa_kuyruk_baslik:'Bulk WhatsApp Message', wa_kuyruk_aciklama:'WhatsApp cannot send automatically: a chat opens for each student and you tap Send. Then come back here for the next one.', wa_kuyruk_metin:'Message ({ad} changes per student)', wa_kuyruk_ac:'Open in WhatsApp and go next', wa_kuyruk_atla:'Skip this student', wa_kuyruk_siradaki:'Next', wa_kuyruk_bitti:'Queue complete', wa_kuyruk_numarasiz:'Skipped (no phone number)', ot_sol_serit:'Left stripe = instructor:', ot_kadin:'Female', ot_erkek:'Male', ot_asistan:'Assistant', og_dagilim_gor:'See breakdown', ozel_aktif_paketsiz:'No active package', asistanlar:'Assistants', asistan_flag:'Assistant (not added to classes, no payments, not counted as active student; private lessons only)',
     sadece_ozel_ders:'Private Lessons Only',
     ozel_ders_icin_ogrenci_sec:'Select Student for Private Lesson', ogrenci_ara:'Search Student', ogrenci_ara_ph:'Search by name or phone...',
+    btn_yeni_ozel:'＋ New Private Lesson',
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
     zaten_ozel_ders:'already has private lessons', sec_yonlendir:'select ›', eslesme_yok_yeni_devam:'No match found — you can continue with "Add New Student".',
     kayitli:'enrolled', badge_aktif:'active', tek:'drop-in', pasif_siniflar:'Closed Classes', sinif_kucuk_ders:'classes', kapali_sinif_etiket:'closed class',
@@ -2333,6 +2336,7 @@ const TRANSLATIONS={
     btn_detay:'Детали', btn_duzenle_kisa:'Изменить', lbl_ogrenci_kucuk:'учеников', sinifsiz:'Без группы', tel_eksik_btn:'Ученики без номера', tel_eksik_yok:'Нет учеников без номера 🎉', tel_gecersiz_kisa:'неверный', numara_ekle:'Добавить номер', rehberden_sec:'Из контактов', rehber_desteklenmiyor:'Это устройство/браузер не может открыть контакты (нужен Android Chrome; iPhone не поддерживается). Открыть карточку ученика и ввести номер вручную?', rehber_acilamadi:'Не удалось открыть контакты', rehber_numara_yok:'У выбранного контакта нет номера.', rehber_kaydet_soru:'Сохранить этот номер ученику?', rehber_baska_ogrenci:'Этот номер уже сохранён у другого ученика', tel_yok_kisa:'Нет телефона', devamsiz_tab_pasif:'Неактивные', wa_kampanya_etiket:'Кампания для неактивных', wa_sablon_kampanya:'Кампания', tumunu_sec:'Выбрать всех', secililere_gonder:'Отправить выбранным', pasif_ogrenci_yok:'Нет неактивных учеников', wa_kuyruk_baslik:'Массовое сообщение WhatsApp', wa_kuyruk_aciklama:'WhatsApp не отправляет автоматически: для каждого ученика открывается чат, вы нажимаете «Отправить». Затем возвращайтесь за следующим.', wa_kuyruk_metin:'Сообщение ({ad} меняется для каждого)', wa_kuyruk_ac:'Открыть в WhatsApp и перейти к следующему', wa_kuyruk_atla:'Пропустить ученика', wa_kuyruk_siradaki:'Далее', wa_kuyruk_bitti:'Очередь завершена', wa_kuyruk_numarasiz:'Пропущены (нет номера)', ot_sol_serit:'Полоса слева = тренер:', ot_kadin:'Женщина', ot_erkek:'Мужчина', ot_asistan:'Ассистент', og_dagilim_gor:'Показать детали', ozel_aktif_paketsiz:'Без активного пакета', asistanlar:'Ассистенты', asistan_flag:'Ассистент (не добавляется в группы, без оплаты, не считается активным учеником; только индивидуальные занятия)',
     sadece_ozel_ders:'Только частные уроки',
     ozel_ders_icin_ogrenci_sec:'Выбрать ученика для частного урока', ogrenci_ara:'Поиск ученика', ogrenci_ara_ph:'Поиск по имени или телефону...',
+    btn_yeni_ozel:'＋ Новый урок',
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
     zaten_ozel_ders:'уже посещает частные уроки', sec_yonlendir:'выбрать ›', eslesme_yok_yeni_devam:'Совпадений не найдено — можно продолжить через "Добавить нового ученика".',
     kayitli:'записано', badge_aktif:'активно', tek:'разовое', pasif_siniflar:'Закрытые группы', sinif_kucuk_ders:'групп', kapali_sinif_etiket:'закрыта',
@@ -2829,7 +2833,7 @@ function goTo(p,btn){
   if(btn){btn.classList.add('active');if(!ayniSayfa){btn.classList.remove('nav-pop');void btn.offsetWidth;btn.classList.add('nav-pop');}}
   setTopbar(false);
   const fab=document.getElementById('mainFab');
-  if(fab)fab.style.display=(p==='anasayfa'||p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider'||p==='odemeler')?'none':'flex';
+  if(fab)fab.style.display=(p==='anasayfa'||p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider'||p==='odemeler'||p==='ozel')?'none':'flex';
   renderAll();
 }
 function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
@@ -2856,7 +2860,7 @@ function goBack(){
   const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:-1,ozel:3,odemeler:4,gelirgider:5,yoklama:-1};
   document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',i===(map[bt]??-1)));
   const fab=document.getElementById('mainFab');
-  if(fab)fab.style.display=(bt==='anasayfa'||bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider'||bt==='odemeler')?'none':'flex';
+  if(fab)fab.style.display=(bt==='anasayfa'||bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider'||bt==='odemeler'||bt==='ozel')?'none':'flex';
   renderAll();
 }
 function setTopbar(d,t=''){
