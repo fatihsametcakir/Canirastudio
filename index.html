@@ -2829,7 +2829,7 @@ function goTo(p,btn){
   if(btn){btn.classList.add('active');if(!ayniSayfa){btn.classList.remove('nav-pop');void btn.offsetWidth;btn.classList.add('nav-pop');}}
   setTopbar(false);
   const fab=document.getElementById('mainFab');
-  if(fab)fab.style.display=(p==='anasayfa'||p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider')?'none':'flex';
+  if(fab)fab.style.display=(p==='anasayfa'||p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider'||p==='odemeler')?'none':'flex';
   renderAll();
 }
 function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
@@ -2856,7 +2856,7 @@ function goBack(){
   const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:-1,ozel:3,odemeler:4,gelirgider:5,yoklama:-1};
   document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',i===(map[bt]??-1)));
   const fab=document.getElementById('mainFab');
-  if(fab)fab.style.display=(bt==='anasayfa'||bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider')?'none':'flex';
+  if(fab)fab.style.display=(bt==='anasayfa'||bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider'||bt==='odemeler')?'none':'flex';
   renderAll();
 }
 function setTopbar(d,t=''){
@@ -6737,7 +6737,7 @@ function renderOdemeler(){
   const el=document.getElementById('odeme-content');
   if(!S.siniflar.length&&!S.ozelPaketler.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('once_sinif_ekle')+'</div></div>';return;}
   const bk=ayKey(simdikiZaman().getFullYear(),simdikiZaman().getMonth()+1);
-  let html=`<div style="display:flex;gap:8px;justify-content:flex-end;margin:4px 0 12px;"><button class="btn btn-sm" style="background:#fbbf2422;color:var(--amber);border:1px solid #fbbf2450;" onclick="openSonOdemelerModal()">🕐 ${t('son_odemeler')}</button><button class="btn btn-accent btn-sm" onclick="openOdemeModal()">＋ ${t('odeme_ekle')}</button></div>
+  let html=`<div style="display:flex;gap:8px;margin:4px 0 12px;"><button class="btn btn-sm" style="flex:1;background:#fbbf2422;color:var(--amber);border:1px solid #fbbf2450;" onclick="openSonOdemelerModal()">🕐 ${t('son_odemeler')}</button><button class="btn btn-accent btn-sm" style="flex:1;" onclick="openOdemeModal()">＋ ${t('odeme_ekle')}</button></div>
   <div style="position:relative;margin-bottom:12px;">
     <input type="text" id="odeme-arama-input" value="${ODEME_ARAMA.replace(/"/g,'&quot;')}" placeholder="🔍 Öğrenci ara..." oninput="odemeAramaDegisti(this.value)" style="width:100%;padding:10px 36px 10px 14px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:14px;">
     ${ODEME_ARAMA?`<button onclick="odemeAramaTemizle()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:4px;">✕</button>`:''}
