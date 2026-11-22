@@ -1,0 +1,140 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ───────── Kimlik ─────────
+    function girisYapmis() {
+      return request.auth != null;
+    }
+    // Sahip: senin e-postan (her şeyi yapabilir)
+    function sahip() {
+      return girisYapmis() && request.auth.token.email == 'fatihsametcakir@gmail.com';
+    }
+    function yPath() {
+      return /databases/$(database)/documents/yoneticiler/$(request.auth.uid);
+    }
+    // Uygulamadaki Kullanıcılar listesinde olanlar
+    function yonetici() {
+      return girisYapmis() && exists(yPath());
+    }
+    function yd() {
+      return get(yPath()).data;
+    }
+
+    // ───────── Yetkiler (uygulamadaki Yetkiler paneliyle aynı mantık) ─────────
+    // Okuma: listedeki herkes (sahip dahil)
+    function oku() {
+      return sahip() || yonetici();
+    }
+    // Yazma: `yazma` alanı olmayan eski kullanıcılar kısıtsız; olanlar yalnızca işaretli kategorilerde yazabilir (boş liste = salt okunur)
+    function yaz(kategori) {
+      return sahip() || (yonetici() && (!('yazma' in yd()) || kategori in yd().yazma));
+    }
+    function yazHerhangi() {
+      return sahip() || (yonetici() && (!('yazma' in yd()) || yd().yazma.size() > 0));
+    }
+    // Gelir/Gider menüsü kapatılmış kullanıcı gider/kira ayarlarını okuyamaz
+    function giderGorebilir() {
+      return sahip() || (yonetici() && !('gizli' in yd() && 'gelirgider' in yd().gizli));
+    }
+    // Sınıf belgesinde yalnızca kayıt listesi/iptal tarihleri değişiyorsa (öğrenci kaydı, yoklama, ödeme, özel ders akışları)
+    function sadeceKayitDegisti() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['kayitlar', 'iptalTarihleri']);
+    }
+
+    // ───────── Yönetici listesi: yetkileri yalnızca sahip değiştirebilir ─────────
+    match /yoneticiler/{uid} {
+      allow get: if sahip() || (girisYapmis() && request.auth.uid == uid);
+      allow list: if sahip();
+      allow write: if sahip();
+    }
+
+    // ───────── Şifre kayıtları: yalnızca sahip okur; sıfırlama (silme) ilgili yetkiyle ─────────
+    match /ogrenci_hesaplar/{id} {
+      allow read: if sahip();
+      allow create, update: if sahip();
+      allow delete: if yaz('ogrenci');
+    }
+    match /egitmen_hesaplar/{id} {
+      allow read: if sahip();
+      allow create, update: if sahip();
+      allow delete: if yaz('ayar');
+    }
+    // Portal oturum/kilit kayıtları: sunucu fonksiyonu yazar; yönetici yalnızca şifre sıfırlarken listeleyip siler
+    match /portal_oturum/{id} {
+      allow read, delete: if yaz('ogrenci') || yaz('ayar');
+      allow create, update: if false;
+    }
+    match /portal_kilit/{id} {
+      allow read, delete: if yaz('ogrenci') || yaz('ayar');
+      allow create, update: if false;
+    }
+
+    // ───────── Veri koleksiyonları ─────────
+    match /ogrenciler/{id} {
+      allow read: if oku();
+      allow write: if yaz('ogrenci');
+    }
+    match /siniflar/{id} {
+      allow read: if oku();
+      allow create, delete: if yaz('sinif');
+      allow update: if yaz('sinif')
+        || ((yaz('ogrenci') || yaz('yoklama') || yaz('odeme') || yaz('ozel')) && sadeceKayitDegisti());
+    }
+    match /tatiller/{id} {
+      allow read: if oku();
+      allow write: if yaz('sinif');
+    }
+    match /odemeler/{id} {
+      allow read: if oku();
+      allow write: if yaz('odeme');
+    }
+    match /yoklamalar/{id} {
+      allow read: if oku();
+      allow write: if yaz('yoklama');
+    }
+    match /ozelPaketler/{id} {
+      allow read: if oku();
+      allow write: if yaz('ozel');
+    }
+    match /ozelSeanslar/{id} {
+      allow read: if oku();
+      allow write: if yaz('ozel');
+    }
+    match /ozelOgrenciler/{id} {
+      allow read: if oku();
+      allow write: if yaz('ozel');
+    }
+    match /videoSiniflar/{id} {
+      allow read: if oku();
+      allow write: if yaz('video');
+    }
+    match /egitmenler/{id} {
+      allow read: if oku();
+      allow write: if yaz('ayar');
+    }
+    match /ayarlar/{id} {
+      allow read: if oku();
+      allow write: if yaz('ayar');
+    }
+    match /gider_ayarlari/{id} {
+      allow read: if giderGorebilir();
+      allow write: if yaz('ayar');
+    }
+    // Günlük kayıtları: herhangi bir yazma yetkisi olan kullanıcı yazar
+    match /ogrenciGecmisi/{id} {
+      allow read: if oku();
+      allow write: if yazHerhangi();
+    }
+    match /sinifGecmisi/{id} {
+      allow read: if oku();
+      allow write: if yazHerhangi();
+    }
+    // Öğrenci notları: portaldan sunucu fonksiyonu ekler; yöneticiler okundu işaretler
+    match /ogrenci_notlar/{id} {
+      allow read, write: if oku();
+    }
+
+    // Yukarıda yazmayan her şey kapalı (varsayılan red)
+  }
+}

@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Giriş yapmış mı?
+    function girisYapmis() {
+      return request.auth != null;
+    }
+
+    // Sahip: senin e-postan
+    function sahip() {
+      return girisYapmis()
+        && request.auth.token.email == 'fatihsametcakir@gmail.com';
+    }
+
+    // Uygulamadaki Kullanıcılar listesinde olanlar
+    function yonetici() {
+      return girisYapmis()
+        && exists(/databases/$(database)/documents/yoneticiler/$(request.auth.uid));
+    }
+
+    // Diğer herkes (giriş yapmamış ya da listede olmayan) hiçbir şey yapamaz
+    match /{document=**} {
+      allow read, write: if sahip() || yonetici();
+    }
+  }
+}

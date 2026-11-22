@@ -7330,6 +7330,7 @@ function yazabilir(kategori){
   if(kategori==='sahip')return false;
   return YETKI_YAZMA.has(kategori);
 }
+function yetkiJwtUid(tk){try{const p=JSON.parse(atob(tk.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));return String(p.user_id||p.sub||'');}catch(e){return '';}}
 function yetkiJwtEposta(tk){try{const p=JSON.parse(atob(tk.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));return String(p.email||'').toLowerCase();}catch(e){return '';}}
 function yetkiUygula(){
   const gizli=YETKI_GIZLI;
@@ -7358,8 +7359,9 @@ async function yetkiYukle(){
     YETKI_SAHIP_MI=(email===YETKI_SAHIP);
     let gizli=[],yazma=null;
     if(!YETKI_SAHIP_MI){
-      const liste=await fsTumBelgeler('yoneticiler');
-      const k=liste.find(x=>String(x.email||'').toLowerCase()===email);
+      // Kendi yetki belgesini doğrudan oku (veritabanı kuralları yalnızca sahibin tüm listeyi okumasına izin verir)
+      const ds=await db.collection('yoneticiler').doc(yetkiJwtUid(tk)).get();
+      const k=ds.exists?ds.data():null;
       gizli=(k&&Array.isArray(k.gizli))?k.gizli:YETKI_VARSAYILAN_GIZLI;
       yazma=(k&&Array.isArray(k.yazma))?k.yazma:null; // alan yok: kısıtsız
     }
@@ -10854,11 +10856,7 @@ function portalAc(){
 
 // İlk girişte şifre değiştirme isteği
 async function portalIlkGirisSifreDegistirKontrol(og){
-  const hesapSnap=await db.collection('ogrenci_hesaplar').doc(og.id).get();
-  if(!hesapSnap.exists||!hesapSnap.data().sifre){
-    // İlk giriş — şifre değiştirme modalı göster
-    setTimeout(()=>portalSifreDegistirModal(true),600);
-  }
+  // Yönetici demo modunda şifre belirleme istenmez (şifre kayıtları yalnızca sunucu fonksiyonu ve sahip tarafından okunur)
 }
 
 function portalCikis(){
