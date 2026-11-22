@@ -106,17 +106,6 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 
 /* BOTTOM NAV — 5 item */
-/* Dokunuşları izleyen sevimli robot */
-.robot-widget{position:fixed;top:80px;right:14px;z-index:150;width:52px;height:52px;cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
-.robot-widget:active{transform:scale(.92);}
-.robot-kafa{width:100%;height:100%;background:linear-gradient(145deg,#a78bfa,#7c6ce0);border-radius:16px;position:relative;box-shadow:0 6px 18px -4px rgba(167,139,250,.6),inset 0 -3px 6px rgba(0,0,0,.15);}
-.robot-anten{position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:3px;height:9px;background:#7c6ce0;border-radius:2px;}
-.robot-anten::after{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:7px;height:7px;background:#fbbf24;border-radius:50%;box-shadow:0 0 6px #fbbf24;}
-.robot-gozler{position:absolute;top:16px;left:0;right:0;display:flex;justify-content:center;gap:8px;}
-.robot-goz{width:14px;height:14px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.robot-goz-bebek{width:6px;height:6px;background:#2d2a45;border-radius:50%;transition:transform .08s linear;}
-.robot-agiz{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:16px;height:3px;background:rgba(45,42,69,.5);border-radius:2px;}
-.robot-kapat{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.4);}
 
 .bottom-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:calc(100% - 20px);max-width:456px;display:flex;align-items:center;z-index:100;background:var(--surface);border:1px solid var(--border2);border-radius:999px;padding:4px 6px max(4px,env(safe-area-inset-bottom));min-height:56px;box-shadow:0 12px 30px -10px rgba(0,0,0,.6),0 2px 8px -2px rgba(0,0,0,.25);}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 1px;cursor:pointer;border:none;background:none;color:var(--text3);font-family:'DM Sans',sans-serif;position:relative;transition:transform .3s cubic-bezier(.34,1.56,.64,1),color .25s;-webkit-touch-callout:none;}
@@ -570,7 +559,6 @@ body.portal-modu .overlay{z-index:9500;}
   .nav-label{font-size:11px;}
 
   .fab{right:max(16px,calc(50vw - 504px));bottom:100px;}
-  .robot-widget{top:20px;right:20px;}
 
   /* Sheet/confirm modallar: alttan açılan değil, ortalanmış dialog.
      Ayrıca mobildeki dar tek-sütun form yerine, sade alanlardan (metin/
@@ -1072,19 +1060,6 @@ body.portal-modu .overlay{z-index:9500;}
   <div id="toast-container"></div>
   <div id="toast-container"></div>
 
-  <!-- Dokunuşları izleyen sevimli robot -->
-  <div class="robot-widget" id="robot-widget" style="display:none;">
-    <div class="robot-kafa">
-      <div class="robot-anten"></div>
-      <div class="robot-gozler">
-        <div class="robot-goz"><div class="robot-goz-bebek" id="robot-bebek-sol"></div></div>
-        <div class="robot-goz"><div class="robot-goz-bebek" id="robot-bebek-sag"></div></div>
-      </div>
-      <div class="robot-agiz"></div>
-    </div>
-    <div class="robot-kapat" onclick="event.stopPropagation();robotKapat()">✕</div>
-  </div>
-
   <nav class="bottom-nav">
     <button class="nav-item active c-home" onclick="goTo('anasayfa',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5l8-7 8 7"/><path d="M6 10v9a1 1 0 001 1h10a1 1 0 001-1v-9"/><path d="M10 20v-5.5h4V20"/></svg></div><span class="nav-label" id="navlbl-anasayfa">Ana Sayfa</span></button>
     <button class="nav-item c-og" onclick="goTo('ogrenciler',this)"><div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.5" r="1.8"/><circle cx="16" cy="5.5" r="1.8"/><path d="M8 9c-1.5 1-2 2.5-1.5 5l1 6"/><path d="M16 9c1.5 1 2 2.5 1.5 5l-1 6"/><path d="M8 9c1.5 1.5 4.5 1.5 6 0"/><path d="M9.5 13.5h3"/></svg></div><span class="nav-label" id="navlbl-ogrenciler">Öğrenciler</span></button>
@@ -1116,10 +1091,6 @@ body.portal-modu .overlay{z-index:9500;}
       <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
       <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()">🏆 Yarışma (Jack & Jill)</button>
     </div>
-    <label style="display:flex;align-items:center;gap:10px;padding:6px 16px;cursor:pointer;">
-      <input type="checkbox" id="robot-ayar-toggle" onchange="robotAyarDegisti(this)" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--purple);cursor:pointer;"/>
-      <span style="font-size:13px;color:var(--text2);">🤖 Ekranı izleyen robot</span>
-    </label>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
 
     <!-- Tema -->
@@ -2697,7 +2668,6 @@ function startListeners(){
     document.getElementById('loading').style.display='none';
     document.getElementById('app').style.display='flex';
     renderAll();
-    robotDurumGuncelle();
     setTimeout(iosInstallBanneriGoster,1500);
   },12000);
   const check=()=>{
@@ -2705,7 +2675,6 @@ function startListeners(){
       clearTimeout(timeout);
       document.getElementById('loading').style.display='none';
       document.getElementById('app').style.display='flex';
-      robotDurumGuncelle();
       setTimeout(iosInstallBanneriGoster,1500);
       giderAyarlariTazele(true).then(ch=>{if(ch)renderAll();}); // giriş sonrası kira/gider ayarlarını (yeniden) yükle
     }
@@ -3006,35 +2975,6 @@ function yarismayaAc(){
   drawerKapat();
   window.open('./yarisma.html','_blank');
 }
-// ── Dokunuşları izleyen robot ────────────────────────────
-function robotDurumGuncelle(){
-  const w=document.getElementById('robot-widget');
-  const acik=localStorage.getItem('robot_kapali')!=='true';
-  if(w)w.style.display=acik?'block':'none';
-  const toggle=document.getElementById('robot-ayar-toggle');
-  if(toggle)toggle.checked=acik;
-}
-function robotKapat(){localStorage.setItem('robot_kapali','true');robotDurumGuncelle();}
-function robotAc(){localStorage.setItem('robot_kapali','false');robotDurumGuncelle();}
-function robotAyarDegisti(cb){cb.checked?robotAc():robotKapat();}
-(function(){
-  function gozleriYonlendir(x,y){
-    const widget=document.getElementById('robot-widget');
-    if(!widget||widget.style.display==='none')return;
-    const rect=widget.getBoundingClientRect();
-    const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-    const aci=Math.atan2(y-cy,x-cx);
-    const dx=Math.cos(aci)*2.5, dy=Math.sin(aci)*2.5;
-    const sol=document.getElementById('robot-bebek-sol'), sag=document.getElementById('robot-bebek-sag');
-    if(sol)sol.style.transform=`translate(${dx}px,${dy}px)`;
-    if(sag)sag.style.transform=`translate(${dx}px,${dy}px)`;
-  }
-  // Sadece passive dinleyiciler — preventDefault asla çağrılmıyor, kaydırmayı etkilemez
-  document.addEventListener('touchstart',function(e){if(e.touches&&e.touches[0])gozleriYonlendir(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
-  document.addEventListener('touchmove',function(e){if(e.touches&&e.touches[0])gozleriYonlendir(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
-  document.addEventListener('mousemove',function(e){gozleriYonlendir(e.clientX,e.clientY);},{passive:true});
-})();
-
 function drawerAc(){
   document.getElementById('drawer').classList.add('open');
   document.getElementById('drawerOverlay').classList.add('open');
@@ -3042,7 +2982,6 @@ function drawerAc(){
   waSablonYukle();
   renderTemaGrid();
   odemeBilgiYukle();
-  robotDurumGuncelle();
 }
 function drawerKapat(){
   document.getElementById('drawer').classList.remove('open');
