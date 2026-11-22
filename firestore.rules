@@ -114,12 +114,18 @@ service cloud.firestore {
       allow write: if yaz('ayar');
     }
     match /ayarlar/{id} {
-      allow read: if oku();
+      // Kira/gider ayarları (Gelir-Gider menüsü) o menüyü göremeyen kullanıcıya kapalı
+      allow read: if id == 'giderAyarlari' ? giderGorebilir() : oku();
       allow write: if yaz('ayar');
     }
     match /gider_ayarlari/{id} {
       allow read: if giderGorebilir();
       allow write: if yaz('ayar');
+    }
+    // Eğitmen paneli gelir özeti: yönetici uygulaması yazar, sunucu fonksiyonu eğitmene yalnızca kendi belgesini verir
+    match /egitmen_gelir/{id} {
+      allow read: if giderGorebilir();
+      allow write: if giderGorebilir() && yazHerhangi();
     }
     // Günlük kayıtları: herhangi bir yazma yetkisi olan kullanıcı yazar
     match /ogrenciGecmisi/{id} {

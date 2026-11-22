@@ -275,10 +275,11 @@ async function egitmenVeri(req, res, ot) {
   const E = ot.egitmenId;
   const egDoc = await db.collection('egitmenler').doc(E).get();
   if (!egDoc.exists) return hata(res, 404, 'Eğitmen kaydı bulunamadı.');
-  const [siniflarSnap, ogSnap, paketSnap, seansSnap, egSnap, gecSnap] = await Promise.all([
+  const [siniflarSnap, ogSnap, paketSnap, seansSnap, egSnap, gecSnap, gelirDoc] = await Promise.all([
     db.collection('siniflar').get(), db.collection('ogrenciler').get(), db.collection('ozelPaketler').get(),
     db.collection('ozelSeanslar').where('egitmenId', '==', E).get(), db.collection('egitmenler').get(),
     db.collection('ogrenciGecmisi').where('olay', '==', 'cikis').get(),
+    db.collection('egitmen_gelir').doc(E).get(),
   ]);
   const egAd = {}; egSnap.docs.forEach((d) => { egAd[d.id] = d.data().ad || ''; });
   const ogMap = {}; ogSnap.docs.forEach((d) => { ogMap[d.id] = { id: d.id, ...d.data() }; });
@@ -310,7 +311,9 @@ async function egitmenVeri(req, res, ot) {
     .map((x) => ({ id: x.id, ogrenciId: x.ogrenciId, paketId: x.paketId || null, tarih: x.tarih, saat: x.saat, sure: x.sure || 1, dusuldu: !!x.dusuldu }));
   const ozelOgIdler = new Set([...paketler.map((p) => p.ogrenciId), ...seanslar.map((x) => x.ogrenciId)]);
   const ozelOgrenciler = [...ozelOgIdler].map((id) => ogGoster(ogMap[id]));
-  res.json({ egitmen: { id: E, ad: (egDoc.data() || {}).ad || '' }, siniflar, ogrenciler, paketler, seanslar, ozelOgrenciler });
+  // Gelir özeti yönetici uygulaması tarafından bu eğitmen için ayrı hazırlanır (yalnızca kendi payı)
+  const gelir = gelirDoc.exists ? { siniflar: gelirDoc.data().siniflar || [], guncelleme: gelirDoc.data().guncelleme || null } : null;
+  res.json({ egitmen: { id: E, ad: (egDoc.data() || {}).ad || '' }, siniflar, ogrenciler, paketler, seanslar, ozelOgrenciler, gelir });
 }
 
 async function egitmenSifre(req, res, ot) {
