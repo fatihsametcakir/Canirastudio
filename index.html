@@ -309,6 +309,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .overlay{position:fixed;inset:0;background:#00000095;z-index:400;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
 #m-confirm{z-index:9999;backdrop-filter:none;background:#000000cc;}
 .overlay.open{display:flex;}
+/* Portal ekranı (z-index 9000) açıkken pencereler onun önünde görünsün */
+body.portal-modu .overlay{z-index:9500;}
 .sheet{background:var(--surface);border-radius:26px 26px 0 0;border-top:1px solid var(--border2);padding:22px 20px max(26px,env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:90vh;overflow-y:auto;position:relative;}
 .sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px;}
 .sheet-title{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:18px;padding-right:40px;}
@@ -10357,6 +10359,7 @@ async function portalOturumBaslat(){
   }catch(e){portalOturumDustu();}
 }
 function portalIlkGirisAc(ad){
+  document.body.classList.add('portal-modu');
   document.getElementById('login-screen').style.display='none';
   const ps=document.getElementById('portal-screen');ps.style.display='flex';
   document.getElementById('portal-ad').textContent=t('merhaba')+(ad?', '+ad:'')+'!';
@@ -10385,6 +10388,7 @@ function demoOgrenciSec(ogId){
   let og;
   if(!ogId){og={id:'__demo__',ad:'Demo',soyad:'Öğrenci',durum:'aktif'};if(!S.ogrenciler.find(o=>o.id==='__demo__'))S.ogrenciler.push(og);}
   else{og=S.ogrenciler.find(o=>o.id===ogId);if(!og)return;}
+  document.body.classList.add('portal-modu');
   PORTAL_OG_ID=og.id;
   const siniflar=S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===og.id));
   document.getElementById('login-screen').style.display='none';
@@ -10418,6 +10422,7 @@ async function portalLoginDene(){
 }
 
 function portalAc(){
+  document.body.classList.add('portal-modu');
   const og=S.ogrenciler.find(o=>o.id===PORTAL_OG_ID);
   if(!og)return;
   const siniflar=S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===og.id));
