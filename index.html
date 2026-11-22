@@ -1129,6 +1129,33 @@ body.portal-modu .overlay{z-index:9500;}
 
   </div>
 
+  <!-- MENÜ SAYFALARI (hamburger menüden açılır) -->
+  <div class="page" id="pg-yoklama-log"><div>
+  <div class="tab-row">
+    <button class="tab-btn active" id="ylog-f-hepsi" onclick="yoklamaLogFiltre('hepsi')">Hepsi</button>
+    <button class="tab-btn" id="ylog-f-egitmen" onclick="yoklamaLogFiltre('egitmen')">Eğitmen</button>
+    <button class="tab-btn" id="ylog-f-yonetici" onclick="yoklamaLogFiltre('yonetici')">Yönetici</button>
+  </div>
+  <div id="ylog-content"></div>
+</div></div>
+  <div class="page" id="pg-devamsiz"><div>
+  <div class="tab-row">
+    <button class="tab-btn active" id="devamsiz-tab-pasif" onclick="devamsizTabSec('pasif')" data-i18n="devamsiz_tab_pasif">Pasif Öğrenciler</button>
+    <button class="tab-btn" id="devamsiz-tab-2" onclick="devamsizTabSec('2')" data-i18n="iki_hafta_ustuste">2 Hafta Üst Üste</button>
+    <button class="tab-btn" id="devamsiz-tab-3" onclick="devamsizTabSec('3')" data-i18n="uc_hafta_ustuste">3+ Hafta</button>
+  </div>
+  <div id="devamsiz-content"></div>
+</div></div>
+  <div class="page" id="pg-wa-sablon"><div style="max-width:560px;margin:0 auto;padding-top:8px;padding-bottom:90px;">
+  <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.5;"><span data-i18n="degiskenler">Değişkenler</span>: <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{ad}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{sinif}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{gun}</code></div>
+  <div class="field"><label data-i18n="suresi_dolmus">Süresi Dolmuş</label><textarea id="wa-tpl-doldu" style="height:96px;font-size:14px;"></textarea></div>
+  <div class="field"><label data-i18n="gun_3_icinde">3 Gün İçinde</label><textarea id="wa-tpl-yakın" style="height:96px;font-size:14px;"></textarea></div>
+  <div class="field"><label data-i18n="gun_4_7_hatirlatma">4-7 Gün Hatırlatma</label><textarea id="wa-tpl-hatirla" style="height:96px;font-size:14px;"></textarea></div>
+  <div class="field"><label data-i18n="genel_mesaj">Genel Mesaj</label><textarea id="wa-tpl-genel" style="height:80px;font-size:14px;"></textarea></div>
+  <div class="field"><label data-i18n="wa_kampanya_etiket">Pasif Öğrenci Kampanyası</label><textarea id="wa-tpl-kampanya" style="height:110px;font-size:14px;"></textarea></div>
+  <button class="btn btn-accent" style="width:100%;" onclick="waSablonKaydet()" data-i18n="btn_kaydet">Kaydet</button>
+</div></div>
+
   <!-- DERS VİDEOLARI -->
   <div class="page" id="pg-videolar">
     <div style="display:flex;gap:8px;margin:4px 0 14px;">
@@ -1565,26 +1592,8 @@ body.portal-modu .overlay{z-index:9500;}
 </div></div>
 
 <!-- Devamsız Öğrenciler -->
-<div class="overlay" id="m-yoklama-log"><div class="sheet" style="height:85vh;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-yoklama-log')">✕</button>
-  <div class="sheet-title" style="flex-shrink:0;">📝 Yoklama Günlüğü</div>
-  <div class="tab-row" style="flex-shrink:0;">
-    <button class="tab-btn active" id="ylog-f-hepsi" onclick="yoklamaLogFiltre('hepsi')">Hepsi</button>
-    <button class="tab-btn" id="ylog-f-egitmen" onclick="yoklamaLogFiltre('egitmen')">Eğitmen</button>
-    <button class="tab-btn" id="ylog-f-yonetici" onclick="yoklamaLogFiltre('yonetici')">Yönetici</button>
-  </div>
-  <div id="ylog-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
-</div></div>
-<div class="overlay" id="m-devamsiz"><div class="sheet" style="height:85vh;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-devamsiz')">✕</button>
-  <div class="sheet-title" data-i18n="devamsiz_ogrenciler" style="flex-shrink:0;">🚩 Devamsız Öğrenciler</div>
-  <div class="tab-row" style="flex-shrink:0;">
-    <button class="tab-btn active" id="devamsiz-tab-pasif" onclick="devamsizTabSec('pasif')" data-i18n="devamsiz_tab_pasif">Pasif Öğrenciler</button>
-    <button class="tab-btn" id="devamsiz-tab-2" onclick="devamsizTabSec('2')" data-i18n="iki_hafta_ustuste">2 Hafta Üst Üste</button>
-    <button class="tab-btn" id="devamsiz-tab-3" onclick="devamsizTabSec('3')" data-i18n="uc_hafta_ustuste">3+ Hafta</button>
-  </div>
-  <div id="devamsiz-content" style="flex:1;min-height:0;overflow-y:auto;"></div>
-</div></div>
+
+
 
 <!-- WhatsApp Mesaj Popup -->
 <div class="overlay" id="m-wa-popup"><div class="sheet" style="max-width:460px;">
@@ -1615,17 +1624,7 @@ body.portal-modu .overlay{z-index:9500;}
 </div></div>
 
 <!-- WhatsApp Şablon Ayarları -->
-<div class="overlay" id="m-wa-sablon"><div class="sheet" style="max-width:560px;max-height:90vh;">
-  <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-wa-sablon')">✕</button>
-  <div class="sheet-title">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></div>
-  <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.5;"><span data-i18n="degiskenler">Değişkenler</span>: <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{ad}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{sinif}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{gun}</code></div>
-  <div class="field"><label data-i18n="suresi_dolmus">Süresi Dolmuş</label><textarea id="wa-tpl-doldu" style="height:96px;font-size:14px;"></textarea></div>
-  <div class="field"><label data-i18n="gun_3_icinde">3 Gün İçinde</label><textarea id="wa-tpl-yakın" style="height:96px;font-size:14px;"></textarea></div>
-  <div class="field"><label data-i18n="gun_4_7_hatirlatma">4-7 Gün Hatırlatma</label><textarea id="wa-tpl-hatirla" style="height:96px;font-size:14px;"></textarea></div>
-  <div class="field"><label data-i18n="genel_mesaj">Genel Mesaj</label><textarea id="wa-tpl-genel" style="height:80px;font-size:14px;"></textarea></div>
-  <div class="field"><label data-i18n="wa_kampanya_etiket">Pasif Öğrenci Kampanyası</label><textarea id="wa-tpl-kampanya" style="height:110px;font-size:14px;"></textarea></div>
-  <button class="btn btn-accent" style="width:100%;" onclick="waSablonKaydet()" data-i18n="btn_kaydet">Kaydet</button>
-</div></div>
+
 
 <!-- Öğrenci Geçmişi -->
 <div class="overlay" id="m-ogrenci-gecmisi"><div class="sheet" style="height:80vh;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;">
@@ -2731,9 +2730,23 @@ async function ozelOgrencileriBirlestir(){
   setTimeout(()=>renderAll(),300);
 }
 function setSyncing(v){const d=document.getElementById('syncDot'),tx=document.getElementById('syncText');if(v){d.classList.add('syncing');tx.textContent=t('sync_saving');}else{d.classList.remove('syncing');tx.textContent=t('sync_live');}}
+// Hamburger menüden açılan bu üç ekran artık açılır pencere değil, tam sayfa
+const MENU_SAYFALAR={
+  'm-devamsiz':{pg:'devamsiz',baslik:()=>'🚩 '+t('devamsiz_ogrenciler').replace(/^🚩\s*/,'')},
+  'm-yoklama-log':{pg:'yoklama-log',baslik:()=>'📝 Yoklama Günlüğü'},
+  'm-wa-sablon':{pg:'wa-sablon',baslik:()=>'💬 '+t('acc_wa')}
+};
+function menuSayfaAc(ms){
+  if(!Object.values(MENU_SAYFALAR).some(m=>m.pg===PAGE))PREV_PAGE=PAGE;
+  PAGE=ms.pg;showPage(ms.pg);setTopbar(true,ms.baslik());
+  const fab=document.getElementById('mainFab');if(fab)fab.style.display='none';
+  const pg=document.getElementById('pg-'+ms.pg);if(pg){pg.classList.remove('gec-ileri','gec-geri','gec-bitti');void pg.offsetWidth;pg.classList.add('gec-ileri');clearTimeout(pg._gecT);pg._gecT=setTimeout(()=>{pg.classList.remove('gec-ileri');pg.classList.add('gec-bitti');},400);}
+  window.scrollTo(0,0);
+}
 function openModal(id){
   const gk=YAZMA_MODAL[id];
   if(gk&&!yazabilir(gk)){toastGoster('🔒 '+YAZMA_RED_MESAJ);return;}
+  if(MENU_SAYFALAR[id]){menuSayfaAc(MENU_SAYFALAR[id]);return;}
   document.getElementById(id).classList.add('open');
 }
 function confirm_(title,desc,cb){
@@ -2747,6 +2760,7 @@ function confirm_(title,desc,cb){
   openModal('m-confirm');
 }
 function closeModal(id){
+  if(MENU_SAYFALAR[id]){if(PAGE===MENU_SAYFALAR[id].pg)goBack();return;}
   const el=document.getElementById(id);
   el.classList.remove('open');
   if(id==='m-demo-sec')el.style.display='none';
@@ -2893,7 +2907,7 @@ function openAylikGelirTrend(){openRaporSayfa('gelir-trend','aylik_gelir_trendi'
 function openEgitmenGiderler(){openRaporSayfa('egitmen-panel','egitmenler_giderler',renderEgitmenPanel);}
 function openOdemeAyarlari(){openRaporSayfa('odeme-bilgi-ayar','odeme_bilgileri',odemeBilgiYukle);}
 function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
-const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani'];
+const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon'];
 function goBack(){
   let bt=PREV_PAGE==='sinif-detay'?'siniflar':PREV_PAGE;
   if(RAPOR_SAYFA_ID_LISTESI.includes(bt))bt='gelirgider';
