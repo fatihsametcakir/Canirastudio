@@ -309,6 +309,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .overlay{position:fixed;inset:0;background:#00000095;z-index:400;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
 #m-confirm{z-index:9999;backdrop-filter:none;background:#000000cc;}
 .overlay.open{display:flex;}
+.yetki-gizli{display:none!important;}
 /* Portal ekranı (z-index 9000) açıkken pencereler onun önünde görünsün */
 body.portal-modu .overlay{z-index:9500;}
 .sheet{background:var(--surface);border-radius:26px 26px 0 0;border-top:1px solid var(--border2);padding:22px 20px max(26px,env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:90vh;overflow-y:auto;position:relative;}
@@ -2683,6 +2684,7 @@ function iosInstallBanneriKapat(){
 function startListeners(){
   document.getElementById('loading').style.display='flex';
   document.getElementById('app').style.display='none';
+  yetkiYukle();
   applyLang();
   const done={og:false,si:false,od:false,oog:false,op:false,yk:false,eg:false,tt:false,vs:false,oz2:false,ogh:false,sgh:false};
 
@@ -2747,7 +2749,7 @@ function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.r
     const dy=e.changedTouches[0].clientY-by;
     const sure=Date.now()-bt;
     if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.4||sure>600)return;
-    const navItems=Array.from(document.querySelectorAll('.nav-item'));
+    const navItems=Array.from(document.querySelectorAll('.nav-item')).filter(b=>!b.classList.contains('yetki-gizli'));
     const suankiIdx=navItems.findIndex(b=>b.classList.contains('active'));
     if(suankiIdx===-1)return;
     const hedefIdx=dx<0?(suankiIdx+1)%navItems.length:(suankiIdx-1+navItems.length)%navItems.length;
@@ -2756,6 +2758,7 @@ function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.r
 })();
 
 function goTo(p,btn){
+  if(p==='gelirgider'&&YETKI_GIZLI.has('gelirgider'))return; // yetkisiz
   // Geçiş yönü: alt çubuktaki sekme sırasına göre (sağdaki sekmeye → soldan kayarak, soldakine → tersi)
   const navler=[...document.querySelectorAll('.nav-item')];
   const eskiIdx=navler.findIndex(b=>b.classList.contains('active'));
@@ -7265,6 +7268,75 @@ function cikisYap(){
 // ── Kullanıcı yönetimi (Firebase Authentication + yoneticiler koleksiyonu) ──
 // Yeni kullanıcı: Firebase'de hesap açılır, uid'si 'yoneticiler' koleksiyonuna yazılır.
 // (Kurallar kilitlendiğinde yalnızca bu koleksiyondakiler veriye erişebilir.)
+// ── YETKİ (görünürlük) SİSTEMİ ──────────────────────────
+// Sahip (aşağıdaki e-posta) her şeyi görür ve kullanıcıları/yetkileri yönetir.
+// Diğer kullanıcılarda 'yoneticiler/{uid}.gizli' listesindeki menüler gizlenir.
+// Kayıt yoksa hassas bölümler (YETKI_VARSAYILAN_GIZLI) gizli gelir.
+// NOT: Bu, arayüz düzeyinde gizlemedir; veritabanı kuralları tüm yöneticilere açıktır.
+const YETKI_SAHIP='fatihsametcakir@gmail.com';
+const YETKI_LISTE=[
+  {k:'takvim',ad:'📅 Takvim'},{k:'yoklama',ad:'✓ Yoklama'},{k:'videolar',ad:'🎬 Ders Videoları'},
+  {k:'devamsiz',ad:'🚩 Devamsız Öğrenciler'},{k:'wasablon',ad:'💬 WhatsApp Şablonları'},{k:'yarisma',ad:'🏆 Yarışma'},
+  {k:'tema',ad:'🎨 Tema'},{k:'guvenlik',ad:'🔒 Güvenlik'},{k:'yedek',ad:'💾 Yedekleme'},{k:'excel',ad:'📊 Excel\'e Aktar'},
+  {k:'pwa',ad:'📱 Uygulamayı Yükle'},{k:'birlestir',ad:'🔗 Öğrenci Birleştirme'},{k:'veri',ad:'🗑 Veri Yönetimi'},
+  {k:'gelirgider',ad:'💰 Gelir/Gider (sekme ve ana sayfadaki gelir)'},
+];
+const YETKI_VARSAYILAN_GIZLI=['guvenlik','yedek','veri','birlestir'];
+let YETKI_GIZLI=new Set();let YETKI_SAHIP_MI=false;let YETKI_EPOSTA='';
+function yetkiJwtEposta(tk){try{const p=JSON.parse(atob(tk.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));return String(p.email||'').toLowerCase();}catch(e){return '';}}
+function yetkiUygula(){
+  const gizli=YETKI_GIZLI;
+  const map={takvim:'#drawerBtnTakvim',yoklama:'#drawerBtnYoklama',videolar:'#drawerBtnVideolar',devamsiz:'#drawerBtnDevamsiz',wasablon:'#drawerBtnWaSablon',yarisma:'#drawerBtnYarisma'};
+  Object.entries(map).forEach(([k,sel])=>{const e=document.querySelector(sel);if(e)e.classList.toggle('yetki-gizli',gizli.has(k));});
+  const acc={tema:'acc-tema',guvenlik:'acc-guvenlik',yedek:'acc-yedek',excel:'acc-excel',pwa:'acc-pwa',birlestir:'acc-birlestir',veri:'acc-veri'};
+  Object.entries(acc).forEach(([k,id])=>{const h=document.querySelector(`.acc-head[onclick*="'${id}'"]`);const e=h&&h.closest('.acc-item');if(e)e.classList.toggle('yetki-gizli',gizli.has(k));});
+  const gg=gizli.has('gelirgider');
+  document.querySelectorAll('.nav-item.c-gg').forEach(e=>e.classList.toggle('yetki-gizli',gg));
+  const hs=document.getElementById('st-odeme');const hk=hs&&hs.closest('.stat-card');if(hk)hk.classList.toggle('yetki-gizli',gg);
+  // Gizli bir sayfadaysa ana sayfaya dön
+  if(gg&&['gelirgider','aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani'].includes(PAGE)){goTo('anasayfa',document.querySelector('.nav-item'));}
+}
+async function yetkiYukle(){
+  try{
+    const tk=await authToken();if(!tk)return;
+    const email=yetkiJwtEposta(tk);YETKI_EPOSTA=email;
+    YETKI_SAHIP_MI=(email===YETKI_SAHIP);
+    let gizli=[];
+    if(!YETKI_SAHIP_MI){
+      const liste=await fsTumBelgeler('yoneticiler');
+      const k=liste.find(x=>String(x.email||'').toLowerCase()===email);
+      gizli=(k&&Array.isArray(k.gizli))?k.gizli:YETKI_VARSAYILAN_GIZLI;
+    }
+    YETKI_GIZLI=new Set(gizli);
+    try{localStorage.setItem('yetki_gizli',JSON.stringify(gizli));}catch(e){}
+    yetkiUygula();
+  }catch(e){console.warn('Yetki yüklenemedi:',e);}
+}
+// Açılışta son bilinen yetkiyi hemen uygula (sunucu yanıtı gelene kadar gizli öğeler görünmesin)
+try{const c=JSON.parse(localStorage.getItem('yetki_gizli')||'null');if(Array.isArray(c))YETKI_GIZLI=new Set(c);}catch(e){}
+document.addEventListener('DOMContentLoaded',()=>{yetkiUygula();});
+function yetkiPanelAc(id){
+  const kutu=document.getElementById('yetki-panel-'+id);if(!kutu)return;
+  if(kutu.dataset.acik==='1'){kutu.dataset.acik='0';kutu.innerHTML='';return;}
+  const k=(window._kullaniciListesi||[]).find(x=>x.id===id);if(!k)return;
+  const gizli=new Set(Array.isArray(k.gizli)?k.gizli:YETKI_VARSAYILAN_GIZLI);
+  kutu.dataset.acik='1';
+  kutu.innerHTML=`<div style="font-size:11px;color:var(--text3);margin:8px 0 6px;">İşaretli olanları bu kullanıcı görebilir:</div>`+
+    YETKI_LISTE.map(y=>`<label style="display:flex;align-items:center;gap:8px;padding:5px 2px;font-size:13px;cursor:pointer;"><input type="checkbox" data-yk="${y.k}" ${gizli.has(y.k)?'':'checked'} style="width:16px;height:16px;accent-color:var(--purple);"/> ${y.ad}</label>`).join('')+
+    `<button class="btn btn-purple btn-sm" style="width:100%;margin-top:8px;" onclick="yetkiKaydet('${id}')">Yetkileri kaydet</button>`;
+}
+async function yetkiKaydet(id){
+  const kutu=document.getElementById('yetki-panel-'+id);if(!kutu)return;
+  const gizli=[...kutu.querySelectorAll('input[data-yk]')].filter(c=>!c.checked).map(c=>c.dataset.yk);
+  setSyncing(true);
+  try{
+    await db.collection('yoneticiler').doc(id).update({gizli});
+    const k=(window._kullaniciListesi||[]).find(x=>x.id===id);if(k)k.gizli=gizli;
+    toastGoster('✓ Yetkiler kaydedildi');
+    kutu.dataset.acik='0';kutu.innerHTML='';
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
 async function kullaniciListele(){
   const kutu=document.getElementById('kullanici-liste');
   const ekle=document.getElementById('kullanici-ekle-alan');
@@ -7273,14 +7345,23 @@ async function kullaniciListele(){
     kutu.innerHTML='<div style="font-size:12px;color:var(--amber);">Kullanıcı yönetimi için çıkış yapıp E-POSTA ile giriş yapmalısın.</div>';
     if(ekle)ekle.style.display='none';return;
   }
+  if(!YETKI_SAHIP_MI){
+    kutu.innerHTML='<div style="font-size:12px;color:var(--text3);">Kullanıcıları ve yetkileri yalnızca hesap sahibi yönetebilir.</div>';
+    if(ekle)ekle.style.display='none';return;
+  }
   if(ekle)ekle.style.display='block';
   kutu.innerHTML='<div style="font-size:12px;color:var(--text3);">Yükleniyor…</div>';
   try{
     const liste=await fsTumBelgeler('yoneticiler');
-    kutu.innerHTML=liste.length?liste.map(k=>`<div style="display:flex;align-items:center;gap:8px;padding:9px 10px;margin-bottom:6px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;">
-      <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">${waHtmlEsc(k.ad||'—')}</div><div style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;">${waHtmlEsc(k.email||'')}</div></div>
-      <button class="btn btn-ghost btn-sm" onclick="kullaniciSifreSifirla('${k.id}')">Şifre e-postası</button>
-      <button class="btn btn-danger btn-sm" onclick="kullaniciKaldir('${k.id}')">Kaldır</button>
+    window._kullaniciListesi=liste;
+    kutu.innerHTML=liste.length?liste.map(k=>`<div style="padding:9px 10px;margin-bottom:6px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:140px;"><div style="font-size:13px;font-weight:600;">${waHtmlEsc(k.ad||'—')}</div><div style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;">${waHtmlEsc(k.email||'')}</div></div>
+        <button class="btn btn-purple btn-sm" onclick="yetkiPanelAc('${k.id}')">Yetkiler</button>
+        <button class="btn btn-ghost btn-sm" onclick="kullaniciSifreSifirla('${k.id}')">Şifre e-postası</button>
+        <button class="btn btn-danger btn-sm" onclick="kullaniciKaldir('${k.id}')">Kaldır</button>
+      </div>
+      <div id="yetki-panel-${k.id}"></div>
     </div>`).join(''):'<div style="font-size:12px;color:var(--text3);">Henüz ek kullanıcı yok.</div>';
   }catch(e){kutu.innerHTML='<div style="font-size:12px;color:var(--accent);">Liste alınamadı: '+waHtmlEsc(e.message)+'</div>';}
 }
