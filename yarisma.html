@@ -358,6 +358,18 @@ async function fsDelete(path){
 let LANG = (function(){ try{ const l=localStorage.getItem("appLang"); return (l==="en"||l==="ru")?l:"tr"; }catch(e){ return "tr"; } })();
 function LC(){ return LANG==="en" ? "en-US" : LANG==="ru" ? "ru-RU" : "tr-TR"; }
 const JJ_SOZLUK = {
+  "Oylama Şekli":["Voting Method","Способ голосования"],
+  "Puanlama (kriter başına puan)":["Scoring (points per criterion)","Баллы (по критериям)"],
+  "Sıralama (1.'den sonuncuya)":["Ranking (1st to last)","Рейтинг (с 1-го до последнего)"],
+  "Sıralama":["Ranking","Рейтинг"],
+  "Tüm Yarışmacılar":["All Contestants","Все участники"],
+  "Yarışmacıları ▲▼ düğmeleriyle sırala: en üstteki 1. sıradır.":["Order the contestants with the ▲▼ buttons: the top one is 1st place.","Расставьте участников кнопками ▲▼: верхний — 1-е место."],
+  "Sıralamayı Bitir":["Finish Ranking","Завершить ранжирование"],
+  "Sıralamayı bitirmek istediğine emin misin? Bitirdikten sonra sıralamayı değiştiremezsin.":["Are you sure you want to finish ranking? You can't change the ranking afterwards.","Вы уверены, что хотите завершить ранжирование? После этого менять порядок нельзя."],
+  "Sıralaman kaydedildi ✓":["Your ranking was saved ✓","Ваш рейтинг сохранён ✓"],
+  "Ort. Sıra":["Avg. Rank","Ср. место"],
+  "Jüri Sıralamaları":["Jury Rankings","Рейтинги жюри"],
+  "Bir öğrenciye dokunarak her jürinin verdiği sırayı gör.":["Tap a student to see the rank each juror gave.","Нажмите на ученика, чтобы увидеть место, которое поставил каждый член жюри."],
   "‹ Ana Ekran":["‹ Home","‹ Главная"],
   "‹ Yarışma":["‹ Competition","‹ Конкурс"],
   "‹ Yarışmalar":["‹ Competitions","‹ Конкурсы"],
@@ -486,6 +498,9 @@ const JJ_SOZLUK = {
 };
 // değişken içeren cümleler: [kalıp, İngilizce, Rusça]  ($1, $2 … yakalanan değerler)
 const JJ_KALIPLAR = [
+  [/^· (\d+) öğrenci · (\d+) jüri · Sıralama oylaması · Kız\/Erkek ayrı$/, "· $1 students · $2 jurors · Ranking vote · Girls/boys separate", "· учеников: $1 · жюри: $2 · Рейтинговое голосование · Девушки/юноши отдельно"],
+  [/^· (\d+) öğrenci · (\d+) jüri · Sıralama oylaması · Karışık$/, "· $1 students · $2 jurors · Ranking vote · Mixed", "· учеников: $1 · жюри: $2 · Рейтинговое голосование · Смешанный"],
+  [/^Ortalama sıra: (.*)$/, "Average rank: $1", "Среднее место: $1"],
   [/^· (\d+) öğrenci · (\d+) jüri$/, "· $1 students · $2 jurors", "· учеников: $1 · жюри: $2"],
   [/^· (\d+) öğrenci · (\d+) jüri · (\d+) üzerinden · Kız\/Erkek ayrı$/, "· $1 students · $2 jurors · out of $3 · Girls/boys separate", "· учеников: $1 · жюри: $2 · из $3 · Девушки/юноши отдельно"],
   [/^· (\d+) öğrenci · (\d+) jüri · (\d+) üzerinden · Karışık$/, "· $1 students · $2 jurors · out of $3 · Mixed", "· учеников: $1 · жюри: $2 · из $3 · Смешанный"],
@@ -771,6 +786,12 @@ function renderCompetitionForm(comp){
         <option value="ayri">Kız ve Erkek Ayrı Sıralanır</option>
       </select>
 
+      <label>Oylama Şekli</label>
+      <select id="f-oylama" onchange="togglePuanAyar()" style="width:100%;padding:12px 13px;border-radius:10px;border:1px solid var(--border2);font-family:'DM Sans',sans-serif;font-size:15px;background:var(--surface2);color:var(--text);">
+        <option value="puan" selected>Puanlama (kriter başına puan)</option>
+        <option value="siralama">Sıralama (1.'den sonuncuya)</option>
+      </select>
+
       <label>Öğrenciler</label>
       <button type="button" class="stu-pick-toggle" onclick="toggleStuPickPanel()">
         <span>📋 Öğrenci Listesinden Ekle</span><span id="stu-pick-toggle-arrow">▾</span>
@@ -790,6 +811,7 @@ function renderCompetitionForm(comp){
       <div class="stack" id="f-juriler-list"></div>
       <button class="btn btn-ghost" style="margin-top:8px;" onclick="addJuryField()">+ Jüri Ekle</button>
 
+      <div id="f-puan-ayar">
       <label>Puanlama Kriterleri</label>
       <div class="stack" id="f-kriterler"></div>
       <button class="btn btn-ghost" style="margin-top:8px;" onclick="addCriterionField()">+ Kriter Ekle</button>
@@ -803,6 +825,7 @@ function renderCompetitionForm(comp){
         <option value="9">9 üzerinden</option>
         <option value="10" selected>10 üzerinden</option>
       </select>
+      </div>
 
       <div class="divider"></div>
       <button class="btn btn-gold" onclick="saveCompetitionForm()">${isEdit ? "Değişiklikleri Kaydet" : "Yarışmayı Oluştur"}</button>
@@ -810,6 +833,8 @@ function renderCompetitionForm(comp){
     </div>
   `);
   document.getElementById("f-tarih").value = comp?.tarih || new Date().toISOString().slice(0,10);
+  document.getElementById("f-oylama").value = comp?.oylamaTuru || "puan";
+  togglePuanAyar();
   if(comp){
     document.getElementById("f-skala").value = String(comp.maxPuan || 10);
     document.getElementById("f-tur").value = comp.yarismaTuru || "karisik";
@@ -822,6 +847,13 @@ function renderCompetitionForm(comp){
     DEFAULT_CRITERIA.forEach(c=>addCriterionField(c, DEFAULT_CRITERIA_EN[c]));
   }
   refreshAllStudentJuryChips();
+}
+
+// Sıralama oylamasında kriter ve skala gerekmez
+function togglePuanAyar(){
+  const sira = document.getElementById("f-oylama").value === "siralama";
+  const el = document.getElementById("f-puan-ayar");
+  if(el) el.style.display = sira ? "none" : "";
 }
 
 // Ana uygulamadan (Can & Irina Studio) localStorage köprüsüyle gelen aktif öğrenci listesi
@@ -1018,6 +1050,7 @@ async function saveCompetitionForm(){
   });
   const maxPuan = parseInt(document.getElementById("f-skala").value, 10) || 10;
   const yarismaTuru = document.getElementById("f-tur").value;
+  const oylamaTuru = document.getElementById("f-oylama").value === "siralama" ? "siralama" : "puan";
 
   const ogrenciler = Array.from(document.querySelectorAll("#f-ogrenciler-list .student-row-wrap")).map((row,idx)=>{
     const numara = row.querySelector(".stu-num").value.trim();
@@ -1036,18 +1069,18 @@ async function saveCompetitionForm(){
 
   if(!isim){ toast("Yarışma adı gerekli"); return; }
   if(!ogrenciler.length){ toast("En az bir öğrenci ekle (isim gerekli)"); return; }
-  if(!kriterler.length){ toast("En az bir kriter gerekli"); return; }
+  if(oylamaTuru==="puan" && !kriterler.length){ toast("En az bir kriter gerekli"); return; }
 
   try{
     if(formEditId){
-      await fsPatch(`yarismalar/${formEditId}`, { isim, tarih, kriterler, kriterlerEN, ogrenciler, juriler, maxPuan, yarismaTuru });
+      await fsPatch(`yarismalar/${formEditId}`, { isim, tarih, kriterler, kriterlerEN, ogrenciler, juriler, maxPuan, yarismaTuru, oylamaTuru });
       toast("Değişiklikler kaydedildi");
       screenAdminCompetition(formEditId);
     } else {
       const compId = uid();
       await fsCreate("yarismalar", {
         isim, tarih, durum:"aktif", olusturma: new Date().toISOString(),
-        kriterler, kriterlerEN, ogrenciler, juriler, maxPuan, yarismaTuru
+        kriterler, kriterlerEN, ogrenciler, juriler, maxPuan, yarismaTuru, oylamaTuru
       }, compId);
       toast("Yarışma oluşturuldu");
       screenAdminCompetition(compId);
@@ -1078,7 +1111,7 @@ async function screenAdminCompetition(compId){
     <div class="card dark">
       <div class="eyebrow">Aktif Yarışma</div>
       <h2 class="title">${esc(comp.isim)}</h2>
-      <p class="desc">${fmtDate(comp.tarih)} · ${(comp.ogrenciler||[]).length} öğrenci · ${juriDurum.length} jüri · ${comp.maxPuan||10} üzerinden · ${comp.yarismaTuru==="ayri" ? "Kız/Erkek ayrı" : "Karışık"}</p>
+      <p class="desc">${fmtDate(comp.tarih)} · ${(comp.ogrenciler||[]).length} öğrenci · ${juriDurum.length} jüri · ${comp.oylamaTuru==="siralama" ? "Sıralama oylaması" : (comp.maxPuan||10)+" üzerinden"} · ${comp.yarismaTuru==="ayri" ? "Kız/Erkek ayrı" : "Karışık"}</p>
       <div style="margin-top:14px;">
         <button class="btn btn-outline" onclick="screenEditCompetition('${compId}')">✎ Yarışmayı Düzenle</button>
       </div>
@@ -1145,26 +1178,57 @@ async function finalizeCompetition(compId){
 
   const kriterler = comp.kriterler||[];
   const yarismaTuru = comp.yarismaTuru || "karisik";
-  const sonuclar = (comp.ogrenciler||[]).map(og=>{
-    const kriterOrtalamalari = {};
-    let oyVerenSayisi = 0;
-    kriterler.forEach(k=>{
-      const vals = puanlar.map(p=>(p.puanlar||{})[og.numara]?.[k]).filter(v=>typeof v==="number");
-      kriterOrtalamalari[k] = vals.length ? round1(vals.reduce((a,b)=>a+b,0)/vals.length) : 0;
-      oyVerenSayisi = Math.max(oyVerenSayisi, vals.length);
-    });
-    const kVals = Object.values(kriterOrtalamalari);
-    const ortalama = kVals.length ? kVals.reduce((a,b)=>a+b,0)/kVals.length : 0;
-    return { numara: og.numara, isim: og.isim, cinsiyet: og.cinsiyet === "E" ? "E" : "K", ortalama: round1(ortalama), kriterOrtalamalari, oyVerenJuriSayisi: oyVerenSayisi };
-  });
+  const oylamaTuru = comp.oylamaTuru === "siralama" ? "siralama" : "puan";
+  let sonuclar;
 
-  if(yarismaTuru === "ayri"){
-    sonuclar.sort((a,b)=> a.cinsiyet===b.cinsiyet ? b.ortalama-a.ortalama : (a.cinsiyet==="K" ? -1 : 1));
+  if(oylamaTuru === "siralama"){
+    // her jürinin verdiği sıra → öğrenci başına sıra ortalaması (düşük = daha iyi)
+    const grupDe = og => yarismaTuru==="ayri" ? (og.cinsiyet==="E" ? "E" : "K") : "T";
+    sonuclar = (comp.ogrenciler||[]).map(og=>{
+      const g = grupDe(og);
+      const siralar = [];
+      puanlar.forEach(p=>{
+        const liste = (p.siralama||{})[g] || [];
+        const idx = liste.indexOf(og.numara);
+        if(idx >= 0){
+          const j = (comp.juriler||[]).find(x=>x.id===p.id);
+          siralar.push({ juri: (j&&j.isim) || p.juriIsim || "?", sira: idx+1 });
+        }
+      });
+      const ort = siralar.length ? Math.round(siralar.reduce((a,b)=>a+b.sira,0)/siralar.length*100)/100 : null;
+      return { numara: og.numara, isim: og.isim, cinsiyet: og.cinsiyet === "E" ? "E" : "K", ortalama: ort, siralar, oyVerenJuriSayisi: siralar.length };
+    });
+    // beraberlikte: daha çok 1. sıra alan, sonra daha çok 2. sıra alan öne geçer
+    const sayi = (s,n)=>s.siralar.filter(x=>x.sira===n).length;
+    const kars = (a,b)=>{
+      const ax = a.ortalama==null ? Infinity : a.ortalama, bx = b.ortalama==null ? Infinity : b.ortalama;
+      if(ax!==bx) return ax-bx;
+      for(let n=1;n<=sonuclar.length;n++){ const d = sayi(b,n)-sayi(a,n); if(d) return d; }
+      return 0;
+    };
+    if(yarismaTuru === "ayri") sonuclar.sort((a,b)=> a.cinsiyet===b.cinsiyet ? kars(a,b) : (a.cinsiyet==="K" ? -1 : 1));
+    else sonuclar.sort(kars);
   } else {
-    sonuclar.sort((a,b)=> b.ortalama - a.ortalama);
+    sonuclar = (comp.ogrenciler||[]).map(og=>{
+      const kriterOrtalamalari = {};
+      let oyVerenSayisi = 0;
+      kriterler.forEach(k=>{
+        const vals = puanlar.map(p=>(p.puanlar||{})[og.numara]?.[k]).filter(v=>typeof v==="number");
+        kriterOrtalamalari[k] = vals.length ? round1(vals.reduce((a,b)=>a+b,0)/vals.length) : 0;
+        oyVerenSayisi = Math.max(oyVerenSayisi, vals.length);
+      });
+      const kVals = Object.values(kriterOrtalamalari);
+      const ortalama = kVals.length ? kVals.reduce((a,b)=>a+b,0)/kVals.length : 0;
+      return { numara: og.numara, isim: og.isim, cinsiyet: og.cinsiyet === "E" ? "E" : "K", ortalama: round1(ortalama), kriterOrtalamalari, oyVerenJuriSayisi: oyVerenSayisi };
+    });
+    if(yarismaTuru === "ayri"){
+      sonuclar.sort((a,b)=> a.cinsiyet===b.cinsiyet ? b.ortalama-a.ortalama : (a.cinsiyet==="K" ? -1 : 1));
+    } else {
+      sonuclar.sort((a,b)=> b.ortalama - a.ortalama);
+    }
   }
 
-  await fsPatch(`yarismalar/${compId}`, { durum:"tamamlandi", kriterler, kriterlerEN: comp.kriterlerEN||[], yarismaTuru, sonuclar, sonuclandirmaTarihi: new Date().toISOString() });
+  await fsPatch(`yarismalar/${compId}`, { durum:"tamamlandi", kriterler, kriterlerEN: comp.kriterlerEN||[], yarismaTuru, oylamaTuru, sonuclar, sonuclandirmaTarihi: new Date().toISOString() });
   toast("Sonuçlar açıklandı 🏆");
   screenResults(compId);
 }
@@ -1185,6 +1249,7 @@ async function screenResults(compId){
     juriler: comp.juriler || [],
     maxPuan: comp.maxPuan || 10,
     yarismaTuru: comp.yarismaTuru || "karisik",
+    oylamaTuru: comp.oylamaTuru === "siralama" ? "siralama" : "puan",
     sonuclar: comp.sonuclar || [],
     selected: new Set(),
     openIndex: -1
@@ -1199,9 +1264,9 @@ function podiumHtml(list){
   if(!top3.length) return `<div class="empty">Sonuç bulunamadı.</div>`;
   return `
     <div class="podium">
-      ${top3[1] ? `<div class="p-col second"><div class="p-bib">${esc(top3[1].numara)}</div><div class="p-name">${esc(top3[1].isim)}</div><div class="p-score">${top3[1].ortalama}</div><div class="p-bar"><div class="p-rank">2</div></div></div>` : `<div class="p-col"></div>`}
-      <div class="p-col first"><div class="p-bib">${esc(top3[0].numara)}</div><div class="p-name">${esc(top3[0].isim)}</div><div class="p-score">${top3[0].ortalama}</div><div class="p-bar"><div class="p-rank">1</div></div></div>
-      ${top3[2] ? `<div class="p-col third"><div class="p-bib">${esc(top3[2].numara)}</div><div class="p-name">${esc(top3[2].isim)}</div><div class="p-score">${top3[2].ortalama}</div><div class="p-bar"><div class="p-rank">3</div></div></div>` : `<div class="p-col"></div>`}
+      ${top3[1] ? `<div class="p-col second"><div class="p-bib">${esc(top3[1].numara)}</div><div class="p-name">${esc(top3[1].isim)}</div><div class="p-score">${top3[1].ortalama ?? "–"}</div><div class="p-bar"><div class="p-rank">2</div></div></div>` : `<div class="p-col"></div>`}
+      <div class="p-col first"><div class="p-bib">${esc(top3[0].numara)}</div><div class="p-name">${esc(top3[0].isim)}</div><div class="p-score">${top3[0].ortalama ?? "–"}</div><div class="p-bar"><div class="p-rank">1</div></div></div>
+      ${top3[2] ? `<div class="p-col third"><div class="p-bib">${esc(top3[2].numara)}</div><div class="p-name">${esc(top3[2].isim)}</div><div class="p-score">${top3[2].ortalama ?? "–"}</div><div class="p-bar"><div class="p-rank">3</div></div></div>` : `<div class="p-col"></div>`}
     </div>`;
 }
 
@@ -1210,11 +1275,11 @@ function rankingTableHtml(list, isAdmin){
   const medal = ["🥇","🥈","🥉"];
   return `
     <table class="results-table">
-      <thead><tr>${isAdmin ? "<th></th>" : ""}<th>#</th><th>No</th><th>Öğrenci</th><th>Puan</th></tr></thead>
+      <thead><tr>${isAdmin ? "<th></th>" : ""}<th>#</th><th>No</th><th>Öğrenci</th><th>${resultsState.oylamaTuru==="siralama" ? "Ort. Sıra" : "Puan"}</th></tr></thead>
       <tbody>
         ${list.map((s,i)=>`<tr style="${i<3 ? "background:rgba(212,169,55,.08);" : ""}">
           ${isAdmin ? `<td><input type="checkbox" ${resultsState.selected.has(keyOf(s))?"checked":""} onchange="toggleResultSelect('${keyOf(s)}')"></td>` : ""}
-          <td>${i<3 ? medal[i] : i+1}</td><td>${esc(s.numara)}</td><td>${esc(s.isim)}</td><td style="font-weight:700;">${s.ortalama}</td>
+          <td>${i<3 ? medal[i] : i+1}</td><td>${esc(s.numara)}</td><td>${esc(s.isim)}</td><td style="font-weight:700;">${s.ortalama==null ? "–" : s.ortalama}</td>
         </tr>`).join("")}
       </tbody>
     </table>`;
@@ -1257,7 +1322,34 @@ function renderResultsScreen(){
       </div>
     </div>` : ""}
 
-    ${rs.sonuclar.length && rs.kriterler.length ? `
+    ${rs.oylamaTuru==="siralama" && rs.sonuclar.length ? `
+    <div class="card">
+      <div class="eyebrow">Jüri Sıralamaları</div>
+      <p class="desc" style="margin-bottom:6px;">Bir öğrenciye dokunarak her jürinin verdiği sırayı gör.</p>
+      ${rs.sonuclar.map((s,i)=>`
+        <div class="accordion-item">
+          <div class="acc-head" onclick="toggleResultRow(${i})">
+            <div class="bib" style="width:36px;height:36px;font-size:12.5px;">${esc(s.numara)}</div>
+            <div style="flex:1;">
+              <div class="stud-name">${esc(s.isim)} <span style="font-weight:400;color:var(--text2);font-size:11.5px;">${s.cinsiyet==="E" ? "(Erkek)" : "(Kız)"}</span></div>
+              <div class="stud-meta">Ortalama sıra: ${s.ortalama==null ? "–" : s.ortalama}</div>
+            </div>
+            <div >${rs.openIndex===i ? "▲" : "▼"}</div>
+          </div>
+          ${rs.openIndex===i ? `
+          <div class="acc-body">
+            ${(s.siralar||[]).map(x=>`
+              <div class="stud-row" style="padding:8px 0;">
+                <div style="flex:1;font-size:13.5px;">${esc(x.juri)}</div>
+                <div style="font-weight:700;">${x.sira}.</div>
+              </div>
+            `).join("")}
+          </div>` : ""}
+        </div>
+      `).join("")}
+    </div>` : ""}
+
+    ${rs.oylamaTuru!=="siralama" && rs.sonuclar.length && rs.kriterler.length ? `
     <div class="card">
       <div class="eyebrow">Kritere Göre Ortalamalar</div>
       <p class="desc" style="margin-bottom:6px;">Bir öğrenciye dokunarak kriter bazlı puan dağılımını gör.</p>
@@ -1313,7 +1405,8 @@ function createFollowupCompetition(){
     kriterler: rs.kriterler||[],
     kriterlerEN: rs.kriterlerEN||[],
     maxPuan: rs.maxPuan||10,
-    yarismaTuru: rs.yarismaTuru||"karisik"
+    yarismaTuru: rs.yarismaTuru||"karisik",
+    oylamaTuru: rs.oylamaTuru||"puan"
   };
   renderCompetitionForm(draft);
 }
@@ -1410,8 +1503,12 @@ async function screenJuryScoring(compId, juriId, juriIsim){
     maxPuan: comp.maxPuan || 10,
     puanlar: puanDoc.puanlar || {},
     bitirdi: !!puanDoc.bitirdi,
-    current: 0
+    current: 0,
+    oylamaTuru: comp.oylamaTuru === "siralama" ? "siralama" : "puan",
+    yarismaTuru: comp.yarismaTuru || "karisik",
+    siralama: {}
   };
+  if(scoringState.oylamaTuru === "siralama") siralamaHazirla(puanDoc.siralama || {});
 
   renderScoringScreen();
 }
@@ -1452,6 +1549,8 @@ function renderScoringScreen(){
     `);
     return;
   }
+
+  if(st.oylamaTuru === "siralama"){ renderRankingScreen(); return; }
 
   const s = st.ogrenciler[st.current];
   const complete = studentComplete(s);
@@ -1550,6 +1649,80 @@ async function finishJuryVoting(){
   await fsPatch(`yarismalar/${st.compId}/puanlar/${st.juriId}`, { puanlar: st.puanlar, bitirdi:true });
   st.bitirdi = true;
   toast("Oyların kaydedildi ✓");
+  renderScoringScreen();
+}
+
+
+/* ---------- SIRALAMA OYLAMASI (jüri yarışmacıları 1.'den sonuncuya sıralar) ---------- */
+function siralamaGruplari(){
+  const st = scoringState;
+  if(st.yarismaTuru === "ayri"){
+    return [
+      { id:"K", baslik:"Kız Sıralaması", liste: st.ogrenciler.filter(o=>o.cinsiyet!=="E") },
+      { id:"E", baslik:"Erkek Sıralaması", liste: st.ogrenciler.filter(o=>o.cinsiyet==="E") }
+    ].filter(g=>g.liste.length);
+  }
+  return [{ id:"T", baslik:"Tüm Yarışmacılar", liste: st.ogrenciler }];
+}
+// kayıtlı sırayı yükler; sonradan eklenen/çıkan öğrencilere göre düzeltir
+function siralamaHazirla(kayitli){
+  const st = scoringState;
+  siralamaGruplari().forEach(g=>{
+    const var_ = g.liste.map(o=>o.numara);
+    const eski = (kayitli[g.id]||[]).filter(n=>var_.includes(n));
+    st.siralama[g.id] = [...eski, ...var_.filter(n=>!eski.includes(n))];
+  });
+}
+let siralamaKayitZamani = null;
+function rankMove(grup, idx, yon){
+  const st = scoringState, l = st.siralama[grup], j = idx + yon;
+  if(!l || j<0 || j>=l.length) return;
+  [l[idx], l[j]] = [l[j], l[idx]];
+  renderRankingScreen();
+  clearTimeout(siralamaKayitZamani);
+  siralamaKayitZamani = setTimeout(()=>{
+    fsPatch(`yarismalar/${st.compId}/puanlar/${st.juriId}`, { siralama: st.siralama });
+  }, 500);
+}
+function renderRankingScreen(){
+  const st = scoringState;
+  const grupHtml = g => {
+    const liste = st.siralama[g.id] || [];
+    return `
+    <div class="card">
+      <div class="eyebrow">${g.baslik}</div>
+      ${liste.map((num,i)=>{
+        const o = st.ogrenciler.find(x=>x.numara===num);
+        if(!o) return "";
+        return `<div class="stud-row" style="padding:9px 0;">
+          <div class="bib" style="width:36px;height:36px;font-size:14px;">${i+1}</div>
+          <div style="flex:1;min-width:0;"><div class="stud-name">${esc(o.isim)}</div><div class="stud-meta">No ${esc(o.numara)}</div></div>
+          <button class="iconbtn" ${i===0?"disabled":""} style="${i===0?"opacity:.35;":""}" onclick="rankMove('${g.id}',${i},-1)">▲</button>
+          <button class="iconbtn" ${i===liste.length-1?"disabled":""} style="${i===liste.length-1?"opacity:.35;":""}" onclick="rankMove('${g.id}',${i},1)">▼</button>
+        </div>`;
+      }).join("")}
+    </div>`;
+  };
+  render(`
+    <div class="backbar"><button class="back-btn" onclick="goHome()">‹ Ana Ekran</button></div>
+    <div class="card dark">
+      <div class="eyebrow">Jüri: ${esc(st.juriIsim)}</div>
+      <h2 class="title">Sıralama</h2>
+      <p class="desc">Yarışmacıları ▲▼ düğmeleriyle sırala: en üstteki 1. sıradır.</p>
+    </div>
+    ${siralamaGruplari().map(grupHtml).join("")}
+    <div class="card dark score-footer" style="padding:14px 18px;">
+      <button class="btn btn-gold" onclick="finishJuryRanking()">Sıralamayı Bitir</button>
+    </div>
+  `);
+}
+async function finishJuryRanking(){
+  const st = scoringState;
+  if(!(await showConfirm("Sıralamayı Bitir", "Sıralamayı bitirmek istediğine emin misin? Bitirdikten sonra sıralamayı değiştiremezsin.", "Evet, Bitir"))) return;
+  clearTimeout(siralamaKayitZamani);
+  await fsPatch(`yarismalar/${st.compId}/puanlar/${st.juriId}`, { siralama: st.siralama, bitirdi:true });
+  st.bitirdi = true;
+  toast("Sıralaman kaydedildi ✓");
   renderScoringScreen();
 }
 
