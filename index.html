@@ -713,6 +713,8 @@ body.portal-modu .overlay{z-index:9500;}
 #splash .sp-imza{z-index:1}
 #splash .sp-ark{position:relative;z-index:1}
 #splash .sp-taclar{position:absolute;left:0;right:0;top:-112px;height:104px;z-index:0;pointer-events:none;perspective:520px;opacity:0;animation:spRise 1.4s 2.2s ease forwards}
+#splash .sp-taclar canvas.sp-tac3d{position:absolute;left:50%;top:-30px;width:390px;height:150px;margin-left:-195px;display:block}
+#splash .sp-taclar.uc-boyut .sp-tac{display:none}
 #splash .sp-tac{position:absolute;top:44px;width:0;height:0;perspective:520px;scale:.7;filter:drop-shadow(0 6px 8px #00000030)}
 #splash .sp-krali{left:calc(50% - 66px);--e:30deg}
 #splash .sp-kral{left:calc(50% + 66px);--e:-30deg}
@@ -746,6 +748,93 @@ body.portal-modu .overlay{z-index:9500;}
 </head>
 <body>
 <div id="splash"><div class="sp-glow"></div><i class="sp-dot" style="left:8%;width:2px;height:2px;animation-duration:5.5s;animation-delay:0.1s"></i><i class="sp-dot" style="left:18%;width:3px;height:3px;animation-duration:6.5s;animation-delay:0.8s"></i><i class="sp-dot" style="left:30%;width:2px;height:2px;animation-duration:5.0s;animation-delay:0.3s"></i><i class="sp-dot" style="left:42%;width:3px;height:3px;animation-duration:7.0s;animation-delay:1.2s"></i><i class="sp-dot" style="left:55%;width:2px;height:2px;animation-duration:5.8s;animation-delay:0.5s"></i><i class="sp-dot" style="left:66%;width:3px;height:3px;animation-duration:6.2s;animation-delay:1.0s"></i><i class="sp-dot" style="left:78%;width:2px;height:2px;animation-duration:5.2s;animation-delay:0.2s"></i><i class="sp-dot" style="left:90%;width:3px;height:3px;animation-duration:6.8s;animation-delay:0.9s"></i><div class="sp-logo"><svg class="sp-mark" viewBox="20 30 150 140" width="112" height="104" aria-hidden="true"><defs><linearGradient id="spg" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="170" y2="180"><stop offset="0" stop-color="#f8e7ae"/><stop offset=".38" stop-color="#d9ac52"/><stop offset=".62" stop-color="#f4dc92"/><stop offset="1" stop-color="#b0842f"/></linearGradient></defs><g fill="none" stroke="url(#spg)" stroke-linecap="round"><path class="d1" pathLength="1" d="M146 60 A56 56 0 1 0 146 140" stroke-width="3.2"/><path class="d2" pathLength="1" d="M138 70 A44 44 0 1 0 138 130" stroke-width="1.6"/><line class="d3" pathLength="1" x1="112" y1="52" x2="112" y2="148" stroke-width="3.2"/><line class="d4" pathLength="1" x1="121" y1="62" x2="121" y2="138" stroke-width="1.6"/></g><circle class="d5" cx="150" cy="100" r="3" fill="url(#spg)"/></svg><b class="sp-gold">Can &amp; Irina</b><span>Dance Studio</span><em>Management</em></div><div class="sp-line"></div><div class="sp-imza"><small>Created by</small><div class="sp-taclar"><div class="sp-tac sp-krali"><div class="sp-tilt"><div class="sp-don"><i class="tp b0" style="transform:rotateY(0deg) translateZ(42px)"></i><i class="tp gem b1" style="transform:rotateY(45deg) translateZ(42px)"></i><i class="tp b0" style="transform:rotateY(90deg) translateZ(42px)"></i><i class="tp gem b1" style="transform:rotateY(135deg) translateZ(42px)"></i><i class="tp b0" style="transform:rotateY(180deg) translateZ(42px)"></i><i class="tp gem b1" style="transform:rotateY(225deg) translateZ(42px)"></i><i class="tp b0" style="transform:rotateY(270deg) translateZ(42px)"></i><i class="tp gem b1" style="transform:rotateY(315deg) translateZ(42px)"></i></div></div></div><div class="sp-tac sp-kral"><div class="sp-tilt"><div class="sp-don"><i class="tp tall b0" style="transform:rotateY(0deg) translateZ(42px)"></i><i class="tp gem b1" style="transform:rotateY(45deg) translateZ(42px)"></i><i class="tp tall b0" style="transform:rotateY(90deg) translateZ(42px)"></i><i class="tp gem b1" style="transform:rotateY(135deg) translateZ(42px)"></i><i class="tp tall b0" style="transform:rotateY(180deg) translateZ(42px)"></i><i class="tp gem b1" style="transform:rotateY(225deg) translateZ(42px)"></i><i class="tp tall b0" style="transform:rotateY(270deg) translateZ(42px)"></i><i class="tp gem b1" style="transform:rotateY(315deg) translateZ(42px)"></i></div></div></div></div><b class="sp-ark"><svg viewBox="0 0 340 175" width="340" height="175" aria-label="Fatih Samet Çakır"><defs><linearGradient id="spr" gradientUnits="userSpaceOnUse" x1="20" y1="0" x2="320" y2="0"><stop offset="0" stop-color="#ff4d6d"/><stop offset=".2" stop-color="#ff9f43"/><stop offset=".4" stop-color="#f6d84a"/><stop offset=".6" stop-color="#3ddc84"/><stop offset=".8" stop-color="#38b6ff"/><stop offset="1" stop-color="#a78bfa"/></linearGradient><path id="spyay" d="M30 168 A145 145 0 0 1 310 168"/></defs><text font-family="'Great Vibes',cursive" font-size="38" fill="url(#spr)" text-anchor="middle"><textPath href="#spyay" startOffset="50%">Fatih Samet Çakır</textPath></text></svg></b></div></div>
+<script type="module">
+// Açılış ekranı: gerçek 3D taçlar (Three.js). Yüklenemezse CSS taçlar kalır.
+(async()=>{
+try{
+  const sp=document.getElementById('splash');
+  const host=sp&&sp.querySelector('.sp-taclar');
+  if(!host)return;
+  const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
+  if(!document.body.contains(host))return;
+  const W=host.clientWidth||390,H=150;
+  const cv=document.createElement('canvas');cv.className='sp-tac3d';
+  const r=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
+  r.setPixelRatio(Math.min(window.devicePixelRatio||1,2));r.setSize(W,H,false);
+  r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.05;
+  // yansıma için yapay stüdyo ortamı
+  const ec=document.createElement('canvas');ec.width=512;ec.height=256;const x=ec.getContext('2d');
+  const gr=x.createLinearGradient(0,0,0,256);gr.addColorStop(0,'#ffffff');gr.addColorStop(.42,'#f2dca0');gr.addColorStop(.52,'#3a2a10');gr.addColorStop(1,'#a9792a');
+  x.fillStyle=gr;x.fillRect(0,0,512,256);
+  x.fillStyle='#fff';[[40,40,90,50],[220,30,70,60],[380,50,100,40]].forEach(b=>x.fillRect(...b));
+  x.fillStyle='#120a02';[[130,110,60,70],[300,120,50,60],[450,100,40,80]].forEach(b=>x.fillRect(...b));
+  const et=new THREE.CanvasTexture(ec);et.mapping=THREE.EquirectangularReflectionMapping;et.colorSpace=THREE.SRGBColorSpace;
+  const pm=new THREE.PMREMGenerator(r);const env=pm.fromEquirectangular(et).texture;
+  const scene=new THREE.Scene();scene.environment=env;
+  scene.add(new THREE.AmbientLight(0xffffff,.45));
+  const dl=new THREE.DirectionalLight(0xfff1cf,2.2);dl.position.set(-3,5,6);scene.add(dl);
+  const cam=new THREE.PerspectiveCamera(25,W/H,.1,50);cam.position.set(0,0,7);
+  const gold=new THREE.MeshStandardMaterial({color:0xe0b350,metalness:1,roughness:.26,envMapIntensity:1.3,side:THREE.DoubleSide});
+  const pearl=new THREE.MeshStandardMaterial({color:0xfff6e0,metalness:.15,roughness:.22,envMapIntensity:1.1});
+  const velvet=new THREE.MeshStandardMaterial({color:0x8a0c20,metalness:0,roughness:.9,side:THREE.DoubleSide});
+  const ruby=new THREE.MeshStandardMaterial({color:0xd0102e,metalness:.2,roughness:.08,envMapIntensity:1.6,emissive:0x3a0008});
+  const safir=new THREE.MeshStandardMaterial({color:0x1f64d8,metalness:.2,roughness:.08,envMapIntensity:1.6,emissive:0x061636});
+  const P=(a,b,c)=>new THREE.Vector3(a,b,c);
+  function tac(kral){
+    const g=new THREE.Group(),Rr=1,yb=.34;
+    const prof=[[.96,0],[1,.04],[1,.34],[.97,.38]].map(a=>new THREE.Vector2(a[0],a[1]));
+    g.add(new THREE.Mesh(new THREE.LatheGeometry(prof,72),gold));
+    [.02,.36].forEach(y=>{const t=new THREE.Mesh(new THREE.TorusGeometry(Rr,.032,12,72),gold);t.rotation.x=Math.PI/2;t.position.y=y;g.add(t);});
+    const N=8;
+    for(let i=0;i<N;i++){
+      const a=i/N*Math.PI*2,sx=Math.sin(a),cz=Math.cos(a);
+      const gem=new THREE.Mesh(new THREE.SphereGeometry(.075,20,14),i%2?safir:ruby);
+      gem.scale.set(1,1.15,.55);gem.position.set(sx*1.005,.2,cz*1.005);gem.rotation.y=a;g.add(gem);
+      const tall=kral?(i%2===0):true,h=kral?(tall?.72:.46):.52;
+      const s=new THREE.Shape();
+      if(kral){s.moveTo(-.17,0);s.bezierCurveTo(-.17,.26,-.05,.3,0,h);s.bezierCurveTo(.05,.3,.17,.26,.17,0);}
+      else{s.moveTo(-.2,0);s.bezierCurveTo(-.24,.22,-.15,.36,-.06,h-.06);s.bezierCurveTo(-.03,h+.01,.03,h+.01,.06,h-.06);s.bezierCurveTo(.15,.36,.24,.22,.2,0);}
+      s.closePath();
+      const geo=new THREE.ExtrudeGeometry(s,{depth:.035,bevelEnabled:true,bevelSize:.018,bevelThickness:.018,bevelSegments:3,curveSegments:18});
+      geo.translate(0,0,-.018);
+      const m=new THREE.Mesh(geo,gold);m.position.set(sx*.985,yb,cz*.985);m.rotation.y=a;g.add(m);
+      const pe=new THREE.Mesh(new THREE.SphereGeometry(kral?.05:.065,20,14),pearl);pe.position.set(sx*.985,yb+h+.035,cz*.985);g.add(pe);
+    }
+    // kemerler
+    const Ha=1.0;
+    for(let k=0;k<4;k++){
+      const f=k/4*Math.PI,cx=Math.cos(f),sz=Math.sin(f);
+      const c=new THREE.CatmullRomCurve3([P(cx*.97,yb+.02,sz*.97),P(cx*.78,yb+.48,sz*.78),P(cx*.38,Ha-.1,sz*.38),P(0,Ha,0),P(-cx*.38,Ha-.1,-sz*.38),P(-cx*.78,yb+.48,-sz*.78),P(-cx*.97,yb+.02,-sz*.97)]);
+      g.add(new THREE.Mesh(new THREE.TubeGeometry(c,64,.032,10,false),gold));
+    }
+    const orb=new THREE.Mesh(new THREE.SphereGeometry(.12,32,20),gold);orb.position.y=Ha+.07;g.add(orb);
+    if(kral){
+      const v=new THREE.Mesh(new THREE.BoxGeometry(.05,.3,.05),gold);v.position.y=Ha+.3;g.add(v);
+      const h2=new THREE.Mesh(new THREE.BoxGeometry(.2,.05,.05),gold);h2.position.y=Ha+.34;g.add(h2);
+    }else{const p=new THREE.Mesh(new THREE.SphereGeometry(.06,16,12),pearl);p.position.y=Ha+.22;g.add(p);}
+    // kadife iç kubbe
+    const dp=[];for(let t=0;t<=12;t++){const u=t/12*Math.PI/2;dp.push(new THREE.Vector2(.94*Math.cos(u),yb+.5*Math.sin(u)));}
+    g.add(new THREE.Mesh(new THREE.LatheGeometry(dp,48),velvet));
+    g.position.y=-.62;
+    return g;
+  }
+  function yuva(kral,xpos){
+    const tilt=new THREE.Group(),don=new THREE.Group();
+    tilt.rotation.order='ZXY';tilt.rotation.set(.2,0,kral?THREE.MathUtils.degToRad(30):THREE.MathUtils.degToRad(-30));
+    don.add(tac(kral));tilt.add(don);tilt.position.set(xpos,-.1,0);tilt.scale.setScalar(.95);scene.add(tilt);return don;
+  }
+  const dK=yuva(true,1.32),dQ=yuva(false,-1.32);
+  host.appendChild(cv);host.classList.add('uc-boyut');
+  let t0=performance.now();
+  (function dongu(t){
+    if(!document.body.contains(host)){r.dispose();return;}
+    const dt=Math.min(.05,(t-t0)/1000);t0=t;
+    dK.rotation.y-=dt*.9;dQ.rotation.y+=dt*.9;
+    r.render(scene,cam);requestAnimationFrame(dongu);
+  })(t0);
+}catch(e){}
+})();
+</script>
 <script>setTimeout(function(){var e=document.getElementById('splash');if(!e)return;e.classList.add('out');setTimeout(function(){e.remove();},1200);},4300);</script>
 
 <div id="login-screen" style="padding-top:24px;position:relative;">
