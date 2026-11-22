@@ -93,6 +93,11 @@ service cloud.firestore {
       allow read: if oku();
       allow write: if yaz('yoklama');
     }
+    // Yoklama günlüğü: kim kaydetti (yönetici/eğitmen). Eğitmen kayıtlarını sunucu yazar; kayıt silinemez/değiştirilemez
+    match /yoklama_log/{id} {
+      allow read: if oku();
+      allow create: if yaz('yoklama');
+    }
     match /ozelPaketler/{id} {
       allow read: if oku();
       allow write: if yaz('ozel');

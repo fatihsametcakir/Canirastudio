@@ -420,6 +420,106 @@ async function egitmenPlanSil(req, res, ot) {
   res.json({ ok: true });
 }
 
+
+// ── Eğitmen yoklaması (yönetim panelindeki yoklama mantığının sunucu karşılığı) ──
+const GUN_ESLE = { pazartesi: 1, monday: 1, sali: 2, 'salı': 2, tuesday: 2, carsamba: 3, 'çarşamba': 3, wednesday: 3, persembe: 4, 'perşembe': 4, thursday: 4, cuma: 5, friday: 5, cumartesi: 6, saturday: 6, pazar: 0, sunday: 0 };
+const sinifGunNo = (si) => { const g = String(si.gun || '').trim().normalize('NFC').toLowerCase(); return Object.prototype.hasOwnProperty.call(GUN_ESLE, g) ? GUN_ESLE[g] : -1; };
+const trBugun = () => new Date(Date.now() + 3 * 3600 * 1000).toISOString().slice(0, 10);
+const tarihGun = (ts) => new Date(ts + 'T00:00:00Z').getUTCDay();
+const tarihEkle = (ts, gun) => new Date(new Date(ts + 'T00:00:00Z').getTime() + gun * 86400000).toISOString().slice(0, 10);
+const YOKLAMA_HAFTA = 12;
+
+async function yoklamaBaglam(E, sinifId) {
+  const sDoc = await db.collection('siniflar').doc(String(sinifId || '_yok')).get();
+  if (!sDoc.exists) return { hata: 'Sınıf bulunamadı.' };
+  const si = { id: sDoc.id, ...sDoc.data() };
+  if (si.egitmenId !== E && si.egitmen2Id !== E) return { hata: 'Bu sınıf size ait değil.' };
+  if ((si.durum || 'aktif') === 'pasif') return { hata: 'Sınıf aktif değil.' };
+  const [ogSnap, gecSnap, yokSnap, tatSnap] = await Promise.all([
+    db.collection('ogrenciler').get(), db.collection('ogrenciGecmisi').get(),
+    db.collection('yoklamalar').where('sinifId', '==', si.id).get(), db.collection('tatiller').get(),
+  ]);
+  const ogMap = {}; ogSnap.docs.forEach((d) => { ogMap[d.id] = { id: d.id, ...d.data() }; });
+  return {
+    si, ogMap, gecmis: gecSnap.docs.map((d) => d.data()),
+    yoklamalar: yokSnap.docs.map((d) => ({ id: d.id, ...d.data() })),
+    tatiller: new Set(tatSnap.docs.map((d) => d.data().tarih)),
+  };
+}
+function ogOTarihteAktif(B, ogId, tarih) {
+  const ol = B.gecmis.filter((g) => g.ogrenciId === ogId && (g.olay === 'aktif' || g.olay === 'pasif')).sort((a, b) => (a.tarih || '').localeCompare(b.tarih || ''));
+  if (!ol.length) return ((B.ogMap[ogId] || {}).durum || 'aktif') === 'aktif';
+  const gecerli = ol.filter((o) => o.tarih <= tarih);
+  if (gecerli.length) return gecerli[gecerli.length - 1].olay === 'aktif';
+  return ol[0].olay === 'pasif';
+}
+function kayitOTarihteDonuk(B, ogId, tarih) {
+  const ol = B.gecmis.filter((g) => g.sinifId === B.si.id && g.ogrenciId === ogId && (g.olay === 'dondur' || g.olay === 'coz') && g.tarih <= tarih).sort((a, b) => (a.tarih || '').localeCompare(b.tarih || ''));
+  return ol.length ? ol[ol.length - 1].olay === 'dondur' : false;
+}
+function yoklamaOgrenciIdleri(B, tarih) {
+  const set = new Set();
+  (B.si.kayitlar || []).forEach((k) => {
+    if (!B.ogMap[k.ogrenciId]) return;
+    if (k.basTarih && k.basTarih > tarih) return;
+    if (kayitOTarihteDonuk(B, k.ogrenciId, tarih)) return;
+    if (!ogOTarihteAktif(B, k.ogrenciId, tarih)) return;
+    set.add(k.ogrenciId);
+  });
+  B.gecmis.filter((g) => g.sinifId === B.si.id && g.olay === 'cikis' && g.tarih > tarih).forEach((g) => {
+    if (set.has(g.ogrenciId) || (B.si.kayitlar || []).some((k) => k.ogrenciId === g.ogrenciId)) return;
+    if (!B.ogMap[g.ogrenciId] || !ogOTarihteAktif(B, g.ogrenciId, tarih)) return;
+    set.add(g.ogrenciId);
+  });
+  B.yoklamalar.filter((y) => y.tarih === tarih && B.ogMap[y.ogrenciId]).forEach((y) => set.add(y.ogrenciId));
+  return set;
+}
+const yoklamaTarihiGecerli = (B, tarih) => TARIH_RE.test(tarih) && tarih <= trBugun() && tarihGun(tarih) === sinifGunNo(B.si)
+  && !B.tatiller.has(tarih) && !(B.si.iptalTarihleri || []).includes(tarih);
+
+async function egitmenYoklamaListe(req, res, ot) {
+  if (ot.ilkGiris) return hata(res, 403, 'Önce şifrenizi değiştirin.');
+  const B = await yoklamaBaglam(ot.egitmenId, req.body.sinifId); if (B.hata) return hata(res, 404, B.hata);
+  const gn = sinifGunNo(B.si); if (gn < 0) return res.json({ tarihler: [] });
+  let d = trBugun(); while (tarihGun(d) !== gn) d = tarihEkle(d, -1);
+  const tarihler = [];
+  for (let i = 0; i < YOKLAMA_HAFTA; i++, d = tarihEkle(d, -7)) {
+    if (!yoklamaTarihiGecerli(B, d)) continue;
+    const idler = [...yoklamaOgrenciIdleri(B, d)];
+    if (!idler.length) continue;
+    const kayit = B.yoklamalar.filter((y) => y.tarih === d);
+    const kaydeden = kayit.map((y) => y.kaydedenAd).filter(Boolean);
+    tarihler.push({
+      tarih: d, alindi: kayit.length > 0, kaydeden: kaydeden.length ? kaydeden[kaydeden.length - 1] : '',
+      gelenler: kayit.map((y) => y.ogrenciId),
+      ogrenciler: idler.map((id) => { const o = B.ogMap[id]; return { id, ad: o.ad || '', soyad: o.soyad || '', cinsiyet: o.cinsiyet || '' }; })
+        .sort((a, b) => (a.ad + a.soyad).localeCompare(b.ad + b.soyad, 'tr')),
+    });
+  }
+  res.json({ tarihler });
+}
+async function egitmenYoklamaKaydet(req, res, ot) {
+  if (ot.ilkGiris) return hata(res, 403, 'Önce şifrenizi değiştirin.');
+  const E = ot.egitmenId, tarih = String(req.body.tarih || '');
+  const B = await yoklamaBaglam(E, req.body.sinifId); if (B.hata) return hata(res, 404, B.hata);
+  if (TARIH_RE.test(tarih) && tarih > trBugun()) return hata(res, 400, 'Gelecek tarih için yoklama alınamaz.');
+  if (!yoklamaTarihiGecerli(B, tarih)) return hata(res, 400, 'Bu tarihte bu sınıfın dersi yok.');
+  const izinli = yoklamaOgrenciIdleri(B, tarih);
+  const secilen = new Set((Array.isArray(req.body.gelenler) ? req.body.gelenler : []).map(String));
+  for (const id of secilen) if (!izinli.has(id)) return hata(res, 400, 'Listede olmayan öğrenci seçildi.');
+  const eg = (await db.collection('egitmenler').doc(E).get()).data() || {};
+  const ad = eg.ad || 'Eğitmen';
+  const mevcut = B.yoklamalar.filter((y) => y.tarih === tarih);
+  const batch = db.batch(); let ekle = 0, cikar = 0;
+  secilen.forEach((id) => { if (!mevcut.some((y) => y.ogrenciId === id)) { batch.set(db.collection('yoklamalar').doc(), { sinifId: B.si.id, ogrenciId: id, tarih, olusturma: Date.now(), kaydeden: 'egitmen', kaydedenAd: ad, kaydedenId: E }); ekle++; } });
+  mevcut.forEach((y) => { if (!secilen.has(y.ogrenciId)) { batch.delete(db.collection('yoklamalar').doc(y.id)); cikar++; } });
+  if (ekle || cikar) {
+    batch.set(db.collection('yoklama_log').doc(), { sinifId: B.si.id, sinifAdi: B.si.ad || '', tarih, kaydeden: 'egitmen', kaydedenAd: ad, kaydedenId: E, ekle, cikar, gelenSayisi: secilen.size, ilk: mevcut.length === 0, zaman: Date.now() });
+    await batch.commit();
+  }
+  res.json({ ok: true, ekle, cikar });
+}
+
 exports.portal = onRequest({ region: 'europe-west1', cors: true, maxInstances: 10, timeoutSeconds: 30 }, async (req, res) => {
   try {
     if (req.method !== 'POST') return hata(res, 405, 'Yalnızca POST.');
@@ -431,7 +531,7 @@ exports.portal = onRequest({ region: 'europe-west1', cors: true, maxInstances: 1
     const ot = await oturumBul(b.token);
     if (!ot) return hata(res, 401, 'Oturum süresi doldu. Lütfen tekrar giriş yapın.', { oturum: false });
     // Eğitmen oturumu yalnızca eğitmen işlemlerine, öğrenci oturumu yalnızca öğrenci işlemlerine izin verir
-    const egIslem = { e_veri: egitmenVeri, e_sifre: egitmenSifre, e_planla: egitmenPlanla, e_plan_duzenle: egitmenPlanDuzenle, e_plan_sil: egitmenPlanSil };
+    const egIslem = { e_veri: egitmenVeri, e_sifre: egitmenSifre, e_planla: egitmenPlanla, e_plan_duzenle: egitmenPlanDuzenle, e_plan_sil: egitmenPlanSil, e_yoklama_liste: egitmenYoklamaListe, e_yoklama_kaydet: egitmenYoklamaKaydet };
     if (egIslem[b.islem]) { if (!ot.egitmenId) return hata(res, 403, 'Yetkisiz.'); return await egIslem[b.islem](req, res, ot); }
     if (b.islem !== 'cikis' && !ot.ogrenciId) return hata(res, 403, 'Yetkisiz.');
     if (b.islem === 'veri') return await veri(req, res, ot);
