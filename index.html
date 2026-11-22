@@ -2,6 +2,43 @@
 <html lang="tr">
 <head>
 <script>
+// ── HATA GÜNLÜĞÜ: hataları yakalar, bu cihazda saklar (en başta, hiçbir hata kaçmasın) ──
+(function(){
+  var KEY='hataGunlugu',MAX=100;
+  function oku(){try{return JSON.parse(localStorage.getItem(KEY)||'[]');}catch(e){return [];}}
+  function yaz(l){try{localStorage.setItem(KEY,JSON.stringify(l.slice(0,MAX)));}catch(e){}}
+  window.hataListeOku=oku;
+  window.hataListeYaz=yaz;
+  window.hataKaydet=function(tur,mesaj,kaynak,yigin){
+    try{
+      mesaj=String(mesaj==null?'':mesaj).slice(0,400);
+      if(!mesaj||/ResizeObserver loop|^Script error\.?$/.test(mesaj))return;
+      var l=oku(),s=l[0];kaynak=kaynak||'';
+      if(s&&s.m===mesaj&&s.k===kaynak){s.n=(s.n||1)+1;s.z=Date.now();}
+      else l.unshift({z:Date.now(),tur:tur,m:mesaj,k:kaynak,y:String(yigin||'').slice(0,700),s:(typeof PAGE!=='undefined'?PAGE:''),n:1});
+      yaz(l);
+      if(window.hataRozetGuncelle)window.hataRozetGuncelle();
+    }catch(e){}
+  };
+  window.addEventListener('error',function(e){
+    if(e.target&&e.target!==window)return; // resim/font yükleme hataları gürültü
+    var f=(e.filename||'').split('/').pop();
+    hataKaydet('Hata',e.message,f?f+':'+e.lineno+':'+e.colno:'',e.error&&e.error.stack);
+  });
+  window.addEventListener('unhandledrejection',function(e){
+    var r=e.reason;hataKaydet('Beklenmeyen',(r&&r.message)||r,'',r&&r.stack);
+  });
+  var ce=console.error;
+  console.error=function(){
+    try{hataKaydet('Kayıt',Array.prototype.map.call(arguments,function(a){
+      if(a&&a.message)return a.message;
+      if(typeof a==='object'){try{return JSON.stringify(a);}catch(x){return String(a);}}
+      return String(a);}).join(' '),'');}catch(x){}
+    return ce.apply(console,arguments);
+  };
+})();
+</script>
+<script>
 // ── ANDROID GERİ TUŞU YÖNETİMİ (en başta, en erken kaydolması için) ──
 // Geri tuşuna basılınca:
 //   1) Açık bir popup/modal varsa onu kapatır (uygulamadan çıkmaz)
@@ -497,6 +534,7 @@ body.portal-modu .overlay{z-index:9500;}
 /* Hamburger menü */
 .hamburger{width:36px;height:36px;border-radius:50%;background:var(--accentbg);border:1px solid #ff6b6b35;color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;flex-direction:column;gap:4px;padding:0;transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
 .hamburger:active{transform:scale(.9);}
+.hata-rozet-ic{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;margin-left:6px;border-radius:99px;background:var(--accent);color:var(--on-accent,#fff);font-size:11px;font-weight:700;vertical-align:middle;}
 .hamburger span{display:block;width:14px;height:2px;background:var(--accent);border-radius:2px;transition:all .2s;}
 /* Slide-over panel */
 .drawer-overlay{position:fixed;inset:0;background:#00000070;z-index:300;display:none;backdrop-filter:blur(3px);}
@@ -826,6 +864,13 @@ try{
   }
   const dK=yuva(true,1.32),dQ=yuva(false,-1.32);
   host.appendChild(cv);host.classList.add('uc-boyut');
+  // taçları "Management" altındaki çizgi ile "Created by" arasındaki boşluğun tam ortasına yerleştir
+  function ortala(){
+    const cizgi=sp.querySelector('.sp-line'),kucuk=sp.querySelector('.sp-imza small');if(!cizgi||!kucuk)return;
+    const a=cizgi.getBoundingClientRect().bottom,b=kucuk.getBoundingClientRect().top,h=host.getBoundingClientRect();
+    cv.style.top=Math.round((a+b)/2-h.top-H/2-20)+'px';
+  }
+  ortala();setTimeout(ortala,300);setTimeout(ortala,1300);window.addEventListener('resize',ortala);
   let t0=performance.now();
   (function dongu(t){
     if(!document.body.contains(host)){r.dispose();return;}
@@ -1037,8 +1082,8 @@ try{
 <div class="app" id="app" style="display:none;">
   <div class="topbar">
     <div class="topbar-left">
-      <button class="hamburger" id="hamburgerBtn" onclick="drawerAc()" aria-label="Menü">
-        <span></span><span></span><span></span>
+      <button class="hamburger" id="hamburgerBtn" onclick="drawerAc()" aria-label="Menü" style="position:relative;">
+        <span></span><span></span><span></span><b class="notif-badge" id="hata-badge" style="display:none;"></b>
       </button>
       <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 5l-7 7 7 7"/></svg></button>
       <div id="topbar-brand" style="min-width:0;"><div style="display:flex;align-items:center;gap:7px;min-width:0;"><svg class="tb-mark" viewBox="20 30 150 140" width="30" height="28" aria-hidden="true"><defs><linearGradient id="tbg" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="170" y2="180"><stop offset="0" stop-color="#f8e7ae"/><stop offset=".38" stop-color="#d9ac52"/><stop offset=".62" stop-color="#f4dc92"/><stop offset="1" stop-color="#b0842f"/></linearGradient></defs><g fill="none" stroke="url(#tbg)" stroke-linecap="round"><path d="M146 60 A56 56 0 1 0 146 140" stroke-width="8"/><path d="M138 70 A44 44 0 1 0 138 130" stroke-width="4"/><line x1="112" y1="52" x2="112" y2="148" stroke-width="8"/><line x1="121" y1="62" x2="121" y2="138" stroke-width="4"/></g><circle cx="150" cy="100" r="7" fill="url(#tbg)"/></svg><div style="min-width:0;">
@@ -1267,6 +1312,14 @@ try{
   </div>
   <div id="ylog-content"></div>
 </div></div>
+  <div class="page" id="pg-hata-log"><div style="max-width:640px;margin:0 auto;padding-bottom:90px;">
+  <div style="display:flex;gap:8px;margin-bottom:12px;">
+    <button class="btn btn-cyan" style="flex:1;" onclick="hataLogKopyala()">📋 Kopyala</button>
+    <button class="btn btn-danger" style="flex:1;" onclick="hataLogTemizle()">🗑 Temizle</button>
+  </div>
+  <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">Hatalar sadece bu cihazda tutulur (en son 100 kayıt). Aynı hata arka arkaya olursa tek satırda sayılır.</div>
+  <div id="hata-log-content"></div>
+</div></div>
   <div class="page" id="pg-devamsiz"><div>
   <div class="tab-row">
     <button class="tab-btn active" id="devamsiz-tab-pasif" onclick="devamsizTabSec('pasif')" data-i18n="devamsiz_tab_pasif">Pasif Öğrenciler</button>
@@ -1448,10 +1501,11 @@ try{
     <!-- Veri Yönetimi -->
     <div class="acc-item" style="--item-color:var(--accent);">
       <div class="acc-head" onclick="accToggle('acc-veri')">
-        <div class="acc-title"><span class="acc-icon">🗑</span> <span data-i18n="acc_veri">Veri Yönetimi</span></div>
+        <div class="acc-title"><span class="acc-icon">🗑</span> <span data-i18n="acc_veri">Veri Yönetimi</span> <span class="hata-rozet-ic" id="hata-badge-acc" style="display:none;"></span></div>
         <span class="acc-arrow" id="arr-acc-veri">›</span>
       </div>
       <div class="acc-body" id="acc-veri">
+        <button class="btn" style="width:100%;margin-bottom:10px;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b45;" onclick="drawerKapat();hataLogAc()">🐞 Hata Günlüğü <span class="hata-rozet-ic" id="hata-badge-btn" style="display:none;"></span></button>
         <button class="btn btn-cyan" style="width:100%;margin-bottom:10px;" onclick="telNumaralariniTemizle()">📱 Telefon Numaralarını Düzenle</button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa45;" onclick="openCakisanOdemelerModal()">🔍 Çakışan Ödemeleri Bul</button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:#34d39922;color:var(--green,#34d399);border:1px solid #34d39945;" onclick="ozelSaatDenetimi()">⏱ Özel Paket Saatlerini Denetle</button>
@@ -2866,7 +2920,8 @@ function setSyncing(v){const d=document.getElementById('syncDot'),tx=document.ge
 const MENU_SAYFALAR={
   'm-devamsiz':{pg:'devamsiz',baslik:()=>'🚩 '+t('devamsiz_ogrenciler').replace(/^🚩\s*/,'')},
   'm-yoklama-log':{pg:'yoklama-log',baslik:()=>'📝 Yoklama Günlüğü'},
-  'm-wa-sablon':{pg:'wa-sablon',baslik:()=>'💬 '+t('acc_wa')}
+  'm-wa-sablon':{pg:'wa-sablon',baslik:()=>'💬 '+t('acc_wa')},
+  'm-hata-log':{pg:'hata-log',baslik:()=>'🐞 Hata Günlüğü'}
 };
 function menuSayfaAc(ms){
   if(!Object.values(MENU_SAYFALAR).some(m=>m.pg===PAGE))PREV_PAGE=PAGE;
@@ -3039,7 +3094,7 @@ function openAylikGelirTrend(){openRaporSayfa('gelir-trend','aylik_gelir_trendi'
 function openEgitmenGiderler(){openRaporSayfa('egitmen-panel','egitmenler_giderler',renderEgitmenPanel);}
 function openOdemeAyarlari(){openRaporSayfa('odeme-bilgi-ayar','odeme_bilgileri',odemeBilgiYukle);}
 function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
-const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon'];
+const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
 function goBack(){
   let bt=PREV_PAGE==='sinif-detay'?'siniflar':PREV_PAGE;
   if(RAPOR_SAYFA_ID_LISTESI.includes(bt))bt='gelirgider';
@@ -8435,6 +8490,54 @@ async function yoklamaAlKaydet(sinifId,tarih){
 
 // ── Yoklama Günlüğü: kim, ne zaman, hangi sınıf/tarih için yoklama kaydetti (yönetici / eğitmen) ──
 let YLOG=[],YLOG_FILTRE='hepsi';
+
+// ── HATA GÜNLÜĞÜ (veri: localStorage 'hataGunlugu', yakalama en baştaki script'te) ──
+function hataOkunmamis(){
+  let son=0;try{son=+localStorage.getItem('hataOkunduZaman')||0;}catch(e){}
+  return (window.hataListeOku?hataListeOku():[]).filter(h=>h.z>son).length;
+}
+function hataRozetGuncelle(){
+  const gorunur=(typeof YETKI_SAHIP_MI!=='undefined'&&YETKI_SAHIP_MI)||(typeof YETKI_GIZLI!=='undefined'&&!YETKI_GIZLI.has('veri'));
+  const n=gorunur?hataOkunmamis():0;
+  const txt=n>99?'99+':String(n);
+  ['hata-badge','hata-badge-acc','hata-badge-btn'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.textContent=txt;el.style.display=n?'':'none';if(id==='hata-badge'&&n)el.style.display='flex';
+  });
+}
+setInterval(hataRozetGuncelle,3000);
+document.addEventListener('DOMContentLoaded',hataRozetGuncelle);
+function hataLogAc(){
+  openModal('m-hata-log');
+  hataLogCiz();
+  try{localStorage.setItem('hataOkunduZaman',String(Date.now()));}catch(e){}
+  hataRozetGuncelle();
+}
+function hataLogCiz(){
+  const el=document.getElementById('hata-log-content');if(!el)return;
+  const l=hataListeOku();
+  if(!l.length){el.innerHTML='<div class="empty" style="padding:30px 0;"><div class="empty-text">Hata kaydı yok. 🎉</div></div>';return;}
+  const esc=x=>String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  el.innerHTML=l.map(h=>{
+    let zaman='';try{zaman=new Date(h.z).toLocaleString(LC(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'});}catch(e){}
+    return `<div style="padding:11px 12px;margin-bottom:8px;border-radius:var(--radius-sm);background:var(--surface2);border-left:3px solid var(--accent);">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="badge badge-red">${esc(h.tur)}</span>${h.n>1?`<span class="badge badge-purple">×${h.n}</span>`:''}<span style="font-size:12px;color:var(--text3);margin-left:auto;">${esc(zaman)}</span></div>
+      <div style="font-size:13px;font-weight:600;margin-top:6px;word-break:break-word;">${esc(h.m)}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px;">${h.k?esc(h.k)+' · ':''}sayfa: ${esc(h.s||'—')}</div>
+      ${h.y?`<details style="margin-top:6px;"><summary style="font-size:12px;color:var(--text2);cursor:pointer;">Ayrıntı</summary><pre style="font-size:10.5px;white-space:pre-wrap;word-break:break-all;color:var(--text3);margin:6px 0 0;">${esc(h.y)}</pre></details>`:''}
+    </div>`;
+  }).join('');
+}
+function hataLogTemizle(){
+  confirm_('Hata Günlüğü','Tüm hata kayıtları silinsin mi?',()=>{hataListeYaz([]);hataLogCiz();hataRozetGuncelle();});
+}
+function hataLogKopyala(){
+  const l=hataListeOku();
+  const metin=l.map(h=>{let z='';try{z=new Date(h.z).toLocaleString(LC());}catch(e){}return `[${z}] ${h.tur}${h.n>1?' ×'+h.n:''} — ${h.m}${h.k?' ('+h.k+')':''} · sayfa: ${h.s||'—'}${h.y?'\n'+h.y:''}`;}).join('\n\n')||'Hata kaydı yok';
+  const ok=()=>toastGoster('📋 Kopyalandı');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(metin).then(ok,()=>toastGoster('Kopyalanamadı'));
+  else toastGoster('Kopyalanamadı');
+}
 async function yoklamaLogAc(){
   YLOG_FILTRE='hepsi';
   ['hepsi','egitmen','yonetici'].forEach(k=>document.getElementById('ylog-f-'+k).classList.toggle('active',k==='hepsi'));
