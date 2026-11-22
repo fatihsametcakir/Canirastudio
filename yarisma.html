@@ -4,331 +4,261 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Jack & Jill | Can & Irina Studio</title>
+<meta name="theme-color" content="#0d0d14">
+<script>
+// Stüdyo uygulamasıyla aynı tema: 'aktif_tema' (sistem / koyu / açık) aynı adresten okunur
+(function(){
+  function uygula(){
+    var sec='sistem';try{sec=localStorage.getItem('aktif_tema')||'sistem';}catch(e){}
+    var koyu=true;try{koyu=window.matchMedia('(prefers-color-scheme: dark)').matches;}catch(e){}
+    var acik=sec==='white'||(sec==='sistem'&&!koyu);
+    document.documentElement.dataset.acik=acik?'1':'0';
+    var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',acik?'#f5f5f7':'#0d0d14');
+  }
+  uygula();
+  try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',uygula);}catch(e){}
+  window.addEventListener('storage',uygula);window.addEventListener('pageshow',uygula);
+})();
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,300;0,600;1,300&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
+  /* Stüdyo teması ile aynı değişkenler (koyu varsayılan; açık tema data-acik="1") */
   :root{
-    --wine-950:#1c0410;
-    --wine-900:#350a1f;
-    --wine-800:#5c1030;
-    --wine-700:#83184a;
-    --wine-600:#a3225e;
-    --gold-500:#f0a824;
-    --gold-400:#f7c04a;
-    --gold-300:#ffd668;
-    --gold-050:#fff6df;
-    --rose-500:#ff5f7e;
-    --ivory:#fbf4e8;
-    --ivory-dim:#f1e6d3;
-    --ink:#2b0714;
-    --ink-soft:#6b3d4c;
-    --green-ok:#2f9d6b;
-    --shadow:0 20px 50px -20px rgba(28,4,16,.7);
-    --glow-gold:0 6px 24px -6px rgba(240,168,36,.55);
-    --ease:cubic-bezier(.2,.8,.3,1.1);
+    --bg:#0d0d14;--surface:#16161f;--surface2:#1e1e2a;
+    --border:#ffffff14;--border2:#ffffff22;
+    --text:#f2f0fa;--text2:#d5d3e6;--text3:#c7c4dc;
+    --accent:#ff9191;--accentbg:#ff919122;
+    --purple:#bda8fb;--purplebg:#a78bfa20;
+    --cyan:#22d3ee;--cyanbg:#22d3ee18;
+    --green:#34d399;--greenbg:#34d39918;
+    --amber:#fbbf24;--amberbg:#fbbf2418;
+    --btn1:#e80000;--btn2:#ea0014;--on-accent:#0d0d14;
+    --radius:16px;--radius-sm:10px;
+    --ease:cubic-bezier(.34,1.56,.64,1);
+    --shadow:0 14px 34px -14px rgba(0,0,0,.7);
+    /* eski adlar (satır içi stillerde geçenler) stüdyo değişkenlerine bağlı */
+    --ivory:var(--text);--ink:var(--text);--ink-soft:var(--text2);
+    --gold-300:var(--accent);--gold-400:var(--accent);--gold-500:var(--accent);--green-ok:var(--green);
+    color-scheme:dark;
   }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    font-family:'Work Sans',sans-serif;
-    background:
-      radial-gradient(1100px 560px at 12% -8%, var(--wine-600) 0%, transparent 58%),
-      radial-gradient(900px 520px at 105% 4%, var(--rose-500) 0%, transparent 40%),
-      radial-gradient(700px 500px at 50% 115%, var(--gold-500) 0%, transparent 34%),
-      linear-gradient(180deg,var(--wine-950) 0%, var(--wine-900) 100%);
-    background-attachment:fixed;
-    color:var(--ivory);
-    min-height:100vh;
-    -webkit-tap-highlight-color:transparent;
+  :root[data-acik="1"]{
+    --bg:#f5f5f7;--surface:#ffffff;--surface2:#f0f0f5;
+    --border:#00000010;--border2:#00000018;
+    --text:#1a1a2e;--text2:#38385a;--text3:#4a4a6e;
+    --accent:#ab0000;--accentbg:#ab000022;
+    --purple:#4e16f5;--purplebg:#a78bfa20;
+    --cyan:#08616e;--green:#156145;--amber:#6d4f02;
+    --on-accent:#fff;
+    --shadow:0 10px 26px -14px rgba(26,26,46,.35);
+    color-scheme:light;
   }
-  .shell{max-width:520px;margin:0 auto;padding:20px 16px 60px;min-height:100vh;position:relative;}
-  h1,h2,h3{font-family:'Playfair Display',serif;margin:0;}
-  .brand{display:flex;align-items:center;gap:11px;padding:6px 2px 22px;}
-  .brand .mark{
-    width:40px;height:40px;border-radius:50%;
-    background:conic-gradient(from 220deg,var(--gold-300),var(--rose-500),var(--gold-500),var(--gold-300));
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Playfair Display',serif;font-weight:800;color:var(--wine-950);font-size:15px;
-    box-shadow:0 0 0 3px rgba(240,168,36,.2), var(--glow-gold);
-    animation:markSpin 8s linear infinite;
-  }
-  @keyframes markSpin{0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(8deg);}}
-  .brand .name{font-size:13px;letter-spacing:.16em;text-transform:uppercase;background:linear-gradient(90deg,var(--gold-300),var(--gold-500));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700;}
-  .brand .sub{font-size:11px;color:var(--ivory-dim);opacity:.6;margin-top:1px;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;min-height:100%;overflow-x:hidden;}
+  body{min-height:100vh;}
+  .shell{max-width:480px;margin:0 auto;padding:calc(80px + env(safe-area-inset-top)) 14px 60px;min-height:100vh;position:relative;}
+  h1,h2,h3{font-family:'Fraunces',serif;margin:0;font-weight:600;}
+
+  /* üst çubuk: stüdyo uygulamasındaki hap (pill) başlık */
+  .topbar{padding:0 14px 0 12px;min-height:56px;display:flex;align-items:center;gap:9px;position:fixed;top:max(10px,calc(env(safe-area-inset-top) + 4px));left:50%;transform:translateX(-50%);width:calc(100% - 20px);max-width:456px;z-index:200;background:color-mix(in srgb,var(--surface) 38%,transparent);border:1.5px solid color-mix(in srgb,var(--text) 34%,transparent);border-radius:999px;box-shadow:0 0 0 5px color-mix(in srgb,var(--bg) 55%,transparent),0 14px 34px -8px rgba(0,0,0,.85),0 2px 10px -2px rgba(0,0,0,.5),inset 0 1px 0 color-mix(in srgb,var(--text) 14%,transparent);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);}
+  :root[data-acik="1"] .topbar{box-shadow:0 0 0 5px color-mix(in srgb,var(--bg) 55%,transparent),0 14px 30px -10px rgba(26,26,46,.35),0 2px 8px -2px rgba(26,26,46,.2),inset 0 1px 0 #fff;}
+  .tb-mark{flex-shrink:0;}
+  .topbar-title{font-family:'Cormorant Garamond','Fraunces',serif;font-size:17px;font-weight:600;line-height:1.02;letter-spacing:.03em;white-space:nowrap;}
+  .topbar-title .tb-gold{display:block;background:linear-gradient(100deg,#f8e7ae,#d9ac52 40%,#f4dc92 65%,#b0842f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;}
+  :root[data-acik="1"] .topbar-title .tb-gold{background:linear-gradient(100deg,#8a6112,#b8872a 40%,#9a6f1c 65%,#6e4c0c);-webkit-background-clip:text;background-clip:text;}
+  .topbar-title span{display:block;color:var(--accent);font-style:italic;font-weight:600;font-size:16px;letter-spacing:.05em;}
+  .topbar-tag{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--purple);background:var(--purplebg);border:1px solid #a78bfa35;border-radius:99px;padding:5px 11px;white-space:nowrap;}
 
   @keyframes cardIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
-  .card{
-    background:linear-gradient(165deg,#fffaf1,var(--ivory));
-    color:var(--ink);
-    border-radius:24px;
-    padding:22px;
-    box-shadow:var(--shadow);
-    margin-bottom:16px;
-    border:1px solid rgba(255,255,255,.5);
-    animation:cardIn .32s var(--ease);
-  }
-  .card.dark{
-    background:linear-gradient(150deg,var(--wine-700) -10%,var(--wine-900) 60%,var(--wine-950));
-    color:var(--ivory);
-    border:1px solid rgba(255,214,104,.22);
-    box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.05);
-  }
-  .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;background:linear-gradient(90deg,var(--gold-500),var(--rose-500));-webkit-background-clip:text;background-clip:text;color:var(--gold-500);font-weight:800;margin-bottom:6px;}
-  .card.dark .eyebrow{background:linear-gradient(90deg,var(--gold-300),var(--gold-400));-webkit-background-clip:text;background-clip:text;color:var(--gold-300);}
-  h2.title{font-size:24px;line-height:1.15;margin-bottom:4px;letter-spacing:-.01em;}
-  p.desc{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:6px 0 0;}
-  .card.dark p.desc{color:rgba(251,244,232,.68);}
+  .card{background:var(--surface);color:var(--text);border:1px solid var(--border2);border-radius:var(--radius);padding:18px;margin-bottom:12px;animation:cardIn .32s var(--ease);}
+  .card.dark{background:var(--surface2);color:var(--text);}
+  .eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px;}
+  h2.title{font-size:23px;line-height:1.15;margin-bottom:4px;letter-spacing:-.01em;color:var(--text);}
+  p.desc{font-size:13.5px;color:var(--text2);line-height:1.55;margin:6px 0 0;}
 
-  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
-  .choice{
-    background:linear-gradient(165deg,#fffaf1,var(--ivory));color:var(--ink);border-radius:20px;padding:22px 14px;
-    text-align:center;cursor:pointer;border:1.5px solid rgba(240,168,36,.18);
-    box-shadow:var(--shadow);transition:transform .18s var(--ease), box-shadow .18s var(--ease), border-color .18s ease;
-  }
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+  .choice{background:var(--surface2);color:var(--text);border-radius:var(--radius);padding:22px 14px;text-align:center;cursor:pointer;border:1px solid var(--border2);transition:transform .18s var(--ease),border-color .18s ease,background .18s ease;}
   .choice:active{transform:scale(.96);}
-  .choice:hover{transform:translateY(-3px);box-shadow:var(--shadow), var(--glow-gold);border-color:rgba(240,168,36,.5);}
+  .choice:hover{transform:translateY(-2px);border-color:#ff6b6b70;background:var(--accentbg);}
   .choice .ic{font-size:28px;display:block;margin-bottom:8px;transition:transform .25s var(--ease);}
-  .choice:hover .ic{transform:scale(1.15) rotate(-4deg);}
-  .choice .lbl{font-family:'Playfair Display',serif;font-weight:700;font-size:16.5px;}
-  .choice .hint{font-size:11.5px;color:var(--ink-soft);margin-top:3px;}
+  .choice:hover .ic{transform:scale(1.12) rotate(-4deg);}
+  .choice .lbl{font-family:'Fraunces',serif;font-weight:600;font-size:16.5px;}
+  .choice .hint{font-size:11.5px;color:var(--text3);margin-top:3px;}
 
-  button{font-family:'Work Sans',sans-serif;cursor:pointer;}
-  .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    width:100%;padding:14px 18px;border-radius:16px;border:none;
-    font-weight:700;font-size:15px;letter-spacing:.015em;
-    transition:transform .14s var(--ease), box-shadow .18s ease, filter .18s ease, opacity .18s ease;
-  }
-  .btn:active{transform:scale(.965);}
-  .btn-gold{background:linear-gradient(120deg,var(--gold-300),var(--gold-500) 55%,var(--rose-500));background-size:180% 100%;background-position:0% 0%;color:var(--wine-950);box-shadow:var(--glow-gold);}
-  .btn-gold:hover{background-position:60% 0%;filter:brightness(1.04);}
-  .btn-gold:disabled{opacity:.38;box-shadow:none;}
-  .btn-outline{background:rgba(240,168,36,.06);border:1.5px solid var(--gold-500);color:var(--gold-500);}
-  .btn-outline:hover{background:rgba(240,168,36,.16);}
-  .card.dark .btn-outline{color:var(--gold-300);border-color:rgba(255,214,104,.55);}
-  .btn-ghost{background:rgba(43,7,20,.06);color:var(--ink);}
-  .card.dark .btn-ghost{background:rgba(251,244,232,.1);color:var(--ivory);}
-  .btn-ghost:hover{background:rgba(43,7,20,.1);}
-  .btn-danger{background:rgba(255,95,126,.14);color:#c23a58;}
+  button{font-family:'DM Sans',sans-serif;cursor:pointer;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:13px 18px;border-radius:var(--radius-sm);border:none;font-weight:600;font-size:14.5px;transition:opacity .15s,transform .1s;}
+  .btn:active{transform:scale(.96);opacity:.8;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-gold{background:linear-gradient(135deg,var(--btn1),var(--btn2));color:#fff;box-shadow:0 4px 15px #ff6b6b30;}
+  .btn-outline{background:var(--accentbg);border:1px solid #ff6b6b50;color:var(--accent);box-shadow:0 2px 8px -3px #ff6b6b40;}
+  .btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);}
+  .card.dark .btn-ghost{background:var(--surface);}
+  .btn-danger{background:#ff6b6b22;color:var(--accent);border:1px solid #ff6b6b50;}
+  .btn-danger-solid{background:linear-gradient(135deg,var(--btn1),var(--btn2));color:#fff;box-shadow:0 4px 15px #ff6b6b30;}
   .btn-row{display:flex;gap:10px;}
   .btn-row .btn{width:auto;flex:1;}
 
-  label{font-size:12.5px;font-weight:700;color:var(--ink-soft);display:block;margin:14px 0 6px;letter-spacing:.02em;}
+  label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin:14px 0 6px;letter-spacing:.08em;text-transform:uppercase;}
   label:first-of-type{margin-top:0;}
-  input[type=text],input[type=date],textarea,select{
-    width:100%;padding:12px 13px;border-radius:13px;border:1.5px solid rgba(43,7,20,.13);
-    font-family:'Work Sans',sans-serif;font-size:14.5px;background:#fff;color:var(--ink);
-    transition:border-color .16s ease, box-shadow .16s ease;
-  }
-  textarea{resize:vertical;min-height:90px;line-height:1.6;font-size:13.5px;}
-  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold-500);box-shadow:0 0 0 4px rgba(240,168,36,.16);}
+  input[type=text],input[type=date],textarea,select{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border2);font-family:'DM Sans',sans-serif;font-size:15px;background:var(--surface2);color:var(--text);transition:border-color .2s;outline:none;}
+  .card.dark input[type=text],.card.dark input[type=date],.card.dark textarea,.card.dark select{background:var(--surface);}
+  select option{background:var(--surface2);color:var(--text);}
+  textarea{resize:vertical;min-height:90px;line-height:1.6;font-size:14px;}
+  input:focus,textarea:focus,select:focus{border-color:#ff6b6b70;box-shadow:0 0 0 3px #ff6b6b1a;}
 
   .rowline{display:flex;gap:8px;align-items:center;}
   .rowline input{flex:1;}
-  .iconbtn{
-    width:38px;height:38px;flex:0 0 38px;border-radius:12px;border:none;
-    background:rgba(43,7,20,.07);color:var(--ink-soft);font-size:16px;display:flex;align-items:center;justify-content:center;
-    transition:background .16s ease, transform .16s ease;
-  }
+  .iconbtn{width:38px;height:38px;flex:0 0 38px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .16s ease,transform .16s ease;}
   .iconbtn:active{transform:scale(.9);}
-  .iconbtn:hover{background:rgba(255,95,126,.14);color:#c23a58;}
+  .iconbtn:hover{background:var(--accentbg);color:var(--accent);}
   .stack{display:flex;flex-direction:column;gap:8px;}
 
-  .chip{
-    display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;
-    font-size:11.5px;font-weight:700;background:rgba(43,7,20,.07);color:var(--ink-soft);
-  }
-  .chip.on{background:linear-gradient(120deg,rgba(47,157,107,.18),rgba(47,157,107,.28));color:var(--green-ok);}
-  .chip.wait{background:linear-gradient(120deg,rgba(240,168,36,.2),rgba(255,95,126,.16));color:#a6650f;animation:pulseSoft 2.2s ease-in-out infinite;}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;font-size:11.5px;font-weight:600;background:var(--surface2);color:var(--text3);border:1px solid var(--border2);}
+  .chip.on{background:var(--greenbg);color:var(--green);border-color:#34d39940;}
+  .chip.wait{background:var(--amberbg);color:var(--amber);border-color:#fbbf2440;animation:pulseSoft 2.2s ease-in-out infinite;}
   @keyframes pulseSoft{0%,100%{opacity:1;}50%{opacity:.6;}}
-  .card.dark .chip{background:rgba(251,244,232,.1);color:rgba(251,244,232,.7);}
+  .card.dark .chip{background:var(--surface);}
 
-  .bib{
-    width:44px;height:44px;border-radius:50%;flex:0 0 44px;
-    background:linear-gradient(160deg,var(--wine-600),var(--wine-950));
-    color:var(--gold-300);display:flex;align-items:center;justify-content:center;
-    font-family:'Playfair Display',serif;font-weight:800;font-size:15px;
-    border:1.5px solid var(--gold-500);box-shadow:0 4px 14px -4px rgba(240,168,36,.4);
-  }
-  .stud-row{display:flex;align-items:center;gap:12px;padding:12px 6px;border-bottom:1px solid rgba(43,7,20,.08);}
+  .bib{width:44px;height:44px;border-radius:50%;flex:none;background:var(--accentbg);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:15px;border:1.5px solid #ff6b6b60;}
+  .stud-row{display:flex;align-items:center;gap:12px;padding:12px 6px;border-bottom:1px solid var(--border);}
   .stud-row:last-child{border-bottom:none;}
-  .stud-name{font-weight:700;font-size:14.5px;}
-  .stud-meta{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+  .stud-name{font-weight:600;font-size:14.5px;}
+  .stud-meta{font-size:11.5px;color:var(--text3);margin-top:2px;}
 
-  .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(43,7,20,.15),transparent);margin:16px 0;}
-  .card.dark .divider{background:linear-gradient(90deg,transparent,rgba(255,214,104,.25),transparent);}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:16px 0;}
 
   .backbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-  .back-btn{
-    display:inline-flex;align-items:center;gap:7px;
-    background:rgba(255,214,104,.14);border:1px solid rgba(255,214,104,.4);
-    color:var(--gold-300);padding:11px 18px;border-radius:999px;
-    font-family:'Work Sans',sans-serif;font-weight:700;font-size:13.5px;
-    transition:background .16s ease, transform .14s var(--ease);
-  }
-  .back-btn:active{background:rgba(255,214,104,.28);transform:scale(.95);}
-  .back-btn:hover{background:rgba(255,214,104,.22);}
+  .back-btn{display:inline-flex;align-items:center;gap:7px;background:var(--purplebg);border:1px solid #a78bfa35;color:var(--purple);padding:9px 16px;border-radius:999px;font-weight:600;font-size:13.5px;transition:transform .2s var(--ease);}
+  .back-btn:active{transform:scale(.93);}
 
-  .modal-overlay{
-    position:fixed;inset:0;background:rgba(15,2,8,.78);backdrop-filter:blur(4px);
-    display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;
-    animation:fadeIn .18s ease;
-  }
+  .modal-overlay{position:fixed;inset:0;background:#00000095;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:400;padding:20px;animation:fadeIn .18s ease;}
   @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-  .modal-card{
-    background:linear-gradient(150deg,var(--wine-700) -10%,var(--wine-900) 60%,var(--wine-950));
-    border:1px solid rgba(255,214,104,.3);border-radius:22px;padding:24px;
-    max-width:360px;width:100%;box-shadow:var(--shadow), var(--glow-gold);
-    animation:modalIn .22s var(--ease);
-  }
+  .modal-card{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:24px;max-width:360px;width:100%;box-shadow:0 20px 50px -20px rgba(0,0,0,.8);animation:modalIn .22s var(--ease);}
   @keyframes modalIn{from{transform:scale(.92) translateY(8px);opacity:0;}to{transform:none;opacity:1;}}
-  .modal-title{font-family:'Playfair Display',serif;font-weight:700;font-size:19px;color:var(--ivory);margin-bottom:8px;}
-  .modal-msg{font-size:13.5px;line-height:1.55;color:rgba(251,244,232,.75);}
-  .btn-danger-solid{background:linear-gradient(120deg,var(--rose-500),#c0413f);color:#fff;box-shadow:0 6px 20px -6px rgba(255,95,126,.55);}
+  .modal-title{font-family:'Fraunces',serif;font-weight:600;font-size:19px;color:var(--text);margin-bottom:8px;}
+  .modal-msg{font-size:14px;line-height:1.55;color:var(--text2);}
 
   /* öğrenci listesinden çoklu seçim paneli */
-  .stu-pick-toggle{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;background:linear-gradient(120deg,var(--gold-400),var(--gold-500));color:var(--ink);border:none;border-radius:14px;padding:13px 16px;font-family:'Work Sans',sans-serif;font-weight:700;font-size:14.5px;cursor:pointer;box-shadow:var(--glow-gold);}
-  .stu-pick-panel{margin-top:10px;background:rgba(255,255,255,.55);border:1px solid rgba(43,7,20,.12);border-radius:16px;padding:12px;display:none;}
+  .stu-pick-toggle{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa50;border-radius:var(--radius-sm);padding:12px 16px;font-weight:600;font-size:14.5px;cursor:pointer;}
+  .stu-pick-panel{margin-top:10px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px;display:none;}
   .stu-pick-panel.open{display:block;}
-  .stu-pick-search{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(43,7,20,.13);font-family:'Work Sans',sans-serif;font-size:14px;margin-bottom:8px;}
+  .stu-pick-search{width:100%;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:14px;margin-bottom:8px;}
   .stu-pick-list{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
-  .stu-pick-row{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:8px;cursor:pointer;font-size:14px;color:var(--ink);}
-  .stu-pick-row:active{background:rgba(43,7,20,.06);}
-  .stu-pick-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--wine-700);flex-shrink:0;}
-  .stu-pick-empty{font-size:13px;color:var(--ink-soft);padding:10px 4px;}
+  .stu-pick-row{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:8px;cursor:pointer;font-size:14px;color:var(--text);}
+  .stu-pick-row:active{background:var(--border);}
+  .stu-pick-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex-shrink:0;}
+  .stu-pick-empty{font-size:13px;color:var(--text3);padding:10px 4px;}
   .stu-pick-actions{display:flex;gap:8px;margin-top:10px;}
 
-  /* jury scoring */
+  /* jüri puanlama */
   .crit-block{margin-bottom:16px;}
-  .crit-name{font-family:'Playfair Display',serif;font-weight:700;font-size:15px;margin-bottom:8px;}
+  .crit-name{font-family:'Fraunces',serif;font-weight:600;font-size:15px;margin-bottom:8px;}
   .num-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;}
-  .num-btn{
-    aspect-ratio:1;border-radius:10px;border:1.5px solid rgba(43,7,20,.12);
-    background:#fff;color:var(--ink);font-weight:800;font-size:12.5px;display:flex;align-items:center;justify-content:center;
-    transition:transform .12s var(--ease), background .16s ease, box-shadow .16s ease;
-  }
+  .num-btn{aspect-ratio:1;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;transition:transform .12s var(--ease),background .16s ease,box-shadow .16s ease;}
+  .card.dark .num-btn{background:var(--surface);}
   .num-btn:active{transform:scale(.88);}
   @keyframes popSel{0%{transform:scale(.8);}60%{transform:scale(1.1);}100%{transform:scale(1);}}
-  .num-btn.sel{background:linear-gradient(140deg,var(--gold-300),var(--gold-500));border-color:var(--gold-500);color:var(--wine-950);box-shadow:0 4px 14px -4px rgba(240,168,36,.6);animation:popSel .22s var(--ease);}
+  .num-btn.sel{background:var(--accentbg);border-color:#ff6b6b60;color:var(--accent);box-shadow:0 3px 10px -3px #ff6b6b60;animation:popSel .22s var(--ease);}
 
-  .accordion-item{border-bottom:1px solid rgba(43,7,20,.08);}
+  .accordion-item{border-bottom:1px solid var(--border);}
   .chip-strip{display:flex;gap:8px;overflow-x:auto;padding:16px 2px 4px;margin:0 -2px;-webkit-overflow-scrolling:touch;}
   .chip-strip::-webkit-scrollbar{display:none;}
-  .chip-nav{
-    flex:0 0 auto;width:38px;height:38px;border-radius:50%;
-    background:rgba(251,244,232,.08);border:1.5px solid rgba(251,244,232,.22);
-    color:rgba(251,244,232,.75);font-weight:700;font-size:12.5px;font-family:'Playfair Display',serif;
-    transition:transform .18s var(--ease), background .18s ease, box-shadow .18s ease;
-  }
-  .chip-nav.done{background:linear-gradient(140deg,rgba(47,157,107,.35),rgba(47,157,107,.2));border-color:var(--green-ok);color:#d3f5e4;}
-  .chip-nav.active{background:linear-gradient(140deg,var(--gold-300),var(--gold-500));border-color:var(--gold-500);color:var(--wine-950);transform:scale(1.14);box-shadow:0 4px 16px -4px rgba(240,168,36,.7);}
-  .progress-track{height:7px;background:rgba(251,244,232,.14);border-radius:999px;overflow:hidden;margin-top:12px;position:relative;}
-  .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-300),var(--gold-500),var(--rose-500));background-size:200% 100%;border-radius:999px;transition:width .35s var(--ease);animation:shimmerMove 2.4s linear infinite;}
+  .chip-nav{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--border2);color:var(--text3);font-weight:700;font-size:12.5px;transition:transform .18s var(--ease),background .18s ease,box-shadow .18s ease;}
+  .chip-nav.done{background:var(--greenbg);border-color:#34d39950;color:var(--green);}
+  .chip-nav.active{background:var(--accentbg);border-color:#ff6b6b60;color:var(--accent);transform:scale(1.14);box-shadow:0 3px 10px -3px #ff6b6b60;}
+  .progress-track{height:7px;background:var(--surface);border:1px solid var(--border);border-radius:999px;overflow:hidden;margin-top:12px;position:relative;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple),var(--accent));background-size:200% 100%;border-radius:999px;transition:width .35s var(--ease);animation:shimmerMove 2.4s linear infinite;}
   @keyframes shimmerMove{0%{background-position:0% 0%;}100%{background-position:200% 0%;}}
-  .swipe-hint{font-size:11px;color:var(--ink-soft);font-weight:700;background:rgba(43,7,20,.06);padding:4px 9px;border-radius:999px;}
-  .score-footer{position:sticky;bottom:12px;z-index:40;box-shadow:0 -10px 34px -8px rgba(15,2,8,.65), var(--glow-gold);}
+  .swipe-hint{font-size:11px;color:var(--text3);font-weight:600;background:var(--surface);border:1px solid var(--border);padding:4px 9px;border-radius:999px;}
+  .score-footer{position:sticky;bottom:12px;z-index:40;box-shadow:0 -10px 30px -10px rgba(0,0,0,.5);}
   .crit-dots{display:flex;gap:6px;justify-content:center;margin:14px 0 2px;}
-  .crit-dot{width:9px;height:9px;padding:0;border-radius:50%;border:none;background:rgba(43,7,20,.15);transition:transform .16s ease, background .16s ease;}
-  .crit-dot.done{background:var(--green-ok);}
-  .crit-dot.active{background:var(--gold-500);transform:scale(1.5);}
+  .crit-dot{width:9px;height:9px;padding:0;border-radius:50%;border:none;background:var(--border2);transition:transform .16s ease,background .16s ease;}
+  .crit-dot.done{background:var(--green);}
+  .crit-dot.active{background:var(--accent);transform:scale(1.5);}
   .compact-score{padding:16px 18px;}
   .compact-score .crit-block{margin-bottom:8px;}
   .compact-score .crit-name{font-size:11.5px;margin-bottom:4px;font-weight:700;}
   .compact-score .num-grid{gap:3px;}
   .compact-score .num-btn{aspect-ratio:auto;height:27px;font-size:9.5px;border-radius:7px;}
   .tight-header{padding:16px 18px;}
-  .tight-chips{padding:10px 2px 0;}
+  .tight-chips{padding:8px 4px 6px;}
   .chip-nav.tiny{width:28px;height:28px;font-size:10.5px;}
   .accordion-item:last-child{border-bottom:none;}
   .acc-head{display:flex;align-items:center;gap:12px;padding:13px 4px;cursor:pointer;}
-  .acc-head .status-dot{width:9px;height:9px;border-radius:50%;background:rgba(43,7,20,.18);flex:0 0 9px;}
-  .acc-head .status-dot.done{background:var(--green-ok);}
+  .acc-head .status-dot{width:9px;height:9px;border-radius:50%;background:var(--border2);flex:0 0 9px;}
+  .acc-head .status-dot.done{background:var(--green);}
   .acc-body{padding:6px 4px 18px;}
 
-  /* podium */
+  /* podyum */
   .podium{display:flex;align-items:flex-end;gap:10px;justify-content:center;margin:22px 0 8px;}
   .p-col{flex:1;text-align:center;}
-  .p-bib{width:52px;height:52px;margin:0 auto 8px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    font-family:'Playfair Display',serif;font-weight:800;font-size:18px;border:2px solid var(--gold-500);
-    background:linear-gradient(160deg,var(--wine-600),var(--wine-950));color:var(--gold-300);box-shadow:0 6px 18px -6px rgba(240,168,36,.5);}
-  .p-name{font-size:12.5px;font-weight:700;color:var(--ivory);margin-bottom:2px;}
-  .p-score{font-size:11px;color:var(--gold-300);margin-bottom:8px;font-weight:700;}
-  .p-bar{border-radius:14px 14px 0 0;background:linear-gradient(180deg,var(--gold-300),var(--gold-500) 55%,var(--rose-500));position:relative;overflow:hidden;box-shadow:0 -4px 20px -6px rgba(240,168,36,.6);}
-  .p-bar::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.55) 48%,transparent 66%);background-size:250% 100%;animation:shine 2.6s ease-in-out infinite;}
+  .p-bib{width:52px;height:52px;margin:0 auto 8px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:18px;border:2px solid var(--accent);background:var(--accentbg);color:var(--accent);}
+  .p-name{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:2px;}
+  .p-score{font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:600;}
+  .p-bar{border-radius:14px 14px 0 0;background:linear-gradient(180deg,var(--accent),var(--purple));position:relative;overflow:hidden;opacity:.92;}
+  .p-bar::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.4) 48%,transparent 66%);background-size:250% 100%;animation:shine 2.6s ease-in-out infinite;}
   @keyframes shine{0%{background-position:160% 0;}100%{background-position:-60% 0;}}
-  .p-rank{font-family:'Playfair Display',serif;font-weight:800;color:var(--wine-950);padding-top:8px;font-size:20px;position:relative;z-index:1;}
+  .p-rank{font-family:'Fraunces',serif;font-weight:700;color:var(--on-accent);padding-top:8px;font-size:20px;position:relative;z-index:1;}
   .p-col.first .p-bar{height:96px;}
   .p-col.second .p-bar{height:72px;}
   .p-col.third .p-bar{height:54px;}
-  .p-col.first .p-bib{width:66px;height:66px;font-size:23px;box-shadow:0 0 0 5px rgba(240,168,36,.22), 0 8px 22px -6px rgba(240,168,36,.6);}
+  .p-col.first .p-bib{width:66px;height:66px;font-size:23px;box-shadow:0 0 0 5px var(--accentbg);}
 
   .results-table{width:100%;border-collapse:collapse;margin-top:6px;}
-  .results-table th{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);text-align:left;padding:8px 6px;border-bottom:1.5px solid rgba(43,7,20,.12);}
-  .results-table td{padding:9px 6px;font-size:13.5px;border-bottom:1px solid rgba(43,7,20,.07);}
+  .results-table th{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);text-align:left;padding:8px 6px;border-bottom:1px solid var(--border2);}
+  .results-table td{padding:9px 6px;font-size:13.5px;border-bottom:1px solid var(--border);}
   .results-table tr:last-child td{border-bottom:none;}
-  .results-table input[type=checkbox]{width:17px;height:17px;accent-color:var(--rose-500);}
+  .results-table input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent);}
 
-  .hist-item{display:flex;align-items:center;justify-content:space-between;padding:13px 4px;border-bottom:1px solid rgba(251,244,232,.1);cursor:pointer;transition:background .16s ease;border-radius:10px;}
-  .hist-item:hover{background:rgba(255,214,104,.06);}
+  .hist-item{display:flex;align-items:center;justify-content:space-between;padding:13px 4px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .16s ease;border-radius:10px;}
+  .hist-item:hover{background:var(--surface2);}
+  .card.dark .hist-item:hover{background:var(--surface);}
   .hist-item:last-child{border-bottom:none;}
-  .hist-item .h-name{font-weight:700;font-size:14px;}
-  .hist-item .h-date{font-size:11.5px;color:rgba(251,244,232,.55);margin-top:2px;}
+  .hist-item .h-name{font-weight:600;font-size:14px;}
+  .hist-item .h-date{font-size:11.5px;color:var(--text3);margin-top:2px;}
 
-  .empty{text-align:center;padding:26px 10px;color:var(--ink-soft);font-size:13px;}
-  .card.dark .empty{color:rgba(251,244,232,.55);}
+  .empty{text-align:center;padding:26px 10px;color:var(--text3);font-size:13px;}
 
-  .toast{
-    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(8px);
-    background:linear-gradient(135deg,var(--wine-800),var(--wine-950));color:var(--gold-300);padding:13px 22px;border-radius:14px;
-    font-size:13px;font-weight:700;box-shadow:var(--shadow), var(--glow-gold);z-index:50;border:1px solid rgba(240,168,36,.4);
-    opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s var(--ease);
-  }
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(8px);background:var(--surface2);color:var(--green);padding:10px 20px;border-radius:99px;font-size:13px;font-weight:600;box-shadow:0 4px 20px #00000060;z-index:500;border:1px solid var(--green);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s var(--ease);white-space:nowrap;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-  .link-box{
-    display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.2);border-radius:13px;padding:10px 12px;
-    font-size:12px;word-break:break-all;color:var(--gold-300);border:1px solid rgba(255,214,104,.15);
-  }
-  .qr-box{
-    background:#fff;border-radius:18px;padding:16px;display:flex;align-items:center;justify-content:center;
-    margin-top:12px;box-shadow:var(--glow-gold);
-  }
+  .link-box{display:flex;align-items:center;gap:8px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;word-break:break-all;color:var(--text);border:1px solid var(--border2);}
+  .card.dark .link-box{background:var(--surface);}
+  .qr-box{background:#fff;border-radius:var(--radius);padding:16px;display:flex;align-items:center;justify-content:center;margin-top:12px;border:1px solid var(--border2);}
   .stu-num{max-width:70px;flex:0 0 70px;text-align:center;}
-  .student-row-wrap{border:1px solid rgba(43,7,20,.09);border-radius:14px;padding:10px;transition:border-color .16s ease;}
-  .student-row-wrap:hover{border-color:rgba(240,168,36,.35);}
+  .student-row-wrap{border:1px solid var(--border2);background:var(--surface2);border-radius:var(--radius-sm);padding:10px;transition:border-color .16s ease;}
+  .student-row-wrap:hover{border-color:#ff6b6b50;}
+  .student-row-wrap input[type=text]{background:var(--surface);}
   .gender-toggle{display:flex;gap:6px;margin-top:8px;}
-  .gender-btn{flex:1;padding:8px;border-radius:9px;border:1.5px solid rgba(43,7,20,.12);background:#fff;font-size:12.5px;font-weight:700;color:var(--ink-soft);font-family:'Work Sans',sans-serif;transition:all .16s ease;}
-  .gender-btn.sel{background:linear-gradient(140deg,var(--gold-300),var(--gold-500));border-color:var(--gold-500);color:var(--wine-950);box-shadow:0 3px 10px -3px rgba(240,168,36,.5);}
+  .gender-btn{flex:1;padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);font-size:13px;font-weight:600;color:var(--text3);transition:all .25s var(--ease);}
+  .gender-btn.sel{background:var(--accentbg);border-color:#ff6b6b60;color:var(--accent);box-shadow:0 3px 10px -3px #ff6b6b60;}
   .jury-assign{margin-top:10px;}
-  .jury-assign-label{font-size:11px;color:var(--ink-soft);font-weight:700;margin-bottom:5px;}
+  .jury-assign-label{font-size:11px;color:var(--text2);font-weight:600;margin-bottom:5px;}
   .jury-assign-chips{display:flex;flex-wrap:wrap;gap:5px;}
-  .assign-chip{padding:6px 11px;border-radius:999px;border:1.5px solid rgba(43,7,20,.12);background:#fff;font-size:11.5px;font-weight:700;color:var(--ink-soft);font-family:'Work Sans',sans-serif;transition:all .16s ease;}
-  .assign-chip.sel{background:linear-gradient(140deg,var(--gold-300),var(--gold-500));border-color:var(--gold-500);color:var(--wine-950);box-shadow:0 3px 10px -3px rgba(240,168,36,.5);}
-  .krit-en-preview{font-size:11px;color:var(--ink-soft);font-style:italic;margin-top:4px;padding-left:2px;min-height:14px;}
-  .crit-name-en{font-size:10.5px;color:var(--ink-soft);font-weight:400;font-style:italic;}
-  .locked-note{display:flex;align-items:center;gap:10px;padding:16px;background:linear-gradient(120deg,rgba(47,157,107,.14),rgba(47,157,107,.2));border-radius:15px;color:var(--green-ok);font-weight:700;font-size:13.5px;border:1px solid rgba(47,157,107,.25);}
+  .assign-chip{padding:6px 11px;border-radius:999px;border:1px solid var(--border2);background:var(--surface);font-size:12px;font-weight:600;color:var(--text3);transition:all .25s var(--ease);}
+  .assign-chip.sel{background:var(--accentbg);border-color:#ff6b6b60;color:var(--accent);box-shadow:0 3px 10px -3px #ff6b6b60;}
+  .krit-en-preview{font-size:11px;color:var(--text3);font-style:italic;margin-top:4px;padding-left:2px;min-height:14px;}
+  .crit-name-en{font-size:10.5px;color:var(--text3);font-weight:400;font-style:italic;}
+  .locked-note{display:flex;align-items:center;gap:10px;padding:16px;background:var(--greenbg);border-radius:var(--radius);color:var(--green);font-weight:600;font-size:13.5px;border:1px solid #34d39940;}
 
-  .spin{
-    width:20px;height:20px;border-radius:50%;border:2.5px solid rgba(240,168,36,.25);border-top-color:var(--gold-500);
-    animation:spin .75s linear infinite;margin:0 auto;
-  }
+  .spin{width:20px;height:20px;border-radius:50%;border:2.5px solid var(--border2);border-top-color:var(--accent);animation:spin .75s linear infinite;margin:0 auto;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .center{display:flex;align-items:center;justify-content:center;padding:30px;}
 
-  .cfg-warn{background:rgba(255,95,126,.14);color:#ff96ab;border-radius:15px;padding:14px 16px;font-size:12.5px;line-height:1.6;margin-bottom:16px;border:1px solid rgba(255,95,126,.35);}
-  .cfg-warn code{background:rgba(0,0,0,.25);padding:1px 5px;border-radius:5px;}
+  .cfg-warn{background:var(--accentbg);color:var(--accent);border-radius:var(--radius);padding:14px 16px;font-size:12.5px;line-height:1.6;margin-bottom:16px;border:1px solid #ff6b6b50;}
+  .cfg-warn code{background:var(--surface2);padding:1px 5px;border-radius:5px;}
 </style>
 </head>
 <body>
+<div class="topbar">
+  <svg class="tb-mark" viewBox="20 30 150 140" width="30" height="28" aria-hidden="true"><defs><linearGradient id="tbg" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="170" y2="180"><stop offset="0" stop-color="#f8e7ae"/><stop offset=".38" stop-color="#d9ac52"/><stop offset=".62" stop-color="#f4dc92"/><stop offset="1" stop-color="#b0842f"/></linearGradient></defs><g fill="none" stroke="url(#tbg)" stroke-linecap="round"><path d="M146 60 A56 56 0 1 0 146 140" stroke-width="8"/><path d="M138 70 A44 44 0 1 0 138 130" stroke-width="4"/><line x1="112" y1="52" x2="112" y2="148" stroke-width="8"/><line x1="121" y1="62" x2="121" y2="138" stroke-width="4"/></g><circle cx="150" cy="100" r="7" fill="url(#tbg)"/></svg>
+  <div class="topbar-title"><b class="tb-gold">Can &amp; Irina</b><span>Dance Studio</span></div>
+  <div class="topbar-tag">Jack &amp; Jill</div>
+  <button id="langBtn" onclick="cycleLang()" title="Dil / Language / Язык" style="background:var(--cyanbg);border:1px solid #22d3ee35;border-radius:99px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--cyan);cursor:pointer;flex-shrink:0;">TR</button>
+</div>
 <div class="shell" id="app">
-  <div class="brand">
-    <div class="mark">CI</div>
-    <div>
-      <div class="name">Can & Irina Studio</div>
-      <div class="sub">Jack & Jill Yarışma Sistemi</div>
-    </div>
-  </div>
   <div id="view"></div>
 </div>
 <div class="toast" id="toast"></div>
@@ -421,6 +351,248 @@ async function fsDelete(path){
   await fetch(`${BASE}/${path}${KEY()}`,{method:"DELETE"});
 }
 
+
+/* ================= DİL DESTEĞİ (TR / EN / RU) =================
+   Ana uygulamayla aynı seçim ('appLang') kullanılır. Ekrandaki Türkçe metinler,
+   aşağıdaki sözlük + kalıplarla otomatik çevrilir (yeni çizilen her ekran dahil). */
+let LANG = (function(){ try{ const l=localStorage.getItem("appLang"); return (l==="en"||l==="ru")?l:"tr"; }catch(e){ return "tr"; } })();
+function LC(){ return LANG==="en" ? "en-US" : LANG==="ru" ? "ru-RU" : "tr-TR"; }
+const JJ_SOZLUK = {
+  "‹ Ana Ekran":["‹ Home","‹ Главная"],
+  "‹ Yarışma":["‹ Competition","‹ Конкурс"],
+  "‹ Yarışmalar":["‹ Competitions","‹ Конкурсы"],
+  "Hoş geldin":["Welcome","Добро пожаловать"],
+  "Kimsin?":["Who are you?","Кто вы?"],
+  "Yarışma oluşturmak ve sonuçları görmek için Yönetici; puanlama yapmak için Jüri panelini seç.":["Choose Admin to create competitions and view results, or Jury to score.","Выберите «Администратор», чтобы создавать конкурсы и смотреть результаты, или «Жюри» — чтобы оценивать."],
+  "Yönetici":["Admin","Администратор"],
+  "Yarışma kur, sonuçları izle":["Set up a competition, follow results","Создавайте конкурсы, следите за результатами"],
+  "Jüri":["Jury","Жюри"],
+  "Öğrencileri puanla":["Score the students","Оценивайте учеников"],
+  "Firebase ayarları eksik.":["Firebase settings are missing.","Не заданы настройки Firebase."],
+  "Bu uygulamanın çalışması için kendi Firebase projenin":["To run this app, paste your Firebase project's","Чтобы приложение работало, вставьте данные вашего проекта Firebase:"],
+  "ve":["and","и"],
+  "bilgilerini dosyanın en üstündeki":["values into the","в раздел"],
+  "bölümüne yapıştırman gerekiyor. Kurulum adımlarını sohbette bulabilirsin.":["section at the top of the file. Setup steps are in the chat.","в начале файла. Шаги настройки есть в чате."],
+  "Yönetici Paneli":["Admin Panel","Панель администратора"],
+  "Yarışmalar":["Competitions","Конкурсы"],
+  "Yeni bir Jack & Jill yarışması başlat ya da devam eden bir yarışmayı yönet.":["Start a new Jack & Jill competition or manage an ongoing one.","Начните новый конкурс Jack & Jill или управляйте текущим."],
+  "+ Yeni Yarışma Oluştur":["+ Create New Competition","+ Создать новый конкурс"],
+  "Devam Eden":["In Progress","Текущие"],
+  "Aktif":["Active","Активен"],
+  "Geçmiş Yarışmalar":["Past Competitions","Прошедшие конкурсы"],
+  "Tamamlandı":["Completed","Завершён"],
+  "Henüz tamamlanmış yarışma yok.":["No completed competitions yet.","Завершённых конкурсов пока нет."],
+  "Yarışmayı Sil":["Delete Competition","Удалить конкурс"],
+  "Evet, Sil":["Yes, Delete","Да, удалить"],
+  "Vazgeç":["Cancel","Отмена"],
+  "Evet":["Yes","Да"],
+  "Yarışma silindi":["Competition deleted","Конкурс удалён"],
+  "Yarışma bulunamadı":["Competition not found","Конкурс не найден"],
+  "Yarışmayı Düzenle":["Edit Competition","Редактировать конкурс"],
+  "Yeni Yarışma":["New Competition","Новый конкурс"],
+  "Yarışma Bilgileri":["Competition Details","Данные конкурса"],
+  "Bir kriter adını veya öğrenci numarasını değiştirirsen, o alana daha önce verilmiş puanlar yeni değerle eşleşmeyebilir.":["If you change a criterion name or student number, scores already given for it may no longer match the new value.","Если вы измените название критерия или номер ученика, ранее выставленные баллы могут не совпасть с новым значением."],
+  "Yarışma Adı":["Competition Name","Название конкурса"],
+  "Örn. Yaz Dönemi Jack & Jill":["e.g. Summer Term Jack & Jill","Напр. Jack & Jill летнего семестра"],
+  "Tarih":["Date","Дата"],
+  "Yarışma Türü":["Competition Type","Тип конкурса"],
+  "Karışık — Kız ve Erkek birlikte, tek sıralama":["Mixed — girls and boys together, single ranking","Смешанный — девушки и юноши вместе, общий рейтинг"],
+  "Kız ve Erkek Ayrı Sıralanır":["Girls and boys ranked separately","Девушки и юноши ранжируются отдельно"],
+  "Öğrenciler":["Students","Ученики"],
+  "📋 Öğrenci Listesinden Ekle":["📋 Add from Student List","📋 Добавить из списка учеников"],
+  "İsim ara...":["Search name...","Поиск по имени..."],
+  "Kapat":["Close","Закрыть"],
+  "Ekle":["Add","Добавить"],
+  "+ Öğrenci Ekle":["+ Add Student","+ Добавить ученика"],
+  "Jüriler":["Jurors","Жюри"],
+  "+ Jüri Ekle":["+ Add Juror","+ Добавить члена жюри"],
+  "Puanlama Kriterleri":["Scoring Criteria","Критерии оценки"],
+  "+ Kriter Ekle":["+ Add Criterion","+ Добавить критерий"],
+  "Puanlama Skalası":["Scoring Scale","Шкала оценки"],
+  "(kaç üzerinden puanlanacak)":["(out of how many points)","(из скольких баллов)"],
+  "Değişiklikleri Kaydet":["Save Changes","Сохранить изменения"],
+  "Yarışmayı Oluştur":["Create Competition","Создать конкурс"],
+  "Ana uygulamadan öğrenci listesi bulunamadı. Ana uygulamada \"Yarışma\" butonuna tekrar basıp buraya geri dön.":["Student list not found from the main app. Tap the \"Competition\" button in the main app again and come back here.","Список учеников из основного приложения не найден. Снова нажмите кнопку «Конкурс» в основном приложении и вернитесь сюда."],
+  "Eşleşen öğrenci yok":["No matching students","Нет подходящих учеников"],
+  "Tüm öğrenciler zaten eklendi":["All students already added","Все ученики уже добавлены"],
+  "Önce en az bir öğrenci seç":["Select at least one student first","Сначала выберите хотя бы одного ученика"],
+  "No":["No","№"],
+  "İsim Soyisim":["Full name","Имя Фамилия"],
+  "Kız":["Girl","Девушка"],
+  "Erkek":["Boy","Юноша"],
+  "Değerlendirecek jüriler":["Judging jurors","Оценивающие члены жюри"],
+  "Önce jüri ekle":["Add a juror first","Сначала добавьте члена жюри"],
+  "Tümü":["All","Все"],
+  "İsimsiz":["Unnamed","Без имени"],
+  "Jüri adı":["Juror name","Имя члена жюри"],
+  "Kriter adı":["Criterion name","Название критерия"],
+  "çevriliyor…":["translating…","перевод…"],
+  "Yarışma adı gerekli":["Competition name is required","Нужно название конкурса"],
+  "En az bir öğrenci ekle (isim gerekli)":["Add at least one student (name required)","Добавьте хотя бы одного ученика (нужно имя)"],
+  "En az bir kriter gerekli":["At least one criterion is required","Нужен хотя бы один критерий"],
+  "Değişiklikler kaydedildi":["Changes saved","Изменения сохранены"],
+  "Yarışma oluşturuldu":["Competition created","Конкурс создан"],
+  "Aktif Yarışma":["Active Competition","Активный конкурс"],
+  "✎ Yarışmayı Düzenle":["✎ Edit Competition","✎ Редактировать конкурс"],
+  "Jüri Bağlantısı":["Jury Link","Ссылка для жюри"],
+  "Bu linki jürilerin kendi telefonlarında açmaları yeterli, ya da QR kodu okutabilirler.":["Jurors just need to open this link on their own phones, or they can scan the QR code.","Членам жюри достаточно открыть эту ссылку на своём телефоне или отсканировать QR-код."],
+  "Kopyala":["Copy","Копировать"],
+  "Paylaş":["Share","Поделиться"],
+  "Link kopyalandı":["Link copied","Ссылка скопирована"],
+  "Kopyalanamadı":["Could not copy","Не удалось скопировать"],
+  "Jüri Oylama":["Jury Voting","Голосование жюри"],
+  "Tamamladı":["Done","Завершил(а)"],
+  "Puanlıyor…":["Scoring…","Оценивает…"],
+  "Bekleniyor":["Waiting","Ожидается"],
+  "Sonuçlandır":["Finalize","Подвести итоги"],
+  "Tüm jüriler bitirmeden de sonuçlandırabilirsin; henüz oy vermeyenler hesaba katılmaz.":["You can finalize before all jurors finish; those who haven't voted yet are not counted.","Можно подвести итоги и до того, как все члены жюри закончат; те, кто ещё не проголосовал, не учитываются."],
+  "Tüm jüriler tamamladı, sonuçları açıklayabilirsin.":["All jurors are done, you can announce the results.","Все члены жюри закончили, можно объявлять результаты."],
+  "Yarışmayı Sonuçlandır":["Finalize Competition","Подвести итоги конкурса"],
+  "🔄 Durumu Yenile":["🔄 Refresh Status","🔄 Обновить статус"],
+  "Henüz tamamlanmış oy yok":["No completed votes yet","Завершённых голосов пока нет"],
+  "Sonuçlar açıklandı 🏆":["Results announced 🏆","Результаты объявлены 🏆"],
+  "Sonuç bulunamadı.":["No results found.","Результатов нет."],
+  "Öğrenci":["Student","Ученик"],
+  "Puan":["Score","Балл"],
+  "Sonuçlar":["Results","Результаты"],
+  "· Kız ve Erkek ayrı sıralandı":["· Girls and boys ranked separately","· Девушки и юноши ранжированы отдельно"],
+  "Kız Sıralaması":["Girls Ranking","Рейтинг девушек"],
+  "Erkek Sıralaması":["Boys Ranking","Рейтинг юношей"],
+  "Yeni Tur":["New Round","Новый тур"],
+  "Sıralamadan öğrenci seç, aynı jüri/kriter/skala ile onlar için yeni bir yarışma oluştur (örn. finale kalanlar).":["Pick students from the ranking and create a new competition for them with the same jury/criteria/scale (e.g. finalists).","Выберите учеников из рейтинга и создайте для них новый конкурс с теми же жюри/критериями/шкалой (например, финалисты)."],
+  "Kritere Göre Ortalamalar":["Averages by Criterion","Средние по критериям"],
+  "Bir öğrenciye dokunarak kriter bazlı puan dağılımını gör.":["Tap a student to see the score breakdown by criterion.","Нажмите на ученика, чтобы увидеть баллы по критериям."],
+  "(Erkek)":["(Boy)","(Юноша)"],
+  "(Kız)":["(Girl)","(Девушка)"],
+  "Jüri Paneli":["Jury Panel","Панель жюри"],
+  "Aktif Yarışmayı Seç":["Choose Active Competition","Выберите активный конкурс"],
+  "Şu an aktif yarışma yok. Yöneticinin sana gönderdiği linki kullan.":["There is no active competition right now. Use the link the admin sent you.","Сейчас нет активных конкурсов. Используйте ссылку, которую прислал администратор."],
+  "Sen kimsin?":["Who are you?","Кто вы?"],
+  "Eğer isminin listede olduğunu biliyorsan seç. Listede yoksan aşağıya yeni jüri olarak ekleyebilirsin.":["If you know your name is on the list, pick it. If not, you can add yourself below as a new juror.","Если ваше имя есть в списке, выберите его. Если нет, добавьте себя ниже как нового члена жюри."],
+  "Yeni jüri olarak katıl":["Join as a new juror","Присоединиться как новый член жюри"],
+  "Adını yaz":["Type your name","Введите своё имя"],
+  "Devam Et":["Continue","Продолжить"],
+  "İsim gerekli":["Name is required","Нужно имя"],
+  "Oylama Tamamlandı":["Voting Complete","Голосование завершено"],
+  "✓ Oylarını kaydettik. Yöneticinin sonuçları açıklamasını bekleyebilirsin.":["✓ Your votes are saved. You can wait for the admin to announce the results.","✓ Ваши голоса сохранены. Подождите, пока администратор объявит результаты."],
+  "Sana Atanan Öğrenci Yok":["No Students Assigned to You","Вам не назначено учеников"],
+  "Yönetici bu yarışmada sana henüz bir öğrenci atamamış.":["The admin hasn't assigned you any students in this competition yet.","Администратор ещё не назначил вам учеников в этом конкурсе."],
+  "‹ Önceki":["‹ Previous","‹ Назад"],
+  "Sonraki ›":["Next ›","Далее ›"],
+  "Oylamayı Bitir":["Finish Voting","Завершить голосование"],
+  "Oylamayı bitirmek istediğine emin misin? Bitirdikten sonra puanları değiştiremezsin.":["Are you sure you want to finish voting? You can't change scores afterwards.","Вы уверены, что хотите завершить голосование? После этого менять баллы нельзя."],
+  "Evet, Bitir":["Yes, Finish","Да, завершить"],
+  "Oyların kaydedildi ✓":["Your votes were saved ✓","Ваши голоса сохранены ✓"]
+};
+// değişken içeren cümleler: [kalıp, İngilizce, Rusça]  ($1, $2 … yakalanan değerler)
+const JJ_KALIPLAR = [
+  [/^· (\d+) öğrenci · (\d+) jüri$/, "· $1 students · $2 jurors", "· учеников: $1 · жюри: $2"],
+  [/^· (\d+) öğrenci · (\d+) jüri · (\d+) üzerinden · Kız\/Erkek ayrı$/, "· $1 students · $2 jurors · out of $3 · Girls/boys separate", "· учеников: $1 · жюри: $2 · из $3 · Девушки/юноши отдельно"],
+  [/^· (\d+) öğrenci · (\d+) jüri · (\d+) üzerinden · Karışık$/, "· $1 students · $2 jurors · out of $3 · Mixed", "· учеников: $1 · жюри: $2 · из $3 · Смешанный"],
+  [/^"(.*)" yarışmasını kalıcı olarak silmek istediğine emin misin\? Bu işlem geri alınamaz\.$/, "Are you sure you want to permanently delete \"$1\"? This cannot be undone.", "Вы уверены, что хотите навсегда удалить «$1»? Это действие нельзя отменить."],
+  [/^(\d+) üzerinden$/, "out of $1", "из $1"],
+  [/^(\d+) öğrenci eklendi$/, "$1 students added", "Добавлено учеников: $1"],
+  [/^Kaydedilemedi: (.*)$/, "Could not save: $1", "Не удалось сохранить: $1"],
+  [/^Hata: (.*)$/, "Error: $1", "Ошибка: $1"],
+  [/^Kayıt hatası \(HTTP (\d+)\)$/, "Save error (HTTP $1)", "Ошибка сохранения (HTTP $1)"],
+  [/^Okuma hatası \(HTTP (\d+)\)$/, "Read error (HTTP $1)", "Ошибка чтения (HTTP $1)"],
+  [/^Liste alınamadı \(HTTP (\d+)\)$/, "Could not load list (HTTP $1)", "Не удалось загрузить список (HTTP $1)"],
+  [/^Güncelleme hatası \(HTTP (\d+)\)$/, "Update error (HTTP $1)", "Ошибка обновления (HTTP $1)"],
+  [/^Jüri Durumu · (\d+)\/(\d+) tamamladı$/, "Jury Status · $1/$2 done", "Статус жюри · завершили $1/$2"],
+  [/^(\d+)\/(\d+) öğrenci atanmış$/, "$1/$2 students assigned", "Назначено учеников: $1/$2"],
+  [/^Kız · Tüm Sıralama · (\d+) yarışmacı$/, "Girls · Full Ranking · $1 contestants", "Девушки · Полный рейтинг · участников: $1"],
+  [/^Erkek · Tüm Sıralama · (\d+) yarışmacı$/, "Boys · Full Ranking · $1 contestants", "Юноши · Полный рейтинг · участников: $1"],
+  [/^Tüm Sıralama · (\d+) yarışmacı$/, "Full Ranking · $1 contestants", "Полный рейтинг · участников: $1"],
+  [/^Seçilenlerle Yeni Yarışma Oluştur \((\d+)\)$/, "Create New Competition with Selected ($1)", "Создать новый конкурс из выбранных ($1)"],
+  [/^Genel ortalama: (.*)$/, "Overall average: $1", "Общий средний балл: $1"],
+  [/^Jüri: (.*)$/, "Jury: $1", "Жюри: $1"],
+  [/^Devam Et \((\d+)\/(\d+)\)$/, "Continue ($1/$2)", "Продолжить ($1/$2)"]
+];
+function jjCevir(s, L){
+  L = L || LANG;
+  if(L==="tr" || typeof s!=="string") return s;
+  const lead = s.match(/^\s*/)[0], trail = s.match(/\s*$/)[0];
+  const core = s.trim().replace(/\s+/g," ");
+  if(!core) return s;
+  const i = L==="en" ? 0 : 1;
+  const d = JJ_SOZLUK[core];
+  if(d) return lead + d[i] + trail;
+  for(const k of JJ_KALIPLAR){
+    if(k[0].test(core)) return lead + core.replace(k[0], k[i+1]) + trail;
+  }
+  return s;
+}
+function T(s){ return jjCevir(s); }
+
+const JJ_ATTR = ["placeholder","title","aria-label"];
+const jjOrj = new WeakMap(), jjGor = new WeakMap(), jjAttrOrj = new WeakMap();
+function jjMetin(node){
+  const cur = node.data;
+  let base = cur;
+  if(jjOrj.has(node) && jjGor.get(node)===cur) base = jjOrj.get(node);
+  const out = jjCevir(base);
+  jjOrj.set(node, base); jjGor.set(node, out);
+  if(out!==cur) node.data = out;
+}
+function jjAttr(el){
+  for(const a of JJ_ATTR){
+    if(!el.hasAttribute || !el.hasAttribute(a)) continue;
+    const cur = el.getAttribute(a);
+    let rec = jjAttrOrj.get(el); if(!rec){ rec = {}; jjAttrOrj.set(el, rec); }
+    let base = cur;
+    if(rec[a] && rec[a].shown===cur) base = rec[a].orig;
+    const out = jjCevir(base);
+    rec[a] = {orig:base, shown:out};
+    if(out!==cur) el.setAttribute(a, out);
+  }
+}
+function jjDugumCevir(root){
+  if(!root) return;
+  if(root.nodeType===3){ if(root.parentNode && !/^(SCRIPT|STYLE|TEXTAREA)$/.test(root.parentNode.nodeName)) jjMetin(root); return; }
+  if(root.nodeType!==1) return;
+  if(/^(SCRIPT|STYLE)$/.test(root.nodeName)) return;
+  jjAttr(root);
+  root.querySelectorAll && root.querySelectorAll("["+JJ_ATTR.join("],[")+"]").forEach(jjAttr);
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {acceptNode:n=>/^(SCRIPT|STYLE|TEXTAREA)$/.test(n.parentNode.nodeName)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+  const list=[]; while(w.nextNode()) list.push(w.currentNode);
+  list.forEach(jjMetin);
+}
+function jjTarihleriYenile(){
+  document.querySelectorAll(".jj-d").forEach(el=>{
+    try{ el.textContent = new Date(el.dataset.d).toLocaleDateString(LC(),{day:"numeric",month:"long",year:"numeric"}); }catch(e){}
+  });
+}
+const jjGozlemci = new MutationObserver(list=>{
+  jjGozlemci.disconnect();
+  try{
+    for(const m of list){
+      if(m.type==="characterData") jjDugumCevir(m.target);
+      else if(m.type==="attributes") jjAttr(m.target);
+      else m.addedNodes.forEach(jjDugumCevir);
+    }
+  } finally { jjGozlemciBaslat(); }
+});
+function jjGozlemciBaslat(){
+  jjGozlemci.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:JJ_ATTR});
+}
+function jjDilUygula(){
+  document.documentElement.lang = LANG;
+  const b = document.getElementById("langBtn"); if(b) b.textContent = LANG.toUpperCase();
+  jjGozlemci.disconnect();
+  jjDugumCevir(document.body);
+  jjTarihleriYenile();
+  jjGozlemciBaslat();
+}
+function cycleLang(){
+  LANG = LANG==="tr" ? "en" : LANG==="en" ? "ru" : "tr";
+  try{ localStorage.setItem("appLang", LANG); }catch(e){}
+  jjDilUygula();
+}
+window.addEventListener("storage", e=>{
+  if(e.key==="appLang"){ const l=e.newValue; LANG=(l==="en"||l==="ru")?l:"tr"; jjDilUygula(); }
+});
+jjGozlemciBaslat();
+
 /* ---------- small utils ---------- */
 function uid(){ return Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4); }
 function toast(msg, duration){
@@ -429,7 +601,9 @@ function toast(msg, duration){
 }
 function esc(s){ return (s||"").toString().replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmtDate(d){
-  try{ return new Date(d).toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"}); }catch(e){ return d; }
+  let txt = d;
+  try{ txt = new Date(d).toLocaleDateString(LC(),{day:"numeric",month:"long",year:"numeric"}); }catch(e){}
+  return `<span class="jj-d" data-d="${esc(d)}">${esc(txt)}</span>`;
 }
 function round1(n){ return Math.round(n*10)/10; }
 
@@ -447,7 +621,7 @@ function showConfirm(title, message, confirmLabel){
         <div class="modal-title">${esc(title)}</div>
         <div class="modal-msg">${esc(message)}</div>
         <div class="btn-row" style="margin-top:20px;">
-          <button class="btn btn-ghost" style="color:var(--ivory);background:rgba(251,244,232,.12);" id="modal-cancel">Vazgeç</button>
+          <button class="btn btn-ghost" id="modal-cancel">Vazgeç</button>
           <button class="btn btn-danger-solid" id="modal-confirm">${esc(confirmLabel || "Evet")}</button>
         </div>
       </div>`;
@@ -529,12 +703,12 @@ async function screenAdminHome(){
     <div class="card">
       <div class="eyebrow">Devam Eden</div>
       ${aktif.map(c=>`
-        <div class="hist-item" style="color:var(--ink);border-color:rgba(43,7,20,.08);">
+        <div class="hist-item" >
           <div onclick="screenAdminCompetition('${c.id}')" style="flex:1;cursor:pointer;">
-            <div class="h-name">${esc(c.isim)}</div><div class="h-date" style="color:var(--ink-soft);">${fmtDate(c.tarih)} · ${(c.ogrenciler||[]).length} öğrenci · ${(c.juriler||[]).length} jüri</div>
+            <div class="h-name">${esc(c.isim)}</div><div class="h-date" >${fmtDate(c.tarih)} · ${(c.ogrenciler||[]).length} öğrenci · ${(c.juriler||[]).length} jüri</div>
           </div>
           <span class="chip wait">Aktif</span>
-          <button class="iconbtn" style="background:rgba(214,60,60,.13);color:#b23a3a;margin-left:8px;" onclick="event.stopPropagation();deleteCompetition('${c.id}','${esc(c.isim).replace(/'/g,"\\'")}')">🗑</button>
+          <button class="iconbtn" style="margin-left:8px;" onclick="event.stopPropagation();deleteCompetition('${c.id}','${esc(c.isim).replace(/'/g,"\\'")}')">🗑</button>
         </div>
       `).join("")}
     </div>` : ""}
@@ -547,7 +721,7 @@ async function screenAdminHome(){
             <div class="h-name">${esc(c.isim)}</div><div class="h-date">${fmtDate(c.tarih)}</div>
           </div>
           <span class="chip on">Tamamlandı</span>
-          <button class="iconbtn" style="background:rgba(214,60,60,.16);color:#e08a8a;margin-left:8px;" onclick="event.stopPropagation();deleteCompetition('${c.id}','${esc(c.isim).replace(/'/g,"\\'")}')">🗑</button>
+          <button class="iconbtn" style="margin-left:8px;" onclick="event.stopPropagation();deleteCompetition('${c.id}','${esc(c.isim).replace(/'/g,"\\'")}')">🗑</button>
         </div>
       `).join("") : `<div class="empty">Henüz tamamlanmış yarışma yok.</div>`}
     </div>
@@ -592,7 +766,7 @@ function renderCompetitionForm(comp){
       <input type="date" id="f-tarih">
 
       <label>Yarışma Türü</label>
-      <select id="f-tur" style="width:100%;padding:12px 13px;border-radius:12px;border:1.5px solid rgba(43,7,20,.13);font-family:'Work Sans',sans-serif;font-size:14.5px;background:#fff;color:var(--ink);">
+      <select id="f-tur" style="width:100%;padding:12px 13px;border-radius:10px;border:1px solid var(--border2);font-family:'DM Sans',sans-serif;font-size:15px;background:var(--surface2);color:var(--text);">
         <option value="karisik" selected>Karışık — Kız ve Erkek birlikte, tek sıralama</option>
         <option value="ayri">Kız ve Erkek Ayrı Sıralanır</option>
       </select>
@@ -620,8 +794,8 @@ function renderCompetitionForm(comp){
       <div class="stack" id="f-kriterler"></div>
       <button class="btn btn-ghost" style="margin-top:8px;" onclick="addCriterionField()">+ Kriter Ekle</button>
 
-      <label>Puanlama Skalası <span style="font-weight:400;color:var(--ink-soft);">(kaç üzerinden puanlanacak)</span></label>
-      <select id="f-skala" style="width:100%;padding:12px 13px;border-radius:12px;border:1.5px solid rgba(43,7,20,.13);font-family:'Work Sans',sans-serif;font-size:14.5px;background:#fff;color:var(--ink);">
+      <label>Puanlama Skalası <span style="font-weight:400;color:var(--text2);">(kaç üzerinden puanlanacak)</span></label>
+      <select id="f-skala" style="width:100%;padding:12px 13px;border-radius:10px;border:1px solid var(--border2);font-family:'DM Sans',sans-serif;font-size:15px;background:var(--surface2);color:var(--text);">
         <option value="5">5 üzerinden</option>
         <option value="6">6 üzerinden</option>
         <option value="7">7 üzerinden</option>
@@ -744,7 +918,7 @@ function renderStudentJuryChips(rowWrap){
   const assignedRaw = rowWrap.dataset.assigned || "";
   const assignedIds = assignedRaw ? assignedRaw.split(",") : [];
   const allActive = assignedRaw === "";
-  if(!juryRows.length){ container.innerHTML = `<span style="font-size:11.5px;color:var(--ink-soft);">Önce jüri ekle</span>`; return; }
+  if(!juryRows.length){ container.innerHTML = `<span style="font-size:11.5px;color:var(--text2);">Önce jüri ekle</span>`; return; }
   container.innerHTML = `
     <button type="button" class="assign-chip ${allActive?"sel":""}" onclick="setStudentJuryAll(this)">Tümü</button>
     ${juryRows.map(jr=>{
@@ -953,14 +1127,14 @@ function renderJuryQR(link){
   const box = document.getElementById("qrbox");
   if(!box || typeof QRCode === "undefined") return;
   box.innerHTML = "";
-  new QRCode(box, { text: link, width: 176, height: 176, colorDark: "#22040f", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+  new QRCode(box, { text: link, width: 176, height: 176, colorDark: "#1a1a2e", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
 }
 
 function copyLink(link){
   navigator.clipboard?.writeText(link).then(()=>toast("Link kopyalandı")).catch(()=>toast("Kopyalanamadı"));
 }
 function shareLink(link, isim){
-  if(navigator.share){ navigator.share({title:`${isim} · Jüri Oylama`, url:link}).catch(()=>{}); }
+  if(navigator.share){ navigator.share({title:`${isim} · ${T("Jüri Oylama")}`, url:link}).catch(()=>{}); }
   else copyLink(link);
 }
 
@@ -1092,10 +1266,10 @@ function renderResultsScreen(){
           <div class="acc-head" onclick="toggleResultRow(${i})">
             <div class="bib" style="width:36px;height:36px;flex:0 0 36px;font-size:12.5px;">${esc(s.numara)}</div>
             <div style="flex:1;">
-              <div class="stud-name">${esc(s.isim)} <span style="font-weight:400;color:var(--ink-soft);font-size:11.5px;">${s.cinsiyet==="E" ? "(Erkek)" : "(Kız)"}</span></div>
+              <div class="stud-name">${esc(s.isim)} <span style="font-weight:400;color:var(--text2);font-size:11.5px;">${s.cinsiyet==="E" ? "(Erkek)" : "(Kız)"}</span></div>
               <div class="stud-meta">Genel ortalama: ${s.ortalama}</div>
             </div>
-            <div style="color:var(--ink-soft);">${rs.openIndex===i ? "▲" : "▼"}</div>
+            <div >${rs.openIndex===i ? "▲" : "▼"}</div>
           </div>
           ${rs.openIndex===i ? `
           <div class="acc-body">
@@ -1103,7 +1277,7 @@ function renderResultsScreen(){
               <div class="stud-row" style="padding:8px 0;">
                 <div style="flex:1;">
                   <div style="font-size:13.5px;">${esc(k)}</div>
-                  ${rs.kriterlerEN[ki] ? `<div style="font-size:10.5px;color:var(--ink-soft);font-style:italic;">${esc(rs.kriterlerEN[ki])}</div>` : ""}
+                  ${rs.kriterlerEN[ki] ? `<div style="font-size:10.5px;color:var(--text2);font-style:italic;">${esc(rs.kriterlerEN[ki])}</div>` : ""}
                 </div>
                 <div style="font-weight:700;">${(s.kriterOrtalamalari||{})[k] ?? "–"}</div>
               </div>
@@ -1288,7 +1462,7 @@ function renderScoringScreen(){
     <div class="card dark tight-header">
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div class="eyebrow" style="margin-bottom:0;">Jüri: ${esc(st.juriIsim)}</div>
-        <div style="font-size:11.5px;color:var(--gold-300);font-weight:700;">${doneCount}/${st.ogrenciler.length}${st.ogrenciler.length < st.toplamOgrenciSayisi ? ` (${st.toplamOgrenciSayisi})` : ""}</div>
+        <div style="font-size:11.5px;color:var(--accent);font-weight:700;">${doneCount}/${st.ogrenciler.length}${st.ogrenciler.length < st.toplamOgrenciSayisi ? ` (${st.toplamOgrenciSayisi})` : ""}</div>
       </div>
       <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:${pct}%;"></div></div>
       <div class="chip-strip tight-chips">
@@ -1380,6 +1554,7 @@ async function finishJuryVoting(){
 }
 
 /* ================= INIT ================= */
+jjDilUygula();
 screenHome();
 </script>
 </body>
