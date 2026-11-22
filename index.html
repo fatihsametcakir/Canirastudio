@@ -310,8 +310,13 @@ body.portal-modu .overlay{z-index:9500;}
 .eg-nav button.active{background:var(--cyanbg,rgba(34,211,238,.14));color:var(--cyan);}
 .eg-chip{padding:7px 14px;border-radius:99px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
 .eg-chip.active{background:var(--cyanbg,rgba(34,211,238,.14));border-color:#22d3ee60;color:var(--cyan);}
-.eg-ogsatir{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px;}
-.eg-ogsatir:last-child{border-bottom:none;}
+.eg-ogsatir{display:flex;align-items:center;gap:10px;padding:9px 12px;margin-bottom:7px;background:var(--surface2);border:1px solid var(--border2);border-left:4px solid var(--border2);border-radius:12px;font-size:14px;}
+.eg-ogsatir:last-child{margin-bottom:0;}
+.eg-ogsatir.eg-k{border-left-color:var(--pink);background:linear-gradient(90deg,#f472b61c,var(--surface2) 55%);}
+.eg-ogsatir.eg-e{border-left-color:var(--cyan);background:linear-gradient(90deg,#22d3ee1c,var(--surface2) 55%);}
+.eg-baslik{display:flex;align-items:center;gap:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.eg-chev{color:var(--text3);font-size:12px;transition:transform .2s;}
+.eg-chev.acik{transform:rotate(180deg);}
 .eg-in{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 13px;color:var(--text);font-family:inherit;font-size:14px;outline:none;box-sizing:border-box;}
 .sheet{background:var(--surface);border-radius:26px 26px 0 0;border-top:1px solid var(--border2);padding:22px 20px max(26px,env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:90vh;overflow-y:auto;position:relative;}
 .sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px;}
@@ -1936,6 +1941,7 @@ let PAGE='anasayfa', PREV_PAGE='anasayfa';
 let LANG=localStorage.getItem('appLang')||'tr';
 const TRANSLATIONS={
   tr:{
+    eg_bu_donem_pay:'Bu dönem payın',
     eg_gelir:'Gelir', eg_gelirim:'Gelirim (dönem payın)', eg_bu_donem:'Bu dönem', eg_donem_sonra:'dönem sonra', eg_donem_once:'dönem önce', eg_toplam_payim:'Toplam payın', eg_donem:'Dönem', eg_gelir_yok:'Gelir bilgisi henüz hazır değil. Stüdyo uygulaması açıldığında güncellenir.', eg_tahmini:'Gelecek dönem: şu ana kadar alınan ödemelere göre hesaplanır, değişebilir.', eg_gelir_not:'Yalnızca kendi sınıflarındaki payın gösterilir. Tutarlar stüdyo tarafından hesaplanır.', eg_son_guncelleme:'Son güncelleme',
     eg_tab:'Eğitmen', eg_panel:'Eğitmen Paneli', eg_giris_btn:'Eğitmen Girişi', eg_giris_basarisiz:'Giriş başarısız.', eg_tel_ph:'Telefon numaranız', eg_cikis:'Çıkış', eg_ogrencilerim:'Öğrencilerim', eg_siniflarim:'Sınıflarım', eg_ozel_plan:'Özel ders planlaması', eg_ara:'Öğrenci ara', eg_hepsi:'Hepsi', eg_aktif_c:'Aktif', eg_pasif_c:'Pasif', eg_aktif:'aktif', eg_pasif:'pasif', eg_asistan:'asistan', eg_kisi:'kişi', eg_gosterilecek_yok:'Gösterilecek öğrenci yok.', eg_sinif_yok:'Size atanmış sınıf yok.', eg_aktif_ogrenci:'aktif öğrenci', eg_birlikte:'birlikte', eg_kapali:'kapalı', eg_kayitli_yok:'Kayıtlı öğrenci yok.', eg_saat_kisa:'saat', eg_islendi:'işlendi', eg_islenmedi:'işlenmedi', eg_ders_planla:'Ders planla', eg_aktif_paket_yok_ogr:'Aktif özel ders paketi olan öğrenciniz yok.', eg_paketlerim:'Paketlerim', eg_saat_kaldi:'saat kaldı', eg_aktif_paket_yok:'Aktif paket yok.', eg_planlanan:'Planlanan dersler', eg_planlanmis_yok:'Planlanmış ders yok.', eg_gecmis:'Geçmiş dersler', eg_ders_duzenle:'Dersi düzenle', eg_tarih:'Tarih', eg_saat:'Saat', eg_sure:'Süre (saat)', eg_ders_not:'Ders, öğrencinin aktif paketine bağlanır. Saat geçince paketten stüdyo tarafından düşülür.', eg_tarih_saat_gir:'Tarih ve saat girin.', eg_ogrenci_sec:'Öğrenci seçin.', eg_ders_kaydedildi:'Ders kaydedildi', eg_ders_sil_aciklama:'Planlanan ders silinecek. Emin misiniz?', eg_ders_silindi:'Ders silindi', eg_sifre_ilk_aciklama:'İlk girişte kendi şifrenizi belirlemeniz gerekir (en az 6 karakter, telefonun son 4 hanesi olmasın).', portal_devam_sifre:'Devam etmek için şifre belirleyin', portal_devam_aciklama:'İlk girişte kendinize özel bir şifre belirlemeniz gerekiyor. Bilgileriniz şifre belirlendikten sonra görünür.', portal_bolum_yuklenemedi:'Bu bölüm yüklenemedi', portal_henuz_sinif_yok:'Henüz sınıf kaydı yok', portal_demo:'Demo hesabı', portal_demo_sifre:'Demo modunda şifre değiştirilmez', srv_ag_hata:'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin ya da daha sonra tekrar deneyin.', srv_islem_basarisiz:'İşlem başarısız', srv_hatali_giris:'Telefon numarası veya şifre hatalı.', srv_oturum:'Oturum süresi doldu. Lütfen tekrar giriş yapın.', srv_kayit_yok:'Kayıt bulunamadı.', srv_eski_hatali:'Mevcut şifre hatalı.', srv_son4:'Yeni şifre telefon numaranızın son 4 hanesi olamaz.', srv_once_sifre:'Önce şifrenizi değiştirin.', srv_mesaj_bos:'Mesaj boş olamaz.', srv_mesaj_limit:'Bugün için mesaj sınırına ulaştınız.', srv_yetkisiz:'Yetkisiz.', srv_sunucu:'Sunucu hatası. Lütfen tekrar deneyin.', srv_tarih_saat:'Tarih ve saat geçerli olmalı.', srv_sure:'Süre 0,5 ile 4 saat arasında, yarım saat adımlarıyla olmalı.', srv_gecmis:'Geçmiş bir tarihe ders planlanamaz.', srv_paket_yok:'Bu öğrencinin sizinle aktif bir özel ders paketi yok.', srv_cakisma:'Bu saatte başka bir dersiniz var.', srv_ders_yok:'Ders bulunamadı.', srv_dusulmus:'Paketten düşülmüş ders değiştirilemez.', srv_kilit:'Çok fazla hatalı deneme. {n} {b} sonra tekrar deneyin.', srv_dk:'dakika', srv_sn:'saniye', egf_tel:'Telefon (eğitmen paneli girişi için)', egf_tel_not:'İlk şifre telefonun son 4 hanesidir; ilk girişte eğitmen kendi şifresini belirler.', egf_sifirla:'🔑 Eğitmen şifresini sıfırla', egf_sifirla_baslik:'Eğitmen şifresini sıfırla', egf_sifirla_acik:'için şifre telefonun son 4 hanesine döndürülecek, açık oturumları kapanacak.', egf_sifirlandi:'Şifre sıfırlandı', egf_tel_min:'Telefon numarası en az 10 haneli olmalı.', egf_tel_cakisma:'Bu telefon başka bir eğitmende kayıtlı.',
     topbar_sub:'Yönetim Paneli', sync_live:'Canlı', sync_saving:'Kaydediliyor...',
@@ -2116,6 +2122,7 @@ const TRANSLATIONS={
     aylik_ortak_kira:'Aylık Ortak Kira (₺)', nin_ozel_dersleri:'{ad}\'in Özel Dersleri', atanmamis_ozel_dersler:'Atanmamış Özel Dersler',
   },
   en:{
+    eg_bu_donem_pay:'This period',
     eg_gelir:'Income', eg_gelirim:'My income (share per period)', eg_bu_donem:'This period', eg_donem_sonra:'periods ahead', eg_donem_once:'periods ago', eg_toplam_payim:'Your total share', eg_donem:'Period', eg_gelir_yok:'Income information is not ready yet. It updates when the studio app is opened.', eg_tahmini:'Future period: calculated from payments received so far, may change.', eg_gelir_not:'Only your own share from your classes is shown. Amounts are calculated by the studio.', eg_son_guncelleme:'Last updated',
     eg_tab:'Instructor', eg_panel:'Instructor Panel', eg_giris_btn:'Instructor Login', eg_giris_basarisiz:'Login failed.', eg_tel_ph:'Your phone number', eg_cikis:'Log out', eg_ogrencilerim:'My students', eg_siniflarim:'My classes', eg_ozel_plan:'Private lesson scheduling', eg_ara:'Search students', eg_hepsi:'All', eg_aktif_c:'Active', eg_pasif_c:'Inactive', eg_aktif:'active', eg_pasif:'inactive', eg_asistan:'assistant', eg_kisi:'people', eg_gosterilecek_yok:'No students to show.', eg_sinif_yok:'No classes assigned to you.', eg_aktif_ogrenci:'active students', eg_birlikte:'with', eg_kapali:'closed', eg_kayitli_yok:'No enrolled students.', eg_saat_kisa:'h', eg_islendi:'completed', eg_islenmedi:'not yet', eg_ders_planla:'Schedule lesson', eg_aktif_paket_yok_ogr:'You have no students with an active private package.', eg_paketlerim:'My packages', eg_saat_kaldi:'hours left', eg_aktif_paket_yok:'No active package.', eg_planlanan:'Scheduled lessons', eg_planlanmis_yok:'No scheduled lessons.', eg_gecmis:'Past lessons', eg_ders_duzenle:'Edit lesson', eg_tarih:'Date', eg_saat:'Time', eg_sure:'Duration (hours)', eg_ders_not:'The lesson is linked to the student\'s active package. The studio deducts it from the package after the time has passed.', eg_tarih_saat_gir:'Enter date and time.', eg_ogrenci_sec:'Select a student.', eg_ders_kaydedildi:'Lesson saved', eg_ders_sil_aciklama:'The scheduled lesson will be deleted. Are you sure?', eg_ders_silindi:'Lesson deleted', eg_sifre_ilk_aciklama:'On first login you must set your own password (at least 6 characters, not the last 4 digits of your phone).', portal_devam_sifre:'Set a password to continue', portal_devam_aciklama:'On first login you need to set your own password. Your information appears after the password is set.', portal_bolum_yuklenemedi:'This section could not be loaded', portal_henuz_sinif_yok:'No class enrollment yet', portal_demo:'Demo account', portal_demo_sifre:'Password is not changed in demo mode', srv_ag_hata:'Could not reach the server. Check your internet connection or try again later.', srv_islem_basarisiz:'Request failed', srv_hatali_giris:'Phone number or password is incorrect.', srv_oturum:'Session expired. Please log in again.', srv_kayit_yok:'Record not found.', srv_eski_hatali:'Current password is incorrect.', srv_son4:'New password cannot be the last 4 digits of your phone number.', srv_once_sifre:'Please change your password first.', srv_mesaj_bos:'Message cannot be empty.', srv_mesaj_limit:'You have reached the message limit for today.', srv_yetkisiz:'Not authorized.', srv_sunucu:'Server error. Please try again.', srv_tarih_saat:'Date and time must be valid.', srv_sure:'Duration must be between 0.5 and 4 hours in half-hour steps.', srv_gecmis:'Lessons cannot be scheduled in the past.', srv_paket_yok:'This student has no active private package with you.', srv_cakisma:'You already have a lesson at this time.', srv_ders_yok:'Lesson not found.', srv_dusulmus:'A lesson already deducted from the package cannot be changed.', srv_kilit:'Too many failed attempts. Try again in {n} {b}.', srv_dk:'minutes', srv_sn:'seconds', egf_tel:'Phone (for instructor panel login)', egf_tel_not:'The first password is the last 4 digits of the phone; the instructor sets their own on first login.', egf_sifirla:'🔑 Reset instructor password', egf_sifirla_baslik:'Reset instructor password', egf_sifirla_acik:'\'s password will be reset to the last 4 digits of their phone and open sessions will be closed.', egf_sifirlandi:'Password reset', egf_tel_min:'Phone number must have at least 10 digits.', egf_tel_cakisma:'This phone is already used by another instructor.',
     topbar_sub:'Management Panel', sync_live:'Live', sync_saving:'Saving...',
@@ -2296,6 +2303,7 @@ const TRANSLATIONS={
     aylik_ortak_kira:'Shared Monthly Rent (₺)', nin_ozel_dersleri:'{ad}\'s Private Lessons', atanmamis_ozel_dersler:'Unassigned Private Lessons',
   },
   ru:{
+    eg_bu_donem_pay:'Этот период',
     eg_gelir:'Доход', eg_gelirim:'Мой доход (доля за период)', eg_bu_donem:'Этот период', eg_donem_sonra:'периода вперёд', eg_donem_once:'периода назад', eg_toplam_payim:'Ваша общая доля', eg_donem:'Период', eg_gelir_yok:'Данные о доходе пока не готовы. Они обновляются при открытии приложения студии.', eg_tahmini:'Будущий период: рассчитано по полученным платежам, может измениться.', eg_gelir_not:'Показана только ваша доля по вашим группам. Суммы рассчитывает студия.', eg_son_guncelleme:'Обновлено',
     eg_tab:'Преподаватель', eg_panel:'Панель преподавателя', eg_giris_btn:'Вход для преподавателя', eg_giris_basarisiz:'Не удалось войти.', eg_tel_ph:'Ваш номер телефона', eg_cikis:'Выйти', eg_ogrencilerim:'Мои ученики', eg_siniflarim:'Мои группы', eg_ozel_plan:'Планирование индивидуальных уроков', eg_ara:'Поиск учеников', eg_hepsi:'Все', eg_aktif_c:'Активные', eg_pasif_c:'Неактивные', eg_aktif:'активен', eg_pasif:'неактивен', eg_asistan:'ассистент', eg_kisi:'чел.', eg_gosterilecek_yok:'Нет учеников для показа.', eg_sinif_yok:'Вам не назначено групп.', eg_aktif_ogrenci:'активных учеников', eg_birlikte:'вместе с', eg_kapali:'закрыта', eg_kayitli_yok:'Нет записанных учеников.', eg_saat_kisa:'ч', eg_islendi:'проведён', eg_islenmedi:'не проведён', eg_ders_planla:'Запланировать урок', eg_aktif_paket_yok_ogr:'Нет учеников с активным пакетом индивидуальных уроков.', eg_paketlerim:'Мои пакеты', eg_saat_kaldi:'ч осталось', eg_aktif_paket_yok:'Нет активных пакетов.', eg_planlanan:'Запланированные уроки', eg_planlanmis_yok:'Нет запланированных уроков.', eg_gecmis:'Прошедшие уроки', eg_ders_duzenle:'Изменить урок', eg_tarih:'Дата', eg_saat:'Время', eg_sure:'Длительность (ч)', eg_ders_not:'Урок привязывается к активному пакету ученика. После прошедшего времени студия списывает его с пакета.', eg_tarih_saat_gir:'Введите дату и время.', eg_ogrenci_sec:'Выберите ученика.', eg_ders_kaydedildi:'Урок сохранён', eg_ders_sil_aciklama:'Запланированный урок будет удалён. Вы уверены?', eg_ders_silindi:'Урок удалён', eg_sifre_ilk_aciklama:'При первом входе нужно задать свой пароль (минимум 6 символов, не последние 4 цифры телефона).', portal_devam_sifre:'Задайте пароль, чтобы продолжить', portal_devam_aciklama:'При первом входе нужно задать свой пароль. Ваши данные появятся после этого.', portal_bolum_yuklenemedi:'Не удалось загрузить раздел', portal_henuz_sinif_yok:'Пока нет записи в группы', portal_demo:'Демо-аккаунт', portal_demo_sifre:'В демо-режиме пароль не меняется', srv_ag_hata:'Не удалось связаться с сервером. Проверьте интернет или повторите позже.', srv_islem_basarisiz:'Операция не выполнена', srv_hatali_giris:'Неверный номер телефона или пароль.', srv_oturum:'Сеанс истёк. Войдите снова.', srv_kayit_yok:'Запись не найдена.', srv_eski_hatali:'Текущий пароль неверен.', srv_son4:'Новый пароль не может быть последними 4 цифрами телефона.', srv_once_sifre:'Сначала смените пароль.', srv_mesaj_bos:'Сообщение не может быть пустым.', srv_mesaj_limit:'Вы достигли лимита сообщений на сегодня.', srv_sunucu:'Ошибка сервера. Повторите попытку.', srv_tarih_saat:'Укажите корректные дату и время.', srv_sure:'Длительность — от 0,5 до 4 часов с шагом в полчаса.', srv_gecmis:'Нельзя планировать урок в прошлом.', srv_paket_yok:'У этого ученика нет активного пакета с вами.', srv_cakisma:'В это время у вас уже есть урок.', srv_ders_yok:'Урок не найден.', srv_dusulmus:'Урок, уже списанный с пакета, изменить нельзя.', srv_kilit:'Слишком много неудачных попыток. Повторите через {n} {b}.', srv_dk:'мин', srv_sn:'сек', egf_tel:'Телефон (для входа в панель преподавателя)', egf_tel_not:'Первый пароль — последние 4 цифры телефона; при первом входе преподаватель задаёт свой.', egf_sifirla:'🔑 Сбросить пароль преподавателя', egf_sifirla_baslik:'Сбросить пароль преподавателя', egf_sifirla_acik:': пароль будет сброшен на последние 4 цифры телефона, открытые сеансы закроются.', egf_sifirlandi:'Пароль сброшен', egf_tel_min:'Номер телефона — не менее 10 цифр.', egf_tel_cakisma:'Этот телефон уже указан у другого преподавателя.', srv_yetkisiz:'Нет доступа.',
     topbar_sub:'Панель управления', sync_live:'В сети', sync_saving:'Сохранение...',
@@ -7135,7 +7143,6 @@ async function tatilSil(id){
   setSyncing(false);
 }
 function renderAll(){
-  if(!PORTAL_OG_ID)egitmenGelirYayinlaPlanla();
   if(!PORTAL_OG_ID)otOtoDusKontrol();
   renderAnasayfa();renderOgrenciler();renderSiniflar();
   if(PAGE==='sinif-detay')renderSinifDetay(CUR_SINIF);
@@ -7306,7 +7313,7 @@ const YAZMA_KATEGORILER=[
   {k:'video',ad:'🎬 Ders videoları'},
   {k:'ayar',ad:'⚙ Ayarlar: eğitmenler, kira/gider, WhatsApp şablonları, ödeme bilgileri'},
 ];
-const YAZMA_HARITA={ogrenciler:'ogrenci',ogrenci_hesaplar:'ogrenci',egitmen_hesaplar:'ayar',egitmen_gelir:'*',portal_oturum:'ogrenci',portal_kilit:'ogrenci',
+const YAZMA_HARITA={ogrenciler:'ogrenci',ogrenci_hesaplar:'ogrenci',egitmen_hesaplar:'ayar',portal_oturum:'ogrenci',portal_kilit:'ogrenci',
   ogrenciGecmisi:'*',sinifGecmisi:'*',siniflar:'sinif',tatiller:'sinif',odemeler:'odeme',yoklamalar:'yoklama',
   ozelPaketler:'ozel',ozelSeanslar:'ozel',ozelOgrenciler:'ozel',videoSiniflar:'video',
   egitmenler:'ayar',ayarlar:'ayar',gider_ayarlari:'ayar',ogrenci_notlar:'serbest'};
@@ -9940,51 +9947,6 @@ function sinifDonemPayHesapla(si,donemIdx,aktifSinifSayisi){
 }
 
 
-// ── Eğitmen paneli gelir özeti ──
-// Gelir hesabı (kira, asistan payı, dönem dağılımı) yalnızca yönetici uygulamasında yapılabildiği için sonuç burada hesaplanıp
-// her eğitmen için AYRI bir belgeye (egitmen_gelir/{eğitmenId}) yazılır. Eğitmen paneli yalnızca kendi belgesini görür:
-// sadece kendi sınıflarının dönem bazlı payı, kira/ödeme/diğer eğitmen bilgisi YOKTUR.
-let _egGelirImza={};try{_egGelirImza=JSON.parse(localStorage.getItem('eg_gelir_imza')||'{}');}catch(e){}
-let _egGelirT=null;
-function egitmenGelirYayinlaPlanla(){clearTimeout(_egGelirT);_egGelirT=setTimeout(egitmenGelirYayinla,6000);}
-function _tarihStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-async function egitmenGelirYayinla(){
-  try{
-    if(typeof PORTAL_TOKEN!=='undefined'&&(PORTAL_TOKEN||EG_TOKEN))return;
-    if(!GIDER_AYARLARI_YUKLENDI||!S.siniflar.length||!S.egitmenler.length)return; // kira/gider ayarları yüklenmeden hesaplanırsa pay yanlış çıkar
-    if(YETKI_GIZLI.has('gelirgider')||!yazmaIzni('egitmen_gelir','set'))return;
-    const aktifler=S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif');
-    const aktifSay=aktifler.length;
-    const harita={}; // eğitmenId -> {sinifId: {id,ad,gun,saat,guncelIdx,donemler[]}}
-    aktifler.forEach(si=>{
-      const g=sinifGuncelDonemIndex(si);
-      for(let idx=Math.max(0,g-12);idx<=g+3;idx++){
-        const d=sinifDonemPayHesapla(si,idx,aktifSay);
-        const al=sinifDonemAraligi(si,idx);
-        const pay={};const ekle=(id,t)=>{if(id)pay[id]=(pay[id]||0)+(t||0);};
-        if(d){
-          (d.karPaylari||[]).forEach(kp=>ekle(kp.egitmenId,kp.tutar));
-          if(d.egitmen&&!d.egitmen.basEgitmen)ekle(d.egitmen.id,d.asistanOdeme);
-          if(d.egitmen2&&!d.ikiBasEgitmen)ekle(d.egitmen2.id,d.asistan2Odeme);
-        }
-        [si.egitmenId,si.egitmen2Id].filter(Boolean).forEach(eid=>{
-          const m=(harita[eid]=harita[eid]||{});
-          const k=(m[si.id]=m[si.id]||{id:si.id,ad:si.ad,gun:si.gun||'',saat:si.saat||'',guncelIdx:g,donemler:[]});
-          k.donemler.push({i:idx,bas:_tarihStr(al.bas),bitis:_tarihStr(al.bitis),pay:Math.round(pay[eid]||0)});
-        });
-      }
-    });
-    for(const eg of S.egitmenler){
-      const siniflar=Object.values(harita[eg.id]||{});
-      const imza=JSON.stringify(siniflar);
-      if(_egGelirImza[eg.id]===imza)continue;
-      await db.collection('egitmen_gelir').doc(eg.id).set({siniflar,guncelleme:Date.now()});
-      _egGelirImza[eg.id]=imza;
-      try{localStorage.setItem('eg_gelir_imza',JSON.stringify(_egGelirImza));}catch(e){}
-    }
-  }catch(e){console.warn('Eğitmen gelir özeti yayınlanamadı:',e);}
-}
-
 async function renderGiderRapor(){
   const el=document.getElementById('gider-rapor-content');
   if(!el)return;
@@ -10559,7 +10521,7 @@ function srvMsg(m){
 // ════════════════════════════════════════════════════════════
 // EĞİTMEN PANELİ (sunucu fonksiyonu üzerinden; yalnızca kendi verisi gelir)
 // ════════════════════════════════════════════════════════════
-let EG_GELIR_OFS=0;
+let EG_GELIR_OFS=0, EG_OG_ACIK={};
 let EG_TOKEN=null, EG={gelir:null,egitmen:null,siniflar:[],ogrenciler:[],paketler:[],seanslar:[],ozelOgrenciler:[]}, EG_TAB='ogrenciler', EG_FILTRE='hepsi', EG_ARA='', EG_ACIK={}, EG_DUZENLE=null;
 const egEsc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function egitmenLoginKontrol(){
@@ -10645,11 +10607,18 @@ async function egSifreKaydet(ilk){
     if(ilk)await egitmenBaslat(false);
   }catch(e){alert(t('hata')+': '+e.message);}
 }
+// Bu dönemki toplam payım (her sınıfın kendi güncel dönemi); veri yoksa null
+function egBuDonemPay(){
+  const g=EG.gelir;if(!g||!(g.siniflar||[]).length)return null;
+  return g.siniflar.reduce((s,k)=>{const d=k.donemler.find(x=>x.i===k.guncelIdx);return s+(d?d.pay||0:0);},0);
+}
 function egTab(k){
   EG_TAB=k;
   ['ogrenciler','siniflar','ozel','gelir'].forEach(x=>document.getElementById('egtab-'+x).classList.toggle('active',x===k));
   document.getElementById('eg-baslik').textContent=t('merhaba')+', '+(EG.egitmen?.ad||'')+'!';
-  document.getElementById('eg-alt').textContent=t({ogrenciler:'eg_ogrencilerim',siniflar:'eg_siniflarim',ozel:'eg_ozel_plan',gelir:'eg_gelirim'}[k]);
+  const altYazi=t({ogrenciler:'eg_ogrencilerim',siniflar:'eg_siniflarim',ozel:'eg_ozel_plan',gelir:'eg_gelirim'}[k]);
+  const pay=egBuDonemPay();
+  document.getElementById('eg-alt').innerHTML=egEsc(altYazi)+(pay!==null&&k!=='gelir'?` · <a href="#" onclick="egTab('gelir');return false;" style="color:var(--green);text-decoration:none;font-weight:600;">💰 ${t('eg_bu_donem_pay')}: ${pay.toLocaleString(LC())} ₺</a>`:'');
   egRender();
 }
 function egRender(){
@@ -10657,6 +10626,7 @@ function egRender(){
   try{({ogrenciler:egRenderOgrenciler,siniflar:egRenderSiniflar,ozel:egRenderOzel,gelir:egRenderGelir})[EG_TAB](el);}
   catch(e){console.error(e);el.innerHTML='<div class="portal-card" style="text-align:center;">'+t('portal_bolum_yuklenemedi')+'</div>';}
 }
+function egCins(o){return o.cinsiyet==='k'?'eg-k':o.cinsiyet==='e'?'eg-e':'';}
 function egAvatar(o){return `<div class="avatar ${o.cinsiyet==='k'?'av-k':o.cinsiyet==='e'?'av-e':''}" style="width:32px;height:32px;font-size:11px;">${egEsc(initials(o.ad,o.soyad))}</div>`;}
 function egTelHtml(o){
   const d=String(o.tel||'').replace(/\D/g,'');if(!d)return '';
@@ -10679,6 +10649,7 @@ function egRenderOgrenciler(el){
   html+=egOgrenciListeHtml(ara)+'</div>';
   el.innerHTML=html;
 }
+function egOgKartToggle(id,suAnAcik){EG_OG_ACIK[id]=!suAnAcik;egRender();}
 function egAraYenile(){const l=document.getElementById('eg-liste');if(l)l.innerHTML=egOgrenciListeHtml(EG_ARA.toLocaleLowerCase('tr'));}
 function egOgrenciListeHtml(ara){
   let html='',toplam=0;
@@ -10694,8 +10665,9 @@ function egOgrenciListeHtml(ara){
     if(!satirlar.length)return;
     toplam+=satirlar.length;
     satirlar.sort((a,b)=>egAdSirala(a.o,b.o));
-    html+=`<div class="portal-card"><div style="font-weight:600;font-size:14px;margin-bottom:6px;">${egEsc(si.ad)} <span style="font-size:12px;color:var(--text3);font-weight:400;">· ${satirlar.length} ${t('eg_kisi')}</span></div>`+
-      satirlar.map(({o,k})=>`<div class="eg-ogsatir">${egAvatar(o)}<div style="flex:1;min-width:0;">${egAd(o)}${egTelHtml(o)}</div>${egDurumRozet(o,k)}</div>`).join('')+'</div>';
+    const acik=ara?true:(EG_OG_ACIK[si.id]!==undefined?EG_OG_ACIK[si.id]:EG.siniflar.length===1); // tek sınıf: açık; çok sınıf: kapalı başlar, istenirse açılır
+    html+=`<div class="portal-card"><div class="eg-baslik" onclick="egOgKartToggle('${si.id}',${acik})"><div style="flex:1;min-width:0;font-weight:600;font-size:14px;">${egEsc(si.ad)} <span style="font-size:12px;color:var(--text3);font-weight:400;">· ${satirlar.length} ${t('eg_kisi')}</span></div><span class="eg-chev ${acik?'acik':''}">▼</span></div>`+
+      (acik?'<div style="margin-top:10px;">'+satirlar.map(({o,k})=>`<div class="eg-ogsatir ${egCins(o)}">${egAvatar(o)}<div style="flex:1;min-width:0;">${egAd(o)}${egTelHtml(o)}</div>${egDurumRozet(o,k)}</div>`).join('')+'</div>':'')+'</div>';
   });
   return html||'<div class="portal-card" style="text-align:center;color:var(--text3);">'+t('eg_gosterilecek_yok')+'</div>';
 }
@@ -10710,8 +10682,8 @@ function egRenderSiniflar(el){
       <div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="EG_ACIK['${si.id}']=!EG_ACIK['${si.id}'];egRender()">
         <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:15px;">${egEsc(si.ad)}</div>
           <div style="font-size:12px;color:var(--text3);margin-top:2px;">${egEsc(si.gun||'')} ${egEsc(si.saat||'')} · ${aktifSayi} ${t('eg_aktif_ogrenci')}${ortak.length?' · '+t('eg_birlikte')+': '+egEsc(ortak.join(', ')):''}</div></div>
-        ${si.durum==='pasif'?'<span class="badge badge-gray">'+t('eg_kapali')+'</span>':''}<span style="color:var(--text3);">${acik?'▲':'▼'}</span></div>
-      ${acik?'<div style="margin-top:8px;">'+(ogler.length?ogler.map(({o,k})=>`<div class="eg-ogsatir">${egAvatar(o)}<div style="flex:1;min-width:0;">${egAd(o)}${egTelHtml(o)}</div>${egDurumRozet(o,k)}</div>`).join(''):'<div style="font-size:12px;color:var(--text3);">'+t('eg_kayitli_yok')+'</div>')+'</div>':''}
+        ${si.durum==='pasif'?'<span class="badge badge-gray">'+t('eg_kapali')+'</span>':''}<span class="eg-chev ${acik?'acik':''}">▼</span></div>
+      ${acik?'<div style="margin-top:8px;">'+(ogler.length?ogler.map(({o,k})=>`<div class="eg-ogsatir ${egCins(o)}">${egAvatar(o)}<div style="flex:1;min-width:0;">${egAd(o)}${egTelHtml(o)}</div>${egDurumRozet(o,k)}</div>`).join(''):'<div style="font-size:12px;color:var(--text3);">'+t('eg_kayitli_yok')+'</div>')+'</div>':''}
     </div>`;
   }).join('');
 }

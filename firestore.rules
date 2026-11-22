@@ -122,11 +122,7 @@ service cloud.firestore {
       allow read: if giderGorebilir();
       allow write: if yaz('ayar');
     }
-    // Eğitmen paneli gelir özeti: yönetici uygulaması yazar, sunucu fonksiyonu eğitmene yalnızca kendi belgesini verir
-    match /egitmen_gelir/{id} {
-      allow read: if giderGorebilir();
-      allow write: if giderGorebilir() && yazHerhangi();
-    }
+    // egitmen_gelir: yalnızca sunucu fonksiyonu yazar/okur (Admin SDK); istemciye kapalı (varsayılan red)
     // Günlük kayıtları: herhangi bir yazma yetkisi olan kullanıcı yazar
     match /ogrenciGecmisi/{id} {
       allow read: if oku();

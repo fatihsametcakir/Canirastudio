@@ -12,6 +12,7 @@
  */
 const { onRequest } = require('firebase-functions/v2/https');
 const admin = require('firebase-admin');
+const { gelirHesapla } = require('./hesap'); // yönetici uygulamasındaki hesaptan otomatik üretilir (tools/hesap-uret.js)
 const crypto = require('crypto');
 
 admin.initializeApp();
@@ -270,16 +271,40 @@ async function egitmenGiris(req, res) {
   res.json({ ok: true, token: anahtar, ilkGiris, ad: eg.ad || '' });
 }
 
+
+// ── Gelir özeti: yönetici uygulamasıyla AYNI hesap (hesap.js), yalnızca eğitmenin kendi payı ──
+// Hesap tüm koleksiyonları okur, o yüzden sonuç eğitmen başına `egitmen_gelir/{id}` belgesinde GELIR_TTL_MS süreyle saklanır.
+const GELIR_TTL_MS = 10 * 60 * 1000;
+async function gelirBul(E) {
+  const ref = db.collection('egitmen_gelir').doc(E);
+  const onbellek = await ref.get();
+  if (onbellek.exists && Date.now() - (onbellek.data().guncelleme || 0) < GELIR_TTL_MS) {
+    return { siniflar: onbellek.data().siniflar || [], guncelleme: onbellek.data().guncelleme };
+  }
+  const liste = async (k) => (await db.collection(k).get()).docs.map((d) => ({ id: d.id, ...d.data() }));
+  const [siniflar, ogrenciler, odemeler, egitmenler, tatiller, ogrenciGecmisi, gSnap, eskiSnap] = await Promise.all([
+    liste('siniflar'), liste('ogrenciler'), liste('odemeler'), liste('egitmenler'), liste('tatiller'), liste('ogrenciGecmisi'),
+    db.collection('ayarlar').doc('giderAyarlari').get(), db.collection('gider_ayarlari').doc('ayarlar').get(),
+  ]);
+  const giderAyarlari = gSnap.exists ? gSnap.data() : (eskiSnap.exists ? eskiSnap.data() : {});
+  const harita = gelirHesapla({ siniflar, ogrenciler, odemeler, egitmenler, tatiller, ogrenciGecmisi, giderAyarlari });
+  const simdi = Date.now();
+  const batch = db.batch();
+  egitmenler.forEach((e) => batch.set(db.collection('egitmen_gelir').doc(e.id), { siniflar: harita[e.id] || [], guncelleme: simdi }));
+  await batch.commit();
+  return { siniflar: harita[E] || [], guncelleme: simdi };
+}
+
 async function egitmenVeri(req, res, ot) {
   if (ot.ilkGiris) return res.json({ ilkGiris: true });
   const E = ot.egitmenId;
   const egDoc = await db.collection('egitmenler').doc(E).get();
   if (!egDoc.exists) return hata(res, 404, 'Eğitmen kaydı bulunamadı.');
-  const [siniflarSnap, ogSnap, paketSnap, seansSnap, egSnap, gecSnap, gelirDoc] = await Promise.all([
+  const [siniflarSnap, ogSnap, paketSnap, seansSnap, egSnap, gecSnap, gelir] = await Promise.all([
     db.collection('siniflar').get(), db.collection('ogrenciler').get(), db.collection('ozelPaketler').get(),
     db.collection('ozelSeanslar').where('egitmenId', '==', E).get(), db.collection('egitmenler').get(),
     db.collection('ogrenciGecmisi').where('olay', '==', 'cikis').get(),
-    db.collection('egitmen_gelir').doc(E).get(),
+    gelirBul(E),
   ]);
   const egAd = {}; egSnap.docs.forEach((d) => { egAd[d.id] = d.data().ad || ''; });
   const ogMap = {}; ogSnap.docs.forEach((d) => { ogMap[d.id] = { id: d.id, ...d.data() }; });
@@ -311,9 +336,7 @@ async function egitmenVeri(req, res, ot) {
     .map((x) => ({ id: x.id, ogrenciId: x.ogrenciId, paketId: x.paketId || null, tarih: x.tarih, saat: x.saat, sure: x.sure || 1, dusuldu: !!x.dusuldu }));
   const ozelOgIdler = new Set([...paketler.map((p) => p.ogrenciId), ...seanslar.map((x) => x.ogrenciId)]);
   const ozelOgrenciler = [...ozelOgIdler].map((id) => ogGoster(ogMap[id]));
-  // Gelir özeti yönetici uygulaması tarafından bu eğitmen için ayrı hazırlanır (yalnızca kendi payı)
-  const gelir = gelirDoc.exists ? { siniflar: gelirDoc.data().siniflar || [], guncelleme: gelirDoc.data().guncelleme || null } : null;
-  res.json({ egitmen: { id: E, ad: (egDoc.data() || {}).ad || '' }, siniflar, ogrenciler, paketler, seanslar, ozelOgrenciler, gelir });
+    res.json({ egitmen: { id: E, ad: (egDoc.data() || {}).ad || '' }, siniflar, ogrenciler, paketler, seanslar, ozelOgrenciler, gelir });
 }
 
 async function egitmenSifre(req, res, ot) {
