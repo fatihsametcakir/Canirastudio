@@ -1737,7 +1737,7 @@ try{
         <button class="drawer-btn" onclick="githubYedekTetikle()" id="gh-backup-btn" data-i18n="github_simdi_yedekle">☁ GitHub'a Şimdi Yedekle</button>
         <button class="drawer-btn" onclick="githubTokenSifirla()" style="font-size:12px;opacity:.7;" data-i18n="github_token_sifirla">🔑 GitHub Token Sıfırla</button>
         <div class="drawer-sep"></div>
-        <button class="drawer-btn" onclick="odemeOnarimAc()">🛠 Ödeme Onarımı (çıkmış öğrenciler)</button>
+        <button class="drawer-btn" id="odeme-onarim-btn" onclick="odemeOnarimAc()">🛠 Ödeme Onarımı (çıkmış öğrenciler)</button>
         <div style="font-size:11px;color:var(--text3);padding:2px 14px 8px;line-height:1.5;" data-i18n="yedek_otomatik_aciklama">Her gece 04:00'te otomatik çalışır. Manuel tetiklemek için tıklayın.</div>
       </div>
     </div>
@@ -7763,6 +7763,8 @@ async function tatilSil(id){
   setSyncing(false);
 }
 function renderAll(){
+  // Ödeme onarımı tek seferlik: onarılacak ödeme kalmadıysa menüde gösterme
+  {const ob=document.getElementById('odeme-onarim-btn');if(ob)try{ob.style.display=odemeOnarimAdaylari().length?'':'none';}catch(e){}}
   // Öğrenci birleştirme tek seferlik eski veri taşıması: taşınacak eski kayıt kalmadıysa menüde gösterme
   {const bi=document.getElementById('acc-birlestir-item');if(bi)bi.style.display=(S.ozelOgrenciler||[]).some(o=>!o.migrasyonTamamlandi)?'':'none';}
   if(!PORTAL_OG_ID)otOtoDusKontrol();
