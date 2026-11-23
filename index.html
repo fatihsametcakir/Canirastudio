@@ -917,6 +917,8 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 .yen-bolum .sec-header{flex-wrap:wrap;gap:8px;}
 .yen-bolum .grp-seg{flex:1 1 auto;min-width:0;max-width:100%;box-sizing:border-box;}
 .yen-bolum .grp-seg-btn{padding:5px 8px;font-size:12px;}
+.veri-sil-satir{border:1.5px solid #d9ac52a6;box-shadow:inset 0 0 0 1px #d9ac5224;}
+:root[data-acik="1"] .veri-sil-satir{border-color:#9a6f1ca0;box-shadow:inset 0 0 0 1px #9a6f1c20;}
 /* === ALTIN KART ÇERÇEVE (tüm ekranlar; geri almak için bu bloğu sil) === */
 .card,.portal-card,.gg-card,.grad-card,.og-grup-liste,.sinif-karti,.video-kart,.odeme-card,.odeme-sinif-grup,.ozel-og-kart,.takvim-ders-kart,.gider-ozet-kart,.egitmen-pay-kart,.login-box{border:1.5px solid #d9ac52a6;box-shadow:inset 0 0 0 1px #d9ac5224,0 0 0 .5px #d9ac5226}
 :root[data-acik="1"] .card,:root[data-acik="1"] .portal-card,:root[data-acik="1"] .gg-card,:root[data-acik="1"] .grad-card,:root[data-acik="1"] .og-grup-liste,:root[data-acik="1"] .sinif-karti,:root[data-acik="1"] .video-kart,:root[data-acik="1"] .odeme-card,:root[data-acik="1"] .odeme-sinif-grup,:root[data-acik="1"] .ozel-og-kart,:root[data-acik="1"] .takvim-ders-kart,:root[data-acik="1"] .gider-ozet-kart,:root[data-acik="1"] .egitmen-pay-kart,:root[data-acik="1"] .login-box{border-color:#9a6f1ca0;box-shadow:inset 0 0 0 1px #9a6f1c22,0 0 0 .5px #9a6f1c22}
@@ -2139,7 +2141,10 @@ try{
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:6px;" id="veri-sil-baslik">Sil</div>
   <div id="veri-sil-liste-alani">
-    <input id="veri-sil-ara" placeholder="Ara…" oninput="veriSilListele()" style="width:100%;margin-bottom:8px;"/>
+    <div style="position:relative;margin-bottom:10px;">
+      <div class="search-wrap"><input id="veri-sil-ara" placeholder="İsim ara..." oninput="veriSilListele();toggleClear('veri-sil-ara-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s;"/><button id="veri-sil-ara-clear" class="search-clear" onclick="clearSearch('veri-sil-ara',veriSilListele)">✕</button></div>
+      <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
+    </div>
     <div id="veri-sil-liste" style="max-height:48vh;overflow-y:auto;"></div>
   </div>
   <div id="veri-sil-onay-alani" style="display:none;">
@@ -5006,7 +5011,7 @@ function veriSilAc(tur){
   if(typeof drawerKapat==='function')drawerKapat();
   _VERI_SIL={tur,id:null};
   document.getElementById('veri-sil-baslik').textContent=tur==='ogrenci'?'👤 Öğrenci Sil':'🏫 Sınıf Sil';
-  document.getElementById('veri-sil-ara').value='';
+  document.getElementById('veri-sil-ara').value='';{const c=document.getElementById('veri-sil-ara-clear');if(c)c.classList.remove('visible');}
   veriSilGeri();
   openModal('m-veri-sil');
 }
@@ -5036,7 +5041,7 @@ function veriSilListele(){
     });
   }
   satirlar=satirlar.filter(x=>!q||(x.ad+' '+x.alt).toLocaleLowerCase('tr-TR').includes(q)).sort((a,b)=>(a.kilitli-b.kilitli)||a.ad.localeCompare(b.ad,'tr'));
-  kutu.innerHTML=satirlar.length?satirlar.map(x=>`<div onclick="veriSilSec('${x.id}')" style="padding:10px 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);margin-bottom:6px;cursor:pointer;${x.kilitli?'opacity:.6;':''}"><div style="font-size:14px;font-weight:600;">${x.ad}</div><div style="font-size:11.5px;color:var(--text3);margin-top:2px;">${x.alt}</div></div>`).join(''):'<div style="padding:16px;text-align:center;font-size:13px;color:var(--text3);">Sonuç yok</div>';
+  kutu.innerHTML=satirlar.length?satirlar.map(x=>`<div class="veri-sil-satir" onclick="veriSilSec('${x.id}')" style="padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:6px;cursor:pointer;background:var(--surface2);${x.kilitli?'opacity:.6;':''}"><div style="font-size:14px;font-weight:600;">${x.ad}</div><div style="font-size:11.5px;color:var(--text3);margin-top:2px;">${x.alt}</div></div>`).join(''):'<div style="padding:16px;text-align:center;font-size:13px;color:var(--text3);">Sonuç yok</div>';
 }
 function veriSilOdemeleri(tur,id){
   return S.odemeler.filter(o=>tur==='ogrenci'?o.ogrenciId===id:o.sinifId===id);
