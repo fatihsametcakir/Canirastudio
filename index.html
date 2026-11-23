@@ -2152,6 +2152,13 @@ try{
 
 <!-- Confirm -->
 
+<div class="overlay" id="m-kayit-sil"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:6px;">Başvuru silinsin mi?</div>
+  <div style="font-size:13px;line-height:1.55;margin-bottom:14px;color:var(--text2);" id="kayit-sil-mesaj">Bu başvuru ve kanıt kaydı kalıcı olarak silinecek.</div>
+  <button class="btn btn-danger" style="width:100%;padding:13px;" id="kayit-sil-btn">Kalıcı Olarak Sil</button>
+  <button class="btn btn-ghost" style="width:100%;padding:13px;margin-top:8px;" onclick="closeModal('m-kayit-sil')">Vazgeç</button>
+</div></div>
 <div class="overlay" id="m-sifre-onay"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:6px;" id="so-onay-baslik">Emin misiniz?</div>
@@ -3820,8 +3827,13 @@ function kayitLinkKopyala(kod){
 async function kayitLinkSil(id){
   try{await db.collection('kayit_linkleri').doc(id).delete();KAYIT_DATA.linkler=KAYIT_DATA.linkler.filter(x=>x.id!==id);kayitAdminCiz();}catch(e){showToast('Silinemedi: '+(e.message||e),'error');}
 }
-async function kayitBasvuruSil(id){
-  if(!confirm('Bu başvuru ve kanıt kaydı kalıcı olarak silinecek. Emin misiniz?'))return;
+function kayitBasvuruSil(id){
+  const b=KAYIT_DATA.basvurular.find(x=>x.id===id)||{},o=b.ogrenci||{};
+  document.getElementById('kayit-sil-mesaj').textContent='"'+(o.ad||'')+' '+(o.soyad||'')+'" başvurusu ve kanıt kaydı kalıcı olarak silinecek. Bu işlem geri alınamaz.';
+  document.getElementById('kayit-sil-btn').onclick=()=>{closeModal('m-kayit-sil');kayitBasvuruSilUygula(id);};
+  openModal('m-kayit-sil');
+}
+async function kayitBasvuruSilUygula(id){
   try{await db.collection('kayit_basvurulari').doc(id).delete();KAYIT_DATA.basvurular=KAYIT_DATA.basvurular.filter(x=>x.id!==id);kayitAdminCiz();}catch(e){showToast('Silinemedi: '+(e.message||e),'error');}
 }
 async function kayitBasvuruReddet(id){
