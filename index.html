@@ -826,7 +826,11 @@ try{
   const safir=new THREE.MeshStandardMaterial({color:0x1f64d8,metalness:.2,roughness:.08,envMapIntensity:1.6,emissive:0x061636});
   const elmas=new THREE.MeshStandardMaterial({color:0xeaf6ff,metalness:.1,roughness:.03,envMapIntensity:2.2,emissive:0x1a2a3a});
   const P=(a,b,c)=>new THREE.Vector3(a,b,c);
-  const zumrut=new THREE.MeshStandardMaterial({color:0x0c9e56,metalness:.25,roughness:.07,envMapIntensity:1.8,emissive:0x04361d});
+  const zumrut=new THREE.MeshPhysicalMaterial({color:0x04602f,metalness:.1,roughness:.04,clearcoat:1,clearcoatRoughness:.02,envMapIntensity:2.1,flatShading:true,emissive:0x021f10,reflectivity:.9});
+  // zümrüt kesim (basamaklı dikdörtgen, köşeleri kırık) ve çerçeve üreticileri
+  function oktagon(w,h,c){const sh=new THREE.Shape();sh.moveTo(-w+c,-h);sh.lineTo(w-c,-h);sh.lineTo(w,-h+c);sh.lineTo(w,h-c);sh.lineTo(w-c,h);sh.lineTo(-w+c,h);sh.lineTo(-w,h-c);sh.lineTo(-w,-h+c);sh.closePath();return sh;}
+  function zGeo(w,h){const b=Math.min(w,h)*.36;const geo=new THREE.ExtrudeGeometry(oktagon(w,h,Math.min(w,h)*.32),{depth:.012,bevelEnabled:true,bevelThickness:.03,bevelSize:b,bevelOffset:-b,bevelSegments:3,curveSegments:1});geo.translate(0,0,-.006);return geo;}
+  function cerceve(w,h,t){const sh=oktagon(w+t,h+t,Math.min(w,h)*.32+t*.5);const hl=oktagon(w-.004,h-.004,Math.min(w,h)*.32);sh.holes.push(hl);const geo=new THREE.ExtrudeGeometry(sh,{depth:.02,bevelEnabled:true,bevelThickness:.012,bevelSize:.008,bevelSegments:2,curveSegments:1});geo.translate(0,0,-.01);return geo;}
   const goldK=new THREE.MeshStandardMaterial({color:0xc08a2a,metalness:1,roughness:.4,envMapIntensity:1,side:THREE.DoubleSide});
   const goldP=new THREE.MeshStandardMaterial({color:0xf6d98a,metalness:1,roughness:.12,envMapIntensity:1.6});
   function tac(kral){
@@ -852,7 +856,7 @@ try{
       const gr=new THREE.SphereGeometry(.026,10,8);
       for(let i=0;i<N;i++){const a=(i+.5)/N*Math.PI*2,sx=Math.sin(a)*1.012,cz=Math.cos(a)*1.012;
         [.1,.145,.19,.235,.28].forEach((y,k)=>M(gr,goldP,sx,y,cz));
-        M(new THREE.TorusGeometry(.055,.011,8,24),goldK,sx,.19,cz,a);}
+        M(cerceve(.03,.045,.014),goldP,sx,.19,cz,a);M(zGeo(.03,.045),zumrut,sx*1.004,.19,cz*1.004,a);}
     }
     for(let i=0;i<N;i++){
       const a=i/N*Math.PI*2,sx=Math.sin(a),cz=Math.cos(a);
@@ -881,8 +885,18 @@ try{
       }else{
         // taşlı yuva: çerçeveli (bezel) taş, yaprağın ortasında
         const gm=zumrut;
-        const gem=new THREE.Mesh(new THREE.SphereGeometry(.058,18,12),gm);gem.scale.set(1,1.25,.6);gem.position.set(sx*1.03,yb+.2,cz*1.03);gem.rotation.y=a;g.add(gem);
-        const bz=new THREE.Mesh(new THREE.TorusGeometry(.066,.014,8,24),goldP);bz.scale.set(1,1.25,1);bz.position.set(sx*1.03,yb+.2,cz*1.03);bz.rotation.y=a;g.add(bz);
+        M(zGeo(.05,.082),zumrut,sx*1.04,yb+.2,cz*1.04,a);
+        M(cerceve(.05,.082,.017),goldP,sx*1.034,yb+.2,cz*1.034,a);
+        // kenet tırnakları
+        [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(p=>{const bx=p[0]*.062,by=p[1]*.094;M(new THREE.SphereGeometry(.014,10,8),goldP,sx*1.045+cz*bx,yb+.2+by,cz*1.045-sx*bx,a);});
+        // küçük ikinci taş (üstte) ve altta damla taş
+        M(zGeo(.02,.028),zumrut,sx*1.03,yb+.37,cz*1.03,a);M(cerceve(.02,.028,.009),goldP,sx*1.026,yb+.37,cz*1.026,a);
+        // yaprak kenarı boyunca boncuklu kontur
+        const pts=s.getSpacedPoints(46),bg=new THREE.SphereGeometry(.012,8,6);
+        pts.forEach((p,k)=>{if(p.y<.06||k%2)return;M(bg,goldP,sx*1.0+cz*p.x,yb+p.y,cz*1.0-sx*p.x);});
+        // yaprağın iki yanında sarmal (volüt) süsleri
+        [-1,1].forEach(side=>{const tr=new THREE.Mesh(new THREE.TorusGeometry(.04,.008,6,20,Math.PI*1.5),goldP);tr.position.set(sx*1.03+cz*side*.1,yb+.2-.02,cz*1.03-sx*side*.1);tr.rotation.y=a;tr.rotation.z=side>0?Math.PI*.25:Math.PI*1.25;g.add(tr);
+          const tr2=new THREE.Mesh(new THREE.TorusGeometry(.022,.007,6,16,Math.PI*1.5),goldP);tr2.position.set(sx*1.03+cz*side*.1,yb+.3,cz*1.03-sx*side*.1);tr2.rotation.y=a;tr2.rotation.z=side>0?Math.PI*.75:-Math.PI*.25;g.add(tr2);});
         // yaprak ucu: altın top + altında küçük halka
         M(new THREE.SphereGeometry(.07,20,14),goldP,sx*.985,yb+hh+.035,cz*.985);
         const r2=new THREE.Mesh(new THREE.TorusGeometry(.05,.012,8,20),goldK);r2.position.set(sx*.985,yb+hh-.02,cz*.985);r2.rotation.x=Math.PI/2;g.add(r2);
