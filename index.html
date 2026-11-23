@@ -1813,7 +1813,6 @@ try{
       </div>
       <div class="acc-body" id="acc-veri">
         <button class="btn" style="width:100%;margin-bottom:10px;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b45;" onclick="drawerKapat();hataLogAc()">🐞 Hata Günlüğü <span class="hata-rozet-ic" id="hata-badge-btn" style="display:none;"></span></button>
-        <button class="btn btn-cyan" id="tel-duzenle-btn" style="width:100%;margin-bottom:10px;" onclick="telNumaralariniTemizle()">📱 Telefon Numaralarını Düzenle</button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa45;" onclick="openCakisanOdemelerModal()">🔍 Çakışan Ödemeleri Bul</button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:#34d39922;color:var(--green,#34d399);border:1px solid #34d39945;" onclick="ozelSaatDenetimi()">⏱ Özel Paket Saatlerini Denetle</button>
         <button class="btn btn-cyan" style="width:100%;margin-bottom:10px;" onclick="openTelEksikModal()">📵 <span data-i18n="tel_eksik_btn">Numarası Eksik Öğrenciler</span></button>
@@ -3779,27 +3778,6 @@ function telNormalizeEt(raw){
   if(d.length===10&&d.startsWith('5'))return '90'+d;
   // Tanınmayan/yabancı: sadece biçimlendirmeyi temizle, olduğu gibi bırak
   return d;
-}
-async function telNumaralariniTemizle(){
-  const onizleme=S.ogrenciler.map(o=>({o,yeni:telNormalizeEt(o.tel)})).filter(x=>x.o.tel&&x.yeni!==x.o.tel);
-  if(!onizleme.length){toastGoster('✓ Tüm numaralar zaten düzenli');return;}
-  confirm_('Telefon Numaralarını Düzenle',
-    onizleme.length+' öğrencinin numarası temizlenecek (boşluk/+ silinip Türk numaraları 90 ile başlayacak şekilde tek tipe getirilecek). Yabancı numaraların ülke koduna dokunulmaz, sadece biçimlendirme temizlenir. Devam edilsin mi?',
-    async()=>{
-      setSyncing(true);
-      let basarili=0;
-      for(const{o,yeni} of onizleme){
-        try{
-          await db.collection('ogrenciler').doc(o.id).update({tel:yeni});
-          const idx=S.ogrenciler.findIndex(x=>x.id===o.id);
-          if(idx>=0)S.ogrenciler[idx]={...S.ogrenciler[idx],tel:yeni};
-          basarili++;
-        }catch(e){/* tek kayıt başarısız olursa devam et */}
-      }
-      _poll('ogrenciler');setSyncing(false);
-      toastGoster('✓ '+basarili+' numara düzenlendi');
-    }
-  );
 }
 
 function openOgrenciModal(id){
@@ -7802,7 +7780,6 @@ async function tatilSil(id){
 }
 function renderAll(){
   // Ödeme onarımı tek seferlik: onarılacak ödeme kalmadıysa menüde gösterme
-  {const tb=document.getElementById('tel-duzenle-btn');if(tb)try{tb.style.display=S.ogrenciler.some(o=>o.tel&&telNormalizeEt(o.tel)!==o.tel)?'':'none';}catch(e){}}
   {const ob=document.getElementById('odeme-onarim-btn');if(ob)try{ob.style.display=odemeOnarimAdaylari().length?'':'none';}catch(e){}}
   // Öğrenci birleştirme tek seferlik eski veri taşıması: taşınacak eski kayıt kalmadıysa menüde gösterme
   {const bi=document.getElementById('acc-birlestir-item');if(bi)bi.style.display=(S.ozelOgrenciler||[]).some(o=>!o.migrasyonTamamlandi)?'':'none';}
@@ -8024,7 +8001,7 @@ const YETKI_ISLEM_HARITA={
   ozel:['ozelEkleBaslat','openOzelPaketModal','saveOzelPaket','silOzelPaket','saveDersPlan','otSeansSil','otSeansDuzenle','ooKaydet','ooDuzenle','ooSil','ozelSaatDenetimi','openOzelOdemeModal','openOzelSaatModal','osUygula'],
   video:['openVideoSinifModal','saveVideoSinif','silVideoSinif'],
   ayar:['gaPratikKiraEkle','gaPratikKiraKaydet','gaPratikKiraSil','gaPratikKiraDuzenle','gaPratikIptalEkle','gaPratikIptalKaydetForm','gaPratikIptalSil','gaOzelKiraEkle','gaOzelKiraKaydet','gaOzelKiraSil','gaOzelKiraDuzenle','gaGrupKiraEkle','gaGrupKiraKaydet','gaGrupKiraSil','gaGrupKiraDuzenle','egitmenEkleModal','egitmenKaydet','egitmenDuzenle','egitmenSil','egitmenSifreSifirla','waSablonKaydet','odemeBilgiKaydet'],
-  sahip:['benimAdimiKaydet','kullaniciAdDuzenle','kullaniciAdKaydet','tumVerileriSifirla','tumLegacyKiralariTemizle','tumLegacyKiralariTemizle','telNumaralariniTemizle','kullaniciEkle','kullaniciEkleAc','kullaniciKaldir','kullaniciSifreSifirla','yetkiKaydet','veriSilOnayla','silKategori','veriSilAc','veriSilSec','odemeOnarimAc','githubTokenSifirla','geriYukle']
+  sahip:['benimAdimiKaydet','kullaniciAdDuzenle','kullaniciAdKaydet','tumVerileriSifirla','tumLegacyKiralariTemizle','tumLegacyKiralariTemizle','kullaniciEkle','kullaniciEkleAc','kullaniciKaldir','kullaniciSifreSifirla','yetkiKaydet','veriSilOnayla','silKategori','veriSilAc','veriSilSec','odemeOnarimAc','githubTokenSifirla','geriYukle']
 };
 const YETKI_ISLEM_RE=Object.entries(YETKI_ISLEM_HARITA).map(([k,l])=>[new RegExp('(^|[^A-Za-z0-9_])('+l.join('|')+')\\s*\\('),k]);
 const FAB_KATEGORI=()=>({ogrenciler:'ogrenci',siniflar:'sinif','sinif-detay':'ogrenci',ozel:'ozel',odemeler:'odeme',yoklama:'yoklama',videolar:'video'})[PAGE]||'ogrenci';
