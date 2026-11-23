@@ -544,3 +544,129 @@ exports.portal = onRequest({ region: 'europe-west1', cors: true, maxInstances: 1
     return hata(res, 500, 'Sunucu hatası. Lütfen tekrar deneyin.');
   }
 });
+
+// ════════════════════════════════════════════════════════════════════
+// Öğrenci kayıt formu (herkese açık sayfa: kayit.html)
+//   Her bağlantı TEK KULLANIMLIKTIR: kayit_linkleri/{kod}. Kod tahmin edilemez (128 bit).
+//   bilgi  : bağlantı geçerliyse form metinlerini döndürür (kod 'onizleme' ise yalnız önizleme)
+//   gonder : doğrular, bağlantıyı işlemde "kullanıldı" yapıp başvuruyu yazar, onay kanıtını sunucu tarafında üretir
+//   Başvuru `kayit_basvurulari`na "beklemede" yazılır; yönetici uygulamadan onaylar. İstemci bu koleksiyonlara yazamaz.
+// ════════════════════════════════════════════════════════════════════
+const KAYIT_MAX = { ad: 60, tel: 25, eposta: 120, acil: 160, kisa: 80 };
+function ipAl(req) {
+  const xff = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  return (xff || req.ip || '').slice(0, 64);
+}
+function yasHesapla(dogum) {
+  const [y, m, g] = dogum.split('-').map(Number);
+  const tr = new Date(Date.now() + 3 * 3600 * 1000); // Türkiye saati
+  let yas = tr.getUTCFullYear() - y;
+  const ay = tr.getUTCMonth() + 1 - m;
+  if (ay < 0 || (ay === 0 && tr.getUTCDate() < g)) yas--;
+  return yas;
+}
+function kayitMetinleri(d) {
+  return {
+    surum: d.surum || 1,
+    aydinlatma: { baslik: String(d.aydinlatma && d.aydinlatma.baslik || ''), metin: String(d.aydinlatma && d.aydinlatma.metin || '') },
+    rizalar: (Array.isArray(d.rizalar) ? d.rizalar : []).filter((r) => r && r.aktif !== false).map((r) => ({ id: String(r.id), baslik: String(r.baslik || ''), metin: String(r.metin || ''), kutu: String(r.kutu || '') })),
+    kurallar: { baslik: String(d.kurallar && d.kurallar.baslik || ''), metin: String(d.kurallar && d.kurallar.metin || '') },
+    veli: { metin: String(d.veli && d.veli.metin || '') },
+  };
+}
+async function kayitMetinOku() {
+  const s = await db.collection('ayarlar').doc('kayitFormu').get();
+  if (!s.exists) return null;
+  return kayitMetinleri(s.data());
+}
+async function kayitLinkDurum(kod) {
+  if (!/^[A-Za-z0-9_-]{16,64}$/.test(kod)) return { hata: 'Bağlantı geçersiz.', kod: 404 };
+  const ref = db.collection('kayit_linkleri').doc(kod);
+  const s = await ref.get();
+  if (!s.exists) return { hata: 'Bağlantı geçersiz.', kod: 404 };
+  const d = s.data();
+  if (d.kullanildi) return { hata: 'Bu bağlantı daha önce kullanılmış. Yeni bir bağlantı için stüdyoyla iletişime geçin.', kod: 410 };
+  if ((d.bitis || 0) < Date.now()) return { hata: 'Bu bağlantının süresi dolmuş. Yeni bir bağlantı için stüdyoyla iletişime geçin.', kod: 410 };
+  return { ref, d };
+}
+const kTemiz = (s, n) => metinTemizle(s, n);
+
+exports.kayit = onRequest({ region: 'europe-west1', cors: true, maxInstances: 5, timeoutSeconds: 30 }, async (req, res) => {
+  try {
+    if (req.method !== 'POST') return hata(res, 405, 'Yalnızca POST.');
+    const b = req.body || {};
+    const ipAnahtar = 'kayitip_' + sha(ipAl(req) || 'bilinmiyor').slice(0, 24);
+    if (b.islem === 'bilgi') {
+      const metin = await kayitMetinOku();
+      if (!metin) return hata(res, 503, 'Form henüz hazırlanmadı.');
+      if (b.k === 'onizleme') return res.json({ ok: true, onizleme: true, metin });
+      const k1 = await kilitKontrol(ipAnahtar);
+      if (k1 > 0) return hata(res, 429, 'Çok fazla deneme. Lütfen biraz sonra tekrar deneyin.');
+      const L = await kayitLinkDurum(String(b.k || ''));
+      if (L.hata) { await hataKaydet(ipAnahtar, 30); return hata(res, L.kod, L.hata); }
+      return res.json({ ok: true, not: L.d.not || '', metin });
+    }
+    if (b.islem !== 'gonder') return hata(res, 400, 'Bilinmeyen işlem.');
+    if (b.k === 'onizleme') return hata(res, 400, 'Bu bir önizlemedir, gönderim yapılamaz.');
+    if (typeof b.hp === 'string' && b.hp) return res.json({ ok: true }); // bot tuzağı (gizli alan)
+
+    const L = await kayitLinkDurum(String(b.k || ''));
+    if (L.hata) return hata(res, L.kod, L.hata);
+    const metin = await kayitMetinOku();
+    if (!metin) return hata(res, 503, 'Form henüz hazırlanmadı.');
+
+    const o = b.ogrenci || {};
+    const ogr = {
+      ad: kTemiz(o.ad, KAYIT_MAX.ad), soyad: kTemiz(o.soyad, KAYIT_MAX.ad), cinsiyet: o.cinsiyet === 'e' ? 'e' : 'k',
+      dogum: String(o.dogum || ''), tel: String(o.tel || '').replace(/[^\d+ ]/g, '').slice(0, KAYIT_MAX.tel),
+      eposta: kTemiz(o.eposta, KAYIT_MAX.eposta), acil: kTemiz(o.acil, KAYIT_MAX.acil),
+    };
+    if (!ogr.ad || !ogr.soyad) return hata(res, 400, 'Ad ve soyad zorunludur.');
+    if (!TARIH_RE.test(ogr.dogum)) return hata(res, 400, 'Doğum tarihi geçerli olmalı.');
+    if (ogr.tel.replace(/\D/g, '').length < 10) return hata(res, 400, 'Geçerli bir telefon numarası girin.');
+    if (ogr.eposta && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ogr.eposta)) return hata(res, 400, 'E-posta geçerli değil.');
+    const yas = yasHesapla(ogr.dogum);
+    if (!(yas >= 0 && yas < 110)) return hata(res, 400, 'Doğum tarihi geçerli değil.');
+    const kucuk = yas < 18;
+    let veli = null;
+    if (kucuk) {
+      const v = b.veli || {};
+      veli = { ad: kTemiz(v.ad, KAYIT_MAX.ad), yakinlik: kTemiz(v.yakinlik, KAYIT_MAX.kisa), tel: String(v.tel || '').replace(/[^\d+ ]/g, '').slice(0, KAYIT_MAX.tel) };
+      if (!veli.ad || !veli.yakinlik || veli.tel.replace(/\D/g, '').length < 10) return hata(res, 400, 'Öğrenci 18 yaşından küçük: veli/vasi adı, yakınlığı ve telefonu zorunludur.');
+    }
+    const on = b.onaylar || {};
+    if (on.aydinlatma !== true) return hata(res, 400, 'Aydınlatma metnini okuduğunuzu onaylamalısınız.');
+    if (on.kural !== true) return hata(res, 400, 'Okul kurallarını kabul etmelisiniz.');
+    if (kucuk && on.veli !== true) return hata(res, 400, 'Veli/vasi beyanını onaylamalısınız.');
+    const rizaDurum = {}, rizaOzet = {};
+    metin.rizalar.forEach((r) => { rizaDurum[r.id] = !!(on.rizalar && on.rizalar[r.id] === true); rizaOzet[r.id] = sha(r.baslik + '\n' + r.metin + '\n' + r.kutu); });
+    const cz = b.cihaz || {};
+    const simdi = Date.now();
+    const kanit = {
+      sunucuZamani: simdi, sunucuZamaniISO: new Date(simdi).toISOString(),
+      ip: ipAl(req), userAgent: String(req.headers['user-agent'] || '').slice(0, 300),
+      dil: kTemiz(cz.dil, 20), saatDilimi: kTemiz(cz.tz, 50), ekran: kTemiz(cz.ekran, 20), istemciSaati: kTemiz(cz.saat, 40),
+      metinSurum: metin.surum,
+      ozetler: { aydinlatma: sha(metin.aydinlatma.baslik + '\n' + metin.aydinlatma.metin), kurallar: sha(metin.kurallar.baslik + '\n' + metin.kurallar.metin), veli: sha(metin.veli.metin), rizalar: rizaOzet },
+      linkOzet: sha(String(b.k)).slice(0, 16),
+    };
+    const bas = db.collection('kayit_basvurulari').doc();
+    await db.runTransaction(async (tx) => {
+      const s = await tx.get(L.ref);
+      const d = s.data() || {};
+      if (!s.exists || d.kullanildi || (d.bitis || 0) < simdi) { const e = new Error('KULLANILMIS'); e.kullanilmis = true; throw e; }
+      tx.update(L.ref, { kullanildi: true, kullanimZamani: simdi, basvuruId: bas.id });
+      tx.set(bas, {
+        durum: 'beklemede', olusturma: simdi, linkNot: d.not || '',
+        ogrenci: ogr, kucuk, veli,
+        onaylar: { aydinlatma: true, kural: true, veli: kucuk ? true : null, rizalar: rizaDurum },
+        metinKopya: metin, kanit,
+      });
+    });
+    return res.json({ ok: true });
+  } catch (e) {
+    if (e && e.kullanilmis) return hata(res, 410, 'Bu bağlantı daha önce kullanılmış.');
+    console.error(e);
+    return hata(res, 500, 'Sunucu hatası. Lütfen tekrar deneyin.');
+  }
+});

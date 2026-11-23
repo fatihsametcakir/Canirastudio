@@ -703,6 +703,9 @@ body.portal-modu .overlay{z-index:9500;}
 .og-bilgi-i{width:18px;height:18px;border-radius:50%;background:#ff6b6b;color:#1a1a24;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:Georgia,serif;font-style:italic;}
 @keyframes ogPil{0%,100%{box-shadow:0 0 0 0 #ff6b6b55;}50%{box-shadow:0 0 0 6px #ff6b6b00;}}
 @media (prefers-reduced-motion:reduce){.og-bilgi-pil{animation:none;}}
+#kayit-admin-content .input{box-sizing:border-box;padding:9px 10px;font:inherit;font-size:13px;background:var(--surface);color:var(--text);border:1px solid var(--border2);border-radius:var(--radius-sm);}
+#kayit-admin-content input.input:not([type=checkbox]),#kayit-admin-content textarea.input{width:100%;}
+#kayit-admin-content #kf-link-not{width:auto;}
 </style>
 <style>
 #splash{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 38%,#ff6b6b1c,transparent 60%),radial-gradient(ellipse at 50% 100%,#a78bfa1a,transparent 55%),var(--bg);transition:opacity .6s ease;}
@@ -1640,85 +1643,9 @@ try{
 </div></div>
 
   <!-- DERS VİDEOLARI -->
-  <!-- ÖĞRENCİ KAYIT FORMU (TASLAK) -->
+  <!-- ÖĞRENCİ KAYIT FORMU (yönetim) -->
   <div class="page" id="pg-kayit-taslak">
-    <div style="font-size:12px;line-height:1.55;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;">⚠ <b>TASLAK.</b> Metinler örnektir; yayına almadan önce bir hukukçu/KVKK danışmanı tarafından stüdyonuza göre düzenlenmelidir. Bu sayfada gönderim kapalıdır.</div>
-
-    <div class="card kt-bolum" style="padding:14px;margin-bottom:12px;">
-      <div class="kt-baslik">1 · Öğrenci bilgileri</div>
-      <div class="field"><label>Ad Soyad</label><input id="kt-ad" type="text" placeholder="Ad Soyad"/></div>
-      <div class="field"><label>Doğum tarihi</label><input id="kt-dogum" type="date" oninput="ktGuncelle()"/></div>
-      <div class="field"><label>Telefon</label><input id="kt-tel" type="tel" placeholder="5xx xxx xx xx"/></div>
-      <div class="field"><label>E-posta</label><input id="kt-eposta" type="email" placeholder="ornek@mail.com"/></div>
-      <div class="field"><label>Acil durumda aranacak kişi ve telefonu</label><input id="kt-acil" type="text" placeholder="Ad Soyad · telefon"/></div>
-      <div id="kt-veli" style="display:none;">
-        <div style="font-size:12px;color:var(--text2);margin:2px 0 10px;line-height:1.5;">Öğrenci 18 yaşından küçük: aşağıdaki onayları <b>veli/vasi</b> verir.</div>
-        <div class="field"><label>Veli / vasi Ad Soyad</label><input id="kt-veli-ad" type="text" placeholder="Ad Soyad"/></div>
-        <div class="field"><label>Yakınlık</label><input id="kt-veli-yakin" type="text" placeholder="Anne / Baba / Vasi"/></div>
-      </div>
-    </div>
-
-    <div class="card kt-bolum" style="padding:14px;margin-bottom:12px;">
-      <div class="kt-baslik">2 · Aydınlatma metni</div>
-      <div class="kt-metin" tabindex="0">
-        <b>Can &amp; Irina Studio Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni</b><br><br>
-        <b>Veri sorumlusu:</b> [Unvan / Ad Soyad], [Adres], [E-posta]. <br><br>
-        <b>İşlenen veriler:</b> kimlik (ad soyad, doğum tarihi), iletişim (telefon, e-posta), acil durum kişisi bilgisi, ders katılım ve ödeme kayıtları, kayıt sırasındaki işlem güvenliği kayıtları (IP adresi, tarih-saat).<br><br>
-        <b>İşleme amaçları ve hukuki sebepler:</b> (a) Ders kaydının yapılması ve sözleşmenin ifası — KVKK m.5/2-c; (b) ödeme ve muhasebe yükümlülükleri — m.5/2-ç; (c) kaydın ve onayların ispatı, hak talebinin korunması — m.5/2-e; (d) stüdyonun meşru menfaati kapsamında iletişim ve ders düzeni — m.5/2-f.<br><br>
-        <b>Aktarım:</b> Verileriniz yalnızca yasal yükümlülükler (muhasebe, yetkili kurumlar) ve hizmet aldığımız altyapı sağlayıcıları (barındırma/veritabanı) ile paylaşılır. [Yurt dışı aktarımı varsa burada açıkça belirtilecek.]<br><br>
-        <b>Toplama yöntemi:</b> bu çevrimiçi form.<br><br>
-        <b>Saklama süresi:</b> [ör. üyelik süresi + yasal saklama süreleri].<br><br>
-        <b>Haklarınız:</b> KVKK m.11 kapsamındaki haklarınızı [e-posta/adres] üzerinden kullanabilirsiniz.
-      </div>
-      <label class="kt-onay"><input type="checkbox" id="kt-c-aydinlatma" onchange="ktGuncelle()"/><span>Aydınlatma metnini <b>okudum ve anladım.</b></span></label>
-    </div>
-
-    <div class="card kt-bolum" style="padding:14px;margin-bottom:12px;">
-      <div class="kt-baslik">3 · Açık rıza beyanları <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);">(isteğe bağlı — vermezseniz kayıt yine yapılır)</span></div>
-      <div class="kt-metin kt-kisa">
-        <b>Fotoğraf ve video</b><br>Ders, gösteri ve etkinliklerde çekilen fotoğraf/video kayıtlarında görüntümün; stüdyonun Instagram hesabı ve internet sitesinde tanıtım amacıyla yayımlanmasına açık rıza veriyorum. Rızamı dilediğim zaman [iletişim] üzerinden geri alabileceğimi biliyorum.
-      </div>
-      <label class="kt-onay"><input type="checkbox" id="kt-c-foto"/><span>Fotoğraf/video paylaşımı için <b>açık rıza veriyorum.</b></span></label>
-      <div class="kt-metin kt-kisa">
-        <b>Ticari elektronik ileti</b><br>Kampanya, etkinlik ve duyuruların telefon/SMS/WhatsApp/e-posta ile tarafıma gönderilmesine izin veriyorum. İzni dilediğim zaman geri alabilirim.
-      </div>
-      <label class="kt-onay"><input type="checkbox" id="kt-c-ileti"/><span>Ticari ileti almak için <b>izin veriyorum.</b></span></label>
-      <div class="kt-metin kt-kisa">
-        <b>Sağlık bilgisi (özel nitelikli veri)</b><br>Derslerde güvenliğimi sağlamak amacıyla bildirdiğim sağlık durumu bilgilerimin (sakatlık, kronik rahatsızlık vb.) eğitmenler tarafından bilinmesine açık rıza veriyorum.
-      </div>
-      <label class="kt-onay"><input type="checkbox" id="kt-c-saglik"/><span>Sağlık bilgilerimin işlenmesine <b>açık rıza veriyorum.</b></span></label>
-    </div>
-
-    <div class="card kt-bolum" style="padding:14px;margin-bottom:12px;">
-      <div class="kt-baslik">4 · Okul kuralları</div>
-      <div class="kt-metin" tabindex="0">
-        <b>Stüdyo Kuralları</b><br><br>
-        1. Dersler programda belirtilen gün ve saatte başlar; geç kalma ders akışını bozmamak için en fazla [10] dakika ile sınırlıdır.<br>
-        2. Paket süresi içinde kullanılmayan dersler [telafi/dondurma koşulları].<br>
-        3. Ödemeler dönem başında yapılır; yapılan ödemeler [iade koşulları].<br>
-        4. Stüdyo ve ekipmana verilen zarardan öğrenci sorumludur.<br>
-        5. Diğer katılımcılara saygılı davranılır; taciz ve ayrımcılık kabul edilmez.<br>
-        6. Sağlık durumunuzda değişiklik olursa eğitmeni bilgilendirirsiniz.<br>
-        7. Ders içi çekimler yalnızca eğitmen onayıyla yapılır.<br>
-        8. Eşya ve değerli eşyalardan stüdyo sorumlu değildir.
-      </div>
-      <label class="kt-onay"><input type="checkbox" id="kt-c-kural" onchange="ktGuncelle()"/><span>Okul kurallarını <b>okudum, kabul ediyorum.</b></span></label>
-    </div>
-
-    <button class="btn btn-accent" id="kt-gonder" style="width:100%;padding:13px;" onclick="toastGoster('Taslak: gönderim kapalı')" disabled>Kaydı Tamamla</button>
-    <div style="font-size:11px;color:var(--text3);margin:8px 2px 14px;line-height:1.5;">Zorunlu: Aydınlatma teyidi ve okul kuralları. 3. bölümdeki rızalar bağımsızdır; hiçbiri kayıt için şart koşulamaz.</div>
-
-    <div class="card kt-bolum" style="padding:14px;margin-bottom:12px;">
-      <div class="kt-baslik">Onay anında saklanacak kanıt (önizleme)</div>
-      <div style="font-size:12px;line-height:1.7;color:var(--text2);">
-        • Her kutunun ayrı durumu (verildi / verilmedi) ve ayrı zamanı<br>
-        • Sunucu tarafı tarih-saat (cihaz saatine güvenilmez)<br>
-        • IP adresi (sunucu okur)<br>
-        • Cihaz bilgisi (tarayıcı, işletim sistemi, dil, saat dilimi, ekran)<br>
-        • Gösterilen her metnin sürümü ve içerik özeti (SHA-256)<br>
-        • Tek kullanımlık bağlantının kimliği
-      </div>
-    </div>
+    <div id="kayit-admin-content"></div>
   </div>
 
   <div class="page" id="pg-videolar">
@@ -1760,7 +1687,7 @@ try{
       <button class="drawer-btn" id="drawerBtnTakvim" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('takvim',this)">📅 <span data-i18n="nav_takvim">Takvim</span></button>
       <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('yoklama',this)">✓ Yoklama</button>
       <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('videolar',this)">🎬 Ders Videoları</button>
-      <button class="drawer-btn" id="drawerBtnKayitTaslak" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('kayit-taslak',this)">📝 Kayıt Formu (Taslak)</button>
+      <button class="drawer-btn" id="drawerBtnKayitTaslak" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('kayit-taslak',this)">📝 Kayıt Formu</button>
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
       <button class="drawer-btn" id="drawerBtnYoklamaLog" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();yoklamaLogAc()">📝 Yoklama Günlüğü</button>
       <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
@@ -3520,7 +3447,7 @@ function kartAkordeon(sayfaId){
   const pg=document.getElementById('pg-'+sayfaId);if(!pg)return;
   const kartlar=[];
   [...pg.children].forEach(c=>{
-    if(c.id==='egitmen-panel-content2'||c.id==='egitmenler-content')kartlar.push(...c.children);
+    if(c.id==='egitmen-panel-content2'||c.id==='egitmenler-content'||c.id==='kayit-admin-content')kartlar.push(...c.children);
     else kartlar.push(c);
   });
   kartlar.forEach(k=>{
@@ -3768,16 +3695,9 @@ function drawerAc(){
 }
 // Menüden bir ekran/pencere açılınca, o kapanınca hamburger menüye geri dönülür
 let _DRAWER_FLAG=0,_SAYFA_DRAWER=false;const _MODAL_DRAWER=new Set();
-function ktGuncelle(){
-  const d=document.getElementById('kt-dogum').value;
-  let kucuk=false;
-  if(d){const b=new Date(d+'T00:00:00'),n=new Date();let y=n.getFullYear()-b.getFullYear();const m=n.getMonth()-b.getMonth();if(m<0||(m===0&&n.getDate()<b.getDate()))y--;kucuk=y<18;}
-  document.getElementById('kt-veli').style.display=kucuk?'block':'none';
-  const ok=document.getElementById('kt-c-aydinlatma').checked&&document.getElementById('kt-c-kural').checked;
-  document.getElementById('kt-gonder').disabled=!ok;
-}
 function drawerSayfaAc(p,btn){
   goTo(p,null);
+  if(p==='kayit-taslak')renderKayitAdmin();
   let b=(btn&&btn.textContent||p).trim();
   setTopbar(true,b);
   _SAYFA_DRAWER=true;_DRAWER_FLAG=0;
@@ -3797,6 +3717,129 @@ function accToggle(id){
   if(arr)arr.classList.toggle('open',acik);
   if(acik&&id==='acc-guvenlik'){if(typeof benimAdimiDoldur==='function')benimAdimiDoldur();if(typeof kullaniciListele==='function')kullaniciListele();}
 }
+// ── KAYIT FORMU (yönetim) ─────────────────────────────
+const KAYIT_VARSAYILAN={
+  surum:1,
+  aydinlatma:{baslik:'Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni',metin:'[TASLAK – hukuki inceleme gerekir]\n\nVeri sorumlusu: Can & Irina Studio.\n\nİşlenen veriler: ad-soyad, doğum tarihi, telefon, e-posta, acil durum iletişim bilgisi, (18 yaşından küçükse) veli/vasi bilgisi; form gönderimi sırasında IP adresi, cihaz/tarayıcı bilgisi ve gönderim zamanı.\n\nİşleme amaçları: kayıt ve ders organizasyonu, ödeme ve iletişim süreçlerinin yürütülmesi, onay beyanlarının ispatı.\n\nHukuki sebep: sözleşmenin kurulması/ifası, hukuki yükümlülük, meşru menfaat (IP ve cihaz bilgisi için ispat amacıyla).\n\nHaklarınız: KVKK m.11 kapsamındaki haklarınızı stüdyoya başvurarak kullanabilirsiniz.'},
+  rizalar:[
+    {id:'iletisim',baslik:'İletişim İzni (Açık Rıza)',metin:'[TASLAK]\n\nDers duyuruları dışındaki tanıtım, kampanya ve etkinlik bilgilendirmelerinin telefon/WhatsApp/e-posta ile tarafıma iletilmesine açık rıza veriyorum. Rızamı dilediğim zaman geri alabileceğimi biliyorum.',kutu:'İletişim izni için açık rıza veriyorum.',aktif:true},
+    {id:'gorsel',baslik:'Görüntü Paylaşım İzni (Açık Rıza)',metin:'[TASLAK]\n\nDers ve etkinliklerde çekilen fotoğraf/video kayıtlarının stüdyonun sosyal medya hesaplarında ve tanıtım materyallerinde kullanılmasına açık rıza veriyorum. Rızamı dilediğim zaman geri alabileceğimi biliyorum.',kutu:'Görüntülerimin paylaşılmasına açık rıza veriyorum.',aktif:true}
+  ],
+  kurallar:{baslik:'Stüdyo Kuralları',metin:'[TASLAK]\n\n1. Derslere zamanında gelinir; iptaller en az 24 saat önceden bildirilir.\n2. Paket süreleri ve telafi koşulları stüdyo duyurularına tabidir.\n3. Stüdyo ekipmanına ve diğer öğrencilere saygı gösterilir.\n4. Ödemeler belirlenen tarihlerde yapılır.'},
+  veli:{metin:'18 yaşından küçük öğrencinin velisi/vasisi olduğumu, yukarıdaki aydınlatma metnini ve stüdyo kurallarını okuduğumu ve öğrencinin kaydına izin verdiğimi beyan ederim.'}
+};
+let KAYIT_DATA={basvurular:[],linkler:[],metin:null};
+const _kEsc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function kayitZamanStr(ms){if(!ms)return '';const d=new Date(ms);const p=n=>String(n).padStart(2,'0');return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());}
+function kayitLinkUrl(kod){return location.origin+location.pathname.replace(/[^/]*$/,'')+'kayit.html?k='+kod;}
+async function renderKayitAdmin(){
+  const el=document.getElementById('kayit-admin-content');if(!el)return;
+  if(!KAYIT_DATA._yuklendi)el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text2);">Yükleniyor…</div>';
+  try{
+    const [b,l,m]=await Promise.all([db.collection('kayit_basvurulari').get(),db.collection('kayit_linkleri').get(),db.collection('ayarlar').doc('kayitFormu').get()]);
+    KAYIT_DATA.basvurular=b.docs.map(d=>({...(d.data?d.data():{}),id:d.id})).sort((x,y)=>(y.olusturma||0)-(x.olusturma||0));
+    KAYIT_DATA.linkler=l.docs.map(d=>({...(d.data?d.data():{}),id:d.id})).sort((x,y)=>(y.olusturma||0)-(x.olusturma||0));
+    KAYIT_DATA.metin=m.exists?m.data():null;KAYIT_DATA._yuklendi=true;
+  }catch(e){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--accent);">Yüklenemedi: '+_kEsc(e.message||e)+'</div>';return;}
+  kayitAdminCiz();
+}
+function kayitAdminCiz(){
+  const el=document.getElementById('kayit-admin-content');if(!el)return;
+  const kart=(baslik,icerik)=>`<div style="margin-bottom:14px;padding:14px;background:var(--surface2);border-radius:var(--radius);border:1px solid #d9ac52a6;"><div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${baslik}</div>${icerik}</div>`;
+  const bek=KAYIT_DATA.basvurular.filter(x=>x.durum==='beklemede').length;
+  el.innerHTML=kart('📥 Başvurular'+(bek?' ('+bek+' bekliyor)':''),kayitBasvuruHtml())+kart('🔗 Bağlantılar',kayitLinkHtml())+kart('📝 Form Metinleri',kayitMetinHtml());
+  kartAkordeon('kayit-taslak');
+  if(typeof yetkiPasifTara==='function')try{yetkiPasifTara();}catch(e){}
+}
+function kayitBasvuruHtml(){
+  const L=KAYIT_DATA.basvurular;
+  if(!L.length)return '<div style="font-size:13px;color:var(--text2);">Henüz başvuru yok.</div>';
+  return L.map(b=>{
+    const o=b.ogrenci||{},v=b.veli,k=b.kanit||{},r=(b.onaylar||{}).rizalar||{};
+    const durum=b.durum==='beklemede'?'<span style="color:var(--amber);">⏳ Bekliyor</span>':b.durum==='onaylandi'?'<span style="color:var(--green,#34d399);">✔ Öğrenci olarak eklendi</span>':'<span style="color:var(--accent);">✖ Reddedildi</span>';
+    const rz=((b.metinKopya||{}).rizalar||[]).map(x=>_kEsc(x.baslik)+': '+(r[x.id]?'✔ verdi':'✖ vermedi')).join('<br>');
+    return `<div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;font-size:13px;line-height:1.5;">
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;"><b>${_kEsc(o.ad)} ${_kEsc(o.soyad)}</b><span style="font-size:12px;">${durum}</span></div>
+      <div style="color:var(--text2);">📞 ${_kEsc(o.tel)} · 🎂 ${_kEsc(o.dogum)}${o.eposta?' · ✉ '+_kEsc(o.eposta):''}${o.acil?'<br>🚑 Acil: '+_kEsc(o.acil):''}</div>
+      ${b.kucuk&&v?`<div style="margin-top:4px;padding:6px 8px;background:var(--amberbg);border-radius:6px;">👪 18 yaş altı · Veli: ${_kEsc(v.ad)} (${_kEsc(v.yakinlik)}) · ${_kEsc(v.tel)}<br>Veli beyanı: ${(b.onaylar||{}).veli?'✔ onaylandı':'✖'}</div>`:''}
+      ${b.linkNot?`<div style="color:var(--text2);">Bağlantı notu: ${_kEsc(b.linkNot)}</div>`:''}
+      <div style="margin-top:4px;font-size:12px;color:var(--text2);">Aydınlatma: ${(b.onaylar||{}).aydinlatma?'✔':'✖'} · Kurallar: ${(b.onaylar||{}).kural?'✔':'✖'}${rz?'<br>'+rz:''}</div>
+      <details style="margin-top:6px;font-size:11px;color:var(--text2);"><summary style="cursor:pointer;">Kanıt bilgisi</summary>
+        Sunucu zamanı: ${_kEsc(k.sunucuZamaniISO)}<br>IP: ${_kEsc(k.ip)}<br>Cihaz: ${_kEsc(k.userAgent)}<br>Dil/Saat dilimi: ${_kEsc(k.dil)} / ${_kEsc(k.saatDilimi)} · Ekran: ${_kEsc(k.ekran)}<br>Metin sürümü: ${_kEsc(k.metinSurum)}<br>Özet (SHA-256) aydınlatma: ${_kEsc(((k.ozetler||{}).aydinlatma||'').slice(0,16))}…</details>
+      ${b.durum==='beklemede'?`<div style="display:flex;gap:6px;margin-top:8px;"><button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="kayitBasvuruEkle('${b.id}')">Öğrenci olarak ekle</button><button class="btn btn-danger btn-sm" onclick="kayitBasvuruReddet('${b.id}')">Reddet</button></div>`:`<div style="margin-top:6px;"><button class="btn btn-danger btn-sm" onclick="kayitBasvuruSil('${b.id}')">Kaydı sil</button></div>`}
+    </div>`;}).join('');
+}
+function kayitLinkHtml(){
+  const simdi=Date.now();
+  const liste=KAYIT_DATA.linkler.map(l=>{
+    const d=l.kullanildi?'✔ Kullanıldı':(l.bitis||0)<simdi?'⌛ Süresi doldu':'🟢 Aktif · '+kayitZamanStr(l.bitis)+'’e kadar';
+    const aktif=!l.kullanildi&&(l.bitis||0)>=simdi;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #d9ac5240;font-size:12px;"><div style="flex:1;min-width:0;"><div>${d}</div><div style="color:var(--text2);">${_kEsc(l.not||'(not yok)')} · ${kayitZamanStr(l.olusturma)}</div></div>${aktif?`<button class="btn btn-sm" onclick="kayitLinkKopyala('${l.id}')">Kopyala</button>`:''}<button class="btn btn-danger btn-sm" onclick="kayitLinkSil('${l.id}')">Sil</button></div>`;}).join('');
+  return `<div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Her bağlantı yalnızca <b>bir kez</b> kullanılabilir; öğrenci formu gönderince bağlantı kapanır. Her öğrenci için ayrı bağlantı oluşturun.</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><input id="kf-link-not" class="input" placeholder="Not (örn. öğrenci adı)" style="flex:1;min-width:140px;" maxlength="60"><select id="kf-link-sure" class="input" style="width:auto;"><option value="1">1 gün</option><option value="3">3 gün</option><option value="7" selected>7 gün</option><option value="30">30 gün</option></select></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;"><button class="btn btn-primary btn-sm" onclick="kayitLinkOlustur()">+ Bağlantı oluştur</button><button class="btn btn-sm" onclick="kayitOnizle()">👁 Formu önizle</button></div>${liste}`;
+}
+function kayitMetinHtml(){
+  const m=KAYIT_DATA.metin?{...KAYIT_VARSAYILAN,...KAYIT_DATA.metin}:KAYIT_VARSAYILAN;
+  const ta=(id,et,v,s)=>`<label style="display:block;font-size:12px;color:var(--text2);margin:8px 0 3px;">${et}</label>${s?`<input id="${id}" class="input" value="${_kEsc(v)}">`:`<textarea id="${id}" class="input" rows="6" style="width:100%;resize:vertical;">${_kEsc(v)}</textarea>`}`;
+  const rz=(m.rizalar||[]).map((r,i)=>`<div style="margin-top:10px;padding:10px;border:1px solid #d9ac5240;border-radius:8px;"><b style="font-size:12px;">Açık rıza ${i+1}</b> <label style="font-size:12px;margin-left:8px;"><input type="checkbox" id="kf-r${i}-aktif" ${r.aktif!==false?'checked':''}> formda göster</label>${ta('kf-r'+i+'-baslik','Başlık',r.baslik,1)}${ta('kf-r'+i+'-metin','Metin',r.metin)}${ta('kf-r'+i+'-kutu','Onay kutusu yazısı',r.kutu,1)}</div>`).join('');
+  return `<div style="font-size:12px;color:var(--text2);">Metinler hukuki inceleme sonrası burada güncellenir. Her kayıtta metnin o anki sürümü başvuruyla birlikte saklanır; sonradan değiştirmek eski onayları etkilemez. Mevcut sürüm: <b>${_kEsc(m.surum||1)}</b>${KAYIT_DATA.metin?'':' (henüz yayınlanmadı – kaydedene kadar form çalışmaz)'}</div>
+   ${ta('kf-aydinlatma-baslik','Aydınlatma metni başlığı',m.aydinlatma.baslik,1)}${ta('kf-aydinlatma-metin','Aydınlatma metni',m.aydinlatma.metin)}${rz}
+   ${ta('kf-kurallar-baslik','Stüdyo kuralları başlığı',m.kurallar.baslik,1)}${ta('kf-kurallar-metin','Stüdyo kuralları',m.kurallar.metin)}${ta('kf-veli-metin','Veli/vasi beyanı (18 yaş altı)',m.veli.metin)}
+   <div style="margin-top:10px;"><button class="btn btn-primary btn-sm" onclick="kayitMetinKaydet()">Metinleri kaydet ve yayınla</button></div>`;
+}
+async function kayitMetinKaydet(){
+  const g=id=>{const e=document.getElementById(id);return e?e.value.trim():'';};
+  const eski=KAYIT_DATA.metin;
+  const rizalar=KAYIT_VARSAYILAN.rizalar.map((r,i)=>({id:r.id,baslik:g('kf-r'+i+'-baslik'),metin:g('kf-r'+i+'-metin'),kutu:g('kf-r'+i+'-kutu'),aktif:!!(document.getElementById('kf-r'+i+'-aktif')||{}).checked}));
+  const veri={surum:((eski&&eski.surum)||0)+1,guncelleme:Date.now(),aydinlatma:{baslik:g('kf-aydinlatma-baslik'),metin:g('kf-aydinlatma-metin')},rizalar,kurallar:{baslik:g('kf-kurallar-baslik'),metin:g('kf-kurallar-metin')},veli:{metin:g('kf-veli-metin')}};
+  if(!veri.aydinlatma.metin||!veri.kurallar.metin){showToast('Aydınlatma ve kurallar metni boş olamaz.','error');return;}
+  if(rizalar.some(r=>r.aktif&&(!r.metin||!r.kutu))){showToast('Gösterilen rıza metinlerinin yazısı ve kutu metni dolu olmalı.','error');return;}
+  try{await db.collection('ayarlar').doc('kayitFormu').set(veri);KAYIT_DATA.metin=veri;showToast('Metinler yayınlandı (sürüm '+veri.surum+').');kayitAdminCiz();}catch(e){showToast('Kaydedilemedi: '+(e.message||e),'error');}
+}
+function kayitOnizle(){window.open(location.origin+location.pathname.replace(/[^/]*$/,'')+'kayit.html?onizle=1','_blank');}
+async function kayitLinkOlustur(){
+  const a=new Uint8Array(16);crypto.getRandomValues(a);
+  const kod=btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  const gun=+(document.getElementById('kf-link-sure')||{value:7}).value||7;
+  const not=((document.getElementById('kf-link-not')||{}).value||'').trim().slice(0,60);
+  const veri={olusturma:Date.now(),bitis:Date.now()+gun*86400000,not,kullanildi:false};
+  try{await db.collection('kayit_linkleri').doc(kod).set(veri);KAYIT_DATA.linkler.unshift({...veri,id:kod});kayitAdminCiz();kayitLinkKopyala(kod);}
+  catch(e){showToast('Bağlantı oluşturulamadı: '+(e.message||e),'error');}
+}
+function kayitLinkKopyala(kod){
+  const u=kayitLinkUrl(kod);
+  const ok=()=>showToast('Bağlantı kopyalandı.');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(ok,()=>prompt('Bağlantıyı kopyalayın:',u));else prompt('Bağlantıyı kopyalayın:',u);
+}
+async function kayitLinkSil(id){
+  try{await db.collection('kayit_linkleri').doc(id).delete();KAYIT_DATA.linkler=KAYIT_DATA.linkler.filter(x=>x.id!==id);kayitAdminCiz();}catch(e){showToast('Silinemedi: '+(e.message||e),'error');}
+}
+async function kayitBasvuruSil(id){
+  try{await db.collection('kayit_basvurulari').doc(id).delete();KAYIT_DATA.basvurular=KAYIT_DATA.basvurular.filter(x=>x.id!==id);kayitAdminCiz();}catch(e){showToast('Silinemedi: '+(e.message||e),'error');}
+}
+async function kayitBasvuruReddet(id){
+  try{await db.collection('kayit_basvurulari').doc(id).update({durum:'reddedildi'});const b=KAYIT_DATA.basvurular.find(x=>x.id===id);if(b)b.durum='reddedildi';kayitAdminCiz();}catch(e){showToast('Hata: '+(e.message||e),'error');}
+}
+async function kayitBasvuruEkle(id){
+  const b=KAYIT_DATA.basvurular.find(x=>x.id===id);if(!b||b.durum!=='beklemede')return;
+  const o=b.ogrenci||{};
+  let tel=telNormalizeEt(o.tel)||String(o.tel||'').replace(/\D/g,'');
+  const adSoyad=S.ogrenciler.find(x=>(x.ad||'').toLowerCase()===(o.ad||'').toLowerCase()&&(x.soyad||'').toLowerCase()===(o.soyad||'').toLowerCase());
+  if(adSoyad){showToast('"'+o.ad+' '+o.soyad+'" adında öğrenci zaten var.','error');return;}
+  const telEsles=tel&&S.ogrenciler.find(x=>x.tel&&telNormalizeEt(x.tel)===tel);
+  if(telEsles){showToast('Bu numara "'+telEsles.ad+' '+(telEsles.soyad||'')+'" adına kayıtlı.','error');return;}
+  const not=['Kayıt formu ('+kayitZamanStr(b.olusturma)+')','Doğum: '+o.dogum,o.eposta?'E-posta: '+o.eposta:'',o.acil?'Acil: '+o.acil:'',b.kucuk&&b.veli?'Veli: '+b.veli.ad+' ('+b.veli.yakinlik+') '+b.veli.tel:''].filter(Boolean).join(' | ');
+  const data={ad:o.ad,soyad:o.soyad,cinsiyet:o.cinsiyet==='e'?'e':'k',tel,not,sadeceOzelDers:false,asistan:false,kayitBasvuruId:id};
+  try{
+    const r=await db.collection('ogrenciler').add({...data,durum:'aktif'});
+    S.ogrenciler.push({...data,durum:'aktif',id:r.id});
+    await db.collection('kayit_basvurulari').doc(id).update({durum:'onaylandi',ogrenciId:r.id});
+    b.durum='onaylandi';b.ogrenciId=r.id;showToast('Öğrenci eklendi.');kayitAdminCiz();
+    try{renderAll();}catch(e){}
+  }catch(e){showToast('Eklenemedi: '+(e.message||e),'error');}
+}
+
 function goToAyarlar(){drawerAc();}
 
 // ── GRUP ÖĞRENCİ ──────────────────────────────────────
@@ -8053,7 +8096,7 @@ const YAZMA_KATEGORILER=[
 const YAZMA_HARITA={ogrenciler:'ogrenci',ogrenci_hesaplar:'ogrenci',egitmen_hesaplar:'ayar',portal_oturum:'ogrenci',portal_kilit:'ogrenci',
   ogrenciGecmisi:'*',sinifGecmisi:'*',siniflar:'sinif',tatiller:'sinif',odemeler:'odeme',yoklamalar:'yoklama',
   ozelPaketler:'ozel',ozelSeanslar:'ozel',ozelOgrenciler:'ozel',videoSiniflar:'video',
-  egitmenler:'ayar',ayarlar:'ayar',gider_ayarlari:'ayar',ogrenci_notlar:'serbest'};
+  egitmenler:'ayar',ayarlar:'ayar',gider_ayarlari:'ayar',ogrenci_notlar:'serbest',kayit_linkleri:'ogrenci',kayit_basvurulari:'ogrenci'};
 // Modal → gereken yazma kategorisi (yetkisiz kullanıcı formu hiç açamaz)
 const YAZMA_MODAL={'m-ogrenci':'ogrenci','m-og-ekle-sec':'ogrenci','m-sinif-ogrenci':'ogrenci','m-sinif':'sinif','m-birlestir':'sinif','m-ders-iptal':'sinif',
   'm-odeme':'odeme','m-pasif-iade':'odeme','m-ozel-ekle':'ozel','m-ozel-paket':'ozel','m-ozel-odeme':'ozel','m-ozel-saat':'ozel','m-ders-planla':'ozel',
@@ -8090,13 +8133,13 @@ function yetkiJwtEposta(tk){try{const p=JSON.parse(atob(tk.split('.')[1].replace
 // ── Yetkisi olmayan düğmeleri PASİF göster (gizleme/engelleme tek noktada) ──
 // onclick içindeki işlev adına göre düğmenin yazma kategorisi bulunur; kullanıcıda yoksa düğme soluk görünür ve tıklanınca uyarı verir.
 const YETKI_ISLEM_HARITA={
-  ogrenci:['openOgrenciModal','saveOgrenci','ogrenciPasifeAlTamam','kayitOgrenciPasife','toggleOgrenciDurum','toggleDondur','hakEkle','saveSinifOgrenci','openSinifOgrenci','silKayit','tasiKayit','ogDetaySinifEkle','ogDetaySinifSil','oeYeniOgrenci','portalSifreDegistirModal','portalSifreKaydet','portalNotGonder','dersKaydiSil','oeOgrenciSec'],
+  ogrenci:['kayitBasvuruEkle','kayitBasvuruReddet','kayitBasvuruSil','kayitLinkOlustur','kayitLinkSil','openOgrenciModal','saveOgrenci','ogrenciPasifeAlTamam','kayitOgrenciPasife','toggleOgrenciDurum','toggleDondur','hakEkle','saveSinifOgrenci','openSinifOgrenci','silKayit','tasiKayit','ogDetaySinifEkle','ogDetaySinifSil','oeYeniOgrenci','portalSifreDegistirModal','portalSifreKaydet','portalNotGonder','dersKaydiSil','oeOgrenciSec'],
   sinif:['openSinifModal','saveSinif','sinifBirlestir','openBirlestirModal','sinifDurumToggle','tatilEkle','tatilSil','dersIptalKaydet','dersIptalKaldir','sinifLegacyKiraTemizle','dersIptalAc'],
   odeme:['openOdemeModal','saveOdeme','silOdeme','cakisanOdemeSil','odemeOnarimUygula'],
   yoklama:['yoklamaAlKaydet','yoklamaOgrenciden'],
   ozel:['ozelEkleBaslat','openOzelPaketModal','saveOzelPaket','silOzelPaket','saveDersPlan','otSeansSil','otSeansDuzenle','ooKaydet','ooDuzenle','ooSil','ozelSaatDenetimi','openOzelOdemeModal','openOzelSaatModal','osUygula'],
   video:['openVideoSinifModal','saveVideoSinif','silVideoSinif'],
-  ayar:['gaPratikKiraEkle','gaPratikKiraKaydet','gaPratikKiraSil','gaPratikKiraDuzenle','gaPratikIptalEkle','gaPratikIptalKaydetForm','gaPratikIptalSil','gaOzelKiraEkle','gaOzelKiraKaydet','gaOzelKiraSil','gaOzelKiraDuzenle','gaGrupKiraEkle','gaGrupKiraKaydet','gaGrupKiraSil','gaGrupKiraDuzenle','egitmenEkleModal','egitmenKaydet','egitmenDuzenle','egitmenSil','egitmenSifreSifirla','waSablonKaydet','odemeBilgiKaydet'],
+  ayar:['kayitMetinKaydet','gaPratikKiraEkle','gaPratikKiraKaydet','gaPratikKiraSil','gaPratikKiraDuzenle','gaPratikIptalEkle','gaPratikIptalKaydetForm','gaPratikIptalSil','gaOzelKiraEkle','gaOzelKiraKaydet','gaOzelKiraSil','gaOzelKiraDuzenle','gaGrupKiraEkle','gaGrupKiraKaydet','gaGrupKiraSil','gaGrupKiraDuzenle','egitmenEkleModal','egitmenKaydet','egitmenDuzenle','egitmenSil','egitmenSifreSifirla','waSablonKaydet','odemeBilgiKaydet'],
   sahip:['benimAdimiKaydet','kullaniciAdDuzenle','kullaniciAdKaydet','tumVerileriSifirla','tumLegacyKiralariTemizle','tumLegacyKiralariTemizle','kullaniciEkle','kullaniciEkleAc','kullaniciKaldir','kullaniciSifreSifirla','yetkiKaydet','veriSilOnayla','silKategori','veriSilAc','veriSilSec','odemeOnarimAc','githubTokenSifirla','geriYukle']
 };
 const YETKI_ISLEM_RE=Object.entries(YETKI_ISLEM_HARITA).map(([k,l])=>[new RegExp('(^|[^A-Za-z0-9_])('+l.join('|')+')\\s*\\('),k]);

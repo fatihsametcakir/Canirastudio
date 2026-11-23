@@ -142,6 +142,18 @@ service cloud.firestore {
       allow read, write: if oku();
     }
 
+    // Kayıt formu: bağlantıları yönetici oluşturur/siler; "kullanıldı" ve başvuruları yalnızca sunucu fonksiyonu yazar (Admin SDK)
+    match /kayit_linkleri/{id} {
+      allow read: if oku();
+      allow create, delete: if yaz('ogrenci');
+      allow update: if false;
+    }
+    match /kayit_basvurulari/{id} {
+      allow read: if oku();
+      allow update, delete: if yaz('ogrenci');
+      allow create: if false;
+    }
+
     // Yukarıda yazmayan her şey kapalı (varsayılan red)
   }
 }
