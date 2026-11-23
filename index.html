@@ -1448,10 +1448,6 @@ try{
         <div class="gg-card-ikon">👨‍🏫</div>
         <div class="gg-card-baslik" data-i18n="egitmenler_giderler">Eğitmenler & Giderler</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--amber);" onclick="openOdemeAyarlari()">
-        <div class="gg-card-ikon">🏦</div>
-        <div class="gg-card-baslik" data-i18n="odeme_bilgileri">Ödeme Bilgileri</div>
-      </button>
       <button class="gg-card" style="--gg-c:var(--purple);" onclick="openTutmaOrani()">
         <div class="gg-card-ikon">📉</div>
         <div class="gg-card-baslik" data-i18n="ogrenci_tutma_orani">Öğrenci Tutma Oranı</div>
@@ -1500,26 +1496,6 @@ try{
   <div id="egitmen-panel-content2"></div>
 </div>
 
-<!-- ÖDEME BİLGİLERİ SAYFASI -->
-<div class="page" id="pg-odeme-bilgi-ayar">
-  <div style="padding:4px 0;">
-    <div style="font-size:12px;color:var(--text2);margin-bottom:12px;" data-i18n="odeme_bilgi_aciklama">Öğrenci portalında gösterilecek ödeme bilgileri.</div>
-    <div class="field"><label data-i18n="ad_soyad_hesap">Ad Soyad (Hesap Sahibi)</label><input id="ob-adsoyad" type="text" placeholder="Örn: Can Yılmaz"/></div>
-    <div class="field"><label>IBAN</label><input id="ob-iban" type="text" placeholder="TR00 0000 0000 0000 0000 0000 00" style="font-family:monospace;"/></div>
-    <div class="field"><label data-i18n="banka_adi">Banka Adı</label><input id="ob-banka" type="text" placeholder="Örn: Ziraat Bankası"/></div>
-    <div class="field">
-      <label data-i18n="qr_kod_gorseli">QR Kod Görseli</label>
-      <div id="ob-qr-preview" style="display:none;margin-bottom:8px;text-align:center;">
-        <img id="ob-qr-img" style="max-width:160px;max-height:160px;border-radius:8px;border:1px solid var(--border2);" src=""/>
-      </div>
-      <input type="file" id="ob-qr-file" accept="image/*" style="display:none;" onchange="obQrSec(this)"/>
-      <button class="btn btn-sm" style="width:100%;font-size:13px;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="document.getElementById('ob-qr-file').click()" data-i18n="qr_gorsel_sec">📷 QR Görsel Seç</button>
-      <button id="ob-qr-sil-btn" class="btn" style="width:100%;font-size:13px;margin-top:6px;display:none;color:var(--accent);border-color:var(--accent);" onclick="obQrSil()" data-i18n="qr_gorseli_kaldir">✕ QR Görseli Kaldır</button>
-    </div>
-    <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="odemeBilgiKaydet()" data-i18n="btn_kaydet">Kaydet</button>
-    <div id="ob-status" style="font-size:12px;text-align:center;margin-top:8px;display:none;"></div>
-  </div>
-</div>
 
   <!-- ÖZEL DERS HAFTALIK TAKVİM -->
   <div class="page" id="pg-ozel-takvim">
@@ -3338,7 +3314,6 @@ function openAylikGelir(){openRaporSayfa('aylik-gelir','aylik_gelir',renderGelir
 function openGiderRaporu(){openRaporSayfa('gider-rapor','gider_raporu',renderGiderRapor);}
 function openAylikGelirTrend(){openRaporSayfa('gelir-trend','aylik_gelir_trendi',renderGelirTrend);}
 function openEgitmenGiderler(){openRaporSayfa('egitmen-panel','egitmenler_giderler',renderEgitmenPanel);}
-function openOdemeAyarlari(){openRaporSayfa('odeme-bilgi-ayar','odeme_bilgileri',odemeBilgiYukle);}
 function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
 const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
 function goBack(){
@@ -3557,7 +3532,6 @@ function drawerAc(){
   document.body.style.overflow='hidden';
   waSablonYukle();
   renderTemaGrid();
-  odemeBilgiYukle();
 }
 function drawerKapat(){
   document.getElementById('drawer').classList.remove('open');
@@ -7658,7 +7632,6 @@ function renderOgDetay(){
 }
 
 
-let OB_QR_BASE64=null;
 async function tatilSil(id){
   setSyncing(true);
   try{
@@ -11544,7 +11517,6 @@ async function portalVeriYukle(){
   const g=guvenliDeger;
   for(const k of ['ogrenciler','siniflar','odemeler','yoklamalar','ozelPaketler','ozelSeanslar','ogrenciGecmisi','tatiller','egitmenler'])S[k]=(d[k]||[]).map(x=>g(x));
   S._portalNotlar=(d.notlarim||[]).map(x=>g(x));
-  S._odemeBilgileri=d.odemeBilgileri||null; // IBAN/QR: sadece görüntülenir
   return {ilkGiris:false};
 }
 function portalLoginKontrol(){
@@ -11769,33 +11741,7 @@ function renderPortalBilgiler(el,og){
 async function renderPortalOdemeler(el,og){
   const odemeler=S.odemeler.filter(o=>o.ogrenciId===og.id).sort((a,b)=>b.olusturma-a.olusturma);
   const toplam=odemeler.reduce((s,o)=>s+(o.tutar||0),0);
-  let obHtml='';
-  try{
-    const obSnap=PORTAL_TOKEN?{exists:!!S._odemeBilgileri,data:()=>S._odemeBilgileri||{}}:await db.collection('ayarlar').doc('odemeBilgileri').get();
-    if(obSnap.exists){
-      const ob=obSnap.data();
-      if(ob.iban||ob.adSoyad){
-        const rawIban=(ob.iban||'').replace(/\s/g,'');
-        const ibanFmt=rawIban.replace(/(.{4})(?=.)/g,'$1 ');
-        obHtml=`<div class="portal-card" style="border-color:#22d3ee30;margin-bottom:14px;">
-          <div style="font-size:11px;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em;">${t('odeme_yapin')}</div>
-          ${ob.qrBase64?`<div style="text-align:center;margin-bottom:12px;">
-            <img src="${ob.qrBase64}" style="max-width:180px;max-height:180px;border-radius:8px;border:1px solid var(--border2);display:block;margin:0 auto 8px;"/>
-            <button onclick="(()=>{const a=document.createElement('a');a.href='${ob.qrBase64}';a.download='odeme-qr.png';a.click()})()" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;border-radius:6px;padding:6px 16px;font-size:11px;font-weight:600;font-family:DM Sans,sans-serif;cursor:pointer;">⬇ ${t('qr_indir')}</button>
-          </div>`:''}
-          ${ob.adSoyad?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-            <div style="font-size:14px;font-weight:700;flex:1;">${ob.adSoyad}</div>
-            <button onclick="navigator.clipboard.writeText('${ob.adSoyad}').then(()=>{this.textContent='✓';setTimeout(()=>this.textContent='${t('kopyala')}',1500)})" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa40;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;font-family:DM Sans,sans-serif;cursor:pointer;flex-shrink:0;">${t('kopyala')}</button>
-          </div>`:''}
-          ${ob.banka?`<div style="font-size:12px;color:var(--text3);margin-bottom:8px;">${ob.banka}</div>`:''}
-          ${ob.iban?`<div style="background:var(--surface2);border-radius:8px;padding:10px 12px;">
-            <div style="font-family:monospace;font-size:13px;letter-spacing:.04em;margin-bottom:8px;line-height:1.6;">${ibanFmt}</div>
-            <button onclick="navigator.clipboard.writeText('${rawIban}').then(()=>{this.textContent='✓ ${t('kopyalandi')}';setTimeout(()=>this.textContent='📋 ${t('iban_kopyala')}',1500)})" style="width:100%;background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa40;border-radius:6px;padding:8px;font-size:12px;font-weight:600;font-family:DM Sans,sans-serif;cursor:pointer;">📋 ${t('iban_kopyala')}</button>
-          </div>`:''}
-        </div>`;
-      }
-    }
-  }catch(e){}
+  const obHtml=''; // IBAN/QR ile ödeme alınmıyor: ödeme bilgileri kaldırıldı
   let html=`${obHtml}<div class="portal-card" style="background:linear-gradient(135deg,#a78bfa18,#a78bfa08);border-color:#a78bfa30;margin-bottom:14px;">
     <div style="font-size:11px;color:var(--text3);margin-bottom:2px;text-transform:uppercase;letter-spacing:.08em;">${t('toplam_odeme')}</div>
     <div style="font-family:Fraunces,serif;font-size:26px;font-weight:600;color:var(--purple);">${toplam.toLocaleString(LC())} ₺</div>
@@ -12190,43 +12136,6 @@ function soChipsRender(){
   if(!SO_SECILEN.length){el.style.display='none';el.innerHTML='';return;}
   el.style.display='flex';
   el.innerHTML=SO_SECILEN.map(o=>`<div style="display:inline-flex;align-items:center;gap:5px;background:var(--purplebg);border:1px solid #a78bfa40;border-radius:20px;padding:4px 10px;font-size:13px;font-weight:600;color:var(--purple);">${o.ad}<button onclick="soChipSil('${o.id}')" style="background:none;border:none;color:var(--purple);cursor:pointer;font-size:14px;padding:0 0 0 2px;">✕</button></div>`).join('');
-}
-async function odemeBilgiYukle(){
-  try{
-    const snap=await db.collection('ayarlar').doc('odemeBilgileri').get();
-    if(snap.exists){
-      const d=snap.data();
-      document.getElementById('ob-adsoyad').value=d.adSoyad||'';
-      document.getElementById('ob-iban').value=d.iban||'';
-      document.getElementById('ob-banka').value=d.banka||'';
-      if(d.qrBase64){
-        OB_QR_BASE64=d.qrBase64;
-        document.getElementById('ob-qr-img').src=d.qrBase64;
-        document.getElementById('ob-qr-preview').style.display='block';
-        document.getElementById('ob-qr-sil-btn').style.display='block';
-      }
-    }
-  }catch(e){}
-}
-function obQrSec(input){
-  const file=input.files[0];if(!file)return;
-  if(file.size>800000){alert('Gorsel 800KB den kucuk olmali.');input.value='';return;}
-  const reader=new FileReader();
-  reader.onload=e=>{OB_QR_BASE64=e.target.result;document.getElementById('ob-qr-img').src=OB_QR_BASE64;document.getElementById('ob-qr-preview').style.display='block';document.getElementById('ob-qr-sil-btn').style.display='block';};
-  reader.readAsDataURL(file);
-}
-function obQrSil(){OB_QR_BASE64=null;document.getElementById('ob-qr-img').src='';document.getElementById('ob-qr-preview').style.display='none';document.getElementById('ob-qr-sil-btn').style.display='none';document.getElementById('ob-qr-file').value='';}
-async function odemeBilgiKaydet(){
-  const adSoyad=document.getElementById('ob-adsoyad').value.trim();
-  const iban=document.getElementById('ob-iban').value.trim();
-  const banka=document.getElementById('ob-banka').value.trim();
-  const status=document.getElementById('ob-status');
-  status.style.display='block';status.style.color='var(--text3)';status.textContent=t('sync_saving');
-  try{
-    await db.collection('ayarlar').doc('odemeBilgileri').set({adSoyad,iban,banka,qrBase64:OB_QR_BASE64||''});
-    status.style.color='var(--green)';status.textContent='✓ Kaydedildi';
-    setTimeout(()=>{status.style.display='none';},2500);
-  }catch(e){status.style.color='var(--accent)';status.textContent=t('hata')+': '+e.message;}
 }
 async function tatilEkle(){
   const tarih=document.getElementById('tatil-tarih').value;

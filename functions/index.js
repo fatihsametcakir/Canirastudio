@@ -162,9 +162,9 @@ async function veri(req, res, ot) {
   const ogrenci = { id, ad: o.ad, soyad: o.soyad || '', cinsiyet: o.cinsiyet || '', durum: o.durum || 'aktif', tel: o.tel || '', not: o.not || '' };
 
   const q = (kol) => db.collection(kol).where('ogrenciId', '==', id).get().then((s) => s.docs.map((d) => ({ id: d.id, ...d.data() })));
-  const [siniflarSnap, odemeler, yoklamalar, ozelPaketler, ozelSeanslar, ogrenciGecmisi, tatillerSnap, egitSnap, obSnap] = await Promise.all([
+  const [siniflarSnap, odemeler, yoklamalar, ozelPaketler, ozelSeanslar, ogrenciGecmisi, tatillerSnap, egitSnap] = await Promise.all([
     db.collection('siniflar').get(), q('odemeler'), q('yoklamalar'), q('ozelPaketler'), q('ozelSeanslar'), q('ogrenciGecmisi'),
-    db.collection('tatiller').get(), db.collection('egitmenler').get(), db.collection('ayarlar').doc('odemeBilgileri').get(),
+    db.collection('tatiller').get(), db.collection('egitmenler').get(),
   ]);
 
   // Sınıflar: yalnızca kayıtlı olduğu sınıflar; diğer öğrencilerin kayıtları ve kira/eğitmen payı alanları çıkarılır
@@ -184,7 +184,7 @@ async function veri(req, res, ot) {
     ogrenciler: [ogrenci], siniflar, odemeler, yoklamalar, ozelPaketler,
     ozelSeanslar: ozelSeanslar.filter((s) => !s.paketId || ozelPaketIdler.has(s.paketId)),
     ogrenciGecmisi, tatiller: tatillerSnap.docs.map((d) => ({ id: d.id, ...d.data() })),
-    egitmenler, notlarim, odemeBilgileri: obSnap.exists ? obSnap.data() : null,
+    egitmenler, notlarim,
   });
 }
 
