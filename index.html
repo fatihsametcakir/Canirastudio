@@ -875,6 +875,14 @@ body.portal-modu .overlay{z-index:9500;}
 @keyframes spLineGlow{0%,100%{box-shadow:0 0 6px #d9ac5240}50%{box-shadow:0 0 14px #f4dc9288}}
 @keyframes spDiamond{0%,100%{transform:rotate(45deg) scale(1)}50%{transform:rotate(225deg) scale(1.35)}}
 :root[data-acik="1"] #splash .sp-line{background:linear-gradient(90deg,transparent,#7a540f 10%,#b8872a 30%,#d9ac52 50%,#b8872a 70%,#7a540f 90%,transparent);box-shadow:0 0 8px #9a6f1c40}
+.kart-acc-baslik{cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between;margin-bottom:0!important;}
+.kart-acc-baslik::after{content:'▾';font-size:15px;transition:transform .2s;opacity:.8;}
+.kart-acc-baslik.acik{margin-bottom:12px!important;}
+.kart-acc-baslik.acik::after{transform:rotate(180deg);}
+.kart-acc-govde{display:none;}
+.kart-acc-govde.acik{display:block;}
+.back-btn{width:auto!important;min-width:44px;height:36px!important;border-radius:18px!important;padding:0 10px;gap:2px;background:linear-gradient(135deg,#d9ac5226,#d9ac520a)!important;border:1px solid #d9ac52a6!important;color:#e8c36a!important;box-shadow:inset 0 0 0 1px #d9ac5220,0 2px 8px -3px #d9ac5266;}
+:root[data-acik="1"] .back-btn{background:linear-gradient(135deg,#9a6f1c22,#9a6f1c0a)!important;border-color:#9a6f1ca0!important;color:#7a5410!important;box-shadow:inset 0 0 0 1px #9a6f1c20;}
 /* === ALTIN KART ÇERÇEVE (tüm ekranlar; geri almak için bu bloğu sil) === */
 .card,.portal-card,.gg-card,.grad-card,.og-grup-liste,.sinif-karti,.video-kart,.odeme-card,.odeme-sinif-grup,.ozel-og-kart,.takvim-ders-kart,.gider-ozet-kart,.egitmen-pay-kart,.login-box{border:1.5px solid #d9ac52a6;box-shadow:inset 0 0 0 1px #d9ac5224,0 0 0 .5px #d9ac5226}
 :root[data-acik="1"] .card,:root[data-acik="1"] .portal-card,:root[data-acik="1"] .gg-card,:root[data-acik="1"] .grad-card,:root[data-acik="1"] .og-grup-liste,:root[data-acik="1"] .sinif-karti,:root[data-acik="1"] .video-kart,:root[data-acik="1"] .odeme-card,:root[data-acik="1"] .odeme-sinif-grup,:root[data-acik="1"] .ozel-og-kart,:root[data-acik="1"] .takvim-ders-kart,:root[data-acik="1"] .gider-ozet-kart,:root[data-acik="1"] .egitmen-pay-kart,:root[data-acik="1"] .login-box{border-color:#9a6f1ca0;box-shadow:inset 0 0 0 1px #9a6f1c22,0 0 0 .5px #9a6f1c22}
@@ -1444,9 +1452,13 @@ try{
         <div class="gg-card-ikon">📈</div>
         <div class="gg-card-baslik" data-i18n="aylik_gelir_trendi">Aylık Gelir Trendi</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openEgitmenGiderler()">
+      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openEgitmenlerSayfa()">
         <div class="gg-card-ikon">👨‍🏫</div>
-        <div class="gg-card-baslik" data-i18n="egitmenler_giderler">Eğitmenler & Giderler</div>
+        <div class="gg-card-baslik" data-i18n="egitmenler">Eğitmenler</div>
+      </button>
+      <button class="gg-card" style="--gg-c:var(--amber);" onclick="openEgitmenGiderler()">
+        <div class="gg-card-ikon">⚙️</div>
+        <div class="gg-card-baslik" data-i18n="parametreler">Parametreler</div>
       </button>
       <button class="gg-card" style="--gg-c:var(--purple);" onclick="openTutmaOrani()">
         <div class="gg-card-ikon">📉</div>
@@ -1476,7 +1488,12 @@ try{
   <div id="gelir-trend-content2"></div>
 </div>
 
-<!-- EĞİTMENLER & GİDERLER SAYFASI -->
+<!-- EĞİTMENLER SAYFASI -->
+<div class="page" id="pg-egitmenler">
+  <div id="egitmenler-content"></div>
+</div>
+
+<!-- PARAMETRELER SAYFASI (tatil, pratik, kira) -->
 <div class="page" id="pg-egitmen-panel">
   <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#fbbf2414,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #fbbf2435;">
     <div style="font-size:12px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
@@ -2442,7 +2459,7 @@ const TRANSLATIONS={
     portal_sifresi:'Portal Şifresi', sifre_sifirla_aciklama:'Öğrenci şifresini sıfırladığınızda telefon numarasının son 4 hanesi tekrar şifre olur. Öğrenci bir sonraki girişte yeni şifre belirlemek zorunda kalır.',
     sifreyi_sifirla:'Şifreyi Sıfırla (Telefon No\'ya Döndür)', qr_olusturulamadi:'QR oluşturulamadı',
     gelir_gider:'Gelir & Gider', aylik_gelir:'Aylık Gelir', gider_raporu:'Gider Raporu',
-    aylik_gelir_trendi:'Aylık Gelir Trendi', egitmenler_giderler:'Eğitmenler & Giderler',
+    aylik_gelir_trendi:'Aylık Gelir Trendi', egitmenler_giderler:'Eğitmenler & Giderler', parametreler:'Parametreler',
     odeme_bilgileri:'Ödeme Bilgileri', ogrenci_tutma_orani:'Öğrenci Tutma Oranı',
     acc_tema:'Tema', acc_guvenlik:'Güvenlik', acc_wa:'WhatsApp Şablonları', acc_yedek:'Yedekleme',
     acc_excel:'Excel\'e Aktar', acc_pwa:'Uygulamayı Yükle', acc_veri:'Veri Yönetimi',
@@ -2631,7 +2648,7 @@ const TRANSLATIONS={
     portal_sifresi:'Portal Password', sifre_sifirla_aciklama:'When you reset the student\'s password, the last 4 digits of their phone number become the password again. They must set a new password on next login.',
     sifreyi_sifirla:'Reset Password (Revert to Phone Number)', qr_olusturulamadi:'Could not generate QR',
     gelir_gider:'Income & Expense', aylik_gelir:'Monthly Income', gider_raporu:'Expense Report',
-    aylik_gelir_trendi:'Monthly Income Trend', egitmenler_giderler:'Instructors & Expenses',
+    aylik_gelir_trendi:'Monthly Income Trend', egitmenler_giderler:'Instructors & Expenses', parametreler:'Parameters',
     odeme_bilgileri:'Payment Details', ogrenci_tutma_orani:'Student Retention Rate',
     acc_tema:'Theme', acc_guvenlik:'Security', acc_wa:'WhatsApp Templates', acc_yedek:'Backup',
     acc_excel:'Export to Excel', acc_pwa:'Install App', acc_veri:'Data Management',
@@ -2820,7 +2837,7 @@ const TRANSLATIONS={
     portal_sifresi:'Пароль портала', sifre_sifirla_aciklama:'При сбросе пароля последние 4 цифры номера телефона снова станут паролем. Ученику нужно будет задать новый пароль при следующем входе.',
     sifreyi_sifirla:'Сбросить пароль (вернуть к номеру телефона)', qr_olusturulamadi:'Не удалось создать QR',
     gelir_gider:'Доходы и расходы', aylik_gelir:'Доход за месяц', gider_raporu:'Отчёт о расходах',
-    aylik_gelir_trendi:'Динамика дохода по месяцам', egitmenler_giderler:'Преподаватели и расходы',
+    aylik_gelir_trendi:'Динамика дохода по месяцам', egitmenler_giderler:'Преподаватели и расходы', parametreler:'Параметры',
     odeme_bilgileri:'Платёжные реквизиты', ogrenci_tutma_orani:'Удержание учеников',
     acc_tema:'Тема', acc_guvenlik:'Безопасность', acc_wa:'Шаблоны WhatsApp', acc_yedek:'Резервная копия',
     acc_excel:'Экспорт в Excel', acc_pwa:'Установить приложение', acc_veri:'Управление данными',
@@ -3313,9 +3330,39 @@ function openRaporSayfa(id,i18nKey,renderFn){
 function openAylikGelir(){openRaporSayfa('aylik-gelir','aylik_gelir',renderGelir);}
 function openGiderRaporu(){openRaporSayfa('gider-rapor','gider_raporu',renderGiderRapor);}
 function openAylikGelirTrend(){openRaporSayfa('gelir-trend','aylik_gelir_trendi',renderGelirTrend);}
-function openEgitmenGiderler(){openRaporSayfa('egitmen-panel','egitmenler_giderler',renderEgitmenPanel);}
+function openEgitmenGiderler(){openRaporSayfa('egitmen-panel','parametreler',renderEgitmenPanel);}
+function openEgitmenlerSayfa(){openRaporSayfa('egitmenler','egitmenler',renderEgitmenlerSayfa);}
+// Kartları kapalı/açılır (akordeon) yap — render sonrası çağrılır, açık kalan kartlar yeniden çizimde korunur
+const KART_ACIK=new Set();
+function kartAkordeon(sayfaId){
+  const pg=document.getElementById('pg-'+sayfaId);if(!pg)return;
+  const kartlar=[];
+  [...pg.children].forEach(c=>{
+    if(c.id==='egitmen-panel-content2'||c.id==='egitmenler-content')kartlar.push(...c.children);
+    else kartlar.push(c);
+  });
+  kartlar.forEach(k=>{
+    if(k.tagName!=='DIV'||k.classList.contains('kart-acc-hazir')||!k.firstElementChild)return;
+    const bas=k.firstElementChild;
+    const anahtar=sayfaId+'|'+bas.textContent.trim();
+    k.classList.add('kart-acc-hazir');
+    const govde=document.createElement('div');govde.className='kart-acc-govde';
+    while(bas.nextSibling)govde.appendChild(bas.nextSibling);
+    k.appendChild(govde);
+    bas.classList.add('kart-acc-baslik');
+    const ayarla=ac=>{bas.classList.toggle('acik',ac);govde.classList.toggle('acik',ac);};
+    ayarla(KART_ACIK.has(anahtar));
+    bas.addEventListener('click',()=>{const ac=!govde.classList.contains('acik');ac?KART_ACIK.add(anahtar):KART_ACIK.delete(anahtar);ayarla(ac);});
+  });
+}
+function renderEgitmenlerSayfa(){
+  const el=document.getElementById('egitmenler-content');if(!el)return;
+  el.innerHTML=egitmenKartHtml();
+  kartAkordeon('egitmenler');
+  if(typeof yetkiPasifTara==='function')try{yetkiPasifTara();}catch(e){}
+}
 function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
-const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
+const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
 function goBack(){
   let bt=(PAGE==='sinif-detay'||PREV_PAGE==='sinif-detay')?'siniflar':PREV_PAGE; // sınıf detayından geri → her zaman Sınıflar
   if(RAPOR_SAYFA_ID_LISTESI.includes(bt))bt='gelirgider';
@@ -7913,7 +7960,7 @@ function yetkiUygula(){
     r.textContent=salt?'👁 Salt okunur hesap':(!YETKI_SAHIP_MI&&YETKI_YAZMA!==null?'✎ Kısıtlı yazma yetkisi':'');
     r.style.color=salt?'var(--amber)':'var(--text3)';}
   // Gizli bir sayfadaysa ana sayfaya dön
-  if(gg&&['gelirgider','aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani'].includes(PAGE)){goTo('anasayfa',document.querySelector('.nav-item'));}
+  if(gg&&['gelirgider','aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani'].includes(PAGE)){goTo('anasayfa',document.querySelector('.nav-item'));}
 }
 async function yetkiYukle(){
   try{
@@ -10066,7 +10113,27 @@ async function giderAyarlariTazele(force){
   return giderAyarlariniOnbellekleYukle();
 }
 
-// Eğitmen yönetim paneli
+function egitmenKartHtml(){
+  return `
+    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#a78bfa14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #a78bfa35;">
+      <div style="font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('egitmenler')}</div>
+      ${S.egitmenler.map(e=>`
+        <div class="egitmen-pay-kart" style="display:flex;align-items:center;gap:10px;background:${e.basEgitmen?'var(--purplebg)':'var(--surface2)'};border-color:${e.basEgitmen?'#a78bfa40':'var(--border2)'};">
+          <div style="font-size:22px;">${e.basEgitmen?'⭐':'👤'}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:600;">${e.ad}</div>
+            <div style="font-size:11px;color:var(--text2);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenDuzenle('${e.id}')">${t('btn_duzenle_kisa')}</button>
+            <button class="btn btn-danger btn-sm" onclick="egitmenSil('${e.id}')">${t('btn_sil')}</button>
+          </div>
+        </div>`).join('')}
+      ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text2);padding:8px 0 4px;">'+t('henuz_egitmen_yok')+'</div>':''}
+      <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>
+    </div>`;
+}
+// Parametreler paneli (tatil, pratik, kira)
 async function renderEgitmenPanel(){
   renderTatilListe();
   const el=document.getElementById('egitmen-panel-content2')||document.getElementById('egitmen-panel-content');
@@ -10086,24 +10153,6 @@ async function renderEgitmenPanel(){
       </div>
       <button class="btn btn-accent" style="width:100%;" onclick="tumLegacyKiralariTemizle()">Hepsini Temizle, Ortak Kira Geçmişini Kullan</button>
     </div>`:''}
-
-    <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#a78bfa14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #a78bfa35;">
-      <div style="font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('egitmenler')}</div>
-      ${S.egitmenler.map(e=>`
-        <div class="egitmen-pay-kart" style="display:flex;align-items:center;gap:10px;background:${e.basEgitmen?'var(--purplebg)':'var(--surface2)'};border-color:${e.basEgitmen?'#a78bfa40':'var(--border2)'};">
-          <div style="font-size:22px;">${e.basEgitmen?'⭐':'👤'}</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:14px;font-weight:600;">${e.ad}</div>
-            <div style="font-size:11px;color:var(--text2);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}</div>
-          </div>
-          <div style="display:flex;gap:6px;">
-            <button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenDuzenle('${e.id}')">${t('btn_duzenle_kisa')}</button>
-            <button class="btn btn-danger btn-sm" onclick="egitmenSil('${e.id}')">${t('btn_sil')}</button>
-          </div>
-        </div>`).join('')}
-      ${!S.egitmenler.length?'<div style="font-size:13px;color:var(--text2);padding:8px 0 4px;">'+t('henuz_egitmen_yok')+'</div>':''}
-      <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="egitmenEkleModal()">＋ ${t('egitmen_ekle')}</button>
-    </div>
 
     <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#22d3ee14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #22d3ee35;">
       <div style="font-size:12px;font-weight:600;color:var(--cyan);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Grup Dersleri Kirası (Tüm Sınıflar İçin Ortak)</div>
@@ -10131,6 +10180,7 @@ async function renderEgitmenPanel(){
   renderGaOzelKiraListe();
   renderGaPratikKiraListe();
   renderGaPratikIptalListe();
+  kartAkordeon('egitmen-panel');
 }
 async function tumLegacyKiralariTemizle(){
   const legacySiniflar=S.siniflar.filter(si=>si.kira);
@@ -10454,7 +10504,7 @@ async function egitmenKaydet(){
     }
     closeModal('m-kayit-islem');_poll('egitmenler');
     toastGoster('✓ '+t('egitmen_kaydedildi'));
-    setTimeout(()=>renderEgitmenPanel(),400);
+    setTimeout(()=>renderEgitmenlerSayfa(),400);
   }catch(e){alert('Hata: '+e.message);}
   setSyncing(false);
 }
@@ -10466,7 +10516,7 @@ async function egitmenSil(id){
     setSyncing(true);
     await db.collection('egitmenler').doc(id).delete();
     _poll('egitmenler');setSyncing(false);
-    setTimeout(()=>renderEgitmenPanel(),400);
+    setTimeout(()=>renderEgitmenlerSayfa(),400);
   });
 }
 
