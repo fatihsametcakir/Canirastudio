@@ -1813,7 +1813,7 @@ try{
       </div>
       <div class="acc-body" id="acc-veri">
         <button class="btn" style="width:100%;margin-bottom:10px;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b45;" onclick="drawerKapat();hataLogAc()">🐞 Hata Günlüğü <span class="hata-rozet-ic" id="hata-badge-btn" style="display:none;"></span></button>
-        <button class="btn btn-cyan" style="width:100%;margin-bottom:10px;" onclick="telNumaralariniTemizle()">📱 Telefon Numaralarını Düzenle</button>
+        <button class="btn btn-cyan" id="tel-duzenle-btn" style="width:100%;margin-bottom:10px;" onclick="telNumaralariniTemizle()">📱 Telefon Numaralarını Düzenle</button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa45;" onclick="openCakisanOdemelerModal()">🔍 Çakışan Ödemeleri Bul</button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:#34d39922;color:var(--green,#34d399);border:1px solid #34d39945;" onclick="ozelSaatDenetimi()">⏱ Özel Paket Saatlerini Denetle</button>
         <button class="btn btn-cyan" style="width:100%;margin-bottom:10px;" onclick="openTelEksikModal()">📵 <span data-i18n="tel_eksik_btn">Numarası Eksik Öğrenciler</span></button>
@@ -7802,6 +7802,7 @@ async function tatilSil(id){
 }
 function renderAll(){
   // Ödeme onarımı tek seferlik: onarılacak ödeme kalmadıysa menüde gösterme
+  {const tb=document.getElementById('tel-duzenle-btn');if(tb)try{tb.style.display=S.ogrenciler.some(o=>o.tel&&telNormalizeEt(o.tel)!==o.tel)?'':'none';}catch(e){}}
   {const ob=document.getElementById('odeme-onarim-btn');if(ob)try{ob.style.display=odemeOnarimAdaylari().length?'':'none';}catch(e){}}
   // Öğrenci birleştirme tek seferlik eski veri taşıması: taşınacak eski kayıt kalmadıysa menüde gösterme
   {const bi=document.getElementById('acc-birlestir-item');if(bi)bi.style.display=(S.ozelOgrenciler||[]).some(o=>!o.migrasyonTamamlandi)?'':'none';}
