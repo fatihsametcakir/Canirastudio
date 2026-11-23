@@ -3358,6 +3358,8 @@ function kartAkordeon(sayfaId){
 function renderEgitmenlerSayfa(){
   const el=document.getElementById('egitmenler-content');if(!el)return;
   el.innerHTML=egitmenKartHtml();
+  const ilkB=el.firstElementChild&&el.firstElementChild.firstElementChild;
+  if(ilkB&&!window._egitmenKartIlk){window._egitmenKartIlk=1;KART_ACIK.add('egitmenler|'+ilkB.textContent.trim());}
   kartAkordeon('egitmenler');
   if(typeof yetkiPasifTara==='function')try{yetkiPasifTara();}catch(e){}
 }
