@@ -10119,7 +10119,7 @@ function egitmenKartHtml(){
   return `
     <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#a78bfa14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #a78bfa35;">
       <div style="font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('egitmenler')}</div>
-      ${S.egitmenler.map(e=>`
+      ${[...S.egitmenler].sort((x,y)=>(y.basEgitmen?1:0)-(x.basEgitmen?1:0)||(x.ad||'').localeCompare(y.ad||'',LC())).map(e=>`
         <div class="egitmen-pay-kart" style="display:flex;align-items:center;gap:10px;background:${e.basEgitmen?'var(--purplebg)':'var(--surface2)'};border-color:${e.basEgitmen?'#a78bfa40':'var(--border2)'};">
           <div style="font-size:22px;">${e.basEgitmen?'⭐':'👤'}</div>
           <div style="flex:1;min-width:0;">
