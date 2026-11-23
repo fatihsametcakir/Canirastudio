@@ -845,6 +845,15 @@ body.portal-modu .overlay{z-index:9500;}
 .topbar:not(:has(#notif-btn[style*="none"])) #topbar-brand .tb-mark{display:none}
 .topbar:not(:has(#notif-btn[style*="none"])) .topbar-title,.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title .tb-gold,.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title span{font-size:13.5px!important}
 @media(max-width:380px){.topbar:not(:has(#notif-btn[style*="none"])) #topbar-brand{left:calc(50% - 34px)}.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title,.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title .tb-gold,.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title span{font-size:12.5px!important;letter-spacing:.01em}#topbar-brand .tb-mark{display:none}}
+/* alt gezinme çubuğu: altın çerçeve + altın simge halkaları */
+.bottom-nav{border-color:transparent!important}
+.bottom-nav::before{content:"";position:absolute;inset:-1.5px;border-radius:inherit;padding:1.5px;pointer-events:none;background:linear-gradient(135deg,#f8e7ae,#d9ac52 30%,#f4dc92 55%,#b0842f 80%,#e6c26a);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.nav-item:not(.active) .nav-icon-wrap{border:1.2px solid #d9ac5290;background:radial-gradient(circle at 35% 30%,#d9ac5214,transparent 70%)}
+.nav-item.active .nav-icon-wrap{box-shadow:0 0 0 1.8px #d9ac52,0 5px 14px -2px var(--item-color,var(--accent))}
+@keyframes navpulse{0%,100%{box-shadow:0 0 0 1.8px #d9ac52,0 5px 14px -2px var(--item-color,var(--accent));}50%{box-shadow:0 0 0 1.8px #f4dc92,0 5px 19px 1px var(--item-color,var(--accent));}}
+:root[data-acik="1"] .bottom-nav::before{background:linear-gradient(135deg,#b8872a,#8a6112 35%,#c8963a 60%,#7a540f 85%,#b8872a)}
+:root[data-acik="1"] .nav-item:not(.active) .nav-icon-wrap{border-color:#9a6f1c99;background:radial-gradient(circle at 35% 30%,#9a6f1c12,transparent 70%)}
+:root[data-acik="1"] .nav-item.active .nav-icon-wrap{box-shadow:0 0 0 1.8px #9a6f1c,0 5px 14px -2px var(--item-color,var(--accent))}
 </style>
 </head>
 <body>
