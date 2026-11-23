@@ -6835,7 +6835,7 @@ function renderAnasayfa(){
   }
 
   if(herhangiVar){
-    html+=`<div class="sec-header" style="margin-top:16px;">
+    html+=`<div class="yen-bolum"><div class="sec-header" style="margin-top:0;">
       <span class="sec-title">${t('bekleyen_odeme')} <span style="color:var(--accent);font-family:'Fraunces',serif;">(${tumBekleyenler.length})</span></span>
       <div class="grp-seg">
         <button class="grp-seg-btn${BEK_GRUPLAMA==='sinif'?' active':''}" onclick="setBekGruplama('sinif')">${t('siniftagore')}</button>
@@ -6897,6 +6897,7 @@ function renderAnasayfa(){
         html+=accordionGrup(g.id,g.baslik,g.items,badge,g.renk);
       });
     }
+    html+='</div>';
   }
 
   el.innerHTML=html||'<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">'+t('her_sey_yolunda')+'</div></div>';
