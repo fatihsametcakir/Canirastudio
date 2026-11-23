@@ -3771,7 +3771,7 @@ function kayitBasvuruHtml(){
       <div style="margin-top:4px;font-size:12px;color:var(--text2);">Aydınlatma: ${(b.onaylar||{}).aydinlatma?'✔':'✖'} · Kurallar: ${(b.onaylar||{}).kural?'✔':'✖'}${rz?'<br>'+rz:''}</div>
       <details style="margin-top:6px;font-size:11px;color:var(--text2);"><summary style="cursor:pointer;">Kanıt bilgisi</summary>
         Sunucu zamanı: ${_kEsc(k.sunucuZamaniISO)}<br>IP: ${_kEsc(k.ip)}<br>Cihaz: ${_kEsc(k.userAgent)}<br>Dil/Saat dilimi: ${_kEsc(k.dil)} / ${_kEsc(k.saatDilimi)} · Ekran: ${_kEsc(k.ekran)}<br>${kayitCihazHtml(k)}Metin sürümü: ${_kEsc(k.metinSurum)}<br>Özet (SHA-256) aydınlatma: ${_kEsc(((k.ozetler||{}).aydinlatma||'').slice(0,16))}…</details>
-      ${b.durum==='beklemede'?`<div style="display:flex;gap:6px;margin-top:8px;"><button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="kayitBasvuruEkle('${b.id}')">Öğrenci olarak ekle</button><button class="btn btn-danger btn-sm" onclick="kayitBasvuruReddet('${b.id}')">Reddet</button></div>`:`<div style="margin-top:6px;"><button class="btn btn-danger btn-sm" onclick="kayitBasvuruSil('${b.id}')">Kaydı sil</button></div>`}
+      ${b.durum==='beklemede'?`<div style="display:flex;gap:6px;margin-top:8px;"><button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="kayitBasvuruEkle('${b.id}')">Öğrenci olarak ekle</button><button class="btn btn-danger btn-sm" onclick="kayitBasvuruReddet('${b.id}')">Reddet</button><button class="btn btn-danger btn-sm" onclick="kayitBasvuruSil('${b.id}')">Sil</button></div>`:`<div style="margin-top:6px;"><button class="btn btn-danger btn-sm" onclick="kayitBasvuruSil('${b.id}')">Kaydı sil</button></div>`}
     </div>`;}).join('');
 }
 function kayitLinkHtml(){
@@ -3821,6 +3821,7 @@ async function kayitLinkSil(id){
   try{await db.collection('kayit_linkleri').doc(id).delete();KAYIT_DATA.linkler=KAYIT_DATA.linkler.filter(x=>x.id!==id);kayitAdminCiz();}catch(e){showToast('Silinemedi: '+(e.message||e),'error');}
 }
 async function kayitBasvuruSil(id){
+  if(!confirm('Bu başvuru ve kanıt kaydı kalıcı olarak silinecek. Emin misiniz?'))return;
   try{await db.collection('kayit_basvurulari').doc(id).delete();KAYIT_DATA.basvurular=KAYIT_DATA.basvurular.filter(x=>x.id!==id);kayitAdminCiz();}catch(e){showToast('Silinemedi: '+(e.message||e),'error');}
 }
 async function kayitBasvuruReddet(id){
