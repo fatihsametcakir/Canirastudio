@@ -826,6 +826,7 @@ try{
   const safir=new THREE.MeshStandardMaterial({color:0x1f64d8,metalness:.2,roughness:.08,envMapIntensity:1.6,emissive:0x061636});
   const elmas=new THREE.MeshStandardMaterial({color:0xeaf6ff,metalness:.1,roughness:.03,envMapIntensity:2.2,emissive:0x1a2a3a});
   const P=(a,b,c)=>new THREE.Vector3(a,b,c);
+  const zumrut=new THREE.MeshStandardMaterial({color:0x0c9e56,metalness:.25,roughness:.07,envMapIntensity:1.8,emissive:0x04361d});
   const goldK=new THREE.MeshStandardMaterial({color:0xc08a2a,metalness:1,roughness:.4,envMapIntensity:1,side:THREE.DoubleSide});
   const goldP=new THREE.MeshStandardMaterial({color:0xf6d98a,metalness:1,roughness:.12,envMapIntensity:1.6});
   function tac(kral){
@@ -879,7 +880,7 @@ try{
         const a2=a+Math.PI/N;const m=new THREE.Mesh(ext(k,.03,.012),gold);m.position.set(Math.sin(a2)*.985,yb,Math.cos(a2)*.985);m.rotation.y=a2;g.add(m);
       }else{
         // taşlı yuva: çerçeveli (bezel) taş, yaprağın ortasında
-        const gm=i%2?safir:elmas;
+        const gm=zumrut;
         const gem=new THREE.Mesh(new THREE.SphereGeometry(.058,18,12),gm);gem.scale.set(1,1.25,.6);gem.position.set(sx*1.03,yb+.2,cz*1.03);gem.rotation.y=a;g.add(gem);
         const bz=new THREE.Mesh(new THREE.TorusGeometry(.066,.014,8,24),goldP);bz.scale.set(1,1.25,1);bz.position.set(sx*1.03,yb+.2,cz*1.03);bz.rotation.y=a;g.add(bz);
         // yaprak ucu: altın top + altında küçük halka
