@@ -2197,6 +2197,7 @@ try{
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:14px;">Pratik Yapılmayan Tarih Ekle</div>
   <div class="field"><label>Hangi Cumartesi Pratik Yapılmadı</label><input id="pi-tarih" type="date"/></div>
+  <div class="field"><label>Açıklama</label><input id="pi-ad" type="text" placeholder="Açıklama (örn: Bayram tatili)"/></div>
   <div style="display:flex;gap:10px;margin-top:6px;">
     <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-pratik-iptal')">İptal</button>
     <button class="btn btn-accent" style="flex:1;padding:13px;" onclick="gaPratikIptalKaydetForm()">Kaydet</button>
@@ -10115,7 +10116,7 @@ async function giderAyarlariniYukle(){
   }
 }
 
-async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi,pratikKiraGecmisi,pratikIptalTarihleri,ozelKiraGecmisi){
+async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi,pratikKiraGecmisi,pratikIptalTarihleri,ozelKiraGecmisi,pratikIptalAciklamalari){
   // Ayarlar henüz başarıyla okunmadıysa kaydetme: boş varsayılanlar mevcut kira geçmişinin üzerine yazılmasın
   if(!GIDER_AYARLARI_YUKLENDI){await giderAyarlariTazele(true);if(!GIDER_AYARLARI_YUKLENDI)throw new Error('Gider ayarları yüklenemedi, tekrar deneyin.');}
   const veri={kira:parseFloat(kira)||0,basEgitmenPayPct:parseFloat(pct)||0};
@@ -10127,6 +10128,8 @@ async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi,pratikKiraGecmisi,
   else if(GIDER_AYARLARI.pratikIptalTarihleri)veri.pratikIptalTarihleri=GIDER_AYARLARI.pratikIptalTarihleri;
   if(ozelKiraGecmisi!==undefined)veri.ozelKiraGecmisi=ozelKiraGecmisi;
   else if(GIDER_AYARLARI.ozelKiraGecmisi)veri.ozelKiraGecmisi=GIDER_AYARLARI.ozelKiraGecmisi;
+  if(pratikIptalAciklamalari!==undefined)veri.pratikIptalAciklamalari=pratikIptalAciklamalari;
+  else if(GIDER_AYARLARI.pratikIptalAciklamalari)veri.pratikIptalAciklamalari=GIDER_AYARLARI.pratikIptalAciklamalari;
   await db.collection('ayarlar').doc('giderAyarlari').set(veri);
 }
 
@@ -10429,27 +10432,30 @@ function renderGaPratikIptalListe(){
     const cumartesiDegil=gun!==6;
     return `
     <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12.5px;">
-      <span>${formatDateTamYil(tarih)}${cumartesiDegil?' <span style="color:var(--amber);">(Cumartesi değil — hesaba etkisi olmaz)</span>':' — pratik yapılmadı'}</span>
+      <span style="min-width:0;">${formatDateTamYil(tarih)}${cumartesiDegil?' <span style="color:var(--amber);">(Cumartesi değil — hesaba etkisi olmaz)</span>':' — pratik yapılmadı'}${((GIDER_AYARLARI.pratikIptalAciklamalari||{})[tarih])?'<div style="font-size:11px;color:var(--text2);margin-top:2px;">'+String((GIDER_AYARLARI.pratikIptalAciklamalari||{})[tarih]).replace(/</g,'&lt;')+'</div>':''}</span>
       <button type="button" onclick="gaPratikIptalSil('${tarih}')" style="background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 4px;" title="Kaldır">✕</button>
     </div>`;
   }).join('');
 }
 function gaPratikIptalEkle(){
   document.getElementById('pi-tarih').value=bugunTarih();
+  document.getElementById('pi-ad').value='';
   openModal('m-pratik-iptal');
 }
 function gaPratikIptalKaydetForm(){
   const tarih=document.getElementById('pi-tarih').value;
   if(!tarih){alert('Lütfen bir tarih seç.');return;}
   closeModal('m-pratik-iptal');
-  gaPratikIptalKaydet(tarih);
+  gaPratikIptalKaydet(tarih,document.getElementById('pi-ad').value.trim());
 }
-async function gaPratikIptalKaydet(tarih){
+async function gaPratikIptalKaydet(tarih,ad){
   const liste=(GIDER_AYARLARI.pratikIptalTarihleri||[]).filter(x=>x!==tarih);
   liste.push(tarih);
+  const acik={...(GIDER_AYARLARI.pratikIptalAciklamalari||{})};
+  if(ad)acik[tarih]=ad;else delete acik[tarih];
   setSyncing(true);
   try{
-    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,liste);
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,liste,undefined,acik);
     await giderAyarlariniOnbellekleYukle();
     renderGaPratikIptalListe();
     renderAll();
@@ -10458,9 +10464,10 @@ async function gaPratikIptalKaydet(tarih){
 }
 async function gaPratikIptalSil(tarih){
   const liste=(GIDER_AYARLARI.pratikIptalTarihleri||[]).filter(x=>x!==tarih);
+  const acik={...(GIDER_AYARLARI.pratikIptalAciklamalari||{})};delete acik[tarih];
   setSyncing(true);
   try{
-    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,liste);
+    await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,liste,undefined,acik);
     await giderAyarlariniOnbellekleYukle();
     renderGaPratikIptalListe();
     renderAll();
