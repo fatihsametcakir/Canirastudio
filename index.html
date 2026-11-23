@@ -1784,7 +1784,7 @@ try{
     </div>
 
     <!-- Öğrenci Birleştirme -->
-    <div class="acc-item" style="--item-color:var(--cyan);">
+    <div class="acc-item" id="acc-birlestir-item" style="--item-color:var(--cyan);">
       <div class="acc-head" onclick="accToggle('acc-birlestir')">
         <div class="acc-title"><span class="acc-icon">🔗</span> <span data-i18n="ogrenci_birlestirme">Öğrenci Birleştirme</span></div>
         <span class="acc-arrow" id="arr-acc-birlestir">›</span>
@@ -7763,6 +7763,8 @@ async function tatilSil(id){
   setSyncing(false);
 }
 function renderAll(){
+  // Öğrenci birleştirme tek seferlik eski veri taşıması: taşınacak eski kayıt kalmadıysa menüde gösterme
+  {const bi=document.getElementById('acc-birlestir-item');if(bi)bi.style.display=(S.ozelOgrenciler||[]).some(o=>!o.migrasyonTamamlandi)?'':'none';}
   if(!PORTAL_OG_ID)otOtoDusKontrol();
   renderAnasayfa();renderOgrenciler();renderSiniflar();
   if(PAGE==='sinif-detay')renderSinifDetay(CUR_SINIF);
