@@ -1710,10 +1710,16 @@ try{
         <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;">Uygulamayı kullanan kişiler. Yeni kullanıcı eklenince e-posta ve şifresiyle giriş yapabilir; kaldırılınca erişimi hemen kapanır.</div>
         <div id="kullanici-liste" style="margin-bottom:12px;"></div>
         <div id="kullanici-ekle-alan">
-          <div class="field"><label>Ad</label><input id="ku-ad" type="text" placeholder="Örn. Irina"/></div>
-          <div class="field"><label>E-posta</label><input id="ku-email" type="email" placeholder="kisi@ornek.com" autocomplete="off"/></div>
-          <div class="field"><label>Geçici şifre</label><input id="ku-sifre" type="text" placeholder="En az 6 karakter" autocomplete="off"/></div>
-          <button class="btn btn-purple" style="width:100%;" onclick="kullaniciEkle()">+ Kullanıcı Ekle</button>
+          <button class="btn btn-purple" id="ku-ac-btn" style="width:100%;" onclick="kullaniciEkleAc()">+ Kullanıcı Ekle</button>
+          <div id="ku-form" style="display:none;">
+            <div class="field"><label>Ad</label><input id="ku-ad" type="text" placeholder="Örn. Irina"/></div>
+            <div class="field"><label>E-posta</label><input id="ku-email" type="email" placeholder="kisi@ornek.com" autocomplete="off"/></div>
+            <div class="field"><label>Geçici şifre</label><input id="ku-sifre" type="text" placeholder="En az 6 karakter" autocomplete="off"/></div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-ghost" style="flex:1;" onclick="kullaniciEkleAc(false)">İptal</button>
+              <button class="btn btn-purple" style="flex:2;" onclick="kullaniciEkle()">Kullanıcıyı Kaydet</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -7985,7 +7991,7 @@ const YETKI_ISLEM_HARITA={
   ozel:['ozelEkleBaslat','openOzelPaketModal','saveOzelPaket','silOzelPaket','saveDersPlan','otSeansSil','otSeansDuzenle','ooKaydet','ooDuzenle','ooSil','ozelSaatDenetimi','openOzelOdemeModal','openOzelSaatModal','osUygula'],
   video:['openVideoSinifModal','saveVideoSinif','silVideoSinif'],
   ayar:['gaPratikKiraEkle','gaPratikKiraKaydet','gaPratikKiraSil','gaPratikKiraDuzenle','gaPratikIptalEkle','gaPratikIptalKaydetForm','gaPratikIptalSil','gaOzelKiraEkle','gaOzelKiraKaydet','gaOzelKiraSil','gaOzelKiraDuzenle','gaGrupKiraEkle','gaGrupKiraKaydet','gaGrupKiraSil','gaGrupKiraDuzenle','egitmenEkleModal','egitmenKaydet','egitmenDuzenle','egitmenSil','egitmenSifreSifirla','waSablonKaydet','odemeBilgiKaydet'],
-  sahip:['benimAdimiKaydet','kullaniciAdDuzenle','kullaniciAdKaydet','tumVerileriSifirla','tumLegacyKiralariTemizle','tumLegacyKiralariTemizle','telNumaralariniTemizle','kullaniciEkle','kullaniciKaldir','kullaniciSifreSifirla','yetkiKaydet','veriSilOnayla','silKategori','veriSilAc','veriSilSec','odemeOnarimAc','githubTokenSifirla','geriYukle']
+  sahip:['benimAdimiKaydet','kullaniciAdDuzenle','kullaniciAdKaydet','tumVerileriSifirla','tumLegacyKiralariTemizle','tumLegacyKiralariTemizle','telNumaralariniTemizle','kullaniciEkle','kullaniciEkleAc','kullaniciKaldir','kullaniciSifreSifirla','yetkiKaydet','veriSilOnayla','silKategori','veriSilAc','veriSilSec','odemeOnarimAc','githubTokenSifirla','geriYukle']
 };
 const YETKI_ISLEM_RE=Object.entries(YETKI_ISLEM_HARITA).map(([k,l])=>[new RegExp('(^|[^A-Za-z0-9_])('+l.join('|')+')\\s*\\('),k]);
 const FAB_KATEGORI=()=>({ogrenciler:'ogrenci',siniflar:'sinif','sinif-detay':'ogrenci',ozel:'ozel',odemeler:'odeme',yoklama:'yoklama',videolar:'video'})[PAGE]||'ogrenci';
@@ -8179,6 +8185,12 @@ async function kullaniciListele(){
     </div>`).join(''):'<div style="font-size:12px;color:var(--text3);">Henüz ek kullanıcı yok.</div>';
   }catch(e){kutu.innerHTML='<div style="font-size:12px;color:var(--accent);">Liste alınamadı: '+waHtmlEsc(e.message)+'</div>';}
 }
+function kullaniciEkleAc(ac){
+  const f=document.getElementById('ku-form'),b=document.getElementById('ku-ac-btn');if(!f||!b)return;
+  if(ac===undefined)ac=f.style.display==='none';
+  f.style.display=ac?'block':'none';b.style.display=ac?'none':'';
+  if(ac){f.style.marginTop='4px';const i=document.getElementById('ku-ad');if(i)i.focus();}
+}
 async function kullaniciEkle(){
   const ad=document.getElementById('ku-ad').value.trim();
   const email=document.getElementById('ku-email').value.trim().toLowerCase();
@@ -8201,6 +8213,7 @@ async function kullaniciEkle(){
     await db.collection('yoneticiler').doc(uid).set({ad,email,ekleyen:AUTH.email||'',tarih:Date.now(),yazma:[]}); // yeni kullanıcı salt okunur başlar; yetkiyi sen açarsın
     ['ku-ad','ku-email','ku-sifre'].forEach(id=>document.getElementById(id).value='');
     toastGoster('✓ Kullanıcı eklendi');
+    kullaniciEkleAc(false);
     kullaniciListele();
   }catch(e){alert('Hata: '+e.message);}
   setSyncing(false);
