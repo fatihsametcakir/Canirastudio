@@ -1524,13 +1524,8 @@ try{
 <div class="page" id="pg-egitmen-panel">
   <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#fbbf2414,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #fbbf2435;">
     <div style="font-size:12px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
-    <div style="display:flex;gap:8px;margin-bottom:8px;">
-      <div style="flex:1.5;min-width:0;position:relative;">
-      <input id="tatil-tarih" oninput="tatilTarihIpucu()" onchange="tatilTarihIpucu()" type="date" style="width:100%;box-sizing:border-box;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;color-scheme:dark;"/>
-      <span id="tatil-tarih-ipucu" data-i18n="tarih_seciniz" style="position:absolute;left:1px;top:1px;bottom:1px;right:30px;display:flex;align-items:center;padding-left:10px;background:var(--surface2);border-radius:var(--radius-sm) 0 0 var(--radius-sm);color:var(--text3);font-size:13px;pointer-events:none;overflow:hidden;white-space:nowrap;">Tarih seçiniz</span></div>
-      <input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad" style="flex:1.5;min-width:0;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
-    </div>
-    <button class="btn btn-accent" style="width:100%;margin-bottom:12px;" onclick="tatilEkle()" data-i18n="btn_tatil_ekle">＋ Tatil Ekle</button>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;" data-i18n="tatil_aciklama">Bayram, resmi tatil gibi dersin yapılmadığı günleri ekle — o günler yoklama ve ders hesabına katılmaz.</div>
+    <button class="btn btn-accent" style="width:100%;margin-bottom:12px;" onclick="tatilEkleAc()" data-i18n="btn_tatil_ekle">＋ Tatil Ekle</button>
     <div id="tatil-liste"></div>
   </div>
   <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#34d39914,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #34d39935;">
@@ -2187,6 +2182,17 @@ try{
   </div>
 </div></div>
 
+<div class="overlay" id="m-tatil"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:14px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
+  <div class="field"><label data-i18n="tarih_seciniz">Tarih seçiniz</label><input id="tatil-tarih" type="date"/></div>
+  <div class="field"><label>Açıklama</label><input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad"/></div>
+  <div style="display:flex;gap:10px;margin-top:6px;">
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-tatil')">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" onclick="tatilEkle()">Kaydet</button>
+  </div>
+</div></div>
+
 <div class="overlay" id="m-pratik-iptal"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:14px;">Pratik Yapılmayan Tarih Ekle</div>
@@ -2456,7 +2462,7 @@ const TRANSLATIONS={
     ozel_ekle_ayrac:'— veya —', yeni_ogrenci_ekle_btn:'＋ Yeni Öğrenci Ekle',
     zaten_ozel_ders:'zaten özel ders alıyor', sec_yonlendir:'seç ›', eslesme_yok_yeni_devam:'Eşleşme bulunamadı — "Yeni Öğrenci Ekle" ile devam edebilirsin.',
     kayitli:'kayıtlı', badge_aktif:'aktif', tek:'tek', pasif_siniflar:'Kapalı Sınıflar', sinif_kucuk_ders:'sınıf', kapali_sinif_etiket:'kapalı sınıf',
-    tarih_seciniz:'Tarih seçiniz', tatil_gunleri:'🎌 Tatil Günleri', ph_tatil_ad:'Açıklama (örn: Kurban Bayramı)', btn_tatil_ekle:'＋ Tatil Ekle',
+    tarih_seciniz:'Tarih seçiniz', tatil_aciklama:'Bayram, resmi tatil gibi dersin yapılmadığı günleri ekle — o günler yoklama ve ders hesabına katılmaz.', tatil_gunleri:'🎌 Tatil Günleri', ph_tatil_ad:'Açıklama (örn: Kurban Bayramı)', btn_tatil_ekle:'＋ Tatil Ekle',
     haftalik:'Haftalık', aylik:'Aylık', bu_hafta:'Bu Hafta',
     btn_ogrenci_ekle:'＋ Öğrenci Ekle', btn_haftalik_takvim:'📅 Haftalık Takvim',
     btn_sinif_playlist_ekle:'＋ Sınıf / Playlist Ekle',
@@ -2645,7 +2651,7 @@ const TRANSLATIONS={
     ozel_ekle_ayrac:'— or —', yeni_ogrenci_ekle_btn:'＋ Add New Student',
     zaten_ozel_ders:'already has private lessons', sec_yonlendir:'select ›', eslesme_yok_yeni_devam:'No match found — you can continue with "Add New Student".',
     kayitli:'enrolled', badge_aktif:'active', tek:'drop-in', pasif_siniflar:'Closed Classes', sinif_kucuk_ders:'classes', kapali_sinif_etiket:'closed class',
-    tarih_seciniz:'Select date', tatil_gunleri:'🎌 Holidays', ph_tatil_ad:'Description (e.g. Eid Holiday)', btn_tatil_ekle:'＋ Add Holiday',
+    tarih_seciniz:'Select date', tatil_aciklama:'Add holidays when no classes are held — these days are excluded from attendance and lesson counts.', tatil_gunleri:'🎌 Holidays', ph_tatil_ad:'Description (e.g. Eid Holiday)', btn_tatil_ekle:'＋ Add Holiday',
     haftalik:'Weekly', aylik:'Monthly', bu_hafta:'This Week',
     btn_ogrenci_ekle:'＋ Add Student', btn_haftalik_takvim:'📅 Weekly Calendar',
     btn_sinif_playlist_ekle:'＋ Add Class / Playlist',
@@ -2834,7 +2840,7 @@ const TRANSLATIONS={
     ozel_ekle_ayrac:'— или —', yeni_ogrenci_ekle_btn:'＋ Добавить нового ученика',
     zaten_ozel_ders:'уже посещает частные уроки', sec_yonlendir:'выбрать ›', eslesme_yok_yeni_devam:'Совпадений не найдено — можно продолжить через "Добавить нового ученика".',
     kayitli:'записано', badge_aktif:'активно', tek:'разовое', pasif_siniflar:'Закрытые группы', sinif_kucuk_ders:'групп', kapali_sinif_etiket:'закрыта',
-    tarih_seciniz:'Выберите дату', tatil_gunleri:'🎌 Праздничные дни', ph_tatil_ad:'Описание (напр. Ураза-байрам)', btn_tatil_ekle:'＋ Добавить праздник',
+    tarih_seciniz:'Выберите дату', tatil_aciklama:'Добавьте праздничные дни без занятий — они не учитываются в посещаемости и подсчёте уроков.', tatil_gunleri:'🎌 Праздничные дни', ph_tatil_ad:'Описание (напр. Ураза-байрам)', btn_tatil_ekle:'＋ Добавить праздник',
     haftalik:'Неделя', aylik:'Месяц', bu_hafta:'Эта неделя',
     btn_ogrenci_ekle:'＋ Добавить ученика', btn_haftalik_takvim:'📅 Недельный календарь',
     btn_sinif_playlist_ekle:'＋ Добавить группу / плейлист',
@@ -7898,7 +7904,7 @@ const YAZMA_HARITA={ogrenciler:'ogrenci',ogrenci_hesaplar:'ogrenci',egitmen_hesa
 // Modal → gereken yazma kategorisi (yetkisiz kullanıcı formu hiç açamaz)
 const YAZMA_MODAL={'m-ogrenci':'ogrenci','m-og-ekle-sec':'ogrenci','m-sinif-ogrenci':'ogrenci','m-sinif':'sinif','m-birlestir':'sinif','m-ders-iptal':'sinif',
   'm-odeme':'odeme','m-pasif-iade':'odeme','m-ozel-ekle':'ozel','m-ozel-paket':'ozel','m-ozel-odeme':'ozel','m-ozel-saat':'ozel','m-ders-planla':'ozel',
-  'm-video-sinif':'video','m-wa-sablon':'ayar','m-grup-kira':'ayar','m-pratik-kira':'ayar','m-ozel-kira':'ayar','m-pratik-iptal':'ayar','m-yoklama-ogrenci':'yoklama','m-veri-sil':'sahip','m-onarim':'sahip'};
+  'm-video-sinif':'video','m-wa-sablon':'ayar','m-grup-kira':'ayar','m-pratik-kira':'ayar','m-ozel-kira':'ayar','m-pratik-iptal':'ayar','m-tatil':'sinif','m-yoklama-ogrenci':'yoklama','m-veri-sil':'sahip','m-onarim':'sahip'};
 let YETKI_YAZMA=null;let YETKI_HAZIR=false;
 const YAZMA_RED_MESAJ='Bu işlem için yetkiniz yok (salt okunur hesap). Yetki için hesap sahibine başvurun.';
 function yazmaIzni(col,islem,data){
@@ -12218,6 +12224,7 @@ function soChipsRender(){
   el.style.display='flex';
   el.innerHTML=SO_SECILEN.map(o=>`<div style="display:inline-flex;align-items:center;gap:5px;background:var(--purplebg);border:1px solid #a78bfa40;border-radius:20px;padding:4px 10px;font-size:13px;font-weight:600;color:var(--purple);">${o.ad}<button onclick="soChipSil('${o.id}')" style="background:none;border:none;color:var(--purple);cursor:pointer;font-size:14px;padding:0 0 0 2px;">✕</button></div>`).join('');
 }
+function tatilEkleAc(){document.getElementById('tatil-tarih').value=bugunTarih();document.getElementById('tatil-ad').value='';openModal('m-tatil');}
 async function tatilEkle(){
   const tarih=document.getElementById('tatil-tarih').value;
   const ad=document.getElementById('tatil-ad').value.trim();
@@ -12229,12 +12236,11 @@ async function tatilEkle(){
     S.tatiller.push({tarih,ad:ad||'Tatil',id:result.id});
     document.getElementById('tatil-tarih').value='';
     document.getElementById('tatil-ad').value='';
-    renderTatilListe();renderAll();
+    closeModal('m-tatil');renderTatilListe();renderAll();
   }catch(e){alert('Hata: '+e.message);}
   setSyncing(false);
 }
-function tatilTarihIpucu(){const i=document.getElementById('tatil-tarih'),h=document.getElementById('tatil-tarih-ipucu');if(i&&h)h.style.display=i.value?'none':'flex';}
-function renderTatilListe(){tatilTarihIpucu();
+function renderTatilListe(){
   const el=document.getElementById('tatil-liste');
   if(!el)return;
   const sirali=[...S.tatiller].sort((a,b)=>a.tarih.localeCompare(b.tarih));
