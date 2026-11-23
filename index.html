@@ -921,6 +921,11 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 .yen-bolum .grp-seg-btn{padding:5px 8px;font-size:12px;}
 .veri-sil-satir{border:1.5px solid #d9ac52a6;box-shadow:inset 0 0 0 1px #d9ac5224;}
 :root[data-acik="1"] .veri-sil-satir{border-color:#9a6f1ca0;box-shadow:inset 0 0 0 1px #9a6f1c20;}
+.kt-baslik{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text);margin-bottom:12px;}
+.kt-metin{max-height:190px;overflow-y:auto;font-size:12.5px;line-height:1.6;color:var(--text2);background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;}
+.kt-metin.kt-kisa{max-height:none;}
+.kt-onay{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.45;cursor:pointer;margin-bottom:14px;}
+.kt-onay input{width:20px;height:20px;flex-shrink:0;margin-top:1px;accent-color:var(--accent);}
 /* === ALTIN KART ÇERÇEVE (tüm ekranlar; geri almak için bu bloğu sil) === */
 .card,.portal-card,.gg-card,.grad-card,.og-grup-liste,.sinif-karti,.video-kart,.odeme-card,.odeme-sinif-grup,.ozel-og-kart,.takvim-ders-kart,.gider-ozet-kart,.egitmen-pay-kart,.login-box{border:1.5px solid #d9ac52a6;box-shadow:inset 0 0 0 1px #d9ac5224,0 0 0 .5px #d9ac5226}
 :root[data-acik="1"] .card,:root[data-acik="1"] .portal-card,:root[data-acik="1"] .gg-card,:root[data-acik="1"] .grad-card,:root[data-acik="1"] .og-grup-liste,:root[data-acik="1"] .sinif-karti,:root[data-acik="1"] .video-kart,:root[data-acik="1"] .odeme-card,:root[data-acik="1"] .odeme-sinif-grup,:root[data-acik="1"] .ozel-og-kart,:root[data-acik="1"] .takvim-ders-kart,:root[data-acik="1"] .gider-ozet-kart,:root[data-acik="1"] .egitmen-pay-kart,:root[data-acik="1"] .login-box{border-color:#9a6f1ca0;box-shadow:inset 0 0 0 1px #9a6f1c22,0 0 0 .5px #9a6f1c22}
@@ -1635,6 +1640,87 @@ try{
 </div></div>
 
   <!-- DERS VİDEOLARI -->
+  <!-- ÖĞRENCİ KAYIT FORMU (TASLAK) -->
+  <div class="page" id="pg-kayit-taslak">
+    <div style="font-size:12px;line-height:1.55;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;">⚠ <b>TASLAK.</b> Metinler örnektir; yayına almadan önce bir hukukçu/KVKK danışmanı tarafından stüdyonuza göre düzenlenmelidir. Bu sayfada gönderim kapalıdır.</div>
+
+    <div class="card kt-bolum" style="padding:14px;margin-bottom:12px;">
+      <div class="kt-baslik">1 · Öğrenci bilgileri</div>
+      <div class="field"><label>Ad Soyad</label><input id="kt-ad" type="text" placeholder="Ad Soyad"/></div>
+      <div class="field"><label>Doğum tarihi</label><input id="kt-dogum" type="date" oninput="ktGuncelle()"/></div>
+      <div class="field"><label>Telefon</label><input id="kt-tel" type="tel" placeholder="5xx xxx xx xx"/></div>
+      <div class="field"><label>E-posta</label><input id="kt-eposta" type="email" placeholder="ornek@mail.com"/></div>
+      <div class="field"><label>Acil durumda aranacak kişi ve telefonu</label><input id="kt-acil" type="text" placeholder="Ad Soyad · telefon"/></div>
+      <div id="kt-veli" style="display:none;">
+        <div style="font-size:12px;color:var(--text2);margin:2px 0 10px;line-height:1.5;">Öğrenci 18 yaşından küçük: aşağıdaki onayları <b>veli/vasi</b> verir.</div>
+        <div class="field"><label>Veli / vasi Ad Soyad</label><input id="kt-veli-ad" type="text" placeholder="Ad Soyad"/></div>
+        <div class="field"><label>Yakınlık</label><input id="kt-veli-yakin" type="text" placeholder="Anne / Baba / Vasi"/></div>
+      </div>
+    </div>
+
+    <div class="card kt-bolum" style="padding:14px;margin-bottom:12px;">
+      <div class="kt-baslik">2 · Aydınlatma metni</div>
+      <div class="kt-metin" tabindex="0">
+        <b>Can &amp; Irina Studio Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni</b><br><br>
+        <b>Veri sorumlusu:</b> [Unvan / Ad Soyad], [Adres], [E-posta]. <br><br>
+        <b>İşlenen veriler:</b> kimlik (ad soyad, doğum tarihi), iletişim (telefon, e-posta), acil durum kişisi bilgisi, ders katılım ve ödeme kayıtları, kayıt sırasındaki işlem güvenliği kayıtları (IP adresi, tarih-saat).<br><br>
+        <b>İşleme amaçları ve hukuki sebepler:</b> (a) Ders kaydının yapılması ve sözleşmenin ifası — KVKK m.5/2-c; (b) ödeme ve muhasebe yükümlülükleri — m.5/2-ç; (c) kaydın ve onayların ispatı, hak talebinin korunması — m.5/2-e; (d) stüdyonun meşru menfaati kapsamında iletişim ve ders düzeni — m.5/2-f.<br><br>
+        <b>Aktarım:</b> Verileriniz yalnızca yasal yükümlülükler (muhasebe, yetkili kurumlar) ve hizmet aldığımız altyapı sağlayıcıları (barındırma/veritabanı) ile paylaşılır. [Yurt dışı aktarımı varsa burada açıkça belirtilecek.]<br><br>
+        <b>Toplama yöntemi:</b> bu çevrimiçi form.<br><br>
+        <b>Saklama süresi:</b> [ör. üyelik süresi + yasal saklama süreleri].<br><br>
+        <b>Haklarınız:</b> KVKK m.11 kapsamındaki haklarınızı [e-posta/adres] üzerinden kullanabilirsiniz.
+      </div>
+      <label class="kt-onay"><input type="checkbox" id="kt-c-aydinlatma" onchange="ktGuncelle()"/><span>Aydınlatma metnini <b>okudum ve anladım.</b></span></label>
+    </div>
+
+    <div class="card kt-bolum" style="padding:14px;margin-bottom:12px;">
+      <div class="kt-baslik">3 · Açık rıza beyanları <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);">(isteğe bağlı — vermezseniz kayıt yine yapılır)</span></div>
+      <div class="kt-metin kt-kisa">
+        <b>Fotoğraf ve video</b><br>Ders, gösteri ve etkinliklerde çekilen fotoğraf/video kayıtlarında görüntümün; stüdyonun Instagram hesabı ve internet sitesinde tanıtım amacıyla yayımlanmasına açık rıza veriyorum. Rızamı dilediğim zaman [iletişim] üzerinden geri alabileceğimi biliyorum.
+      </div>
+      <label class="kt-onay"><input type="checkbox" id="kt-c-foto"/><span>Fotoğraf/video paylaşımı için <b>açık rıza veriyorum.</b></span></label>
+      <div class="kt-metin kt-kisa">
+        <b>Ticari elektronik ileti</b><br>Kampanya, etkinlik ve duyuruların telefon/SMS/WhatsApp/e-posta ile tarafıma gönderilmesine izin veriyorum. İzni dilediğim zaman geri alabilirim.
+      </div>
+      <label class="kt-onay"><input type="checkbox" id="kt-c-ileti"/><span>Ticari ileti almak için <b>izin veriyorum.</b></span></label>
+      <div class="kt-metin kt-kisa">
+        <b>Sağlık bilgisi (özel nitelikli veri)</b><br>Derslerde güvenliğimi sağlamak amacıyla bildirdiğim sağlık durumu bilgilerimin (sakatlık, kronik rahatsızlık vb.) eğitmenler tarafından bilinmesine açık rıza veriyorum.
+      </div>
+      <label class="kt-onay"><input type="checkbox" id="kt-c-saglik"/><span>Sağlık bilgilerimin işlenmesine <b>açık rıza veriyorum.</b></span></label>
+    </div>
+
+    <div class="card kt-bolum" style="padding:14px;margin-bottom:12px;">
+      <div class="kt-baslik">4 · Okul kuralları</div>
+      <div class="kt-metin" tabindex="0">
+        <b>Stüdyo Kuralları</b><br><br>
+        1. Dersler programda belirtilen gün ve saatte başlar; geç kalma ders akışını bozmamak için en fazla [10] dakika ile sınırlıdır.<br>
+        2. Paket süresi içinde kullanılmayan dersler [telafi/dondurma koşulları].<br>
+        3. Ödemeler dönem başında yapılır; yapılan ödemeler [iade koşulları].<br>
+        4. Stüdyo ve ekipmana verilen zarardan öğrenci sorumludur.<br>
+        5. Diğer katılımcılara saygılı davranılır; taciz ve ayrımcılık kabul edilmez.<br>
+        6. Sağlık durumunuzda değişiklik olursa eğitmeni bilgilendirirsiniz.<br>
+        7. Ders içi çekimler yalnızca eğitmen onayıyla yapılır.<br>
+        8. Eşya ve değerli eşyalardan stüdyo sorumlu değildir.
+      </div>
+      <label class="kt-onay"><input type="checkbox" id="kt-c-kural" onchange="ktGuncelle()"/><span>Okul kurallarını <b>okudum, kabul ediyorum.</b></span></label>
+    </div>
+
+    <button class="btn btn-accent" id="kt-gonder" style="width:100%;padding:13px;" onclick="toastGoster('Taslak: gönderim kapalı')" disabled>Kaydı Tamamla</button>
+    <div style="font-size:11px;color:var(--text3);margin:8px 2px 14px;line-height:1.5;">Zorunlu: Aydınlatma teyidi ve okul kuralları. 3. bölümdeki rızalar bağımsızdır; hiçbiri kayıt için şart koşulamaz.</div>
+
+    <div class="card kt-bolum" style="padding:14px;margin-bottom:12px;">
+      <div class="kt-baslik">Onay anında saklanacak kanıt (önizleme)</div>
+      <div style="font-size:12px;line-height:1.7;color:var(--text2);">
+        • Her kutunun ayrı durumu (verildi / verilmedi) ve ayrı zamanı<br>
+        • Sunucu tarafı tarih-saat (cihaz saatine güvenilmez)<br>
+        • IP adresi (sunucu okur)<br>
+        • Cihaz bilgisi (tarayıcı, işletim sistemi, dil, saat dilimi, ekran)<br>
+        • Gösterilen her metnin sürümü ve içerik özeti (SHA-256)<br>
+        • Tek kullanımlık bağlantının kimliği
+      </div>
+    </div>
+  </div>
+
   <div class="page" id="pg-videolar">
     <div style="display:flex;gap:8px;margin:4px 0 14px;">
       <button class="btn btn-accent btn-sm" style="flex:1;" onclick="openVideoSinifModal()" data-i18n="btn_sinif_playlist_ekle">＋ Sınıf / Playlist Ekle</button>
@@ -1674,6 +1760,7 @@ try{
       <button class="drawer-btn" id="drawerBtnTakvim" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('takvim',this)">📅 <span data-i18n="nav_takvim">Takvim</span></button>
       <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('yoklama',this)">✓ Yoklama</button>
       <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('videolar',this)">🎬 Ders Videoları</button>
+      <button class="drawer-btn" id="drawerBtnKayitTaslak" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('kayit-taslak',this)">📝 Kayıt Formu (Taslak)</button>
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
       <button class="drawer-btn" id="drawerBtnYoklamaLog" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();yoklamaLogAc()">📝 Yoklama Günlüğü</button>
       <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
@@ -3681,11 +3768,20 @@ function drawerAc(){
 }
 // Menüden bir ekran/pencere açılınca, o kapanınca hamburger menüye geri dönülür
 let _DRAWER_FLAG=0,_SAYFA_DRAWER=false;const _MODAL_DRAWER=new Set();
+function ktGuncelle(){
+  const d=document.getElementById('kt-dogum').value;
+  let kucuk=false;
+  if(d){const b=new Date(d+'T00:00:00'),n=new Date();let y=n.getFullYear()-b.getFullYear();const m=n.getMonth()-b.getMonth();if(m<0||(m===0&&n.getDate()<b.getDate()))y--;kucuk=y<18;}
+  document.getElementById('kt-veli').style.display=kucuk?'block':'none';
+  const ok=document.getElementById('kt-c-aydinlatma').checked&&document.getElementById('kt-c-kural').checked;
+  document.getElementById('kt-gonder').disabled=!ok;
+}
 function drawerSayfaAc(p,btn){
   goTo(p,null);
   let b=(btn&&btn.textContent||p).trim();
   setTopbar(true,b);
   _SAYFA_DRAWER=true;_DRAWER_FLAG=0;
+  {const f=document.getElementById('mainFab');if(f)f.style.display='none';}
 }
 function drawerKapat(manuel){
   if(manuel!==true&&document.getElementById('drawer').classList.contains('open'))_DRAWER_FLAG=Date.now();
