@@ -832,6 +832,9 @@ body.portal-modu .overlay{z-index:9500;}
 .topbar-title span{font-size:17px}
 .yetki-pasif{opacity:.38!important;filter:grayscale(.85);cursor:not-allowed!important;box-shadow:none!important}
 .yetki-pasif *{cursor:not-allowed!important}
+.login-x{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;border:none;background:var(--surface3,var(--border2));color:var(--text2);font-size:16px;line-height:20px;text-align:center;padding:0;cursor:pointer;display:none;z-index:2}
+.login-x.gor{display:block}
+.login-x:active{transform:translateY(-50%) scale(.9)}
 </style>
 </head>
 <body>
@@ -1080,6 +1083,29 @@ try{
   </div>
 </div>
 
+<script>
+// Giriş alanlarına tek dokunuşla temizleme (X) düğmesi
+(function(){
+  const alanlar=[['login-email',0],['login-sifre',1],['login-tel',0],['login-og-sifre',1],['login-eg-tel',0],['login-eg-sifre',1]];
+  const yenile=[];
+  alanlar.forEach(([id,sifre])=>{
+    const inp=document.getElementById(id);if(!inp)return;
+    let kap=inp.parentElement;
+    if(!sifre){kap=document.createElement('div');kap.style.position='relative';inp.parentElement.insertBefore(kap,inp);kap.appendChild(inp);}
+    const b=document.createElement('button');b.type='button';b.className='login-x';b.setAttribute('aria-label','Temizle');b.textContent='×';
+    if(sifre)b.style.right='40px';
+    inp.style.paddingRight=sifre?'72px':'40px';
+    kap.appendChild(b);
+    const g=()=>b.classList.toggle('gor',!!inp.value);
+    b.addEventListener('mousedown',e=>e.preventDefault());
+    b.addEventListener('click',()=>{inp.value='';inp.dispatchEvent(new Event('input',{bubbles:true}));g();inp.focus();});
+    ['input','change','focus','keyup'].forEach(ev=>inp.addEventListener(ev,g));
+    yenile.push(g);
+  });
+  // tarayıcı otomatik doldurması olay üretmeyebilir
+  [300,1200,2500].forEach(t=>setTimeout(()=>yenile.forEach(f=>f()),t));
+})();
+</script>
 <!-- DEMO ÖĞRENCI SEÇİM MODALI -->
 <div id="m-demo-sec" class="modal-overlay" style="display:none;z-index:99999;" onclick="if(event.target===this)closeModal('m-demo-sec')">
   <div class="modal" style="max-width:400px;width:92%;">
