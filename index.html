@@ -871,8 +871,10 @@ try{
   // taçları "Management" altındaki çizgi ile "Created by" arasındaki boşluğun tam ortasına yerleştir
   function ortala(){
     const cizgi=sp.querySelector('.sp-line'),kucuk=sp.querySelector('.sp-imza small');if(!cizgi||!kucuk)return;
-    const a=cizgi.getBoundingClientRect().bottom,b=kucuk.getBoundingClientRect().top,h=host.getBoundingClientRect();
-    cv.style.top=Math.round((a+b)/2-h.top-H/2-20)+'px';
+    // animasyon (transform) ölçümü kaydırmasın diye offset tabanlı yerleşim koordinatı kullan
+    const yt=el=>{let y=0;while(el&&el!==sp){y+=el.offsetTop;el=el.offsetParent;}return y;};
+    const a=yt(cizgi)+cizgi.offsetHeight,b=yt(kucuk),h=yt(host);
+    cv.style.top=Math.round((a+b)/2-h-H/2-20)+'px';
   }
   ortala();setTimeout(ortala,300);setTimeout(ortala,1300);window.addEventListener('resize',ortala);
   let t0=performance.now();
