@@ -66,6 +66,7 @@ if('navigation' in window){
     e.intercept({handler:function(){
       if(acikModal)closeModal(acikModal.id);
       else if(drawerAcik)drawerKapat();
+      else if(PAGE==='sinif-detay')goBack(); // sınıf detayı → Sınıflar
       else if(typeof RAPOR_SAYFA_ID_LISTESI!=='undefined'&&RAPOR_SAYFA_ID_LISTESI.includes(PAGE))goBack(); // rapor sayfası → Gelir/Gider kartlarına dön
       else if(PAGE!=='anasayfa')goTo('anasayfa',document.querySelector('.nav-item'));
       geriTusuTamponDoldur(1);
@@ -84,6 +85,7 @@ if('navigation' in window){
     if(acikModal){closeModal(acikModal.id);geriTusuTamponDoldur(1);return;}
     const drawer=document.getElementById('drawer');
     if(drawer&&drawer.classList.contains('open')){drawerKapat();geriTusuTamponDoldur(1);return;}
+    if(PAGE==='sinif-detay'){goBack();geriTusuTamponDoldur(1);return;}
     if(typeof RAPOR_SAYFA_ID_LISTESI!=='undefined'&&RAPOR_SAYFA_ID_LISTESI.includes(PAGE)){goBack();geriTusuTamponDoldur(1);return;}
     if(PAGE!=='anasayfa'){goTo('anasayfa',document.querySelector('.nav-item'));geriTusuTamponDoldur(1);return;}
     // Ana Sayfa'da, hiçbir şey açık değil — hiç müdahale etme, doğal kapanış
@@ -3102,11 +3104,11 @@ function openOdemeAyarlari(){openRaporSayfa('odeme-bilgi-ayar','odeme_bilgileri'
 function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
 const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
 function goBack(){
-  let bt=PREV_PAGE==='sinif-detay'?'siniflar':PREV_PAGE;
+  let bt=(PAGE==='sinif-detay'||PREV_PAGE==='sinif-detay')?'siniflar':PREV_PAGE; // sınıf detayından geri → her zaman Sınıflar
   if(RAPOR_SAYFA_ID_LISTESI.includes(bt))bt='gelirgider';
   PAGE=bt;showPage(bt);setTopbar(false);
   const map={anasayfa:0,ogrenciler:1,siniflar:2,'sinif-detay':2,takvim:-1,ozel:3,odemeler:4,gelirgider:5,yoklama:-1};
-  document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',i===(map[bt]??-1)));
+  document.querySelectorAll('.nav-item[onclick^="goTo("]').forEach((b,i)=>b.classList.toggle('active',i===(map[bt]??-1)));
   const fab=document.getElementById('mainFab');
   if(fab)fab.style.display=(bt==='anasayfa'||bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider'||bt==='odemeler'||bt==='ozel'||bt==='siniflar'||bt==='ogrenciler')?'none':'flex';
   renderAll();
