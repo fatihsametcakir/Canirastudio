@@ -65,7 +65,8 @@ if('navigation' in window){
     if(!mudahaleGerekli)return; // Ana Sayfa'da, hiçbir şey açık değil — doğal davranış: kapanır
     e.intercept({handler:function(){
       if(acikModal)closeModal(acikModal.id);
-      else if(drawerAcik)drawerKapat();
+      else if(drawerAcik)drawerKapat(true);
+      else if(_SAYFA_DRAWER)goBack(); // menüden açılan sayfa → menüye dön
       else if(PAGE==='sinif-detay')goBack(); // sınıf detayı → Sınıflar
       else if(typeof RAPOR_SAYFA_ID_LISTESI!=='undefined'&&RAPOR_SAYFA_ID_LISTESI.includes(PAGE))goBack(); // rapor sayfası → Gelir/Gider kartlarına dön
       else if(PAGE!=='anasayfa')goTo('anasayfa',document.querySelector('.nav-item'));
@@ -84,7 +85,8 @@ if('navigation' in window){
     const acikModal=document.querySelector('.overlay.open');
     if(acikModal){closeModal(acikModal.id);geriTusuTamponDoldur(1);return;}
     const drawer=document.getElementById('drawer');
-    if(drawer&&drawer.classList.contains('open')){drawerKapat();geriTusuTamponDoldur(1);return;}
+    if(drawer&&drawer.classList.contains('open')){drawerKapat(true);geriTusuTamponDoldur(1);return;}
+    if(_SAYFA_DRAWER){goBack();geriTusuTamponDoldur(1);return;}
     if(PAGE==='sinif-detay'){goBack();geriTusuTamponDoldur(1);return;}
     if(typeof RAPOR_SAYFA_ID_LISTESI!=='undefined'&&RAPOR_SAYFA_ID_LISTESI.includes(PAGE)){goBack();geriTusuTamponDoldur(1);return;}
     if(PAGE!=='anasayfa'){goTo('anasayfa',document.querySelector('.nav-item'));geriTusuTamponDoldur(1);return;}
@@ -1657,21 +1659,21 @@ try{
 </div>
 
 <!-- Drawer overlay -->
-<div class="drawer-overlay" id="drawerOverlay" onclick="drawerKapat()"></div>
+<div class="drawer-overlay" id="drawerOverlay" onclick="drawerKapat(true)"></div>
 
 <!-- Drawer panel -->
 <div class="drawer" id="drawer">
   <div class="drawer-header">
     <div class="drawer-logo"><b class="tb-gold">Can &amp; Irina</b> <span>Dance Studio</span></div>
-    <button class="drawer-close" onclick="drawerKapat()">✕</button>
+    <button class="drawer-close" onclick="drawerKapat(true)">✕</button>
   </div>
   <div class="drawer-body">
 
     <!-- Hızlı Erişim -->
     <div class="drawer-hizli" style="padding:8px 12px 4px;">
-      <button class="drawer-btn" id="drawerBtnTakvim" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('takvim',null)">📅 <span data-i18n="nav_takvim">Takvim</span></button>
-      <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('yoklama',null)">✓ Yoklama</button>
-      <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();goTo('videolar',null)">🎬 Ders Videoları</button>
+      <button class="drawer-btn" id="drawerBtnTakvim" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('takvim',this)">📅 <span data-i18n="nav_takvim">Takvim</span></button>
+      <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('yoklama',this)">✓ Yoklama</button>
+      <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('videolar',this)">🎬 Ders Videoları</button>
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
       <button class="drawer-btn" id="drawerBtnYoklamaLog" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();yoklamaLogAc()">📝 Yoklama Günlüğü</button>
       <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
@@ -2198,7 +2200,7 @@ try{
 <div class="overlay" id="m-confirm"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:8px;" id="confirm-title">Emin misiniz?</div>
-  <div style="font-size:14px;color:var(--text2);margin-bottom:20px;" id="confirm-desc"></div>
+  <div style="font-size:14px;color:var(--text2);margin-bottom:20px;white-space:pre-line;" id="confirm-desc"></div>
   <div style="display:flex;gap:10px;">
     <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-confirm')" data-i18n="btn_iptal">İptal</button>
     <button class="btn btn-accent" style="flex:1;padding:13px;" id="confirm-ok">Onayla</button>
@@ -3262,7 +3264,9 @@ function menuSayfaAc(ms){
 function openModal(id){
   const gk=YAZMA_MODAL[id];
   if(gk&&!yazabilir(gk)){toastGoster('🔒 '+YAZMA_RED_MESAJ);return;}
-  if(MENU_SAYFALAR[id]){menuSayfaAc(MENU_SAYFALAR[id]);return;}
+  const drawerKok=(Date.now()-_DRAWER_FLAG<4000);
+  if(MENU_SAYFALAR[id]){menuSayfaAc(MENU_SAYFALAR[id]);if(drawerKok){_SAYFA_DRAWER=true;_DRAWER_FLAG=0;}return;}
+  if(drawerKok){_MODAL_DRAWER.add(id);_DRAWER_FLAG=0;}
   document.getElementById(id).classList.add('open');
 }
 function confirm_(title,desc,cb){
@@ -3286,6 +3290,7 @@ function closeModal(id){
     const drawer=document.getElementById('drawer');
     drawer.style.zIndex='';
   }
+  if(_MODAL_DRAWER.delete(id)&&!document.querySelector('.overlay.open'))drawerAc();
 }
 
 // ── LISTENERS ──────────────────────────────────────────
@@ -3398,6 +3403,7 @@ function goTo(p,btn){
   const yeniIdx=btn?navler.indexOf(btn):-1;
   const yon=(eskiIdx>=0&&yeniIdx>=0&&yeniIdx<eskiIdx)?'gec-geri':'gec-ileri';
   const ayniSayfa=(p===PAGE);
+  _SAYFA_DRAWER=false;
   PREV_PAGE=PAGE;PAGE=p;showPage(p);
   if(!ayniSayfa){const pg=document.getElementById('pg-'+p);if(pg){pg.classList.remove('gec-ileri','gec-geri','gec-bitti');void pg.offsetWidth;pg.classList.add(yon);clearTimeout(pg._gecT);pg._gecT=setTimeout(()=>{pg.classList.remove('gec-ileri','gec-geri');pg.classList.add('gec-bitti');},800);}} // animasyon bitince sınıf kalkar: veri yenilenince kartlar yeniden belirip kaybolmasın
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
@@ -3456,6 +3462,7 @@ function renderEgitmenlerSayfa(){
 function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
 const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
 function goBack(){
+  const donDrawer=_SAYFA_DRAWER;_SAYFA_DRAWER=false;
   let bt=(PAGE==='sinif-detay'||PREV_PAGE==='sinif-detay')?'siniflar':PREV_PAGE; // sınıf detayından geri → her zaman Sınıflar
   if(RAPOR_SAYFA_ID_LISTESI.includes(bt))bt='gelirgider';
   PAGE=bt;showPage(bt);setTopbar(false);
@@ -3464,6 +3471,7 @@ function goBack(){
   const fab=document.getElementById('mainFab');
   if(fab)fab.style.display=(bt==='anasayfa'||bt==='ayarlar'||bt==='yoklama'||bt==='takvim'||bt==='videolar'||bt==='gelirgider'||bt==='odemeler'||bt==='ozel'||bt==='siniflar'||bt==='ogrenciler')?'none':'flex';
   renderAll();
+  if(donDrawer)drawerAc();
 }
 function setTopbar(d,t=''){
   document.getElementById('backBtn').style.display=d?'flex':'none';
@@ -3672,7 +3680,16 @@ function drawerAc(){
   waSablonYukle();
   renderTemaGrid();
 }
-function drawerKapat(){
+// Menüden bir ekran/pencere açılınca, o kapanınca hamburger menüye geri dönülür
+let _DRAWER_FLAG=0,_SAYFA_DRAWER=false;const _MODAL_DRAWER=new Set();
+function drawerSayfaAc(p,btn){
+  goTo(p,null);
+  let b=(btn&&btn.textContent||p).trim();
+  setTopbar(true,b);
+  _SAYFA_DRAWER=true;_DRAWER_FLAG=0;
+}
+function drawerKapat(manuel){
+  if(manuel!==true&&document.getElementById('drawer').classList.contains('open'))_DRAWER_FLAG=Date.now();
   document.getElementById('drawer').classList.remove('open');
   document.getElementById('drawerOverlay').classList.remove('open');
   document.body.style.overflow='';
@@ -8702,22 +8719,22 @@ async function sifreliOnayUygula(){
 }
 async function silKategori(koleksiyon){
   const adlar={odemeler:'Tüm ödeme kayıtları',ozelPaketler:'Tüm özel ders paketleri',ozelOgrenciler:'Tüm özel ders öğrencileri',siniflar:'Tüm sınıflar ve kayıtları',ogrenciler:'Tüm grup öğrencileri'};
-  sifreliOnayAc('Emin misiniz?',`${adlar[koleksiyon]||koleksiyon} kalıcı olarak silinecek. Devam etmek için giriş şifreni gir.`,async()=>{
+  confirm_('Emin misiniz?',`${adlar[koleksiyon]||koleksiyon} kalıcı olarak silinecek.\n\n🔒 Devam ederseniz silme işlemi için giriş şifreniz istenecek.`,()=>sifreliOnayAc('Şifre onayı',`${adlar[koleksiyon]||koleksiyon} kalıcı olarak silinecek. Onaylamak için giriş şifreni gir.`,async()=>{
     setSyncing(true);
     await sildKoleksiyon(koleksiyon);
     // Sınıflar silinince özel ders paketleri de silinmeli mi? — hayır, ayrı koleksiyon
     setSyncing(false);
     alert('Silme işlemi tamamlandı.');
-  });
+  }));
 }
 
 async function tumVerileriSifirla(){
-  sifreliOnayAc('Tüm Verileri Sıfırla','Bu işlem GERİ ALINAMAZ. Tüm öğrenciler, sınıflar, ödemeler ve özel ders kayıtları silinecek. Devam etmek için giriş şifreni gir.',async()=>{
+  confirm_('Tüm Verileri Sıfırla','Bu işlem GERİ ALINAMAZ. Tüm öğrenciler, sınıflar, ödemeler ve özel ders kayıtları silinecek.\n\n🔒 Devam ederseniz silme işlemi için giriş şifreniz istenecek.',()=>sifreliOnayAc('Şifre onayı','Tüm veriler kalıcı olarak silinecek. Onaylamak için giriş şifreni gir.',async()=>{
     setSyncing(true);
     await Promise.all(['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler'].map(k=>sildKoleksiyon(k)));
     setSyncing(false);
     alert('Tüm veriler silindi.');
-  });
+  }));
 }
 
 function toastGoster(msg,sure=2800){
