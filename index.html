@@ -789,6 +789,19 @@ body.portal-modu .overlay{z-index:9500;}
 #splash .sp-ark svg{display:block;margin:0 auto;overflow:visible;max-width:92vw;height:auto;filter:drop-shadow(0 0 8px #d8a94a55)}
 @media(max-height:760px){#splash{padding-top:44px}#splash .sp-mark{width:110px;height:auto;margin-bottom:10px}#splash .sp-logo{font-size:44px}#splash .sp-logo span{font-size:38px}#splash .sp-imza{bottom:calc(max(26px,env(safe-area-inset-bottom)) + 60px)}#splash .sp-line{margin-top:16px}}
 @keyframes spIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* 3D yazılar: kalın altın/gri ekstrüzyon + yumuşak gölge */
+#splash .sp-gold{filter:drop-shadow(0 1px 0 #b78a2e) drop-shadow(0 2px 0 #9a6f1c) drop-shadow(0 3px 0 #7d5712) drop-shadow(0 4px 0 #62430c) drop-shadow(0 9px 9px #00000066)}
+#splash .sp-logo span{filter:drop-shadow(0 1px 0 #b78a2e) drop-shadow(0 2px 0 #9a6f1c) drop-shadow(0 3px 0 #7d5712) drop-shadow(0 7px 8px #0000005c)}
+#splash .sp-logo em{text-shadow:0 1px 0 #6e6a80,0 2px 0 #5a566a,0 3px 0 #46425a,0 6px 8px #00000066}
+#splash .sp-imza small{text-shadow:0 1px 0 #6e6a80,0 2px 0 #55516a,0 5px 6px #0000005c}
+#splash .sp-ark svg{filter:drop-shadow(0 1px 0 #b78a2e) drop-shadow(0 2px 0 #8c6419) drop-shadow(0 3px 0 #6b470b) drop-shadow(0 7px 7px #00000066)}
+#splash .sp-mark{filter:drop-shadow(0 1px 0 #b78a2e) drop-shadow(0 2px 0 #8c6419) drop-shadow(0 3px 0 #6b470b) drop-shadow(0 8px 8px #00000066)}
+:root[data-acik="1"] #splash .sp-gold{filter:drop-shadow(0 1px 0 #a07520) drop-shadow(0 2px 0 #84601a) drop-shadow(0 3px 0 #684a12) drop-shadow(0 4px 0 #4f3a0e) drop-shadow(0 8px 8px #00000040)}
+:root[data-acik="1"] #splash .sp-logo span{filter:drop-shadow(0 1px 0 #a07520) drop-shadow(0 2px 0 #84601a) drop-shadow(0 3px 0 #684a12) drop-shadow(0 7px 7px #00000038)}
+:root[data-acik="1"] #splash .sp-logo em{text-shadow:0 1px 0 #b9b5c8,0 2px 0 #9d99b0,0 3px 0 #85819a,0 6px 7px #00000030}
+:root[data-acik="1"] #splash .sp-imza small{text-shadow:0 1px 0 #b9b5c8,0 2px 0 #9d99b0,0 5px 5px #0000002e}
+:root[data-acik="1"] #splash .sp-ark svg{filter:drop-shadow(0 1px 0 #a07520) drop-shadow(0 2px 0 #7d5712) drop-shadow(0 3px 0 #5e400c) drop-shadow(0 6px 6px #00000040)}
+:root[data-acik="1"] #splash .sp-mark{filter:drop-shadow(0 1px 0 #a07520) drop-shadow(0 2px 0 #7d5712) drop-shadow(0 3px 0 #5e400c) drop-shadow(0 7px 7px #00000040)}
 </style>
 </head>
 <body>
@@ -946,9 +959,9 @@ try{
   function yuva(kral,xpos){
     const tilt=new THREE.Group(),don=new THREE.Group();
     tilt.rotation.order='ZXY';tilt.rotation.set(.2,0,kral?THREE.MathUtils.degToRad(-30):THREE.MathUtils.degToRad(30));
-    don.add(tac(kral));tilt.add(don);tilt.position.set(xpos,-.1,0);tilt.scale.setScalar(.95);scene.add(tilt);return don;
+    don.add(tac(kral));tilt.add(don);tilt.position.set(xpos,-.1,0);tilt.scale.setScalar(.7);scene.add(tilt);return don;
   }
-  const dK=yuva(true,-1.32),dQ=yuva(false,1.32);
+  const dK=yuva(true,-1.12),dQ=yuva(false,1.12);cv.style.opacity='.88';
   host.appendChild(cv);host.classList.add('uc-boyut');
   // taçları "Management" altındaki çizgi ile "Created by" arasındaki boşluğun tam ortasına yerleştir
   function ortala(){
