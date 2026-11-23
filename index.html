@@ -2137,6 +2137,15 @@ try{
 
 <!-- Confirm -->
 
+<div class="overlay" id="m-sifre-onay"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:6px;" id="so-onay-baslik">Emin misiniz?</div>
+  <div id="so-onay-mesaj" style="font-size:13px;line-height:1.55;margin-bottom:12px;color:var(--text2);"></div>
+  <div class="field"><label>Giriş şifresi</label><input id="so-onay-sifre" type="password" autocomplete="new-password" placeholder="Onay için şifreyi gir" onkeydown="if(event.key==='Enter')sifreliOnayUygula()"/></div>
+  <div id="so-onay-hata" style="display:none;color:var(--accent);font-size:12.5px;margin:-4px 0 8px;"></div>
+  <button class="btn btn-danger" style="width:100%;padding:13px;" id="so-onay-btn" onclick="sifreliOnayUygula()">Kalıcı Olarak Sil</button>
+  <button class="btn btn-ghost" style="width:100%;padding:13px;margin-top:8px;" onclick="sifreliOnayVazgec()">Vazgeç</button>
+</div></div>
 <div class="overlay" id="m-veri-sil"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:6px;" id="veri-sil-baslik">Sil</div>
@@ -8661,9 +8670,39 @@ function geriYukle(input){
   reader.readAsText(file);
 }
 
+let _SIFRELI_ISLEM=null;
+function sifreliOnayAc(baslik,mesaj,islem){
+  if(typeof drawerKapat==='function')drawerKapat();
+  _SIFRELI_ISLEM=islem;
+  document.getElementById('so-onay-baslik').textContent=baslik;
+  document.getElementById('so-onay-mesaj').textContent=mesaj;
+  document.getElementById('so-onay-sifre').value='';
+  document.getElementById('so-onay-hata').style.display='none';
+  document.getElementById('so-onay-btn').disabled=false;
+  openModal('m-sifre-onay');
+  setTimeout(()=>{const e=document.getElementById('so-onay-sifre');if(e)e.focus();},80);
+}
+function sifreliOnayVazgec(){_SIFRELI_ISLEM=null;closeModal('m-sifre-onay');drawerAc();}
+async function sifreliOnayUygula(){
+  const hata=document.getElementById('so-onay-hata'),btn=document.getElementById('so-onay-btn');
+  const goster=m=>{hata.textContent=m;hata.style.display='block';};
+  const girilen=(document.getElementById('so-onay-sifre').value||'').trim();
+  if(!girilen){goster('Şifreyi gir.');return;}
+  if(btn.disabled)return;
+  btn.disabled=true;
+  let dogru=false;
+  let em=AUTH.email;try{if(!em)em=localStorage.getItem('giris_email');}catch(e){}
+  if(girisKilitSaniye('giris_kilit_admin')>0){goster(girisKilitMesaj(girisKilitSaniye('giris_kilit_admin')));btn.disabled=false;return;}
+  if(em){try{await authGiris(em,girilen);dogru=true;girisHataSifirla('giris_kilit_admin');}catch(e){girisHataKaydet('giris_kilit_admin');}}
+  if(!dogru){goster('Şifre hatalı.');document.getElementById('so-onay-sifre').value='';btn.disabled=false;return;}
+  const islem=_SIFRELI_ISLEM;_SIFRELI_ISLEM=null;
+  closeModal('m-sifre-onay');
+  btn.disabled=false;
+  if(islem){try{await islem();}catch(e){alert('Hata: '+e.message);}}
+}
 async function silKategori(koleksiyon){
   const adlar={odemeler:'Tüm ödeme kayıtları',ozelPaketler:'Tüm özel ders paketleri',ozelOgrenciler:'Tüm özel ders öğrencileri',siniflar:'Tüm sınıflar ve kayıtları',ogrenciler:'Tüm grup öğrencileri'};
-  confirm_('Emin misiniz?',`${adlar[koleksiyon]||koleksiyon} kalıcı olarak silinecek.`,async()=>{
+  sifreliOnayAc('Emin misiniz?',`${adlar[koleksiyon]||koleksiyon} kalıcı olarak silinecek. Devam etmek için giriş şifreni gir.`,async()=>{
     setSyncing(true);
     await sildKoleksiyon(koleksiyon);
     // Sınıflar silinince özel ders paketleri de silinmeli mi? — hayır, ayrı koleksiyon
@@ -8673,7 +8712,7 @@ async function silKategori(koleksiyon){
 }
 
 async function tumVerileriSifirla(){
-  confirm_('Tüm Verileri Sıfırla','Bu işlem GERİ ALINAMAZ. Tüm öğrenciler, sınıflar, ödemeler ve özel ders kayıtları silinecek.',async()=>{
+  sifreliOnayAc('Tüm Verileri Sıfırla','Bu işlem GERİ ALINAMAZ. Tüm öğrenciler, sınıflar, ödemeler ve özel ders kayıtları silinecek. Devam etmek için giriş şifreni gir.',async()=>{
     setSyncing(true);
     await Promise.all(['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler'].map(k=>sildKoleksiyon(k)));
     setSyncing(false);
