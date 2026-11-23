@@ -554,8 +554,9 @@ exports.portal = onRequest({ region: 'europe-west1', cors: true, maxInstances: 1
 // ════════════════════════════════════════════════════════════════════
 const KAYIT_MAX = { ad: 60, tel: 25, eposta: 120, acil: 160, kisa: 80 };
 function ipAl(req) {
-  const xff = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
-  return (xff || req.ip || '').slice(0, 64);
+  // İlk değer istemci tarafından sahte yazılabilir; Google'ın eklediği son değer güvenilirdir
+  const parcalar = String(req.headers['x-forwarded-for'] || '').split(',').map((x) => x.trim()).filter(Boolean);
+  return (parcalar[parcalar.length - 1] || req.ip || '').slice(0, 64);
 }
 function yasHesapla(dogum) {
   const [y, m, g] = dogum.split('-').map(Number);
@@ -610,8 +611,9 @@ exports.kayit = onRequest({ region: 'europe-west1', cors: true, maxInstances: 5,
     if (b.k === 'onizleme') return hata(res, 400, 'Bu bir önizlemedir, gönderim yapılamaz.');
     if (typeof b.hp === 'string' && b.hp) return res.json({ ok: true }); // bot tuzağı (gizli alan)
 
+    if ((await kilitKontrol(ipAnahtar)) > 0) return hata(res, 429, 'Çok fazla deneme. Lütfen biraz sonra tekrar deneyin.');
     const L = await kayitLinkDurum(String(b.k || ''));
-    if (L.hata) return hata(res, L.kod, L.hata);
+    if (L.hata) { await hataKaydet(ipAnahtar, 30); return hata(res, L.kod, L.hata); }
     const metin = await kayitMetinOku();
     if (!metin) return hata(res, 503, 'Form henüz hazırlanmadı.');
 
@@ -644,7 +646,7 @@ exports.kayit = onRequest({ region: 'europe-west1', cors: true, maxInstances: 5,
     const simdi = Date.now();
     const kanit = {
       sunucuZamani: simdi, sunucuZamaniISO: new Date(simdi).toISOString(),
-      ip: ipAl(req), userAgent: String(req.headers['user-agent'] || '').slice(0, 300),
+      ip: ipAl(req), ipZinciri: String(req.headers['x-forwarded-for'] || '').slice(0, 200), userAgent: String(req.headers['user-agent'] || '').slice(0, 300),
       dil: kTemiz(cz.dil, 20), saatDilimi: kTemiz(cz.tz, 50), ekran: kTemiz(cz.ekran, 20), istemciSaati: kTemiz(cz.saat, 40),
       metinSurum: metin.surum,
       ozetler: { aydinlatma: sha(metin.aydinlatma.baslik + '\n' + metin.aydinlatma.metin), kurallar: sha(metin.kurallar.baslik + '\n' + metin.kurallar.metin), veli: sha(metin.veli.metin), rizalar: rizaOzet },
