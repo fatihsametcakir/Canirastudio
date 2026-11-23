@@ -835,6 +835,11 @@ body.portal-modu .overlay{z-index:9500;}
 .login-x{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;border:none;background:var(--surface3,var(--border2));color:var(--text2);font-size:16px;line-height:20px;text-align:center;padding:0;cursor:pointer;display:none;z-index:2}
 .login-x.gor{display:block}
 .login-x:active{transform:translateY(-50%) scale(.9)}
+/* başlık tek satır, altında kullanıcı adı */
+.topbar-title{display:flex;align-items:baseline;gap:5px;font-size:14.5px;line-height:1.1;white-space:nowrap}
+.topbar-title .tb-gold,.topbar-title span{display:inline!important;font-size:14.5px!important}
+.topbar-sub{display:block;text-align:center;font-size:10.5px;letter-spacing:.08em;color:var(--text3);margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+#topbar-brand .tb-mark{width:26px;height:24px}
 </style>
 </head>
 <body>
@@ -1245,7 +1250,7 @@ try{
       <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 5l-7 7 7 7"/></svg></button>
       <div id="topbar-brand" style="min-width:0;"><div style="display:flex;align-items:center;gap:7px;min-width:0;"><svg class="tb-mark" viewBox="20 30 150 140" width="30" height="28" aria-hidden="true"><defs><linearGradient id="tbg" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="170" y2="180"><stop offset="0" stop-color="#f8e7ae"/><stop offset=".38" stop-color="#d9ac52"/><stop offset=".62" stop-color="#f4dc92"/><stop offset="1" stop-color="#b0842f"/></linearGradient></defs><g fill="none" stroke="url(#tbg)" stroke-linecap="round"><path d="M146 60 A56 56 0 1 0 146 140" stroke-width="8"/><path d="M138 70 A44 44 0 1 0 138 130" stroke-width="4"/><line x1="112" y1="52" x2="112" y2="148" stroke-width="8"/><line x1="121" y1="62" x2="121" y2="138" stroke-width="4"/></g><circle cx="150" cy="100" r="7" fill="url(#tbg)"/></svg><div style="min-width:0;">
         <div class="topbar-title"><b class="tb-gold">Can &amp; Irina</b><span>Dance Studio</span></div>
-        <div class="topbar-sub" id="topbarSub">Yönetim Paneli</div>
+        <div class="topbar-sub" id="topbarSub"></div>
       </div></div></div>
       <div id="topbar-page-name" style="display:none;min-width:0;overflow:hidden;">
         <div class="topbar-page-title" id="topbarPageTitle"></div>
@@ -1565,6 +1570,11 @@ try{
         <div style="font-size:14px;font-weight:600;margin-bottom:4px;">🔑 Şifrem</div>
         <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;">Giriş yaptığın e-posta adresine şifre sıfırlama bağlantısı gönderilir. Bağlantıdan yeni şifreni belirleyebilirsin.</div>
         <button class="btn btn-accent" style="width:100%;margin-bottom:6px;" onclick="kendiSifremiSifirla()">Şifremi sıfırla (e-posta gönder)</button>
+        <div style="height:1px;background:var(--border2);margin:14px 0;"></div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px;">👤 Adım</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;line-height:1.5;">Üst çubukta, uygulama adının altında görünür.</div>
+        <div style="display:flex;gap:6px;"><input id="ben-ad" type="text" placeholder="Adın" style="flex:1;min-width:0;" maxlength="40"/><button class="btn btn-purple btn-sm" id="ben-ad-btn" onclick="benimAdimiKaydet()">Kaydet</button></div>
+        <div id="ben-ad-not" style="font-size:11px;color:var(--text3);margin-top:5px;"></div>
         <div style="height:1px;background:var(--border2);margin:14px 0;"></div>
         <div style="font-size:14px;font-weight:600;margin-bottom:4px;">👥 Kullanıcılar</div>
         <div style="font-size:12px;color:var(--text3);margin-bottom:10px;line-height:1.5;">Uygulamayı kullanan kişiler. Yeni kullanıcı eklenince e-posta ve şifresiyle giriş yapabilir; kaldırılınca erişimi hemen kapanır.</div>
@@ -2886,7 +2896,7 @@ function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIO
 function LC(){return LANG==='en'?'en-US':LANG==='ru'?'ru-RU':'tr-TR';}
 function applyLang(){
   const map={
-    'topbarSub':'topbar_sub','navlbl-anasayfa':'nav_anasayfa','navlbl-ogrenciler':'nav_ogrenciler',
+    'navlbl-anasayfa':'nav_anasayfa','navlbl-ogrenciler':'nav_ogrenciler',
     'navlbl-siniflar':'nav_siniflar','navlbl-takvim':'nav_takvim','navlbl-yoklama':'nav_yoklama',
     'navlbl-odemeler':'nav_odemeler','navlbl-gelirgider':'nav_gelirgider',
     'lbl-aktif-ogrenci':'lbl_aktif_ogrenci','lbl-kayit':'lbl_kayit','lbl-sinif':'lbl_sinif',
@@ -3481,7 +3491,7 @@ function accToggle(id){
   if(!body)return;
   const acik=body.classList.toggle('open');
   if(arr)arr.classList.toggle('open',acik);
-  if(acik&&id==='acc-guvenlik'&&typeof kullaniciListele==='function')kullaniciListele();
+  if(acik&&id==='acc-guvenlik'){if(typeof benimAdimiDoldur==='function')benimAdimiDoldur();if(typeof kullaniciListele==='function')kullaniciListele();}
 }
 function goToAyarlar(){drawerAc();}
 
@@ -7798,7 +7808,7 @@ const YETKI_ISLEM_HARITA={
   ozel:['ozelEkleBaslat','openOzelPaketModal','saveOzelPaket','silOzelPaket','saveDersPlan','otSeansSil','otSeansDuzenle','ooKaydet','ooDuzenle','ooSil','ozelSaatDenetimi','openOzelOdemeModal','openOzelSaatModal','osUygula'],
   video:['openVideoSinifModal','saveVideoSinif','silVideoSinif'],
   ayar:['gaPratikKiraEkle','gaPratikKiraKaydet','gaPratikKiraSil','gaPratikKiraDuzenle','gaPratikIptalEkle','gaPratikIptalKaydetForm','gaPratikIptalSil','gaOzelKiraEkle','gaOzelKiraKaydet','gaOzelKiraSil','gaOzelKiraDuzenle','gaGrupKiraEkle','gaGrupKiraKaydet','gaGrupKiraSil','gaGrupKiraDuzenle','egitmenEkleModal','egitmenKaydet','egitmenDuzenle','egitmenSil','egitmenSifreSifirla','waSablonKaydet','odemeBilgiKaydet'],
-  sahip:['tumVerileriSifirla','tumLegacyKiralariTemizle','tumLegacyKiralariTemizle','telNumaralariniTemizle','kullaniciEkle','kullaniciKaldir','kullaniciSifreSifirla','yetkiKaydet','veriSilOnayla','silKategori','veriSilAc','veriSilSec','odemeOnarimAc','githubTokenSifirla','geriYukle']
+  sahip:['benimAdimiKaydet','kullaniciAdDuzenle','kullaniciAdKaydet','tumVerileriSifirla','tumLegacyKiralariTemizle','tumLegacyKiralariTemizle','telNumaralariniTemizle','kullaniciEkle','kullaniciKaldir','kullaniciSifreSifirla','yetkiKaydet','veriSilOnayla','silKategori','veriSilAc','veriSilSec','odemeOnarimAc','githubTokenSifirla','geriYukle']
 };
 const YETKI_ISLEM_RE=Object.entries(YETKI_ISLEM_HARITA).map(([k,l])=>[new RegExp('(^|[^A-Za-z0-9_])('+l.join('|')+')\\s*\\('),k]);
 const FAB_KATEGORI=()=>({ogrenciler:'ogrenci',siniflar:'sinif','sinif-detay':'ogrenci',ozel:'ozel',odemeler:'odeme',yoklama:'yoklama',videolar:'video'})[PAGE]||'ogrenci';
@@ -7859,13 +7869,18 @@ async function yetkiYukle(){
     const email=yetkiJwtEposta(tk);YETKI_EPOSTA=email;
     YETKI_SAHIP_MI=(email===YETKI_SAHIP);
     let gizli=[],yazma=null;
+    if(YETKI_SAHIP_MI){
+      try{const sp=await db.collection('ayarlar').doc('sahipProfil').get();if(sp.exists&&sp.data().ad)localStorage.setItem('kullanici_ad',sp.data().ad);}catch(e){}
+    }
     if(!YETKI_SAHIP_MI){
       // Kendi yetki belgesini doğrudan oku (veritabanı kuralları yalnızca sahibin tüm listeyi okumasına izin verir)
       const ds=await db.collection('yoneticiler').doc(yetkiJwtUid(tk)).get();
       const k=ds.exists?ds.data():null;
       gizli=(k&&Array.isArray(k.gizli))?k.gizli:YETKI_VARSAYILAN_GIZLI;
       yazma=(k&&Array.isArray(k.yazma))?k.yazma:null; // alan yok: kısıtsız
+      try{if(k&&k.ad)localStorage.setItem('kullanici_ad',k.ad);}catch(e){}
     }
+    topbarKullaniciAdi();
     YETKI_GIZLI=new Set(gizli);
     YETKI_YAZMA=yazma===null?null:new Set(yazma);YETKI_HAZIR=true;
     try{localStorage.setItem('yetki_gizli',JSON.stringify(gizli));localStorage.setItem('yetki_yazma',JSON.stringify(yazma));localStorage.setItem('yetki_sahip',YETKI_SAHIP_MI?'1':'0');}catch(e){}
@@ -7881,7 +7896,7 @@ try{
     YETKI_YAZMA=Array.isArray(y)?new Set(y):null;YETKI_SAHIP_MI=localStorage.getItem('yetki_sahip')==='1';YETKI_HAZIR=true;
   }
 }catch(e){}
-document.addEventListener('DOMContentLoaded',()=>{yetkiUygula();});
+document.addEventListener('DOMContentLoaded',()=>{yetkiUygula();topbarKullaniciAdi();});
 function yetkiPanelAc(id){
   const kutu=document.getElementById('yetki-panel-'+id);if(!kutu)return;
   if(kutu.dataset.acik==='1'){kutu.dataset.acik='0';kutu.innerHTML='';return;}
@@ -7911,6 +7926,52 @@ async function yetkiKaydet(id){
   }catch(e){alert('Hata: '+e.message);}
   setSyncing(false);
 }
+// ── Üst çubukta giriş yapan kullanıcının adı ──
+function topbarKullaniciAdi(){
+  const e=document.getElementById('topbarSub');if(!e)return;
+  let ad='';try{ad=localStorage.getItem('kullanici_ad')||'';}catch(x){}
+  if(!ad){let em=YETKI_EPOSTA||(AUTH&&AUTH.email)||'';try{if(!em)em=localStorage.getItem('giris_email')||'';}catch(x){}ad=(em||'').split('@')[0];}
+  e.textContent=ad;e.style.display=ad?'block':'none';
+}
+function benimAdimiDoldur(){
+  const i=document.getElementById('ben-ad'),b=document.getElementById('ben-ad-btn'),n=document.getElementById('ben-ad-not');if(!i)return;
+  let ad='';try{ad=localStorage.getItem('kullanici_ad')||'';}catch(x){}
+  i.value=ad;
+  const sahip=!!YETKI_SAHIP_MI;
+  i.disabled=!sahip;if(b)b.style.display=sahip?'':'none';
+  if(n)n.textContent=sahip?'':'Adını hesap sahibi Kullanıcılar listesinden güncelleyebilir.';
+}
+async function benimAdimiKaydet(){
+  const ad=(document.getElementById('ben-ad').value||'').trim();
+  if(!ad){alert('Ad boş olamaz.');return;}
+  setSyncing(true);
+  try{
+    await db.collection('ayarlar').doc('sahipProfil').set({ad});
+    try{localStorage.setItem('kullanici_ad',ad);}catch(x){}
+    topbarKullaniciAdi();toastGoster('✓ Adın güncellendi');
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
+function kullaniciAdDuzenle(id){
+  const kutu=document.getElementById('ad-duzen-'+id);if(!kutu)return;
+  if(kutu.dataset.acik==='1'){kutu.dataset.acik='0';kutu.innerHTML='';return;}
+  const k=(window._kullaniciListesi||[]).find(x=>x.id===id);if(!k)return;
+  kutu.dataset.acik='1';
+  kutu.innerHTML=`<div style="display:flex;gap:6px;margin-top:8px;"><input id="ad-in-${id}" type="text" maxlength="40" value="${waHtmlEsc(k.ad||'')}" placeholder="Kullanıcı adı" style="flex:1;min-width:0;" onkeydown="if(event.key==='Enter')kullaniciAdKaydet('${id}')"/><button class="btn btn-purple btn-sm" onclick="kullaniciAdKaydet('${id}')">Kaydet</button></div>`;
+  const i=document.getElementById('ad-in-'+id);if(i)i.focus();
+}
+async function kullaniciAdKaydet(id){
+  const i=document.getElementById('ad-in-'+id);if(!i)return;
+  const ad=i.value.trim();
+  if(!ad){alert('Ad boş olamaz.');return;}
+  setSyncing(true);
+  try{
+    await db.collection('yoneticiler').doc(id).update({ad});
+    const k=(window._kullaniciListesi||[]).find(x=>x.id===id);if(k)k.ad=ad;
+    toastGoster('✓ Ad güncellendi');kullaniciListele();
+  }catch(e){alert('Hata: '+e.message);}
+  setSyncing(false);
+}
 async function kullaniciListele(){
   const kutu=document.getElementById('kullanici-liste');
   const ekle=document.getElementById('kullanici-ekle-alan');
@@ -7931,10 +7992,12 @@ async function kullaniciListele(){
     kutu.innerHTML=liste.length?liste.map(k=>`<div style="padding:9px 10px;margin-bottom:6px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
         <div style="flex:1;min-width:140px;"><div style="font-size:13px;font-weight:600;">${waHtmlEsc(k.ad||'—')}</div><div style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;">${waHtmlEsc(k.email||'')}</div></div>
+        <button class="btn btn-ghost btn-sm" onclick="kullaniciAdDuzenle('${k.id}')">✎ Ad</button>
         <button class="btn btn-purple btn-sm" onclick="yetkiPanelAc('${k.id}')">Yetkiler</button>
         <button class="btn btn-ghost btn-sm" onclick="kullaniciSifreSifirla('${k.id}')">Şifre e-postası</button>
         <button class="btn btn-danger btn-sm" onclick="kullaniciKaldir('${k.id}')">Kaldır</button>
       </div>
+      <div id="ad-duzen-${k.id}"></div>
       <div id="yetki-panel-${k.id}"></div>
     </div>`).join(''):'<div style="font-size:12px;color:var(--text3);">Henüz ek kullanıcı yok.</div>';
   }catch(e){kutu.innerHTML='<div style="font-size:12px;color:var(--accent);">Liste alınamadı: '+waHtmlEsc(e.message)+'</div>';}
