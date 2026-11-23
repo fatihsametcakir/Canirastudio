@@ -853,10 +853,10 @@ try{
   }
   function yuva(kral,xpos){
     const tilt=new THREE.Group(),don=new THREE.Group();
-    tilt.rotation.order='ZXY';tilt.rotation.set(.2,0,kral?THREE.MathUtils.degToRad(30):THREE.MathUtils.degToRad(-30));
+    tilt.rotation.order='ZXY';tilt.rotation.set(.2,0,kral?THREE.MathUtils.degToRad(-30):THREE.MathUtils.degToRad(30));
     don.add(tac(kral));tilt.add(don);tilt.position.set(xpos,-.1,0);tilt.scale.setScalar(.95);scene.add(tilt);return don;
   }
-  const dK=yuva(true,1.32),dQ=yuva(false,-1.32);
+  const dK=yuva(true,-1.32),dQ=yuva(false,1.32);
   host.appendChild(cv);host.classList.add('uc-boyut');
   // taçları "Management" altındaki çizgi ile "Created by" arasındaki boşluğun tam ortasına yerleştir
   function ortala(){
