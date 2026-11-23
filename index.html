@@ -891,6 +891,15 @@ body.portal-modu .overlay{z-index:9500;}
 @keyframes spGoldShine{from{background-position:130% 0,0 0}to{background-position:-30% 0,0 0}}
 @media(prefers-reduced-motion:reduce){#splash .sp-mark{animation:none}}
 /* === /AÇILIŞ LOGO 3D === */
+.yen-bolum{border:1.5px solid #d9ac52a6;box-shadow:inset 0 0 0 1px #d9ac5224;border-radius:var(--radius);padding:12px 12px 6px;margin:16px 0 12px;background:linear-gradient(180deg,#d9ac520a,transparent 60%);}
+.yen-bolum .sec-title{white-space:nowrap;font-size:11.5px;letter-spacing:.06em;}
+.yen-bolum .odeme-sinif-grup:last-child{margin-bottom:6px!important;}
+.grp-seg{border:1.5px solid #d9ac52a6!important;box-shadow:inset 0 0 0 1px #d9ac5224;}
+.grp-seg-btn{border:1px solid transparent!important;}
+.grp-seg-btn.active{border:1px solid #d9ac52a6!important;color:#e8c36a!important;background:linear-gradient(135deg,#d9ac5226,#d9ac520a)!important;}
+:root[data-acik="1"] .yen-bolum,:root[data-acik="1"] .grp-seg{border-color:#9a6f1ca0!important;box-shadow:inset 0 0 0 1px #9a6f1c20;}
+:root[data-acik="1"] .yen-bolum{background:linear-gradient(180deg,#9a6f1c0c,transparent 60%);}
+:root[data-acik="1"] .grp-seg-btn.active{border-color:#9a6f1ca0!important;color:#7a5410!important;background:linear-gradient(135deg,#9a6f1c22,#9a6f1c0a)!important;}
 /* === ALTIN KART ÇERÇEVE (tüm ekranlar; geri almak için bu bloğu sil) === */
 .card,.portal-card,.gg-card,.grad-card,.og-grup-liste,.sinif-karti,.video-kart,.odeme-card,.odeme-sinif-grup,.ozel-og-kart,.takvim-ders-kart,.gider-ozet-kart,.egitmen-pay-kart,.login-box{border:1.5px solid #d9ac52a6;box-shadow:inset 0 0 0 1px #d9ac5224,0 0 0 .5px #d9ac5226}
 :root[data-acik="1"] .card,:root[data-acik="1"] .portal-card,:root[data-acik="1"] .gg-card,:root[data-acik="1"] .grad-card,:root[data-acik="1"] .og-grup-liste,:root[data-acik="1"] .sinif-karti,:root[data-acik="1"] .video-kart,:root[data-acik="1"] .odeme-card,:root[data-acik="1"] .odeme-sinif-grup,:root[data-acik="1"] .ozel-og-kart,:root[data-acik="1"] .takvim-ders-kart,:root[data-acik="1"] .gider-ozet-kart,:root[data-acik="1"] .egitmen-pay-kart,:root[data-acik="1"] .login-box{border-color:#9a6f1ca0;box-shadow:inset 0 0 0 1px #9a6f1c22,0 0 0 .5px #9a6f1c22}
@@ -6681,7 +6690,7 @@ function renderAnasayfa(){
   }
 
   if(yaklasanlar.length){
-    html+=`<div class="sec-header">
+    html+=`<div class="yen-bolum"><div class="sec-header" style="margin-top:0;">
       <span class="sec-title">${t('lbl_paket_yenileme')} <span style="color:var(--accent);font-family:'Fraunces',serif;">(${yaklasanlar.length})</span></span>
       <div class="grp-seg">
         <button class="grp-seg-btn${YEN_GRUPLAMA==='sinif'?' active':''}" onclick="setYenGruplama('sinif')">${t('siniftagore')}</button>
@@ -6728,6 +6737,7 @@ function renderAnasayfa(){
         html+=yenAccordion(g.id,g.baslik,g.items,badge,g.renk);
       });
     }
+    html+='</div>';
   } else {
     html+='<div class="empty" style="padding:20px 0;"><div class="empty-icon" style="font-size:30px;">✓</div><div class="empty-text">'+t('yaklasan_yok')+'</div></div>';
   }
