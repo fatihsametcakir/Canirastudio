@@ -846,18 +846,6 @@ try{
       const m=new THREE.Mesh(geo,gold);m.position.set(sx*.985,yb,cz*.985);m.rotation.y=a;g.add(m);
       if(!kral){const pe=new THREE.Mesh(new THREE.SphereGeometry(.07,20,14),gold);pe.position.set(sx*.985,yb+h+.03,cz*.985);g.add(pe);}
     }
-    // kemerler
-    const Ha=1.0;
-    for(let k=0;k<4;k++){
-      const f=k/4*Math.PI,cx=Math.cos(f),sz=Math.sin(f);
-      const c=new THREE.CatmullRomCurve3([P(cx*.97,yb+.02,sz*.97),P(cx*.78,yb+.48,sz*.78),P(cx*.38,Ha-.1,sz*.38),P(0,Ha,0),P(-cx*.38,Ha-.1,-sz*.38),P(-cx*.78,yb+.48,-sz*.78),P(-cx*.97,yb+.02,-sz*.97)]);
-      g.add(new THREE.Mesh(new THREE.TubeGeometry(c,64,.032,10,false),gold));
-    }
-    const orb=new THREE.Mesh(new THREE.SphereGeometry(.12,32,20),gold);orb.position.y=Ha+.07;g.add(orb);
-    if(kral){
-      const v=new THREE.Mesh(new THREE.BoxGeometry(.05,.3,.05),gold);v.position.y=Ha+.3;g.add(v);
-      const h2=new THREE.Mesh(new THREE.BoxGeometry(.2,.05,.05),gold);h2.position.y=Ha+.34;g.add(h2);
-    }else{const p=new THREE.Mesh(new THREE.SphereGeometry(.06,16,12),gold);p.position.y=Ha+.22;g.add(p);}
     // kadife iç kubbe
     const dp=[];for(let t=0;t<=12;t++){const u=t/12*Math.PI/2;dp.push(new THREE.Vector2(.94*Math.cos(u),yb+.5*Math.sin(u)));}
     g.position.y=-.62;
