@@ -939,6 +939,11 @@ body.portal-modu .overlay{z-index:9500;}
 :root[data-acik="1"] #pg-gider-rapor .gider-satir:last-child{border-bottom:none!important;}
 :root[data-acik="1"] #pg-gider-rapor .gider-satir[style*="border-top"]{border-top-color:#9a6f1ca0!important;}
 :root[data-acik="1"] #pg-gider-rapor .egitmen-pay-kart{border-top-color:#9a6f1ca0!important;border-right-color:#9a6f1ca0!important;border-bottom-color:#9a6f1ca0!important;}
+.gider-ay-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 16px;}
+.gider-ay-nav .btn{width:76px;height:38px;padding:0;font-size:20px;line-height:1;border-radius:19px;background:linear-gradient(135deg,#d9ac5226,#d9ac520a)!important;border:1px solid #d9ac52a6!important;color:#e8c36a!important;box-shadow:inset 0 0 0 1px #d9ac5220,0 2px 8px -3px #d9ac5266;}
+.gider-ay-nav .btn:active{transform:scale(.95);}
+.gider-ay-ad{flex:1;text-align:center;font-size:15px;font-weight:700;padding-top:6px;}
+:root[data-acik="1"] .gider-ay-nav .btn{background:linear-gradient(135deg,#9a6f1c22,#9a6f1c0a)!important;border-color:#9a6f1ca0!important;color:#7a5410!important;box-shadow:inset 0 0 0 1px #9a6f1c20;}
 /* === /ALTIN KART ÇERÇEVE === */
 /* "Created by" = "Management" ile aynı yazı karakteri */
 #splash .sp-imza small{font-family:'Cormorant Garamond','Fraunces',serif;font-weight:600;font-size:13px;letter-spacing:.5em;text-transform:uppercase;padding-left:.5em;opacity:.8}
@@ -10739,9 +10744,9 @@ async function renderGiderRapor(){
   const netKar=Object.values(basEgitmenKarMap).reduce((s,v)=>s+v,0)-ozelStudyoKira;
 
   let html=`
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <div class="gider-ay-nav">
       <button class="btn btn-ghost btn-sm" onclick="giderAyDegis('${oncekiAy}')">‹</button>
-      <div style="font-size:14px;font-weight:600;">${ayLabel_}</div>
+      <div class="gider-ay-ad">${ayLabel_}</div>
       <button class="btn btn-ghost btn-sm" onclick="giderAyDegis('${sonrakiAy}')">›</button>
     </div>
 
