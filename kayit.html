@@ -100,7 +100,7 @@ function formuCiz(){
   k.insertBefore(kv,k4.nextSibling);
   const hp=el('input',{class:'hp',id:'hp',tabindex:'-1',autocomplete:'off','aria-hidden':'true'});k.append(hp);
   const b=el('button',{class:'btn',id:'gonder',disabled:'disabled'},'Kaydı Tamamla');b.addEventListener('click',gonder);k.append(b);
-  k.append(el('div',{class:'hata',id:'hata'}),el('div',{class:'not'},'Kaydı tamamladığınızda onaylarınız; tarih-saat ve işlem güvenliği için IP adresi ile cihaz bilgisiyle birlikte kayıt altına alınır. Bu bağlantı yalnızca bir kez kullanılabilir.'));
+  k.append(el('div',{class:'hata',id:'hata'}),el('div',{class:'not'},'Kaydı tamamladığınızda onaylarınız; tarih-saat ve işlem güvenliği için IP adresi, cihaz/tarayıcı bilgileri (model, işletim sistemi, ekran, dil, saat dilimi gibi) ve formu doldurma davranışınızla birlikte kayıt altına alınır. Bu bağlantı yalnızca bir kez kullanılabilir.'));
   k.querySelectorAll('input[type=checkbox],input').forEach(i=>i.addEventListener('input',guncelle));
   guncelle();
 }
@@ -111,6 +111,29 @@ function guncelle(){
   const kc=kucukMu();$('veli').style.display=kc?'block':'none';$('kv').style.display=kc?'block':'none';
   const ok=$('c-ayd').checked&&$('c-kural').checked&&(!kc||$('c-veli').checked);
   $('gonder').disabled=!ok||ONIZLEME;
+}
+
+// ── Cihaz ve davranış kanıtı (yalnızca onay ispatı amacıyla) ──
+const T0=Date.now(),TIK={};let DOKUNMA=0,TUS=0;
+['touchstart','pointerdown','mousedown'].forEach(e=>addEventListener(e,()=>{DOKUNMA++;},{passive:true}));
+addEventListener('keydown',()=>{TUS++;},{passive:true});
+document.addEventListener('change',e=>{const t=e.target;if(t&&t.type==='checkbox'&&t.id)TIK[t.id]=(TIK[t.id]||[]).concat([[t.checked?1:0,Date.now()-T0]]).slice(-6);});
+async function cihazTopla(){
+  const n=navigator,c={},sc=screen;
+  try{
+    c.dil=n.language||'';c.diller=(n.languages||[]).join(',');c.tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';c.tzOfset=new Date().getTimezoneOffset();
+    c.ekran=sc.width+'x'+sc.height;c.ekranKullanilabilir=sc.availWidth+'x'+sc.availHeight;c.pencere=innerWidth+'x'+innerHeight;c.dpr=devicePixelRatio;c.renkDerinligi=sc.colorDepth;
+    c.yon=(sc.orientation&&sc.orientation.type)||'';c.platform=n.platform||'';c.cekirdek=n.hardwareConcurrency||0;c.bellekGB=n.deviceMemory||0;c.dokunmaNoktasi=n.maxTouchPoints||0;
+    c.cerez=!!n.cookieEnabled;c.dnt=n.doNotTrack||'';c.ag=(n.connection&&n.connection.effectiveType)||'';c.saat=new Date().toString().slice(0,60);
+    c.referrer=(document.referrer||'').slice(0,120);c.sayfa=location.origin+location.pathname;
+    if(n.userAgentData){c.uadMobil=!!n.userAgentData.mobile;c.uadPlatform=n.userAgentData.platform||'';c.uadMarka=(n.userAgentData.brands||[]).map(b=>b.brand+' '+b.version).join(', ');
+      try{const h=await n.userAgentData.getHighEntropyValues(['model','platformVersion','architecture','fullVersionList']);c.uadModel=h.model||'';c.uadSurum=h.platformVersion||'';c.uadMimari=h.architecture||'';}catch(e){}}
+    try{const g=document.createElement('canvas').getContext('webgl');const x=g&&g.getExtension('WEBGL_debug_renderer_info');if(x)c.gpu=String(g.getParameter(x.UNMASKED_RENDERER_WEBGL)||'').slice(0,100);}catch(e){}
+    try{let id=localStorage.getItem('kf_cihaz');if(!id){id=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());localStorage.setItem('kf_cihaz',id);}c.cihazId=id;}catch(e){c.cihazId='';}
+    c.formSuresiSn=Math.round((Date.now()-T0)/1000);c.dokunma=DOKUNMA;c.tus=TUS;c.tiklar=JSON.stringify(TIK).slice(0,300);
+    c.odak=document.hasFocus();c.gorunur=document.visibilityState;
+  }catch(e){}
+  return c;
 }
 function hataGoster(m){const h=$('hata');h.textContent=m;h.style.display='block';h.scrollIntoView({behavior:'smooth',block:'center'});}
 async function gonder(){
@@ -128,7 +151,7 @@ async function gonder(){
       ogrenci:{ad:v('ad'),soyad:v('soyad'),cinsiyet:$('cins').value,dogum:v('dogum'),tel:v('tel'),eposta:v('eposta'),acil:v('acil')},
       veli:kc?{ad:v('veli-ad'),yakinlik:v('veli-yakin'),tel:v('veli-tel')}:null,
       onaylar:{aydinlatma:$('c-ayd').checked,kural:$('c-kural').checked,veli:kc?$('c-veli').checked:false,rizalar:riz},
-      cihaz:{dil:navigator.language||'',tz:(Intl.DateTimeFormat().resolvedOptions().timeZone)||'',ekran:screen.width+'x'+screen.height,saat:new Date().toString().slice(0,40)}});
+      cihaz:await cihazTopla()});
     durum('✅','Kaydınız alındı','Teşekkürler! Bilgileriniz ve onaylarınız stüdyoya iletildi. Bu bağlantı artık kullanılamaz.');
   }catch(e){
     if(e.kod===410||e.kod===404){durum('🔒','Bağlantı kullanılamıyor',e.message);return;}

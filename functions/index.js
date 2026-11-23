@@ -591,6 +591,18 @@ async function kayitLinkDurum(kod) {
   return { ref, d };
 }
 const kTemiz = (s, n) => metinTemizle(s, n);
+function cihazTemizle(c) {
+  const o = {};
+  if (!c || typeof c !== 'object') return o;
+  Object.keys(c).slice(0, 50).forEach((k) => {
+    if (!/^[A-Za-z0-9]{1,24}$/.test(k)) return;
+    const v = c[k];
+    if (typeof v === 'string') o[k] = v.slice(0, 300);
+    else if (typeof v === 'number' && isFinite(v)) o[k] = v;
+    else if (typeof v === 'boolean') o[k] = v;
+  });
+  return o;
+}
 
 exports.kayit = onRequest({ region: 'europe-west1', cors: true, maxInstances: 5, timeoutSeconds: 30 }, async (req, res) => {
   try {
@@ -648,10 +660,13 @@ exports.kayit = onRequest({ region: 'europe-west1', cors: true, maxInstances: 5,
       sunucuZamani: simdi, sunucuZamaniISO: new Date(simdi).toISOString(),
       ip: ipAl(req), ipZinciri: String(req.headers['x-forwarded-for'] || '').slice(0, 200), userAgent: String(req.headers['user-agent'] || '').slice(0, 300),
       dil: kTemiz(cz.dil, 20), saatDilimi: kTemiz(cz.tz, 50), ekran: kTemiz(cz.ekran, 20), istemciSaati: kTemiz(cz.saat, 40),
+      cihaz: cihazTemizle(cz),
+      basliklar: ['accept-language', 'sec-ch-ua', 'sec-ch-ua-mobile', 'sec-ch-ua-platform', 'sec-ch-ua-model', 'referer', 'origin', 'accept-encoding'].reduce((a, h) => { if (req.headers[h]) a[h] = String(req.headers[h]).slice(0, 200); return a; }, {}),
       metinSurum: metin.surum,
       ozetler: { aydinlatma: sha(metin.aydinlatma.baslik + '\n' + metin.aydinlatma.metin), kurallar: sha(metin.kurallar.baslik + '\n' + metin.kurallar.metin), veli: sha(metin.veli.metin), rizalar: rizaOzet },
       linkOzet: sha(String(b.k)).slice(0, 16),
     };
+    kanit.kanitOzeti = sha(JSON.stringify(kanit)); // kayıt anındaki kanıt bütünlüğü özeti
     const bas = db.collection('kayit_basvurulari').doc();
     await db.runTransaction(async (tx) => {
       const s = await tx.get(L.ref);
