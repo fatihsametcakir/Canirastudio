@@ -840,6 +840,11 @@ body.portal-modu .overlay{z-index:9500;}
 .topbar-title .tb-gold,.topbar-title span{display:inline!important;font-size:14.5px!important}
 .topbar-sub{display:block;text-align:center;font-size:10.5px;letter-spacing:.08em;color:var(--text3);margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
 #topbar-brand .tb-mark{width:26px;height:24px}
+/* bildirim zili görünürken başlık sağdaki gruba binmesin: sola kaydır ve daralt */
+.topbar:not(:has(#notif-btn[style*="none"])) #topbar-brand{left:calc(50% - 22px);max-width:none;width:max-content}
+.topbar:not(:has(#notif-btn[style*="none"])) #topbar-brand .tb-mark{display:none}
+.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title,.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title .tb-gold,.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title span{font-size:13.5px!important}
+@media(max-width:380px){.topbar:not(:has(#notif-btn[style*="none"])) #topbar-brand{left:calc(50% - 34px)}.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title,.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title .tb-gold,.topbar:not(:has(#notif-btn[style*="none"])) .topbar-title span{font-size:12.5px!important;letter-spacing:.01em}#topbar-brand .tb-mark{display:none}}
 </style>
 </head>
 <body>
