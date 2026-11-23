@@ -898,6 +898,15 @@ body.portal-modu .overlay{z-index:9500;}
 .cs-item{padding:9px 10px;margin-bottom:8px;border:1.5px solid #d9ac52a6!important;border-radius:var(--radius-sm);background:linear-gradient(90deg,color-mix(in srgb,var(--text) 5%,var(--surface)),color-mix(in srgb,var(--text) 2%,var(--surface)));box-shadow:inset 0 0 0 1px #d9ac5220}
 .cs-item:last-child{margin-bottom:0}
 :root[data-acik="1"] .cs-item{border-color:#9a6f1ca0!important;box-shadow:inset 0 0 0 1px #9a6f1c22}
+/* sınıf detayı satırları: daha sıkı, ad tek satır, rozet küçük */
+.cs-item{padding:6px 9px;margin-bottom:4px;gap:8px}
+.cs-item>div:nth-child(2){min-width:0}
+.cs-item>div:nth-child(2)>div:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-item>div:nth-child(2)>div:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-item>div:last-child{flex-shrink:0;gap:4px!important}
+.cs-item .badge{font-size:10px!important;padding:2px 7px;white-space:nowrap}
+.cs-item .btn-sm{padding:4px 9px;font-size:12px}
+.cs-item .avatar{width:30px!important;height:30px!important}
 /* === /ALTIN KART ÇERÇEVE === */
 /* "Created by" = "Management" ile aynı yazı karakteri */
 #splash .sp-imza small{font-family:'Cormorant Garamond','Fraunces',serif;font-weight:600;font-size:13px;letter-spacing:.5em;text-transform:uppercase;padding-left:.5em;opacity:.8}
