@@ -2154,7 +2154,7 @@ try{
     <button class="btn btn-danger" style="width:100%;padding:13px;" id="veri-sil-btn" onclick="veriSilOnayla()">Kalıcı Olarak Sil</button>
     <button class="btn btn-ghost" style="width:100%;padding:13px;margin-top:8px;" onclick="veriSilGeri()">Geri</button>
   </div>
-  <button class="btn btn-ghost" style="width:100%;padding:13px;margin-top:10px;" onclick="closeModal('m-veri-sil')">Vazgeç</button>
+  <button class="btn btn-ghost" style="width:100%;padding:13px;margin-top:10px;" onclick="veriSilVazgec()">Vazgeç</button>
 </div></div>
 <div class="overlay" id="m-ders-iptal"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
@@ -5015,6 +5015,7 @@ function veriSilAc(tur){
   veriSilGeri();
   openModal('m-veri-sil');
 }
+function veriSilVazgec(){closeModal('m-veri-sil');drawerAc();}
 function veriSilGeri(){
   _VERI_SIL.id=null;
   document.getElementById('veri-sil-liste-alani').style.display='block';
