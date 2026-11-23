@@ -929,6 +929,16 @@ body.portal-modu .overlay{z-index:9500;}
 .gelir-row{border-bottom:1px solid #d9ac52a6!important;}
 .gelir-row:last-child{border-bottom:none!important;}
 :root[data-acik="1"] .gelir-row{border-bottom-color:#9a6f1ca0!important;}
+#pg-gider-rapor .gider-ozet-kart{border:1.5px solid #d9ac52a6!important;box-shadow:inset 0 0 0 1px #d9ac5224!important;}
+#pg-gider-rapor .gider-satir{border-bottom:1px solid #d9ac5280!important;}
+#pg-gider-rapor .gider-satir:last-child{border-bottom:none!important;}
+#pg-gider-rapor .gider-satir[style*="border-top"]{border-top:1px solid #d9ac52a6!important;}
+#pg-gider-rapor .egitmen-pay-kart{border-top:1.5px solid #d9ac52a6!important;border-right:1.5px solid #d9ac52a6!important;border-bottom:1.5px solid #d9ac52a6!important;}
+:root[data-acik="1"] #pg-gider-rapor .gider-ozet-kart{border-color:#9a6f1ca0!important;}
+:root[data-acik="1"] #pg-gider-rapor .gider-satir{border-bottom-color:#9a6f1c80!important;}
+:root[data-acik="1"] #pg-gider-rapor .gider-satir:last-child{border-bottom:none!important;}
+:root[data-acik="1"] #pg-gider-rapor .gider-satir[style*="border-top"]{border-top-color:#9a6f1ca0!important;}
+:root[data-acik="1"] #pg-gider-rapor .egitmen-pay-kart{border-top-color:#9a6f1ca0!important;border-right-color:#9a6f1ca0!important;border-bottom-color:#9a6f1ca0!important;}
 /* === /ALTIN KART ÇERÇEVE === */
 /* "Created by" = "Management" ile aynı yazı karakteri */
 #splash .sp-imza small{font-family:'Cormorant Garamond','Fraunces',serif;font-weight:600;font-size:13px;letter-spacing:.5em;text-transform:uppercase;padding-left:.5em;opacity:.8}
@@ -2530,7 +2540,7 @@ const TRANSLATIONS={
     kira_oncelik_notu_esit:'ℹ Kira + pratik payı ({gider} ₺) bu dönemki gelirin ({tutar} ₺) tamamını alıyor, bu yüzden pay 0 ₺ görünüyor.',
     net_kar:'Net Kâr', toplam_gelir_kira_asistan:'Toplam Gelir − Kira − Asistan',
     payi:'payı', kira:'Kira', bu_ay_kayit_yok:'Bu ay için kayıt bulunamadı.',
-    egitmen_eklenmemis_uyari:'⚠ Eğitmen eklenmemiş. "Eğitmenler & Giderler" bölümünden eğitmen ekleyin ve sınıflara atayın.',
+    egitmen_eklenmemis_uyari:'⚠ Eğitmen eklenmemiş. "Eğitmenler" sayfasından eğitmen ekleyin ve sınıflara atayın.',
     cikis:'→ Çıkış', bilgilerim:'Bilgilerim', katilim:'Katılım', ogrenci_notlari:'Öğrenci Notları',
     iletisim:'İletişim', kayitli_siniflar_p:'Kayıtlı Sınıflar', tek_ders:'Tek Ders', henuz_sinif_kaydi_yok:'Henüz sınıf kaydı bulunmuyor',
     ogretmen_notu:'Öğretmen Notu', sifre_degistir:'Şifre Değiştir',
@@ -2719,7 +2729,7 @@ const TRANSLATIONS={
     kira_oncelik_notu_esit:'ℹ Rent + practice share ({gider} ₺) takes all of this period\'s income ({tutar} ₺), so the share shows 0 ₺.',
     net_kar:'Net Profit', toplam_gelir_kira_asistan:'Total Income − Rent − Assistant',
     payi:'share', kira:'Rent', bu_ay_kayit_yok:'No records for this month.',
-    egitmen_eklenmemis_uyari:'⚠ No instructors added. Add instructors in "Instructors & Expenses" and assign them to classes.',
+    egitmen_eklenmemis_uyari:'⚠ No instructors added. Add instructors in "Instructors" and assign them to classes.',
     cikis:'→ Log Out', bilgilerim:'My Info', katilim:'Attendance', ogrenci_notlari:'Student Notes',
     iletisim:'Contact', kayitli_siniflar_p:'Enrolled Classes', tek_ders:'Drop-in', henuz_sinif_kaydi_yok:'No class enrollment yet',
     ogretmen_notu:'Instructor Note', sifre_degistir:'Change Password',
@@ -2908,7 +2918,7 @@ const TRANSLATIONS={
     kira_oncelik_notu_esit:'ℹ Аренда + доля за практику ({gider} ₺) забирают весь доход за этот период ({tutar} ₺), поэтому доля показывает 0 ₺.',
     net_kar:'Чистая прибыль', toplam_gelir_kira_asistan:'Общий доход − Аренда − Ассистент',
     payi:'доля', kira:'Аренда', bu_ay_kayit_yok:'Записей за этот месяц нет.',
-    egitmen_eklenmemis_uyari:'⚠ Преподаватели не добавлены. Добавьте их в разделе "Преподаватели и расходы" и назначьте на группы.',
+    egitmen_eklenmemis_uyari:'⚠ Преподаватели не добавлены. Добавьте их в разделе "Преподаватели" и назначьте на группы.',
     cikis:'→ Выйти', bilgilerim:'Мои данные', katilim:'Посещаемость', ogrenci_notlari:'Заметки учеников',
     iletisim:'Контакты', kayitli_siniflar_p:'Записанные группы', tek_ders:'Разовое занятие', henuz_sinif_kaydi_yok:'Записей в группы пока нет',
     ogretmen_notu:'Заметка преподавателя', sifre_degistir:'Изменить пароль',
