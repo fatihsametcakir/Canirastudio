@@ -135,7 +135,8 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .topbar-title{font-family:'Cormorant Garamond','Fraunces',serif;font-size:17px;font-weight:600;line-height:1.02;letter-spacing:.03em;white-space:nowrap;}
 .topbar-title .tb-gold{display:block;background:linear-gradient(100deg,#f8e7ae,#d9ac52 40%,#f4dc92 65%,#b0842f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;}
 :root[data-acik="1"] .topbar-title .tb-gold,:root[data-acik="1"] .drawer-logo .tb-gold{background:linear-gradient(100deg,#8a6112,#b8872a 40%,#9a6f1c 65%,#6e4c0c);-webkit-background-clip:text;background-clip:text;}
-.topbar-title span{display:block;color:var(--accent);font-style:italic;font-weight:600;font-size:16px;letter-spacing:.05em;}
+.topbar-title span{display:block;background:linear-gradient(100deg,#fbeab4,#e0b457 38%,#f6e19a 62%,#c8963a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-style:italic;font-weight:600;font-size:16px;letter-spacing:.05em;}
+:root[data-acik="1"] .topbar-title span,:root[data-acik="1"] .drawer-logo span{background:linear-gradient(100deg,#9a6f1c,#c8963a 40%,#a87a22 62%,#7a540f);-webkit-background-clip:text;background-clip:text;}
 .tb-mark{flex-shrink:0;}
 .topbar-sub{display:none;}
 .topbar-page-title{font-family:'Fraunces',serif;font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
@@ -513,7 +514,10 @@ body.portal-modu .overlay{z-index:9500;}
 .portal-ders-item:last-child{border-bottom:none;}
 /* Portal — öğrenci ekranı */
 #portal-screen{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:9000;overflow-y:auto;}
-.portal-header{background:linear-gradient(135deg,#a78bfa18,#22d3ee12);border-bottom:1px solid var(--border2);padding:max(16px,env(safe-area-inset-top)) 20px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.portal-header{padding:0 10px 0 14px;min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:max(10px,calc(env(safe-area-inset-top) + 4px));margin:max(10px,calc(env(safe-area-inset-top) + 4px)) 10px 12px;z-index:10;background:color-mix(in srgb,var(--surface) 38%,transparent);border:1.5px solid color-mix(in srgb,var(--text) 34%,transparent);border-radius:999px;box-shadow:0 0 0 5px color-mix(in srgb,var(--bg) 55%,transparent),0 14px 34px -8px rgba(0,0,0,.85),0 2px 10px -2px rgba(0,0,0,.5),inset 0 1px 0 color-mix(in srgb,var(--text) 14%,transparent);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);}
+:root[data-acik="1"] .portal-header{box-shadow:0 0 0 5px color-mix(in srgb,var(--bg) 55%,transparent),0 14px 30px -10px rgba(26,26,46,.35),0 2px 8px -2px rgba(26,26,46,.2),inset 0 1px 0 #fff;}
+.portal-header .btn{border-radius:99px !important;}
+.portal-marka{display:flex;align-items:center;gap:7px;min-width:0;}
 .portal-logo{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
 .portal-logo span{color:var(--purple);font-style:italic;}
 .portal-body{padding:16px;max-width:480px;margin:0 auto;width:100%;padding-bottom:40px;}
@@ -548,7 +552,7 @@ body.portal-modu .overlay{z-index:9500;}
 .drawer-header::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1.5px;background:linear-gradient(90deg,var(--accent),var(--purple,#a78bfa),transparent);opacity:.5;}
 .drawer-logo{font-family:'Cormorant Garamond','Fraunces',serif;font-size:17.5px;font-weight:600;line-height:1.1;letter-spacing:.01em;white-space:nowrap;min-width:0;}
 .drawer-logo .tb-gold{display:inline;background:linear-gradient(100deg,#f8e7ae,#d9ac52 40%,#f4dc92 65%,#b0842f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;}
-.drawer-logo span{display:inline;color:var(--accent);font-style:italic;font-size:17.5px;}
+.drawer-logo span{display:inline;background:linear-gradient(100deg,#fbeab4,#e0b457 38%,#f6e19a 62%,#c8963a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-style:italic;font-size:17.5px;}
 .drawer-close{width:32px;height:32px;border-radius:50%;background:var(--accentbg);border:1px solid #ff6b6b35;color:var(--accent);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
 .drawer-close:active{transform:scale(.85) rotate(90deg);}
 .drawer-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:8px 0 24px;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--text) 25%,transparent) transparent;}
@@ -1019,7 +1023,7 @@ try{
 <!-- ÖĞRENCİ PORTALI -->
 <div id="portal-screen">
   <div class="portal-header">
-    <div class="portal-logo">Can & Irina <span>Studio</span></div>
+    <div class="portal-marka"><svg class="tb-mark" viewBox="20 30 150 140" width="30" height="28" aria-hidden="true"><defs><linearGradient id="tbgp1" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="170" y2="180"><stop offset="0" stop-color="#f8e7ae"/><stop offset=".38" stop-color="#d9ac52"/><stop offset=".62" stop-color="#f4dc92"/><stop offset="1" stop-color="#b0842f"/></linearGradient></defs><g fill="none" stroke="url(#tbgp1)" stroke-linecap="round"><path d="M146 60 A56 56 0 1 0 146 140" stroke-width="8"/><path d="M138 70 A44 44 0 1 0 138 130" stroke-width="4"/><line x1="112" y1="52" x2="112" y2="148" stroke-width="8"/><line x1="121" y1="62" x2="121" y2="138" stroke-width="4"/></g><circle cx="150" cy="100" r="7" fill="url(#tbgp1)"/></svg><div class="topbar-title"><b class="tb-gold">Can &amp; Irina</b><span>Dance Studio</span></div></div>
     <div style="display:flex;align-items:center;gap:8px;">
       <button id="langBtnPortal" onclick="cycleLang()" title="Dil / Language / Язык" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:5px 10px;font-size:11px;font-weight:600;color:#fff;cursor:pointer;flex-shrink:0;transition:transform .2s cubic-bezier(.34,1.56,.64,1);">TR</button>
       <button class="btn" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-size:12px;padding:7px 13px;border-radius:8px;font-weight:600;" onclick="portalCikis()" data-i18n="cikis">→ Çıkış</button>
@@ -1044,7 +1048,7 @@ try{
 <!-- EĞİTMEN PANELİ -->
 <div id="egitmen-screen">
   <div class="portal-header">
-    <div class="portal-logo">Can & Irina <span>Studio</span></div>
+    <div class="portal-marka"><svg class="tb-mark" viewBox="20 30 150 140" width="30" height="28" aria-hidden="true"><defs><linearGradient id="tbgp2" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="170" y2="180"><stop offset="0" stop-color="#f8e7ae"/><stop offset=".38" stop-color="#d9ac52"/><stop offset=".62" stop-color="#f4dc92"/><stop offset="1" stop-color="#b0842f"/></linearGradient></defs><g fill="none" stroke="url(#tbgp2)" stroke-linecap="round"><path d="M146 60 A56 56 0 1 0 146 140" stroke-width="8"/><path d="M138 70 A44 44 0 1 0 138 130" stroke-width="4"/><line x1="112" y1="52" x2="112" y2="148" stroke-width="8"/><line x1="121" y1="62" x2="121" y2="138" stroke-width="4"/></g><circle cx="150" cy="100" r="7" fill="url(#tbgp2)"/></svg><div class="topbar-title"><b class="tb-gold">Can &amp; Irina</b><span>Dance Studio</span></div></div>
     <div style="display:flex;align-items:center;gap:8px;">
       <button id="langBtnEg" onclick="cycleLang()" title="Dil / Language / Язык" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text);">TR</button>
       <button class="btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);font-size:12px;padding:7px 11px;border-radius:8px;" onclick="egSifreModal(false)">🔑</button>
@@ -3078,7 +3082,7 @@ function goTo(p,btn){
   if(fab)fab.style.display=(p==='anasayfa'||p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider'||p==='odemeler'||p==='ozel'||p==='siniflar'||p==='ogrenciler')?'none':'flex';
   renderAll();
 }
-function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
+function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');{const f=document.getElementById('mainFab');if(f)f.style.display='none';}const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
 // Gelir/Gider ekranındaki rapor kartları: popup yerine tam sayfa olarak açılır
 // (mobil ve masaüstünde aynı — sadece geri tuşu/topbar back ile kapanır).
 function openRaporSayfa(id,i18nKey,renderFn){
