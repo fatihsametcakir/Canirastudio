@@ -7765,14 +7765,14 @@ function yetkiJwtEposta(tk){try{const p=JSON.parse(atob(tk.split('.')[1].replace
 // ── Yetkisi olmayan düğmeleri PASİF göster (gizleme/engelleme tek noktada) ──
 // onclick içindeki işlev adına göre düğmenin yazma kategorisi bulunur; kullanıcıda yoksa düğme soluk görünür ve tıklanınca uyarı verir.
 const YETKI_ISLEM_HARITA={
-  ogrenci:['openOgrenciModal','saveOgrenci','ogrenciPasifeAlTamam','kayitOgrenciPasife','toggleOgrenciDurum','toggleDondur','hakEkle','saveSinifOgrenci','openSinifOgrenci','silKayit','tasiKayit','ogDetaySinifEkle','ogDetaySinifSil','oeYeniOgrenci','portalSifreDegistirModal','portalSifreKaydet','portalNotGonder','dersKaydiSil'],
-  sinif:['openSinifModal','saveSinif','sinifBirlestir','openBirlestirModal','sinifDurumToggle','tatilEkle','tatilSil','dersIptalKaydet','dersIptalKaldir','sinifLegacyKiraTemizle'],
+  ogrenci:['openOgrenciModal','saveOgrenci','ogrenciPasifeAlTamam','kayitOgrenciPasife','toggleOgrenciDurum','toggleDondur','hakEkle','saveSinifOgrenci','openSinifOgrenci','silKayit','tasiKayit','ogDetaySinifEkle','ogDetaySinifSil','oeYeniOgrenci','portalSifreDegistirModal','portalSifreKaydet','portalNotGonder','dersKaydiSil','oeOgrenciSec'],
+  sinif:['openSinifModal','saveSinif','sinifBirlestir','openBirlestirModal','sinifDurumToggle','tatilEkle','tatilSil','dersIptalKaydet','dersIptalKaldir','sinifLegacyKiraTemizle','dersIptalAc'],
   odeme:['openOdemeModal','saveOdeme','silOdeme','cakisanOdemeSil','odemeOnarimUygula'],
-  yoklama:['yoklamaAlKaydet'],
-  ozel:['ozelEkleBaslat','openOzelPaketModal','saveOzelPaket','silOzelPaket','saveDersPlan','otSeansSil','otSeansDuzenle','ooKaydet','ooDuzenle','ooSil','ozelSaatDenetimi'],
-  video:['openVideoSinifModal','saveVideoSinif'],
+  yoklama:['yoklamaAlKaydet','yoklamaOgrenciden'],
+  ozel:['ozelEkleBaslat','openOzelPaketModal','saveOzelPaket','silOzelPaket','saveDersPlan','otSeansSil','otSeansDuzenle','ooKaydet','ooDuzenle','ooSil','ozelSaatDenetimi','openOzelOdemeModal','openOzelSaatModal','osUygula'],
+  video:['openVideoSinifModal','saveVideoSinif','silVideoSinif'],
   ayar:['gaPratikKiraEkle','gaPratikKiraKaydet','gaPratikKiraSil','gaPratikKiraDuzenle','gaPratikIptalEkle','gaPratikIptalKaydetForm','gaPratikIptalSil','gaOzelKiraEkle','gaOzelKiraKaydet','gaOzelKiraSil','gaOzelKiraDuzenle','gaGrupKiraEkle','gaGrupKiraKaydet','gaGrupKiraSil','gaGrupKiraDuzenle','egitmenEkleModal','egitmenKaydet','egitmenDuzenle','egitmenSil','egitmenSifreSifirla','waSablonKaydet','odemeBilgiKaydet'],
-  sahip:['tumVerileriSifirla','tumLegacyKiralariTemizle','tumLegacyKiralariTemizle','telNumaralariniTemizle','kullaniciEkle','kullaniciKaldir','kullaniciSifreSifirla','yetkiKaydet','veriSilOnayla']
+  sahip:['tumVerileriSifirla','tumLegacyKiralariTemizle','tumLegacyKiralariTemizle','telNumaralariniTemizle','kullaniciEkle','kullaniciKaldir','kullaniciSifreSifirla','yetkiKaydet','veriSilOnayla','silKategori','veriSilAc','veriSilSec','odemeOnarimAc','githubTokenSifirla','geriYukle']
 };
 const YETKI_ISLEM_RE=Object.entries(YETKI_ISLEM_HARITA).map(([k,l])=>[new RegExp('(^|[^A-Za-z0-9_])('+l.join('|')+')\\s*\\('),k]);
 const FAB_KATEGORI=()=>({ogrenciler:'ogrenci',siniflar:'sinif','sinif-detay':'ogrenci',ozel:'ozel',odemeler:'odeme',yoklama:'yoklama',videolar:'video'})[PAGE]||'ogrenci';
