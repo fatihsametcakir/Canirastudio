@@ -749,6 +749,10 @@ textarea{border:1.5px solid #d9ac5280;box-shadow:inset 0 0 0 1px #d9ac5214;}
 /* pencere içi tüm düğmeler aynı biçim: hap + altın çerçeve (renk tonları korunur; geri almak için bu bloğu sil) */
 .sheet .btn,.confirm-sheet .btn{border-radius:99px!important;border:1.5px solid #d9ac52a6!important;}
 :root[data-acik="1"] .sheet .btn,:root[data-acik="1"] .confirm-sheet .btn{border-color:#9a6f1ca0!important;}
+/* ana sayfa: Bu ay gelir ve Paket yenileme kartları gizli; kalan iki kart eşit genişlikte (geri almak için bu bloğu sil) */
+#anasayfa-stats-row .stat-card.s3,#anasayfa-stats-row .stat-card.s4{display:none!important;}
+#anasayfa-stats-row,#pg-anasayfa #anasayfa-stats-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+#anasayfa-stats-row .stat-card{min-width:0;}
 </style>
 <style>
 #splash{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 38%,#ff6b6b1c,transparent 60%),radial-gradient(ellipse at 50% 100%,#a78bfa1a,transparent 55%),var(--bg);transition:opacity .6s ease;}
