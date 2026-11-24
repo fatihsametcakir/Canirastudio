@@ -582,6 +582,9 @@ body.portal-modu .overlay{z-index:9500;}
 .drawer-hizli{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 /* üst hızlı düğmeler: hepsi aynı yükseklikte (geri almak için bu satırları sil) */
 .drawer-hizli{grid-auto-rows:44px;}
+.drawer .drawer-hizli .drawer-btn{justify-content:flex-start!important;text-align:left!important;gap:8px;}
+.drawer-hizli .dh-ik{flex:none;width:20px;text-align:center;}
+.drawer-hizli .dh-tx{flex:1;min-width:0;text-align:left;}
 .drawer .drawer-hizli .drawer-btn{height:44px;min-height:44px!important;padding:4px 8px!important;font-size:12px;line-height:1.15;box-sizing:border-box;overflow:hidden;}
 .drawer-hizli .drawer-btn{width:auto!important;margin:0!important;padding:9px 8px;gap:6px;justify-content:center;text-align:center;font-size:12.5px;line-height:1.2;min-height:42px;}
 .drawer-hizli .drawer-btn:last-child:nth-child(odd){grid-column:1/-1;}
@@ -1734,14 +1737,14 @@ try{
 
     <!-- Hızlı Erişim -->
     <div class="drawer-hizli" style="padding:8px 12px 4px;">
-      <button class="drawer-btn" id="drawerBtnTakvim" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('takvim',this)">📅 <span data-i18n="nav_takvim">Takvim</span></button>
-      <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('yoklama',this)">✓ Yoklama</button>
-      <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('videolar',this)">🎬 Ders Videoları</button>
-      <button class="drawer-btn" id="drawerBtnKayitTaslak" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('kayit-taslak',this)">📝 Kayıt Formu</button>
-      <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()">🚩 Devamsız Öğrenciler</button>
-      <button class="drawer-btn" id="drawerBtnYoklamaLog" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();yoklamaLogAc()">📝 Yoklama Günlüğü</button>
-      <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
-      <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()">🏆 Yarışma (Jack & Jill)</button>
+      <button class="drawer-btn" id="drawerBtnTakvim" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('takvim',this)"><span class="dh-ik">📅</span><span class="dh-tx" data-i18n="nav_takvim">Takvim</span></button>
+      <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('yoklama',this)"><span class="dh-ik">✓</span><span class="dh-tx">Yoklama</span></button>
+      <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('videolar',this)"><span class="dh-ik">🎬</span><span class="dh-tx">Ders Videoları</span></button>
+      <button class="drawer-btn" id="drawerBtnKayitTaslak" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('kayit-taslak',this)"><span class="dh-ik">📝</span><span class="dh-tx">Kayıt Formu</span></button>
+      <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()"><span class="dh-ik">🚩</span><span class="dh-tx">Devamsız Öğrenciler</span></button>
+      <button class="drawer-btn" id="drawerBtnYoklamaLog" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();yoklamaLogAc()"><span class="dh-ik">📝</span><span class="dh-tx">Yoklama Günlüğü</span></button>
+      <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()"><span class="dh-ik">💬</span><span class="dh-tx" data-i18n="acc_wa">WhatsApp Şablonları</span></button>
+      <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()"><span class="dh-ik">🏆</span><span class="dh-tx">Yarışma (Jack & Jill)</span></button>
     </div>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
 
@@ -3135,13 +3138,13 @@ function applyLang(){
     'navlbl-odemeler':'nav_odemeler','navlbl-gelirgider':'nav_gelirgider',
     'lbl-aktif-ogrenci':'lbl_aktif_ogrenci','lbl-kayit':'lbl_kayit','lbl-sinif':'lbl_aktif_sinif',
     'lbl-bu-ay-gelir':'lbl_bu_ay_gelir','lbl-net':'lbl_net','lbl-paket-yenileme':'lbl_paket_yenileme',
-    'drawerBtnYoklama':'drawer_yoklama','drawerBtnVideolar':'drawer_videolar',
     'navlbl-ozel':'nav_ozel',
     'lbl-filter-aktif':'filter_aktif','lbl-filter-pasif':'filter_pasif','lbl-filter-hepsi':'filter_hepsi',
     'lbl-siniftagore':'siniftagore','lbl-tumunugoster':'tumunugoster',
     'lbl-sonEklenen':'sonEklenen','lbl-ilkEklenen':'ilkEklenen',
   };
   Object.keys(map).forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t(map[id]);});
+  [['drawerBtnYoklama','drawer_yoklama'],['drawerBtnVideolar','drawer_videolar']].forEach(([id,k])=>{const el=document.querySelector('#'+id+' .dh-tx');if(el)el.textContent=t(k).replace(/^\S+\s+/,'');});
   document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=t(el.getAttribute('data-i18n'));});
   document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.getAttribute('data-i18n-ph'));});
   const ph={'og-arama':'ph_og_arama','si-arama':'ph_si_arama'};
