@@ -3376,6 +3376,34 @@ function geriAlBildirimi(mesaj,geriAl){
   requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
   setTimeout(kapat,8000);
 }
+// Silmeden ÖNCE etkilenecek kayıtların kopyasını alır; geri alınca aynen yazar
+function yedekAl(liste){
+  const h={ozelPaketler:S.ozelPaketler,ozelSeanslar:S.ozelSeanslar,siniflar:S.siniflar,odemeler:S.odemeler,egitmenler:S.egitmenler,videoSiniflar:S.videoSiniflar,tatiller:S.tatiller};
+  const gor=new Set();
+  return liste.map(([c,id])=>{if(!id||gor.has(c+id))return null;gor.add(c+id);const d=(h[c]||[]).find(x=>x.id===id);return d?[c,JSON.parse(JSON.stringify(d))]:null;}).filter(Boolean);
+}
+async function yedegiGeriYukle(yedek,sonra){
+  for(const [c,d] of yedek){const {id,...veri}=d;await db.collection(c).doc(id).set(veri);
+    const arr=S[c];if(Array.isArray(arr)){const i=arr.findIndex(x=>x.id===id);if(i>=0)arr[i]=d;else arr.push(d);}}
+  [...new Set(yedek.map(y=>y[0]))].forEach(c=>_poll(c));
+  try{renderAll();}catch(e){}
+  if(sonra)try{sonra();}catch(e){}
+}
+const seansYedegi=(s)=>yedekAl([['ozelSeanslar',s.id],...(Array.isArray(s.dusumler)?s.dusumler.map(d=>['ozelPaketler',d.paketId]):[]),['ozelPaketler',s.paketId]]);
+// Öğrenciyi sınıftan çıkarır; geri alınabilir (sınıf kaydı + işaretlenen ödemeler + geçmiş olayı)
+async function sinifCikarGeriAlli(siId,kayitId){
+  const si=S.siniflar.find(s=>s.id===siId);const k=si&&(si.kayitlar||[]).find(x=>x.id===kayitId);
+  const yedek=k?yedekAl([['siniflar',siId],...S.odemeler.filter(o=>o.ogrenciId===k.ogrenciId&&o.sinifId===siId).map(o=>['odemeler',o.id])]):[];
+  const ogId=k&&k.ogrenciId,ad=si&&si.ad;
+  const sonuc=await ogrenciSinifCikarCekirdek(siId,kayitId);
+  if(sonuc&&yedek.length)geriAlBildirimi((ad||'Sınıf')+' sınıfından çıkarıldı',async()=>{
+    await yedegiGeriYukle(yedek);
+    const olay=[...(S.ogrenciGecmisi||[])].reverse().find(x=>x.ogrenciId===ogId&&x.sinifId===siId&&x.olay==='cikis');
+    if(olay){try{await db.collection('ogrenciGecmisi').doc(olay.id).delete();S.ogrenciGecmisi=S.ogrenciGecmisi.filter(x=>x.id!==olay.id);}catch(e){}}
+    try{renderOgDetay();}catch(e){}
+  });
+  return sonuc;
+}
 async function odemeGeriYukle(kopya){
   const {id,...veri}=kopya;
   await db.collection('odemeler').doc(id).set(veri);
@@ -4285,8 +4313,10 @@ async function saveVideoSinif(){
 async function silVideoSinif(id){
   confirm_('Sınıfı Sil','Bu sınıf kaydı silinecek (YouTube\'daki videolar etkilenmez).',async()=>{
     setSyncing(true);
+    const _y=yedekAl([['videoSiniflar',id]]);
     await db.collection('videoSiniflar').doc(id).delete();
     _poll('videoSiniflar');setSyncing(false);
+    if(_y.length)geriAlBildirimi('Sınıf silindi',()=>yedegiGeriYukle(_y));
   });
 }
 function toggleVideoSinif(id){
@@ -5752,7 +5782,7 @@ async function silKayit(){
   if(!k)return;
   confirm_('Sınıftan Çıkar',sinifCikarUyariMetni(k.ogrenciId,CUR_SINIF),async()=>{
     setSyncing(true);
-    try{await ogrenciSinifCikarCekirdek(CUR_SINIF,CUR_KAYIT);closeModal('m-kayit-islem');renderAll();}
+    try{await sinifCikarGeriAlli(CUR_SINIF,CUR_KAYIT);closeModal('m-kayit-islem');renderAll();}
     catch(e){alert('Hata: '+e.message);}
     setSyncing(false);
   });
@@ -6347,7 +6377,7 @@ function ooSil(id){
   const p=S.ozelPaketler.find(x=>x.id===OO_PAKET);if(!p)return;
   const liste=ozelPaketOdemeleri(p).filter(o=>o.id!==id);
   if(!liste.length){alert('Pakette en az bir ödeme olmalı. Ödemeyi düzenleyebilirsin; paketi tamamen kaldırmak için paketi sil.');return;}
-  confirm_('Ödemeyi sil','Bu ödeme kaydı silinecek ve gelirden düşecek.',()=>ooYaz(p,liste));
+  confirm_('Ödemeyi sil','Bu ödeme kaydı silinecek ve gelirden düşecek.',async()=>{const _y=yedekAl([['ozelPaketler',p.id]]);await ooYaz(p,liste);geriAlBildirimi('Ödeme silindi',()=>yedegiGeriYukle(_y,()=>{try{ooCiz();renderOzel();}catch(e){}}));});
 }
 // Paketlerin kayıtlı "yapılan saat"i ile düşülmüş derslerin toplamını karşılaştırır.
 // Kayıtlı saat dersler toplamından FAZLAYSA (çift düşme) tek tek sorup düzeltir.
@@ -6450,6 +6480,7 @@ async function silOzelPaket(id){
     setSyncing(true);
     try{
       const ilgiliSeanslar=S.ozelSeanslar.filter(s=>s.paketId===id);
+      const _yedek=yedekAl([['ozelPaketler',id],...ilgiliSeanslar.map(s=>['ozelSeanslar',s.id]),...ilgiliSeanslar.flatMap(s=>Array.isArray(s.dusumler)?s.dusumler.map(d=>['ozelPaketler',d.paketId]):[])]);
       // Silinen derslerin başka pakete taşan kısmı varsa o paketlere geri verilir
       for(const s of ilgiliSeanslar){
         if(s.dusuldu&&Array.isArray(s.dusumler)){
@@ -6464,6 +6495,7 @@ async function silOzelPaket(id){
       }
       await db.collection('ozelPaketler').doc(id).delete();
       _poll('ozelPaketler');_poll('ozelSeanslar');
+      geriAlBildirimi('Paket silindi',()=>yedegiGeriYukle(_yedek));
     }catch(e){alert('Hata: '+e.message);}
     setSyncing(false);
     closeModal('m-ozel-saat');
@@ -6755,6 +6787,7 @@ function otSeansSil(id){
   confirm_(t('dersi_sil'),mesaj,async()=>{
     setSyncing(true);
     try{
+      const _yedek=s?seansYedegi(s):[];
       if(s&&s.dusuldu){
         const iade=await ozelIadeUygula(s); // her pakete tam olarak düşülen saat kadar geri verilir
         _poll('ozelPaketler');
@@ -6762,6 +6795,7 @@ function otSeansSil(id){
       }
       await db.collection('ozelSeanslar').doc(id).delete();
       _poll('ozelSeanslar');
+      if(_yedek.length)geriAlBildirimi('Ders silindi',()=>yedegiGeriYukle(_yedek));
     }catch(e){alert('Hata: '+e.message);}
     setSyncing(false);closeModal('m-seans-detay');
   });
@@ -7589,6 +7623,7 @@ async function dersKaydiSil(id){
   confirm_(t('dersi_sil'),dusulduMu?t('ders_sil_saat_geri'):t('ders_sil_aciklama'),async()=>{
     setSyncing(true);
     try{
+      const _yedek=seansYedegi(s);
       if(dusulduMu){
         const iade=await ozelIadeUygula(s); // her pakete tam olarak düşülen saat kadar geri verilir
         _poll('ozelPaketler');
@@ -7596,6 +7631,7 @@ async function dersKaydiSil(id){
       }
       await db.collection('ozelSeanslar').doc(id).delete();
       _poll('ozelSeanslar');
+      geriAlBildirimi('Ders silindi',()=>yedegiGeriYukle(_yedek,()=>openPaketDersler(s.paketId)));
     }catch(e){alert('Hata: '+e.message);}
     setSyncing(false);
     setTimeout(()=>openPaketDersler(s.paketId),300);
@@ -8025,9 +8061,11 @@ function renderOgDetay(){
 async function tatilSil(id){
   setSyncing(true);
   try{
+    const _y=yedekAl([['tatiller',id]]);
     await db.collection('tatiller').doc(id).delete();
     S.tatiller=S.tatiller.filter(t=>t.id!==id);
     renderTatilListe();renderAll();
+    if(_y.length)geriAlBildirimi('Tatil günü silindi',()=>yedegiGeriYukle(_y,()=>renderTatilListe()));
   }catch(e){alert('Hata: '+e.message);}
   setSyncing(false);
 }
@@ -10640,8 +10678,10 @@ async function gaGrupKiraKaydet(){
 }
 async function gaGrupKiraSil(i){
   const liste=(GIDER_AYARLARI.grupKiraGecmisi||[]).slice();
+  const _eski=(GIDER_AYARLARI.grupKiraGecmisi||[]).slice();
   liste.splice(i,1);
   await gaGrupKiraKaydetListe(liste);
+  geriAlBildirimi('Kira kaydı silindi',()=>gaGrupKiraKaydetListe(_eski));
 }
 
 function renderGaOzelKiraListe(){
@@ -10701,8 +10741,10 @@ async function gaOzelKiraKaydet(){
 }
 async function gaOzelKiraSil(i){
   const liste=(GIDER_AYARLARI.ozelKiraGecmisi||[]).slice();
+  const _eski=(GIDER_AYARLARI.ozelKiraGecmisi||[]).slice();
   liste.splice(i,1);
   await gaOzelKiraKaydetListe(liste);
+  geriAlBildirimi('Kira kaydı silindi',()=>gaOzelKiraKaydetListe(_eski));
 }
 
 function renderGaPratikKiraListe(){
@@ -10764,8 +10806,10 @@ async function gaPratikKiraKaydet(){
 }
 async function gaPratikKiraSil(i){
   const liste=(GIDER_AYARLARI.pratikKiraGecmisi||[]).slice();
+  const _eski=(GIDER_AYARLARI.pratikKiraGecmisi||[]).slice();
   liste.splice(i,1);
   await gaPratikKiraKaydetListe(liste);
+  geriAlBildirimi('Pratik kirası silindi',()=>gaPratikKiraKaydetListe(_eski));
 }
 
 function renderGaPratikIptalListe(){
@@ -10811,12 +10855,14 @@ async function gaPratikIptalKaydet(tarih,ad){
 async function gaPratikIptalSil(tarih){
   const liste=(GIDER_AYARLARI.pratikIptalTarihleri||[]).filter(x=>x!==tarih);
   const acik={...(GIDER_AYARLARI.pratikIptalAciklamalari||{})};delete acik[tarih];
+  const _eskiL=(GIDER_AYARLARI.pratikIptalTarihleri||[]).slice(),_eskiA={...(GIDER_AYARLARI.pratikIptalAciklamalari||{})};
   setSyncing(true);
   try{
     await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,liste,undefined,acik);
     await giderAyarlariniOnbellekleYukle();
     renderGaPratikIptalListe();
     renderAll();
+    geriAlBildirimi('Gün silindi',async()=>{await giderAyarlariniKaydet(GIDER_AYARLARI.kira||0,GIDER_AYARLARI.basEgitmenPayPct||0,undefined,undefined,_eskiL,undefined,_eskiA);await giderAyarlariniOnbellekleYukle();renderGaPratikIptalListe();renderAll();});
   }catch(e){alert('Hata: '+e.message);}
   setSyncing(false);
 }
@@ -10904,9 +10950,11 @@ async function egitmenSil(id){
   if(!e)return;
   confirm_(t('egitmeni_sil'),e.ad+' '+t('egitmen_silinecek'),async()=>{
     setSyncing(true);
+    const _y=yedekAl([['egitmenler',id]]);
     await db.collection('egitmenler').doc(id).delete();
     _poll('egitmenler');setSyncing(false);
     setTimeout(()=>renderEgitmenlerSayfa(),400);
+    geriAlBildirimi('Eğitmen silindi',()=>yedegiGeriYukle(_y,()=>setTimeout(()=>renderEgitmenlerSayfa(),400)));
   });
 }
 
@@ -12549,9 +12597,8 @@ async function ogDetaySinifSil(siId,kayitId){
   confirm_('Sınıftan Çıkar',sinifCikarUyariMetni(k.ogrenciId,siId),async()=>{
     setSyncing(true);
     try{
-      await ogrenciSinifCikarCekirdek(siId,kayitId);
+      await sinifCikarGeriAlli(siId,kayitId);
       renderAll();renderOgDetay();
-      showToast(si.ad+' sınıfından çıkarıldı','success');
     }catch(e){alert('Hata: '+e.message);}
     setSyncing(false);
   });
