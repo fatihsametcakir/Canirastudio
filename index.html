@@ -3359,6 +3359,7 @@ window.alert=function(m){
 };
 const onayAsync=(mesaj,baslik)=>uyariPencere({baslik:baslik||'Emin misiniz?',mesaj,iptal:true,tamam:'Evet'});
 const girdiAsync=(mesaj,yerTutucu,baslik)=>uyariPencere({baslik:baslik||'Bilgi gir',mesaj,girdi:true,yerTutucu});
+const bosCta=(etiket,fn)=>'<button class="btn btn-accent" style="margin-top:14px;padding:12px 22px;" onclick="'+fn+'">＋ '+etiket+'</button>';
 function confirm_(title,desc,cb){
   CONFIRM_CB=cb;
   document.getElementById('confirm-title').textContent=title;
@@ -4382,7 +4383,7 @@ function renderVideolar(){
   const liste=[...S.videoSiniflar].sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
   if(!liste.length){
     el.className='';
-    el.innerHTML='<div class="empty"><div class="empty-icon">🎬</div><div class="empty-text">'+t('empty_sinif')+'</div></div>';
+    el.innerHTML='<div class="empty"><div class="empty-icon">🎬</div><div class="empty-text">'+t('empty_sinif')+'</div>'+bosCta('İlk sınıfı ekle','openVideoSinifModal()')+'</div>';
     return;
   }
   el.className='video-grid';
@@ -7177,7 +7178,7 @@ function renderOgrenciler(){
   if(OG_FILTER==='aktif')liste=liste.filter(o=>(o.durum||'aktif')==='aktif');
   else if(OG_FILTER==='pasif')liste=liste.filter(o=>o.durum==='pasif');
   if(arama)liste=liste.filter(o=>(o.ad+' '+(o.soyad||'')+' '+(o.tel||'')).toLowerCase().includes(arama));
-  if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">♟</div><div class="empty-text">'+(arama?t('no_result'):OG_FILTER==='pasif'?t('empty_ogrenci_pasif'):t('empty_ogrenci'))+'</div></div>';return;}
+  if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">♟</div><div class="empty-text">'+(arama?t('no_result'):OG_FILTER==='pasif'?t('empty_ogrenci_pasif'):t('empty_ogrenci'))+'</div>'+((!arama&&OG_FILTER!=='pasif'&&!S.ogrenciler.length)?bosCta('İlk öğrenciyi ekle','openOgrenciModal()'):'')+'</div>';return;}
   function siniflari(id){return S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===id)).map(s=>s.ad);}
   const gruplar={};const sinifsizlar=[];const sadeceOzel=[];const asistanlar=[];
   liste.forEach(og=>{
@@ -7326,7 +7327,7 @@ function renderSiniflar(){
   const pasifler=liste.filter(s=>s.durum==='pasif');
 
   if(!liste.length){
-    el.innerHTML='<div class="empty"><div class="empty-icon">◈</div><div class="empty-text">'+(arama?t('no_result'):(SINIF_GUN_FILTRE!=='hepsi'?t('bu_gun_ders_yok'):t('empty_sinif')))+'</div></div>';
+    el.innerHTML='<div class="empty"><div class="empty-icon">◈</div><div class="empty-text">'+(arama?t('no_result'):(SINIF_GUN_FILTRE!=='hepsi'?t('bu_gun_ders_yok'):t('empty_sinif')))+'</div>'+((!arama&&SINIF_GUN_FILTRE==='hepsi'&&!S.siniflar.length)?bosCta('İlk sınıfı oluştur','openSinifModal()'):'')+'</div>';
     return;
   }
 
@@ -7443,7 +7444,7 @@ let OZEL_ARA='';
 function renderOzel(){
   const el=document.getElementById('ozel-list');
   const liste=ozelDersOgrencileri();
-  if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">'+t('ozel_bos')+'<br>'+t('ozel_bos_alt')+'</div></div>';return;}
+  if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">'+t('ozel_bos')+'<br>'+t('ozel_bos_alt')+'</div>'+bosCta('İlk özel ders öğrencisini ekle','ozelEkleBaslat()')+'</div>';return;}
   // Kayıt sırası: her öğrencinin ilk özel paketinin oluşturulma tarihine göre (en eski önce)
   // reduce kullanılıyor (Math.min(...array) yerine) — çok sayıda paket kaydı olsa bile çökme riski olmasın
   const ilkPaketZamani=og=>{
@@ -7588,7 +7589,7 @@ function odemeAramaDegisti(val){
 function odemeAramaTemizle(){ODEME_ARAMA='';renderOdemeler();}
 function renderOdemeler(){
   const el=document.getElementById('odeme-content');
-  if(!S.siniflar.length&&!S.ozelPaketler.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('once_sinif_ekle')+'</div></div>';return;}
+  if(!S.siniflar.length&&!S.ozelPaketler.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">'+t('once_sinif_ekle')+'</div>'+bosCta('Sınıf ekle','openSinifModal()')+'</div>';return;}
   const bk=ayKey(simdikiZaman().getFullYear(),simdikiZaman().getMonth()+1);
   let html=`<div style="display:flex;gap:8px;margin:4px 0 10px;align-items:stretch;">
     <div style="position:relative;flex:1;min-width:0;">
