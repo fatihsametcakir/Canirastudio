@@ -732,6 +732,20 @@ body.portal-modu .overlay{z-index:9500;}
 /* tüm çok satırlı metin alanları altın çerçeve (geri almak için bu bloğu sil) */
 textarea{border:1.5px solid #d9ac5280;box-shadow:inset 0 0 0 1px #d9ac5214;}
 :root[data-acik="1"] textarea{border-color:#9a6f1c80;box-shadow:inset 0 0 0 1px #9a6f1c14;}
+/* === DÜĞME/SEKME TUTARLILIĞI: altın (geri almak için bu bloğu sil) === */
+.btn-accent{border:1.5px solid #d9ac52a6;border-radius:99px;box-shadow:inset 0 0 0 1px #d9ac5240,0 4px 15px #ff6b6b30;}
+.btn-cyan,.btn-danger{border-radius:99px;}
+#pg-hata-log .btn{border:1.5px solid #d9ac52a6;border-radius:99px;box-shadow:inset 0 0 0 1px #d9ac5220;}
+.takvim-mod-row{border:1.5px solid #d9ac52a6;border-radius:99px;box-shadow:inset 0 0 0 1px #d9ac5220;}
+.takvim-mod-btn.active{border-radius:99px;box-shadow:inset 0 0 0 1.5px #d9ac52a6;}
+.hafta-gun-btn{border:1.5px solid #d9ac5280;}
+.hafta-gun-btn.secili{border-color:#d9ac52;}
+.ot-legend-item{border:1.5px solid #d9ac5280;}
+:root[data-acik="1"] .btn-accent{border-color:#9a6f1ca0;box-shadow:inset 0 0 0 1px #9a6f1c30,0 4px 15px #ff6b6b30;}
+:root[data-acik="1"] #pg-hata-log .btn,:root[data-acik="1"] .takvim-mod-row{border-color:#9a6f1ca0;box-shadow:inset 0 0 0 1px #9a6f1c20;}
+:root[data-acik="1"] .takvim-mod-btn.active{box-shadow:inset 0 0 0 1.5px #9a6f1ca0;}
+:root[data-acik="1"] .hafta-gun-btn,:root[data-acik="1"] .ot-legend-item{border-color:#9a6f1c80;}
+:root[data-acik="1"] .hafta-gun-btn.secili{border-color:#9a6f1c;}
 </style>
 <style>
 #splash{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 38%,#ff6b6b1c,transparent 60%),radial-gradient(ellipse at 50% 100%,#a78bfa1a,transparent 55%),var(--bg);transition:opacity .6s ease;}
@@ -6984,7 +6998,7 @@ function renderAnasayfa(){
     }
     html+='</div>';
   } else {
-    html+='<div class="empty" style="padding:20px 0;"><div class="empty-icon" style="font-size:30px;">✓</div><div class="empty-text">'+t('yaklasan_yok')+'</div></div>';
+    html+='<div class="yen-bolum"><div class="sec-header" style="margin-top:0;"><span class="sec-title">'+t('lbl_paket_yenileme')+'</span></div><div class="empty" style="padding:14px 0 10px;"><div class="empty-icon" style="font-size:26px;">✓</div><div class="empty-text">'+t('yaklasan_yok')+'</div></div></div>';
   }
 
   // Bekleyen Ödeme — sınıfa eklenmiş ama bu ay hiç ödemesi olmayan aktif paket öğrencileri
