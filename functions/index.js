@@ -575,19 +575,60 @@ function kayitMetinleri(d) {
     veli: { metin: String(d.veli && d.veli.metin || '') },
   };
 }
-async function kayitMetinOku() {
+const KAYIT_DILLER = ['tr', 'en', 'ru'];
+const KAYIT_MSG = {
+  tr: { sadecePost: 'Yalnızca POST.', formHazirDegil: 'Form henüz hazırlanmadı.', cokDeneme: 'Çok fazla deneme. Lütfen biraz sonra tekrar deneyin.', linkGecersiz: 'Bağlantı geçersiz.', linkKullanilmis: 'Bu bağlantı daha önce kullanılmış. Yeni bir bağlantı için stüdyoyla iletişime geçin.', linkSuresi: 'Bu bağlantının süresi dolmuş. Yeni bir bağlantı için stüdyoyla iletişime geçin.', onizleme: 'Bu bir önizlemedir, gönderim yapılamaz.', bilinmeyen: 'Bilinmeyen işlem.', adSoyad: 'Ad ve soyad zorunludur.', dogum: 'Doğum tarihi geçerli olmalı.', tel: 'Geçerli bir telefon numarası girin.', eposta: 'E-posta geçerli değil.', dogumGecersiz: 'Doğum tarihi geçerli değil.', veli: 'Öğrenci 18 yaşından küçük: veli/vasi adı, yakınlığı ve telefonu zorunludur.', aydOnay: 'Aydınlatma metnini okuduğunuzu onaylamalısınız.', kuralOnay: 'Okul kurallarını kabul etmelisiniz.', veliOnay: 'Veli/vasi beyanını onaylamalısınız.', sunucu: 'Sunucu hatası. Lütfen tekrar deneyin.', kullanilmis: 'Bu bağlantı daha önce kullanılmış.' },
+  en: { sadecePost: 'POST only.', formHazirDegil: 'The form is not ready yet.', cokDeneme: 'Too many attempts. Please try again in a little while.', linkGecersiz: 'This link is not valid.', linkKullanilmis: 'This link has already been used. Please contact the studio for a new link.', linkSuresi: 'This link has expired. Please contact the studio for a new link.', onizleme: 'This is a preview; nothing can be submitted.', bilinmeyen: 'Unknown request.', adSoyad: 'First name and last name are required.', dogum: 'Please enter a valid date of birth.', tel: 'Please enter a valid phone number.', eposta: 'The e-mail address is not valid.', dogumGecersiz: 'The date of birth is not valid.', veli: 'The student is under 18: the parent/guardian’s name, relationship and phone number are required.', aydOnay: 'You must confirm that you have read the privacy notice.', kuralOnay: 'You must accept the studio rules.', veliOnay: 'You must confirm the parent/guardian declaration.', sunucu: 'Server error. Please try again.', kullanilmis: 'This link has already been used.' },
+  ru: { sadecePost: 'Только POST.', formHazirDegil: 'Форма пока не готова.', cokDeneme: 'Слишком много попыток. Пожалуйста, повторите немного позже.', linkGecersiz: 'Ссылка недействительна.', linkKullanilmis: 'Эта ссылка уже использована. Пожалуйста, обратитесь в студию за новой ссылкой.', linkSuresi: 'Срок действия ссылки истёк. Пожалуйста, обратитесь в студию за новой ссылкой.', onizleme: 'Это предварительный просмотр, отправка невозможна.', bilinmeyen: 'Неизвестный запрос.', adSoyad: 'Имя и фамилия обязательны.', dogum: 'Укажите корректную дату рождения.', tel: 'Укажите корректный номер телефона.', eposta: 'Адрес электронной почты указан неверно.', dogumGecersiz: 'Дата рождения указана неверно.', veli: 'Ученику нет 18 лет: необходимо указать имя, степень родства и телефон родителя/опекуна.', aydOnay: 'Необходимо подтвердить, что вы ознакомились с уведомлением о персональных данных.', kuralOnay: 'Необходимо принять правила студии.', veliOnay: 'Необходимо подтвердить заявление родителя/опекуна.', sunucu: 'Ошибка сервера. Пожалуйста, попробуйте ещё раз.', kullanilmis: 'Эта ссылка уже использована.' },
+};
+const kMsg = (dil, k) => (KAYIT_MSG[dil] || KAYIT_MSG.tr)[k] || KAYIT_MSG.tr[k] || '';
+const kDil = (x) => (KAYIT_DILLER.includes(x) ? x : 'tr');
+// Türkçe metnin düz anahtar haritası (çeviriler bu anahtarlarla eşleşir)
+function kayitTrAnahtarlar(m) {
+  const k = { ayd_baslik: m.aydinlatma.baslik, ayd_metin: m.aydinlatma.metin, kur_baslik: m.kurallar.baslik, kur_metin: m.kurallar.metin, veli_metin: m.veli.metin };
+  m.rizalar.forEach((r) => { k['r_' + r.id + '_baslik'] = r.baslik; k['r_' + r.id + '_metin'] = r.metin; k['r_' + r.id + '_kutu'] = r.kutu; });
+  return k;
+}
+// Seçilen dil için metni üretir. Bir bölümün TÜM çevirisi güncel (kaynak Türkçe metinle aynı) değilse o bölüm Türkçe gösterilir.
+function kayitMetinDil(d, dil) {
+  const tr = kayitMetinleri(d);
+  dil = kDil(dil);
+  const diller = { aydinlatma: 'tr', kurallar: 'tr', veli: 'tr' };
+  tr.rizalar.forEach((r) => { diller['r_' + r.id] = 'tr'; });
+  if (dil === 'tr') return { metin: tr, tr, diller };
+  const cv = (d.ceviri && d.ceviri[dil]) || {};
+  const src = kayitTrAnahtarlar(tr);
+  const gecerli = (anahtarlar) => anahtarlar.every((a) => {
+    if (!src[a]) return true; // Türkçesi boş alanın çevirisi gerekmez
+    const c = cv[a];
+    return c && typeof c.m === 'string' && c.m.trim() && c.k === src[a];
+  });
+  const al = (a) => (src[a] ? String(cv[a].m) : '');
+  const metin = JSON.parse(JSON.stringify(tr));
+  if (gecerli(['ayd_baslik', 'ayd_metin'])) { metin.aydinlatma = { baslik: al('ayd_baslik'), metin: al('ayd_metin') }; diller.aydinlatma = dil; }
+  if (gecerli(['kur_baslik', 'kur_metin'])) { metin.kurallar = { baslik: al('kur_baslik'), metin: al('kur_metin') }; diller.kurallar = dil; }
+  if (gecerli(['veli_metin'])) { metin.veli = { metin: al('veli_metin') }; diller.veli = dil; }
+  metin.rizalar = tr.rizalar.map((r) => {
+    const ks = ['r_' + r.id + '_baslik', 'r_' + r.id + '_metin', 'r_' + r.id + '_kutu'];
+    if (!gecerli(ks)) return r;
+    diller['r_' + r.id] = dil;
+    return { id: r.id, baslik: al(ks[0]), metin: al(ks[1]), kutu: al(ks[2]) };
+  });
+  return { metin, tr, diller };
+}
+async function kayitMetinOku(dil) {
   const s = await db.collection('ayarlar').doc('kayitFormu').get();
   if (!s.exists) return null;
-  return kayitMetinleri(s.data());
+  return kayitMetinDil(s.data(), dil);
 }
-async function kayitLinkDurum(kod) {
-  if (!/^[A-Za-z0-9_-]{16,64}$/.test(kod)) return { hata: 'Bağlantı geçersiz.', kod: 404 };
+async function kayitLinkDurum(kod, dil) {
+  if (!/^[A-Za-z0-9_-]{16,64}$/.test(kod)) return { hata: kMsg(dil, 'linkGecersiz'), kod: 404 };
   const ref = db.collection('kayit_linkleri').doc(kod);
   const s = await ref.get();
-  if (!s.exists) return { hata: 'Bağlantı geçersiz.', kod: 404 };
+  if (!s.exists) return { hata: kMsg(dil, 'linkGecersiz'), kod: 404 };
   const d = s.data();
-  if (d.kullanildi) return { hata: 'Bu bağlantı daha önce kullanılmış. Yeni bir bağlantı için stüdyoyla iletişime geçin.', kod: 410 };
-  if ((d.bitis || 0) < Date.now()) return { hata: 'Bu bağlantının süresi dolmuş. Yeni bir bağlantı için stüdyoyla iletişime geçin.', kod: 410 };
+  if (d.kullanildi) return { hata: kMsg(dil, 'linkKullanilmis'), kod: 410 };
+  if ((d.bitis || 0) < Date.now()) return { hata: kMsg(dil, 'linkSuresi'), kod: 410 };
   return { ref, d };
 }
 const kTemiz = (s, n) => metinTemizle(s, n);
@@ -605,29 +646,32 @@ function cihazTemizle(c) {
 }
 
 exports.kayit = onRequest({ region: 'europe-west1', cors: true, maxInstances: 5, timeoutSeconds: 30 }, async (req, res) => {
+  let dil = 'tr';
   try {
-    if (req.method !== 'POST') return hata(res, 405, 'Yalnızca POST.');
     const b = req.body || {};
+    dil = kDil(b.dil);
+    if (req.method !== 'POST') return hata(res, 405, kMsg(dil, 'sadecePost'));
     const ipAnahtar = 'kayitip_' + sha(ipAl(req) || 'bilinmiyor').slice(0, 24);
     if (b.islem === 'bilgi') {
-      const metin = await kayitMetinOku();
-      if (!metin) return hata(res, 503, 'Form henüz hazırlanmadı.');
-      if (b.k === 'onizleme') return res.json({ ok: true, onizleme: true, metin });
+      const mo = await kayitMetinOku(dil);
+      if (!mo) return hata(res, 503, kMsg(dil, 'formHazirDegil'));
+      if (b.k === 'onizleme') return res.json({ ok: true, onizleme: true, metin: mo.metin, diller: mo.diller });
       const k1 = await kilitKontrol(ipAnahtar);
-      if (k1 > 0) return hata(res, 429, 'Çok fazla deneme. Lütfen biraz sonra tekrar deneyin.');
-      const L = await kayitLinkDurum(String(b.k || ''));
+      if (k1 > 0) return hata(res, 429, kMsg(dil, 'cokDeneme'));
+      const L = await kayitLinkDurum(String(b.k || ''), dil);
       if (L.hata) { await hataKaydet(ipAnahtar, 30); return hata(res, L.kod, L.hata); }
-      return res.json({ ok: true, not: L.d.not || '', metin });
+      return res.json({ ok: true, not: L.d.not || '', metin: mo.metin, diller: mo.diller });
     }
-    if (b.islem !== 'gonder') return hata(res, 400, 'Bilinmeyen işlem.');
-    if (b.k === 'onizleme') return hata(res, 400, 'Bu bir önizlemedir, gönderim yapılamaz.');
+    if (b.islem !== 'gonder') return hata(res, 400, kMsg(dil, 'bilinmeyen'));
+    if (b.k === 'onizleme') return hata(res, 400, kMsg(dil, 'onizleme'));
     if (typeof b.hp === 'string' && b.hp) return res.json({ ok: true }); // bot tuzağı (gizli alan)
 
-    if ((await kilitKontrol(ipAnahtar)) > 0) return hata(res, 429, 'Çok fazla deneme. Lütfen biraz sonra tekrar deneyin.');
-    const L = await kayitLinkDurum(String(b.k || ''));
+    if ((await kilitKontrol(ipAnahtar)) > 0) return hata(res, 429, kMsg(dil, 'cokDeneme'));
+    const L = await kayitLinkDurum(String(b.k || ''), dil);
     if (L.hata) { await hataKaydet(ipAnahtar, 30); return hata(res, L.kod, L.hata); }
-    const metin = await kayitMetinOku();
-    if (!metin) return hata(res, 503, 'Form henüz hazırlanmadı.');
+    const mo = await kayitMetinOku(dil);
+    if (!mo) return hata(res, 503, kMsg(dil, 'formHazirDegil'));
+    const metin = mo.metin;
 
     const o = b.ogrenci || {};
     const ogr = {
@@ -635,23 +679,23 @@ exports.kayit = onRequest({ region: 'europe-west1', cors: true, maxInstances: 5,
       dogum: String(o.dogum || ''), tel: String(o.tel || '').replace(/[^\d+ ]/g, '').slice(0, KAYIT_MAX.tel),
       eposta: kTemiz(o.eposta, KAYIT_MAX.eposta), acil: kTemiz(o.acil, KAYIT_MAX.acil),
     };
-    if (!ogr.ad || !ogr.soyad) return hata(res, 400, 'Ad ve soyad zorunludur.');
-    if (!TARIH_RE.test(ogr.dogum)) return hata(res, 400, 'Doğum tarihi geçerli olmalı.');
-    if (ogr.tel.replace(/\D/g, '').length < 10) return hata(res, 400, 'Geçerli bir telefon numarası girin.');
-    if (ogr.eposta && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ogr.eposta)) return hata(res, 400, 'E-posta geçerli değil.');
+    if (!ogr.ad || !ogr.soyad) return hata(res, 400, kMsg(dil, 'adSoyad'));
+    if (!TARIH_RE.test(ogr.dogum)) return hata(res, 400, kMsg(dil, 'dogum'));
+    if (ogr.tel.replace(/\D/g, '').length < 10) return hata(res, 400, kMsg(dil, 'tel'));
+    if (ogr.eposta && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ogr.eposta)) return hata(res, 400, kMsg(dil, 'eposta'));
     const yas = yasHesapla(ogr.dogum);
-    if (!(yas >= 0 && yas < 110)) return hata(res, 400, 'Doğum tarihi geçerli değil.');
+    if (!(yas >= 0 && yas < 110)) return hata(res, 400, kMsg(dil, 'dogumGecersiz'));
     const kucuk = yas < 18;
     let veli = null;
     if (kucuk) {
       const v = b.veli || {};
       veli = { ad: kTemiz(v.ad, KAYIT_MAX.ad), yakinlik: kTemiz(v.yakinlik, KAYIT_MAX.kisa), tel: String(v.tel || '').replace(/[^\d+ ]/g, '').slice(0, KAYIT_MAX.tel) };
-      if (!veli.ad || !veli.yakinlik || veli.tel.replace(/\D/g, '').length < 10) return hata(res, 400, 'Öğrenci 18 yaşından küçük: veli/vasi adı, yakınlığı ve telefonu zorunludur.');
+      if (!veli.ad || !veli.yakinlik || veli.tel.replace(/\D/g, '').length < 10) return hata(res, 400, kMsg(dil, 'veli'));
     }
     const on = b.onaylar || {};
-    if (on.aydinlatma !== true) return hata(res, 400, 'Aydınlatma metnini okuduğunuzu onaylamalısınız.');
-    if (on.kural !== true) return hata(res, 400, 'Okul kurallarını kabul etmelisiniz.');
-    if (kucuk && on.veli !== true) return hata(res, 400, 'Veli/vasi beyanını onaylamalısınız.');
+    if (on.aydinlatma !== true) return hata(res, 400, kMsg(dil, 'aydOnay'));
+    if (on.kural !== true) return hata(res, 400, kMsg(dil, 'kuralOnay'));
+    if (kucuk && on.veli !== true) return hata(res, 400, kMsg(dil, 'veliOnay'));
     const rizaDurum = {}, rizaOzet = {};
     metin.rizalar.forEach((r) => { rizaDurum[r.id] = !!(on.rizalar && on.rizalar[r.id] === true); rizaOzet[r.id] = sha(r.baslik + '\n' + r.metin + '\n' + r.kutu); });
     const cz = b.cihaz || {};
@@ -665,6 +709,7 @@ exports.kayit = onRequest({ region: 'europe-west1', cors: true, maxInstances: 5,
       metinSurum: metin.surum,
       ozetler: { aydinlatma: sha(metin.aydinlatma.baslik + '\n' + metin.aydinlatma.metin), kurallar: sha(metin.kurallar.baslik + '\n' + metin.kurallar.metin), veli: sha(metin.veli.metin), rizalar: rizaOzet },
       linkOzet: sha(String(b.k)).slice(0, 16),
+      formDili: dil, metinDilleri: mo.diller,
     };
     kanit.kanitOzeti = sha(JSON.stringify(kanit)); // kayıt anındaki kanıt bütünlüğü özeti
     const bas = db.collection('kayit_basvurulari').doc();
@@ -677,13 +722,13 @@ exports.kayit = onRequest({ region: 'europe-west1', cors: true, maxInstances: 5,
         durum: 'beklemede', olusturma: simdi, linkNot: d.not || '',
         ogrenci: ogr, kucuk, veli,
         onaylar: { aydinlatma: true, kural: true, veli: kucuk ? true : null, rizalar: rizaDurum },
-        metinKopya: metin, kanit,
+        metinKopya: metin, metinKopyaTR: mo.tr, kanit,
       });
     });
     return res.json({ ok: true });
   } catch (e) {
-    if (e && e.kullanilmis) return hata(res, 410, 'Bu bağlantı daha önce kullanılmış.');
+    if (e && e.kullanilmis) return hata(res, 410, kMsg(dil, 'kullanilmis'));
     console.error(e);
-    return hata(res, 500, 'Sunucu hatası. Lütfen tekrar deneyin.');
+    return hata(res, 500, kMsg(dil, 'sunucu'));
   }
 });

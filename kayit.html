@@ -36,13 +36,16 @@ html,body{background:var(--bg);color:var(--text);font-family:'Fraunces',Georgia,
 .durum h1{font-size:20px;margin-bottom:8px}
 .durum p{color:var(--text2);font-size:14px;line-height:1.6}
 .onizleme{background:#fbbf2420;border:1px solid #fbbf2455;color:#fbbf24;border-radius:12px;padding:9px 12px;font-size:12.5px;margin-bottom:14px;text-align:center}
+.dilsec{display:flex;justify-content:center;gap:6px;margin:0 0 14px}
+.dilsec button{border:1.5px solid var(--border);background:var(--surface);color:var(--text2);border-radius:99px;padding:6px 16px;font:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer}
+.dilsec button.on{border-color:var(--gold);color:var(--gold2);box-shadow:inset 0 0 0 1px #d9ac5240}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="marka"><b>Can &amp; Irina</b><span>Dance Studio</span></div>
-  <div id="icerik"><div class="durum"><div class="i">⏳</div><p>Yükleniyor…</p></div></div>
+  <div id="icerik"><div class="durum"><div class="i">⏳</div><p>…</p></div></div>
 </div>
 <script>
 const API='https://europe-west1-canirinastudio.cloudfunctions.net/kayit';
@@ -51,15 +54,43 @@ const KOD=q.get('onizle')?'onizleme':(q.get('k')||'');
 const $=id=>document.getElementById(id);
 const el=(t,a,c)=>{const e=document.createElement(t);if(a)for(const k in a){if(k==='class')e.className=a[k];else e.setAttribute(k,a[k]);}if(c!=null)e.textContent=c;return e;};
 let M=null,ONIZLEME=false;
+const UI={
+tr:{yukleniyor:'Yükleniyor…',onizleme:'ÖNİZLEME — bu sayfadan gönderim yapılamaz',b1:'1 · Öğrenci bilgileri',ad:'Ad',adPh:'Adınız',soyad:'Soyad',soyadPh:'Soyadınız',cins:'Cinsiyet',kadin:'Kadın',erkek:'Erkek',dogum:'Doğum tarihi',tel:'Telefon',eposta:'E-posta (isteğe bağlı)',acil:'Acil durumda aranacak kişi ve telefonu',acilPh:'Ad Soyad · telefon',
+ veliNot:'Öğrenci 18 yaşından küçük olduğu için aşağıdaki onayları veli/vasi verir.',veliAd:'Veli / vasi ad soyad',veliAdPh:'Ad Soyad',veliYakin:'Yakınlık',veliYakinPh:'Anne / Baba / Vasi',veliTel:'Veli / vasi telefon',
+ aydVar:'Aydınlatma metni',aydOnay:'Aydınlatma metnini <b>okudum ve anladım.</b>',b3:'3 · Açık rıza beyanları',rizaNot:'İsteğe bağlıdır; vermemeniz kaydınızı etkilemez. Rızanızı dilediğiniz zaman geri alabilirsiniz.',rizaVars:'<b>Açık rıza veriyorum.</b>',
+ kurVar:'Okul kuralları',kurOnay:'Okul kurallarını <b>okudum, kabul ediyorum.</b>',veliB:'Veli / vasi beyanı',veliVars:'Öğrencinin velisi/vasisi olarak yukarıdaki metinleri okuduğumu ve onayları öğrenci adına verdiğimi beyan ederim.',veliOnay:'Veli/vasi olarak yukarıdaki beyanı <b>onaylıyorum.</b>',
+ gonder:'Kaydı Tamamla',gonderiliyor:'Gönderiliyor…',kanit:'Kaydı tamamladığınızda onaylarınız; tarih-saat ve işlem güvenliği için IP adresi, cihaz/tarayıcı bilgileri (model, işletim sistemi, ekran, dil, saat dilimi gibi) ve formu doldurma davranışınızla birlikte kayıt altına alınır. Bu bağlantı yalnızca bir kez kullanılabilir.',
+ tamamB:'Kaydınız alındı',tamamM:'Teşekkürler! Bilgileriniz ve onaylarınız stüdyoya iletildi. Bu bağlantı artık kullanılamaz.',yok:'Bağlantı kullanılamıyor',eksikB:'Bağlantı eksik',eksikM:'Lütfen stüdyonun size gönderdiği bağlantıyı kullanın.',acilmadi:'Form açılamadı',sonraDene:'Lütfen daha sonra tekrar deneyin.',gonderilemedi:'Gönderilemedi. Lütfen tekrar deneyin.',sorun:'Bir sorun oluştu.',
+ vAd:'Ad ve soyad zorunludur.',vDogum:'Doğum tarihini seçin.',vTel:'Geçerli bir telefon numarası girin.',vVeli:'Veli/vasi adı, yakınlığı ve telefonu zorunludur.',dilNot:'',sadeceTr:'Bu bölüm yalnızca Türkçe sunulmaktadır.',dilDegisti:'Dil değiştirildi: yeni metni okuyarak onay kutularını yeniden işaretleyin.'},
+en:{yukleniyor:'Loading…',onizleme:'PREVIEW — nothing can be submitted from this page',b1:'1 · Student details',ad:'First name',adPh:'Your first name',soyad:'Last name',soyadPh:'Your last name',cins:'Gender',kadin:'Female',erkek:'Male',dogum:'Date of birth',tel:'Phone',eposta:'E-mail (optional)',acil:'Emergency contact (name and phone)',acilPh:'Name · phone',
+ veliNot:'The student is under 18, so the confirmations below are given by a parent or legal guardian.',veliAd:'Parent / guardian full name',veliAdPh:'Full name',veliYakin:'Relationship',veliYakinPh:'Mother / Father / Guardian',veliTel:'Parent / guardian phone',
+ aydVar:'Privacy notice',aydOnay:'I have <b>read and understood</b> the privacy notice.',b3:'3 · Explicit consent statements',rizaNot:'These are optional; declining will not affect your registration. You may withdraw your consent at any time.',rizaVars:'<b>I give my explicit consent.</b>',
+ kurVar:'Studio rules',kurOnay:'I have <b>read and accept</b> the studio rules.',veliB:'Parent / guardian declaration',veliVars:'As the student’s parent or legal guardian, I declare that I have read the texts above and that I am giving the confirmations on the student’s behalf.',veliOnay:'As parent / guardian, I <b>confirm</b> the declaration above.',
+ gonder:'Complete registration',gonderiliyor:'Submitting…',kanit:'When you complete registration, your confirmations are recorded together with the date and time, your IP address, device and browser details (such as model, operating system, screen, language and time zone) and how the form was filled in, for security and to evidence your consent. This link can be used only once.',
+ tamamB:'Registration received',tamamM:'Thank you! Your details and confirmations have been sent to the studio. This link can no longer be used.',yok:'Link unavailable',eksikB:'Link missing',eksikM:'Please use the link the studio sent you.',acilmadi:'The form could not be opened',sonraDene:'Please try again later.',gonderilemedi:'Could not submit. Please try again.',sorun:'Something went wrong.',
+ vAd:'First name and last name are required.',vDogum:'Please select your date of birth.',vTel:'Please enter a valid phone number.',vVeli:'Parent/guardian name, relationship and phone number are required.',dilNot:'This is a courtesy translation. If there is any discrepancy between the translation and the Turkish text, the Turkish text prevails.',sadeceTr:'This section is provided in Turkish only.',dilDegisti:'Language changed: please read the new text and tick the confirmation boxes again.'},
+ru:{yukleniyor:'Загрузка…',onizleme:'ПРЕДПРОСМОТР — отправка с этой страницы невозможна',b1:'1 · Данные ученика',ad:'Имя',adPh:'Ваше имя',soyad:'Фамилия',soyadPh:'Ваша фамилия',cins:'Пол',kadin:'Женский',erkek:'Мужской',dogum:'Дата рождения',tel:'Телефон',eposta:'Электронная почта (по желанию)',acil:'Контакт на случай экстренной ситуации (имя и телефон)',acilPh:'Имя · телефон',
+ veliNot:'Ученику нет 18 лет, поэтому приведённые ниже подтверждения даёт родитель или законный представитель.',veliAd:'ФИО родителя / опекуна',veliAdPh:'Фамилия Имя',veliYakin:'Степень родства',veliYakinPh:'Мать / Отец / Опекун',veliTel:'Телефон родителя / опекуна',
+ aydVar:'Уведомление о персональных данных',aydOnay:'Я <b>прочитал(а) и понял(а)</b> уведомление о персональных данных.',b3:'3 · Заявления о явном согласии',rizaNot:'Эти согласия необязательны: отказ не повлияет на вашу регистрацию. Вы можете отозвать согласие в любое время.',rizaVars:'<b>Даю явное согласие.</b>',
+ kurVar:'Правила студии',kurOnay:'Я <b>прочитал(а) и принимаю</b> правила студии.',veliB:'Заявление родителя / опекуна',veliVars:'Как родитель или законный представитель ученика, заявляю, что ознакомился(лась) с текстами выше и даю подтверждения от имени ученика.',veliOnay:'Как родитель / опекун, я <b>подтверждаю</b> заявление выше.',
+ gonder:'Завершить регистрацию',gonderiliyor:'Отправка…',kanit:'При завершении регистрации ваши подтверждения фиксируются вместе с датой и временем, IP-адресом, сведениями об устройстве и браузере (модель, операционная система, экран, язык, часовой пояс и т. п.) и ходом заполнения формы — в целях безопасности и для подтверждения вашего согласия. Эту ссылку можно использовать только один раз.',
+ tamamB:'Регистрация принята',tamamM:'Спасибо! Ваши данные и подтверждения переданы в студию. Эта ссылка больше не действует.',yok:'Ссылка недоступна',eksikB:'Ссылка отсутствует',eksikM:'Пожалуйста, воспользуйтесь ссылкой, которую вам прислала студия.',acilmadi:'Не удалось открыть форму',sonraDene:'Пожалуйста, попробуйте позже.',gonderilemedi:'Не удалось отправить. Пожалуйста, попробуйте ещё раз.',sorun:'Что-то пошло не так.',
+ vAd:'Имя и фамилия обязательны.',vDogum:'Укажите дату рождения.',vTel:'Укажите корректный номер телефона.',vVeli:'Необходимо указать имя, степень родства и телефон родителя/опекуна.',dilNot:'Это перевод, выполненный для удобства. При расхождении между переводом и турецким текстом применяется турецкий текст.',sadeceTr:'Этот раздел представлен только на турецком языке.',dilDegisti:'Язык изменён: прочитайте новый текст и отметьте флажки подтверждения заново.'}
+};
+const DILLER=['tr','en','ru'];
+let L=(()=>{const a=q.get('lang');if(DILLER.includes(a))return a;try{const k=localStorage.getItem('kf_dil');if(DILLER.includes(k))return k;}catch(e){}const n=(navigator.language||'tr').slice(0,2).toLowerCase();return DILLER.includes(n)?n:'tr';})();
+const T=k=>(UI[L]&&UI[L][k])||UI.tr[k]||'';
+let MD={};
+
 
 function durum(ikon,baslik,metin){
   const k=$('icerik');k.textContent='';
   const d=el('div',{class:'durum'});d.append(el('div',{class:'i'},ikon),el('h1',null,baslik),el('p',null,metin));k.append(d);
 }
 async function api(govde){
-  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(govde)});
+  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({dil:L},govde))});
   let j={};try{j=await r.json();}catch(e){}
-  if(!r.ok)throw Object.assign(new Error(j.hata||'Bir sorun oluştu.'),{kod:r.status});
+  if(!r.ok)throw Object.assign(new Error(j.hata||T('sorun')),{kod:r.status});
   return j;
 }
 function metinKutu(m,kisa){const d=el('div',{class:'metin'+(kisa?' kisa':'')});if(m.baslik){d.append(el('b',null,m.baslik));d.append(document.createTextNode('\n\n'));}d.append(document.createTextNode(m.metin||''));return d;}
@@ -69,40 +100,63 @@ function kart(baslik){const k=el('div',{class:'kart'});if(baslik)k.append(el('di
 
 function formuCiz(){
   const k=$('icerik');k.textContent='';
-  if(ONIZLEME)k.append(el('div',{class:'onizleme'},'ÖNİZLEME — bu sayfadan gönderim yapılamaz'));
+  k.append(dilSecici());
+  if(L!=='tr'&&T('dilNot'))k.append(el('div',{class:'not',style:'margin:0 2px 12px;text-align:center'},T('dilNot')));
+  if(ONIZLEME)k.append(el('div',{class:'onizleme'},T('onizleme')));
   // 1. Bilgiler
-  const k1=kart('1 · Öğrenci bilgileri');
-  k1.append(alan('ad','Ad','text','Adınız',{maxlength:60,autocomplete:'given-name'}),alan('soyad','Soyad','text','Soyadınız',{maxlength:60,autocomplete:'family-name'}));
-  const cf=el('div',{class:'f'});cf.append(el('label',{for:'cins'},'Cinsiyet'));const sel=el('select',{id:'cins'});[['k','Kadın'],['e','Erkek']].forEach(([v,t])=>{const o=el('option',{value:v},t);sel.append(o);});cf.append(sel);k1.append(cf);
-  const dg=alan('dogum','Doğum tarihi','date');dg.querySelector('input').addEventListener('input',guncelle);k1.append(dg);
-  k1.append(alan('tel','Telefon','tel','5xx xxx xx xx',{maxlength:25,autocomplete:'tel'}),alan('eposta','E-posta (isteğe bağlı)','email','ornek@mail.com',{maxlength:120,autocomplete:'email'}),alan('acil','Acil durumda aranacak kişi ve telefonu','text','Ad Soyad · telefon',{maxlength:160}));
+  const k1=kart(T('b1'));
+  k1.append(alan('ad',T('ad'),'text',T('adPh'),{maxlength:60,autocomplete:'given-name'}),alan('soyad',T('soyad'),'text',T('soyadPh'),{maxlength:60,autocomplete:'family-name'}));
+  const cf=el('div',{class:'f'});cf.append(el('label',{for:'cins'},T('cins')));const sel=el('select',{id:'cins'});[['k',T('kadin')],['e',T('erkek')]].forEach(([v,t])=>{const o=el('option',{value:v},t);sel.append(o);});cf.append(sel);k1.append(cf);
+  const dg=alan('dogum',T('dogum'),'date');dg.querySelector('input').addEventListener('input',guncelle);k1.append(dg);
+  k1.append(alan('tel',T('tel'),'tel','5xx xxx xx xx',{maxlength:25,autocomplete:'tel'}),alan('eposta',T('eposta'),'email','name@mail.com',{maxlength:120,autocomplete:'email'}),alan('acil',T('acil'),'text',T('acilPh'),{maxlength:160}));
   const veli=el('div',{id:'veli',style:'display:none'});
-  veli.append(el('div',{class:'not',style:'margin:0 0 10px'},'Öğrenci 18 yaşından küçük olduğu için aşağıdaki onayları veli/vasi verir.'),alan('veli-ad','Veli / vasi ad soyad','text','Ad Soyad',{maxlength:60}),alan('veli-yakin','Yakınlık','text','Anne / Baba / Vasi',{maxlength:80}),alan('veli-tel','Veli / vasi telefon','tel','5xx xxx xx xx',{maxlength:25}));
+  veli.append(el('div',{class:'not',style:'margin:0 0 10px'},T('veliNot')),alan('veli-ad',T('veliAd'),'text',T('veliAdPh'),{maxlength:60}),alan('veli-yakin',T('veliYakin'),'text',T('veliYakinPh'),{maxlength:80}),alan('veli-tel',T('veliTel'),'tel','5xx xxx xx xx',{maxlength:25}));
   k1.append(veli);k.append(k1);
   // 2. Aydınlatma
-  const k2=kart('2 · '+(M.aydinlatma.baslik||'Aydınlatma metni'));
-  k2.append(metinKutu({baslik:'',metin:M.aydinlatma.metin}),onayKutu('c-ayd','Aydınlatma metnini <b>okudum ve anladım.</b>'));
+  const k2=kart('2 · '+(M.aydinlatma.baslik||T('aydVar')));trNotu(k2,'aydinlatma');
+  k2.append(metinKutu({baslik:'',metin:M.aydinlatma.metin}),onayKutu('c-ayd',T('aydOnay')));
   k.append(k2);
   // 3. Açık rızalar
   if(M.rizalar.length){
-    const k3=kart('3 · Açık rıza beyanları');
-    k3.append(el('div',{class:'not',style:'margin:0 0 10px'},'İsteğe bağlıdır; vermemeniz kaydınızı etkilemez. Rızanızı dilediğiniz zaman geri alabilirsiniz.'));
-    M.rizalar.forEach(r=>{k3.append(metinKutu({baslik:r.baslik,metin:r.metin},true));k3.append(onayKutu('r-'+r.id,r.kutu?escape(r.kutu):'<b>Açık rıza veriyorum.</b>'));});
+    const k3=kart(T('b3'));
+    k3.append(el('div',{class:'not',style:'margin:0 0 10px'},T('rizaNot')));
+    M.rizalar.forEach(r=>{trNotu(k3,'r_'+r.id);k3.append(metinKutu({baslik:r.baslik,metin:r.metin},true));k3.append(onayKutu('r-'+r.id,r.kutu?escape(r.kutu):T('rizaVars')));});
     k.append(k3);
   }
   // 4. Kurallar
-  const k4=kart('4 · '+(M.kurallar.baslik||'Okul kuralları'));
-  k4.append(metinKutu({baslik:'',metin:M.kurallar.metin}),onayKutu('c-kural','Okul kurallarını <b>okudum, kabul ediyorum.</b>'));
+  const k4=kart('4 · '+(M.kurallar.baslik||T('kurVar')));trNotu(k4,'kurallar');
+  k4.append(metinKutu({baslik:'',metin:M.kurallar.metin}),onayKutu('c-kural',T('kurOnay')));
   k.append(k4);
   // Veli beyanı
-  const kv=kart('Veli / vasi beyanı');kv.id='kv';kv.style.display='none';
-  kv.append(metinKutu({baslik:'',metin:M.veli.metin||'Öğrencinin velisi/vasisi olarak yukarıdaki metinleri okuduğumu ve onayları öğrenci adına verdiğimi beyan ederim.'},true),onayKutu('c-veli','Veli/vasi olarak yukarıdaki beyanı <b>onaylıyorum.</b>'));
+  const kv=kart(T('veliB'));kv.id='kv';kv.style.display='none';trNotu(kv,'veli');
+  kv.append(metinKutu({baslik:'',metin:M.veli.metin||T('veliVars')},true),onayKutu('c-veli',T('veliOnay')));
   k.insertBefore(kv,k4.nextSibling);
   const hp=el('input',{class:'hp',id:'hp',tabindex:'-1',autocomplete:'off','aria-hidden':'true'});k.append(hp);
-  const b=el('button',{class:'btn',id:'gonder',disabled:'disabled'},'Kaydı Tamamla');b.addEventListener('click',gonder);k.append(b);
-  k.append(el('div',{class:'hata',id:'hata'}),el('div',{class:'not'},'Kaydı tamamladığınızda onaylarınız; tarih-saat ve işlem güvenliği için IP adresi, cihaz/tarayıcı bilgileri (model, işletim sistemi, ekran, dil, saat dilimi gibi) ve formu doldurma davranışınızla birlikte kayıt altına alınır. Bu bağlantı yalnızca bir kez kullanılabilir.'));
+  const b=el('button',{class:'btn',id:'gonder',disabled:'disabled'},T('gonder'));b.addEventListener('click',gonder);k.append(b);
+  k.append(el('div',{class:'hata',id:'hata'}),el('div',{class:'not'},T('kanit')));
   k.querySelectorAll('input[type=checkbox],input').forEach(i=>i.addEventListener('input',guncelle));
   guncelle();
+}
+function dilSecici(){
+  const d=el('div',{class:'dilsec'});
+  DILLER.forEach(l=>{const b=el('button',{type:'button',class:l===L?'on':''},l.toUpperCase());b.addEventListener('click',()=>dilDegistir(l));d.append(b);});
+  return d;
+}
+function trNotu(kart,bolum){if(L!=='tr'&&MD&&MD[bolum]==='tr')kart.append(el('div',{class:'not',style:'margin:-4px 0 10px'},T('sadeceTr')));}
+async function yukle(){
+  try{const j=await api({islem:'bilgi',k:KOD});M=j.metin;MD=j.diller||{};ONIZLEME=!!j.onizleme;formuCiz();return true;}
+  catch(e){durum(e.kod===410?'🔒':'⚠️',e.kod===410?T('yok'):T('acilmadi'),e.message||T('sonraDene'));return false;}
+}
+async function dilDegistir(l){
+  if(l===L)return;
+  const alanlar={};['ad','soyad','cins','dogum','tel','eposta','acil','veli-ad','veli-yakin','veli-tel'].forEach(i=>{const e=$(i);if(e)alanlar[i]=e.value;});
+  const isaretliydi=[...document.querySelectorAll('input[type=checkbox]')].some(c=>c.checked);
+  L=l;try{localStorage.setItem('kf_dil',l);}catch(e){}
+  document.documentElement.lang=l;
+  if(!(await yukle()))return;
+  Object.keys(alanlar).forEach(i=>{const e=$(i);if(e)e.value=alanlar[i];});
+  guncelle();
+  if(isaretliydi){const h=$('hata');h.textContent=T('dilDegisti');h.style.display='block';}
 }
 function escape(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function yas(d){if(!d)return null;const b=new Date(d+'T00:00:00'),n=new Date();let y=n.getFullYear()-b.getFullYear();const m=n.getMonth()-b.getMonth();if(m<0||(m===0&&n.getDate()<b.getDate()))y--;return y;}
@@ -140,28 +194,28 @@ async function gonder(){
   const v=id=>($(id).value||'').trim();
   $('hata').style.display='none';
   const kc=kucukMu();
-  if(!v('ad')||!v('soyad'))return hataGoster('Ad ve soyad zorunludur.');
-  if(!v('dogum'))return hataGoster('Doğum tarihini seçin.');
-  if(v('tel').replace(/\D/g,'').length<10)return hataGoster('Geçerli bir telefon numarası girin.');
-  if(kc&&(!v('veli-ad')||!v('veli-yakin')||v('veli-tel').replace(/\D/g,'').length<10))return hataGoster('Veli/vasi adı, yakınlığı ve telefonu zorunludur.');
+  if(!v('ad')||!v('soyad'))return hataGoster(T('vAd'));
+  if(!v('dogum'))return hataGoster(T('vDogum'));
+  if(v('tel').replace(/\D/g,'').length<10)return hataGoster(T('vTel'));
+  if(kc&&(!v('veli-ad')||!v('veli-yakin')||v('veli-tel').replace(/\D/g,'').length<10))return hataGoster(T('vVeli'));
   const riz={};M.rizalar.forEach(r=>{riz[r.id]=$('r-'+r.id).checked;});
-  const b=$('gonder');b.disabled=true;b.textContent='Gönderiliyor…';
+  const b=$('gonder');b.disabled=true;b.textContent=T('gonderiliyor');
   try{
     await api({islem:'gonder',k:KOD,hp:v('hp'),
       ogrenci:{ad:v('ad'),soyad:v('soyad'),cinsiyet:$('cins').value,dogum:v('dogum'),tel:v('tel'),eposta:v('eposta'),acil:v('acil')},
       veli:kc?{ad:v('veli-ad'),yakinlik:v('veli-yakin'),tel:v('veli-tel')}:null,
       onaylar:{aydinlatma:$('c-ayd').checked,kural:$('c-kural').checked,veli:kc?$('c-veli').checked:false,rizalar:riz},
       cihaz:await cihazTopla()});
-    durum('✅','Kaydınız alındı','Teşekkürler! Bilgileriniz ve onaylarınız stüdyoya iletildi. Bu bağlantı artık kullanılamaz.');
+    durum('✅',T('tamamB'),T('tamamM'));
   }catch(e){
-    if(e.kod===410||e.kod===404){durum('🔒','Bağlantı kullanılamıyor',e.message);return;}
-    b.textContent='Kaydı Tamamla';guncelle();hataGoster(e.message||'Gönderilemedi. Lütfen tekrar deneyin.');
+    if(e.kod===410||e.kod===404){durum('🔒',T('yok'),e.message);return;}
+    b.textContent=T('gonder');guncelle();hataGoster(e.message||T('gonderilemedi'));
   }
 }
 (async()=>{
-  if(!KOD)return durum('🔗','Bağlantı eksik','Lütfen stüdyonun size gönderdiği bağlantıyı kullanın.');
-  try{const j=await api({islem:'bilgi',k:KOD});M=j.metin;ONIZLEME=!!j.onizleme;formuCiz();}
-  catch(e){durum(e.kod===410?'🔒':'⚠️',e.kod===410?'Bağlantı kullanılamıyor':'Form açılamadı',e.message||'Lütfen daha sonra tekrar deneyin.');}
+  document.documentElement.lang=L;
+  if(!KOD)return durum('🔗',T('eksikB'),T('eksikM'));
+  await yukle();
 })();
 </script>
 </body>

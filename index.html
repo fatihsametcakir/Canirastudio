@@ -3859,6 +3859,91 @@ const KAYIT_VARSAYILAN={
   veli:{metin:'18 yaşından küçük öğrencinin velisi/vasisi olduğumu, yukarıdaki aydınlatma metnini ve stüdyo kurallarını okuduğumu ve öğrencinin kaydına izin verdiğimi beyan ederim.'}
 };
 let KAYIT_DATA={basvurular:[],linkler:[],metin:null};
+// ── Form metinleri: çeviri (EN/RU) ──
+const KAYIT_CEVIRI_VARSAYILAN={
+en:{
+ayd_baslik:'Privacy Notice on the Processing of Personal Data',
+ayd_metin:'[DRAFT – legal review required]\n\nData controller: Can & Irina Studio.\n\nData processed: first and last name, date of birth, phone number, e-mail address, emergency contact details and, if the student is under 18, parent/guardian details; when the form is submitted, also your IP address, device/browser information and the time of submission.\n\nPurposes of processing: registration and class administration, carrying out payment and communication processes, and evidencing the confirmations given.\n\nLegal basis: establishment and performance of a contract, legal obligation, and legitimate interest (for IP and device information, to evidence consent).\n\nYour rights: you may exercise your rights under Article 11 of the Turkish Personal Data Protection Law No. 6698 (KVKK) by contacting the studio.',
+r_iletisim_baslik:'Communication Consent (Explicit Consent)',
+r_iletisim_metin:'[DRAFT]\n\nI give my explicit consent to receive promotional, campaign and event information, other than class announcements, by phone/WhatsApp/e-mail. I understand that I may withdraw my consent at any time.',
+r_iletisim_kutu:'I give my explicit consent to be contacted for these purposes.',
+r_gorsel_baslik:'Image Sharing Consent (Explicit Consent)',
+r_gorsel_metin:'[DRAFT]\n\nI give my explicit consent to the use of photographs/videos taken during classes and events on the studio’s social media accounts and in its promotional materials. I understand that I may withdraw my consent at any time.',
+r_gorsel_kutu:'I give my explicit consent to the sharing of my images.',
+kur_baslik:'Studio Rules',
+kur_metin:'[DRAFT]\n\n1. Please arrive on time for classes; cancellations must be notified at least 24 hours in advance.\n2. Package durations and make-up conditions are subject to the studio’s announcements.\n3. Respect is shown to studio equipment and to other students.\n4. Payments are made on the agreed dates.',
+veli_metin:'I declare that I am the parent/legal guardian of the student, who is under 18, that I have read the privacy notice and the studio rules above, and that I consent to the student’s registration.'},
+ru:{
+ayd_baslik:'Уведомление об обработке персональных данных',
+ayd_metin:'[ЧЕРНОВИК – требуется юридическая проверка]\n\nОператор персональных данных: Can & Irina Studio.\n\nОбрабатываемые данные: имя и фамилия, дата рождения, номер телефона, адрес электронной почты, контактные данные для экстренной связи и, если ученику нет 18 лет, данные родителя/опекуна; при отправке формы — также IP-адрес, сведения об устройстве и браузере и время отправки.\n\nЦели обработки: регистрация и организация занятий, проведение расчётов и коммуникации, подтверждение данных согласий.\n\nПравовое основание: заключение и исполнение договора, исполнение юридической обязанности, законный интерес (для IP-адреса и сведений об устройстве — в целях доказательства).\n\nВаши права: вы можете реализовать свои права по статье 11 Закона Турции № 6698 о защите персональных данных (KVKK), обратившись в студию.',
+r_iletisim_baslik:'Согласие на связь (явное согласие)',
+r_iletisim_metin:'[ЧЕРНОВИК]\n\nДаю явное согласие на получение рекламной информации, информации об акциях и мероприятиях (помимо объявлений о занятиях) по телефону/WhatsApp/электронной почте. Мне известно, что я могу отозвать согласие в любое время.',
+r_iletisim_kutu:'Даю явное согласие на связь с этой целью.',
+r_gorsel_baslik:'Согласие на публикацию изображений (явное согласие)',
+r_gorsel_metin:'[ЧЕРНОВИК]\n\nДаю явное согласие на использование фотографий и видео, снятых во время занятий и мероприятий, в аккаунтах студии в социальных сетях и в рекламных материалах. Мне известно, что я могу отозвать согласие в любое время.',
+r_gorsel_kutu:'Даю явное согласие на публикацию моих изображений.',
+kur_baslik:'Правила студии',
+kur_metin:'[ЧЕРНОВИК]\n\n1. На занятия приходят вовремя; об отмене сообщают не менее чем за 24 часа.\n2. Сроки действия пакетов и условия отработки пропущенных занятий определяются объявлениями студии.\n3. К оборудованию студии и другим ученикам относятся с уважением.\n4. Оплата вносится в установленные сроки.',
+veli_metin:'Заявляю, что являюсь родителем/законным представителем ученика, которому нет 18 лет, что ознакомился(лась) с приведёнными выше уведомлением о персональных данных и правилами студии и даю согласие на регистрацию ученика.'}
+};
+const KAYIT_DILLER=[['tr','Türkçe'],['en','English'],['ru','Русский']];
+let KAYIT_DIL='tr',KAYIT_ONAY={},KAYIT_CEVIRI_YUKLU={};
+// Türkçe metnin düz anahtar haritası (alan değerlerinden)
+function kayitTrAnahtar(m){
+  const k={ayd_baslik:m.aydinlatma.baslik,ayd_metin:m.aydinlatma.metin,kur_baslik:m.kurallar.baslik,kur_metin:m.kurallar.metin,veli_metin:(m.veli&&m.veli.metin)||''};
+  (m.rizalar||[]).forEach(r=>{k['r_'+r.id+'_baslik']=r.baslik;k['r_'+r.id+'_metin']=r.metin;k['r_'+r.id+'_kutu']=r.kutu;});
+  return k;
+}
+const KAYIT_ETIKET={ayd_baslik:'Aydınlatma başlığı',ayd_metin:'Aydınlatma metni',kur_baslik:'Kurallar başlığı',kur_metin:'Kurallar',veli_metin:'Veli/vasi beyanı'};
+function kayitEtiket(a){if(KAYIT_ETIKET[a])return KAYIT_ETIKET[a];const mm=a.match(/^r_(.+)_(baslik|metin|kutu)$/);return mm?('Rıza ('+mm[1]+') '+({baslik:'başlığı',metin:'metni',kutu:'onay kutusu yazısı'})[mm[2]]):a;}
+function kayitCeviriDeger(dil,a,trDeger){
+  const st=((KAYIT_DATA.metin||{}).ceviri||{})[dil]||{};
+  if(st[a])return st[a];
+  const dv=(KAYIT_CEVIRI_VARSAYILAN[dil]||{})[a],dtr=kayitTrAnahtar(KAYIT_VARSAYILAN)[a];
+  if(dv&&dtr===trDeger)return {m:dv,k:dtr};
+  return {m:'',k:''};
+}
+function kayitDilSec(d){KAYIT_DIL=d;KAYIT_DILLER.forEach(([k])=>{const p=document.getElementById('kf-pane-'+k),b=document.getElementById('kf-tab-'+k);if(p)p.style.display=k===d?'block':'none';if(b)b.classList.toggle('btn-accent',k===d);});}
+function kayitCevirePaneHtml(dil,m){
+  const tr=kayitTrAnahtar(m);KAYIT_CEVIRI_YUKLU[dil]={};
+  const bolumler=[['Aydınlatma metni',['ayd_baslik','ayd_metin']],...(m.rizalar||[]).map(r=>['Açık rıza: '+r.id,['r_'+r.id+'_baslik','r_'+r.id+'_metin','r_'+r.id+'_kutu']]),['Stüdyo kuralları',['kur_baslik','kur_metin']],['Veli/vasi beyanı',['veli_metin']]];
+  let h=`<div style="font-size:12px;color:var(--text2);margin:6px 0 8px;">Türkçe metni güncelleyince çeviri otomatik yapılmaz. <b>📋 Çeviri için kopyala</b> ile Türkçe metni kopyalayıp Claude'a yapıştırın, size verdiği JSON'u <b>📥 İçe aktar</b> ile buraya yapıştırın. Türkçe metin değiştiğinde çevirisi eski kalan bölümler formda <b>Türkçe</b> gösterilir (yanlış çeviri gösterilmez).</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><button class="btn btn-sm" onclick="kayitCeviriKopyala()">📋 Çeviri için kopyala</button><button class="btn btn-sm" onclick="kayitCeviriIceAktarAc('${dil}')">📥 İçe aktar</button><button class="btn btn-sm" onclick="kayitCeviriGuncelSay('${dil}')">✔ Çeviriyi güncel say</button></div>
+  <div id="kf-ice-${dil}" style="display:none;margin-bottom:8px;"><textarea id="kf-ice-ta-${dil}" class="input" rows="5" placeholder='{"en":{"ayd_baslik":"…"},"ru":{…}}'></textarea><button class="btn btn-accent btn-sm" style="margin-top:6px;" onclick="kayitCeviriIceAktar()">Uygula</button></div>`;
+  bolumler.forEach(([ad,keys])=>{
+    const dur=keys.map(a=>{const c=kayitCeviriDeger(dil,a,tr[a]);KAYIT_CEVIRI_YUKLU[dil][a]=c;return !tr[a]||(c.m&&c.k===tr[a])?'ok':(c.m?'eski':'yok');});
+    const durum=dur.every(x=>x==='ok')?'<span style="color:#34d399;">✔ güncel</span>':dur.includes('eski')?'<span style="color:#fbbf24;">⚠ Türkçe değişti — formda Türkçe gösterilir</span>':'<span style="color:var(--text3);">— çeviri yok, formda Türkçe gösterilir</span>';
+    h+=`<div style="margin-top:10px;padding:10px;border:1px solid #d9ac5240;border-radius:8px;"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;"><b>${_kEsc(ad)}</b><span>${durum}</span></div>`;
+    keys.forEach(a=>{
+      const c=KAYIT_CEVIRI_YUKLU[dil][a];const satir=a.endsWith('_metin');
+      h+=`<label style="display:block;font-size:11px;color:var(--text3);margin:8px 0 2px;">${_kEsc(kayitEtiket(a))} — Türkçesi</label><div style="font-size:12px;color:var(--text2);white-space:pre-line;max-height:90px;overflow:auto;background:var(--surface);border-radius:6px;padding:6px 8px;">${_kEsc(tr[a]||'—')}</div>
+      <label style="display:block;font-size:11px;color:var(--text3);margin:6px 0 2px;">${_kEsc(kayitEtiket(a))} — ${dil==='en'?'English':'Русский'}</label>${satir?`<textarea id="kc-${dil}-${a}" class="input" rows="6" style="width:100%;resize:vertical;">${_kEsc(c.m)}</textarea>`:`<input id="kc-${dil}-${a}" class="input" value="${_kEsc(c.m)}">`}`;
+    });
+    h+='</div>';
+  });
+  return h;
+}
+function kayitCeviriGuncelSay(dil){KAYIT_ONAY[dil]=true;showToast('Kaydettiğinizde '+dil.toUpperCase()+' çevirisi güncel sayılacak.');}
+function kayitMetinAlanlariOku(){
+  const g=id=>{const e=document.getElementById(id);return e?e.value.trim():'';};
+  const rizalar=KAYIT_VARSAYILAN.rizalar.map((r,i)=>({id:r.id,baslik:g('kf-r'+i+'-baslik'),metin:g('kf-r'+i+'-metin'),kutu:g('kf-r'+i+'-kutu'),aktif:!!(document.getElementById('kf-r'+i+'-aktif')||{}).checked}));
+  return {aydinlatma:{baslik:g('kf-aydinlatma-baslik'),metin:g('kf-aydinlatma-metin')},rizalar,kurallar:{baslik:g('kf-kurallar-baslik'),metin:g('kf-kurallar-metin')},veli:{metin:g('kf-veli-metin')}};
+}
+function kayitCeviriKopyala(){
+  const m=kayitMetinAlanlariOku(),tr=kayitTrAnahtar(m);Object.keys(tr).forEach(a=>{if(!tr[a])delete tr[a];});
+  const metin='Aşağıdaki öğrenci kayıt formu metinlerini İngilizce (en) ve Rusça (ru) çevir. Çeviriler kaliteli, doğal ve hukuki metne uygun olsun; anahtar adlarını aynen koru. Yanıtı yalnızca şu biçimde tek bir JSON olarak ver: {"en":{anahtar:çeviri,…},"ru":{anahtar:çeviri,…}}\n\n'+JSON.stringify(tr,null,1);
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(metin).then(()=>showToast('Kopyalandı. Claude\'a yapıştırın.'),()=>girdiAsync('Kopyalayın:',metin,'Metin'));else girdiAsync('Kopyalayın:',metin,'Metin');
+}
+function kayitCeviriIceAktarAc(dil){const e=document.getElementById('kf-ice-'+dil);if(e)e.style.display=e.style.display==='none'?'block':'none';}
+function kayitCeviriIceAktar(){
+  const ta=document.getElementById('kf-ice-ta-'+KAYIT_DIL);let o;
+  try{let t=(ta.value||'').trim();const a=t.indexOf('{'),b=t.lastIndexOf('}');t=t.slice(a,b+1);o=JSON.parse(t);}catch(e){showToast('JSON okunamadı.','error');return;}
+  if(!o.en&&!o.ru&&typeof o==='object')o={[KAYIT_DIL]:o};
+  let sayi=0;
+  ['en','ru'].forEach(d=>{if(!o[d]||typeof o[d]!=='object')return;Object.keys(o[d]).forEach(a=>{const e=document.getElementById('kc-'+d+'-'+a);if(e&&typeof o[d][a]==='string'){e.value=o[d][a];sayi++;}});KAYIT_ONAY[d]=true;});
+  showToast(sayi?sayi+' alan dolduruldu. Gözden geçirip "Metinleri kaydet ve yayınla"ya basın.':'Eşleşen alan bulunamadı.',sayi?'success':'error');
+}
+
 const _kEsc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function kayitZamanStr(ms){if(!ms)return '';const d=new Date(ms);const p=n=>String(n).padStart(2,'0');return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());}
 function kayitLinkUrl(kod){return location.origin+location.pathname.replace(/[^/]*$/,'')+'kayit.html?k='+kod;}
@@ -3918,19 +4003,36 @@ function kayitMetinHtml(){
   const m=KAYIT_DATA.metin?{...KAYIT_VARSAYILAN,...KAYIT_DATA.metin}:KAYIT_VARSAYILAN;
   const ta=(id,et,v,s)=>`<label style="display:block;font-size:12px;color:var(--text2);margin:8px 0 3px;">${et}</label>${s?`<input id="${id}" class="input" value="${_kEsc(v)}">`:`<textarea id="${id}" class="input" rows="6" style="width:100%;resize:vertical;">${_kEsc(v)}</textarea>`}`;
   const rz=(m.rizalar||[]).map((r,i)=>`<div style="margin-top:10px;padding:10px;border:1px solid #d9ac5240;border-radius:8px;"><b style="font-size:12px;">Açık rıza ${i+1}</b> <label style="font-size:12px;margin-left:8px;"><input type="checkbox" id="kf-r${i}-aktif" ${r.aktif!==false?'checked':''}> formda göster</label>${ta('kf-r'+i+'-baslik','Başlık',r.baslik,1)}${ta('kf-r'+i+'-metin','Metin',r.metin)}${ta('kf-r'+i+'-kutu','Onay kutusu yazısı',r.kutu,1)}</div>`).join('');
-  return `<div style="font-size:12px;color:var(--text2);">Metinler hukuki inceleme sonrası burada güncellenir. Her kayıtta metnin o anki sürümü başvuruyla birlikte saklanır; sonradan değiştirmek eski onayları etkilemez. Mevcut sürüm: <b>${_kEsc(m.surum||1)}</b>${KAYIT_DATA.metin?'':' (henüz yayınlanmadı – kaydedene kadar form çalışmaz)'}</div>
+  const tr=`<div style="font-size:12px;color:var(--text2);">Metinler hukuki inceleme sonrası burada güncellenir. Her kayıtta metnin o anki sürümü başvuruyla birlikte saklanır; sonradan değiştirmek eski onayları etkilemez. Mevcut sürüm: <b>${_kEsc(m.surum||1)}</b>${KAYIT_DATA.metin?'':' (henüz yayınlanmadı – kaydedene kadar form çalışmaz)'}</div>
    ${ta('kf-aydinlatma-baslik','Aydınlatma metni başlığı',m.aydinlatma.baslik,1)}${ta('kf-aydinlatma-metin','Aydınlatma metni',m.aydinlatma.metin)}${rz}
-   ${ta('kf-kurallar-baslik','Stüdyo kuralları başlığı',m.kurallar.baslik,1)}${ta('kf-kurallar-metin','Stüdyo kuralları',m.kurallar.metin)}${ta('kf-veli-metin','Veli/vasi beyanı (18 yaş altı)',m.veli.metin)}
+   ${ta('kf-kurallar-baslik','Stüdyo kuralları başlığı',m.kurallar.baslik,1)}${ta('kf-kurallar-metin','Stüdyo kuralları',m.kurallar.metin)}${ta('kf-veli-metin','Veli/vasi beyanı (18 yaş altı)',m.veli.metin)}`;
+  const sek=KAYIT_DILLER.map(([k,ad])=>`<button class="btn btn-sm${k===KAYIT_DIL?' btn-accent':''}" id="kf-tab-${k}" onclick="kayitDilSec('${k}')">${ad}</button>`).join('');
+  return `<div style="display:flex;gap:6px;margin-bottom:6px;">${sek}</div>
+   <div id="kf-pane-tr" style="display:${KAYIT_DIL==='tr'?'block':'none'};">${tr}</div>
+   <div id="kf-pane-en" style="display:${KAYIT_DIL==='en'?'block':'none'};">${kayitCevirePaneHtml('en',m)}</div>
+   <div id="kf-pane-ru" style="display:${KAYIT_DIL==='ru'?'block':'none'};">${kayitCevirePaneHtml('ru',m)}</div>
    <div style="margin-top:10px;"><button class="btn btn-accent btn-sm" onclick="kayitMetinKaydet()">Metinleri kaydet ve yayınla</button></div>`;
 }
 async function kayitMetinKaydet(){
-  const g=id=>{const e=document.getElementById(id);return e?e.value.trim():'';};
   const eski=KAYIT_DATA.metin;
-  const rizalar=KAYIT_VARSAYILAN.rizalar.map((r,i)=>({id:r.id,baslik:g('kf-r'+i+'-baslik'),metin:g('kf-r'+i+'-metin'),kutu:g('kf-r'+i+'-kutu'),aktif:!!(document.getElementById('kf-r'+i+'-aktif')||{}).checked}));
-  const veri={surum:((eski&&eski.surum)||0)+1,guncelleme:Date.now(),aydinlatma:{baslik:g('kf-aydinlatma-baslik'),metin:g('kf-aydinlatma-metin')},rizalar,kurallar:{baslik:g('kf-kurallar-baslik'),metin:g('kf-kurallar-metin')},veli:{metin:g('kf-veli-metin')}};
+  const mm=kayitMetinAlanlariOku(),rizalar=mm.rizalar;
+  const veri={surum:((eski&&eski.surum)||0)+1,guncelleme:Date.now(),aydinlatma:mm.aydinlatma,rizalar,kurallar:mm.kurallar,veli:mm.veli};
   if(!veri.aydinlatma.metin||!veri.kurallar.metin){showToast('Aydınlatma ve kurallar metni boş olamaz.','error');return;}
   if(rizalar.some(r=>r.aktif&&(!r.metin||!r.kutu))){showToast('Gösterilen rıza metinlerinin yazısı ve kutu metni dolu olmalı.','error');return;}
-  try{await db.collection('ayarlar').doc('kayitFormu').set(veri);KAYIT_DATA.metin=veri;showToast('Metinler yayınlandı (sürüm '+veri.surum+').');kayitAdminCiz();}catch(e){showToast('Kaydedilemedi: '+(e.message||e),'error');}
+  // Çeviriler: elle değiştirilen / "güncel say" denen alanın kaynağı yeni Türkçe metin olur; dokunulmayanın kaynağı eski kalır (Türkçe değiştiyse "eski" sayılır)
+  const trYeni=kayitTrAnahtar(veri),ceviri={};
+  ['en','ru'].forEach(d=>{
+    const c={};
+    Object.keys(trYeni).forEach(a=>{
+      const e=document.getElementById('kc-'+d+'-'+a);if(!e)return;
+      const v=e.value.trim();if(!v||!trYeni[a])return;
+      const y=(KAYIT_CEVIRI_YUKLU[d]||{})[a]||{m:'',k:''};
+      c[a]={m:v,k:(KAYIT_ONAY[d]||v!==y.m)?trYeni[a]:y.k};
+    });
+    if(Object.keys(c).length)ceviri[d]=c;
+  });
+  if(Object.keys(ceviri).length)veri.ceviri=ceviri;
+  try{await db.collection('ayarlar').doc('kayitFormu').set(veri);KAYIT_DATA.metin=veri;KAYIT_ONAY={};showToast('Metinler yayınlandı (sürüm '+veri.surum+').');kayitAdminCiz();}catch(e){showToast('Kaydedilemedi: '+(e.message||e),'error');}
 }
 function kayitOnizle(){window.open(location.origin+location.pathname.replace(/[^/]*$/,'')+'kayit.html?onizle=1','_blank');}
 async function kayitLinkOlustur(){
@@ -12406,25 +12508,34 @@ function adminNotifBaslat(){
 
   _adminNotifUnsub=db.collection('ogrenci_notlar')
     .onSnapshot(snap=>{
-      const sayi=snap.docs.filter(d=>!d.data().okundu).length;
-      const badge=document.getElementById('notif-badge');
-      if(badge){
-        badge.style.display=sayi>0?'flex':'none';
-        badge.textContent=sayi>9?'9+':sayi;
-      }
+      _NOTIF_N=snap.docs.filter(d=>!d.data().okundu).length;
+      notifBadgeGuncelle();
     },err=>console.warn('notif',err));
+  // Yeni (bekleyen) kayıt başvuruları da çanda sayılır
+  try{db.collection('kayit_basvurulari').onSnapshot(snap=>{
+    _NOTIF_B=snap.docs.filter(d=>(d.data().durum||'beklemede')==='beklemede').length;
+    notifBadgeGuncelle();
+  },err=>console.warn('notif-kayit',err));}catch(e){}
+}
+let _NOTIF_N=0,_NOTIF_B=0;
+function notifBadgeGuncelle(){
+  const sayi=_NOTIF_N+_NOTIF_B,badge=document.getElementById('notif-badge');
+  if(badge){badge.style.display=sayi>0?'flex':'none';badge.textContent=sayi>9?'9+':sayi;}
 }
 
 async function bildirimlerAc(){
   const tumNotlar=await fsTumBelgeler('ogrenci_notlar');
   const notlar=tumNotlar
     .sort((a,b)=>b.olusturma-a.olusturma).slice(0,50);
+  let bekleyenBasvuru=0;
+  try{bekleyenBasvuru=(await fsTumBelgeler('kayit_basvurulari')).filter(b=>(b.durum||'beklemede')==='beklemede').length;}catch(e){}
+  const basvuruKart=bekleyenBasvuru?`<div class="portal-not-item" style="border:1.5px solid #d9ac52a6;cursor:pointer;" onclick="closeModal('m-bildirimler');drawerSayfaAc('kayit-taslak',{textContent:'📝 Kayıt Formu'})"><div style="display:flex;align-items:center;gap:8px;"><div style="font-size:13px;font-weight:600;flex:1;">📥 ${bekleyenBasvuru} yeni kayıt başvurusu bekliyor</div><span class="badge badge-purple" style="font-size:10px;">${t('yeni')}</span><span style="color:var(--text3);">›</span></div><div style="font-size:12px;color:var(--text2);margin-top:4px;">Kayıt Formu sayfasında incelemek için dokunun.</div></div>`:'';
 
-  let html='';
-  if(!notlar.length){
+  let html=basvuruKart;
+  if(!notlar.length&&!bekleyenBasvuru){
     html='<div class="empty" style="padding:24px 0;"><div class="empty-text">'+t('henuz_not_gonderilmedi')+'</div></div>';
   } else {
-    html=notlar.map(n=>`<div class="portal-not-item" style="${!n.okundu?'border-color:var(--purple);':''}" onclick="notiOkundu('${n.id}',this)">
+    html+=notlar.map(n=>`<div class="portal-not-item" style="${!n.okundu?'border-color:var(--purple);':''}" onclick="notiOkundu('${n.id}',this)">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
         <div style="font-size:13px;font-weight:600;flex:1;">${waHtmlEsc(n.ad)}</div>
         ${!n.okundu?`<span class="badge badge-purple" style="font-size:10px;">${t('yeni')}</span>`:''}
@@ -12449,7 +12560,7 @@ async function bildirimlerOkunduYap(){
       okunmayan.forEach(n=>batch.update(db.collection('ogrenci_notlar').doc(n.id),{okundu:true}));
       await batch.commit();
     }
-    const badge=document.getElementById('notif-badge');if(badge)badge.style.display='none';
+    _NOTIF_N=0;notifBadgeGuncelle();
     bildirimlerAc();
     toastGoster('✓ '+t('okundu_yapildi'));
   }catch(e){alert(t('hata')+': '+e.message);if(btn)btn.disabled=false;}
