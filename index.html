@@ -580,6 +580,9 @@ body.portal-modu .overlay{z-index:9500;}
 .drawer-btn.danger{color:var(--accent);}
 /* Hızlı erişim düğmeleri 2 sütunlu: menüde kaydırma azalır */
 .drawer-hizli{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+/* üst hızlı düğmeler: hepsi aynı yükseklikte (geri almak için bu satırları sil) */
+.drawer-hizli{grid-auto-rows:44px;}
+.drawer .drawer-hizli .drawer-btn{height:44px;min-height:44px!important;padding:4px 8px!important;font-size:12px;line-height:1.15;box-sizing:border-box;overflow:hidden;}
 .drawer-hizli .drawer-btn{width:auto!important;margin:0!important;padding:9px 8px;gap:6px;justify-content:center;text-align:center;font-size:12.5px;line-height:1.2;min-height:42px;}
 .drawer-hizli .drawer-btn:last-child:nth-child(odd){grid-column:1/-1;}
 .drawer-sep{height:1px;background:var(--border);margin:4px 0 8px;}
