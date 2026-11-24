@@ -709,6 +709,16 @@ body.portal-modu .overlay{z-index:9500;}
 /* gelir/gider kartları: sol renk çizgisi (geri almak için bu blok silinir) */
 .gg-card{border-left:4px solid var(--gg-c)!important;}
 .ozel-og-kart{border-left:4px solid var(--og-renk)!important;}
+/* === DÜĞME TASARIMI: altın (geri almak için bu bloğu sil) === */
+.drawer-close,.sheet-close{background:linear-gradient(135deg,#d9ac5226,#d9ac520a);border:1.5px solid #d9ac52a6;color:#e8c36a;box-shadow:inset 0 0 0 1px #d9ac5220,0 2px 8px -3px #d9ac5266;font-size:15px;}
+.cikis-btn{border-radius:99px;font-weight:600;background:linear-gradient(135deg,#ff6b6b24,#ff6b6b0c);color:var(--accent);border:1.5px solid #d9ac52a6;box-shadow:inset 0 0 0 1px #d9ac5220,0 2px 10px -4px #ff6b6b50;}
+.confirm-sheet .btn-ghost,.sheet .btn-ghost,.form-actions .btn-ghost,.confirm-sheet .btn-danger,.sheet .btn-danger,.form-actions .btn-danger{border:1.5px solid #d9ac52a6;border-radius:99px;box-shadow:inset 0 0 0 1px #d9ac5220;}
+.confirm-sheet .btn-ghost,.sheet .btn-ghost,.form-actions .btn-ghost{background:linear-gradient(135deg,#d9ac521c,#d9ac5208);color:#e8c36a;}
+.confirm-sheet .btn-accent,.sheet .btn-accent,.form-actions .btn-accent{border:1.5px solid #d9ac52a6;border-radius:99px;box-shadow:inset 0 0 0 1px #d9ac5240,0 4px 15px #ff6b6b30;}
+:root[data-acik="1"] .drawer-close,:root[data-acik="1"] .sheet-close{background:linear-gradient(135deg,#9a6f1c22,#9a6f1c0a);border-color:#9a6f1ca0;color:#7a5410;box-shadow:inset 0 0 0 1px #9a6f1c20;}
+:root[data-acik="1"] .cikis-btn,:root[data-acik="1"] .confirm-sheet .btn-ghost,:root[data-acik="1"] .sheet .btn-ghost,:root[data-acik="1"] .form-actions .btn-ghost,:root[data-acik="1"] .confirm-sheet .btn-danger,:root[data-acik="1"] .sheet .btn-danger,:root[data-acik="1"] .form-actions .btn-danger,:root[data-acik="1"] .confirm-sheet .btn-accent,:root[data-acik="1"] .sheet .btn-accent,:root[data-acik="1"] .form-actions .btn-accent{border-color:#9a6f1ca0;}
+:root[data-acik="1"] .confirm-sheet .btn-ghost,:root[data-acik="1"] .sheet .btn-ghost,:root[data-acik="1"] .form-actions .btn-ghost{color:#7a5410;}
+.uyari-metin{font-size:14px;color:var(--text2);margin-bottom:20px;white-space:pre-line;line-height:1.55;}
 </style>
 <style>
 #splash{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 38%,#ff6b6b1c,transparent 60%),radial-gradient(ellipse at 50% 100%,#a78bfa1a,transparent 55%),var(--bg);transition:opacity .6s ease;}
@@ -1347,7 +1357,7 @@ try{
     <div class="portal-marka"><svg class="tb-mark" viewBox="20 30 150 140" width="30" height="28" aria-hidden="true"><defs><linearGradient id="tbgp1" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="170" y2="180"><stop offset="0" stop-color="#f8e7ae"/><stop offset=".38" stop-color="#d9ac52"/><stop offset=".62" stop-color="#f4dc92"/><stop offset="1" stop-color="#b0842f"/></linearGradient></defs><g fill="none" stroke="url(#tbgp1)" stroke-linecap="round"><path d="M146 60 A56 56 0 1 0 146 140" stroke-width="8"/><path d="M138 70 A44 44 0 1 0 138 130" stroke-width="4"/><line x1="112" y1="52" x2="112" y2="148" stroke-width="8"/><line x1="121" y1="62" x2="121" y2="138" stroke-width="4"/></g><circle cx="150" cy="100" r="7" fill="url(#tbgp1)"/></svg><div class="topbar-title"><b class="tb-gold">Can &amp; Irina</b><span>Dance Studio</span></div></div>
     <div style="display:flex;align-items:center;gap:8px;">
       <button id="langBtnPortal" onclick="cycleLang()" title="Dil / Language / Язык" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:5px 10px;font-size:11px;font-weight:600;color:#fff;cursor:pointer;flex-shrink:0;transition:transform .2s cubic-bezier(.34,1.56,.64,1);">TR</button>
-      <button class="btn" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-size:12px;padding:7px 13px;border-radius:8px;font-weight:600;" onclick="portalCikis()" data-i18n="cikis">→ Çıkış</button>
+      <button class="btn cikis-btn" style="font-size:12px;padding:7px 13px;" onclick="portalCikis()" data-i18n="cikis">→ Çıkış</button>
     </div>
   </div>
   <div class="portal-body">
@@ -1373,7 +1383,7 @@ try{
     <div style="display:flex;align-items:center;gap:8px;">
       <button id="langBtnEg" onclick="cycleLang()" title="Dil / Language / Язык" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text);">TR</button>
       <button class="btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);font-size:12px;padding:7px 11px;border-radius:8px;" onclick="egSifreModal(false)">🔑</button>
-      <button class="btn" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-size:12px;padding:7px 13px;border-radius:8px;font-weight:600;" onclick="egitmenCikis()" data-i18n="eg_cikis">Çıkış</button>
+      <button class="btn cikis-btn" style="font-size:12px;padding:7px 13px;" onclick="egitmenCikis()" data-i18n="eg_cikis">Çıkış</button>
     </div>
   </div>
   <div class="portal-body" style="padding-bottom:96px;">
@@ -1848,7 +1858,7 @@ try{
 
   </div>
   <div style="padding:12px 16px max(20px,env(safe-area-inset-bottom));border-top:1px solid var(--border);flex-shrink:0;">
-    <button class="btn" style="width:100%;padding:12px;background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b30;font-weight:600;transition:transform .15s;" onclick="cikisYap()" data-i18n="cikis_yap">→ Çıkış Yap</button>
+    <button class="btn cikis-btn" style="width:100%;padding:12px;" onclick="cikisYap()" data-i18n="cikis_yap">→ Çıkış Yap</button>
   </div>
 </div>
 <!-- Numarası Eksik Öğrenciler -->
@@ -3292,6 +3302,33 @@ function openModal(id){
   if(drawerKok){_MODAL_DRAWER.add(id);_DRAWER_FLAG=0;}
   document.getElementById(id).classList.add('open');
 }
+
+// ── Uygulama içi uyarı/onay/giriş pencereleri (tarayıcının alert/confirm/prompt'unun yerine) ──
+let _UYARI_KUYRUK=[],_UYARI_ACIK=false;
+function uyariPencere(o){
+  return new Promise(res=>{_UYARI_KUYRUK.push({o,res});if(!_UYARI_ACIK)_uyariSiradaki();});
+}
+function _uyariSiradaki(){
+  const it=_UYARI_KUYRUK.shift();if(!it){_UYARI_ACIK=false;return;}
+  _UYARI_ACIK=true;
+  const o=it.o,ov=document.getElementById('m-uyari');
+  const b=document.getElementById('uyari-baslik'),m=document.getElementById('uyari-mesaj'),g=document.getElementById('uyari-girdi'),ip=document.getElementById('uyari-iptal'),ta=document.getElementById('uyari-tamam');
+  b.textContent=o.baslik||'Uyarı';m.textContent=o.mesaj||'';
+  g.style.display=o.girdi?'block':'none';g.value='';g.type=o.sifre?'password':'text';g.placeholder=o.yerTutucu||'';
+  ip.style.display=(o.iptal||o.girdi)?'block':'none';ip.textContent='İptal';ta.textContent=o.tamam||(o.iptal||o.girdi?'Onayla':'Tamam');
+  const bitir=v=>{ov.classList.remove('open');ta.onclick=ip.onclick=null;it.res(v);setTimeout(_uyariSiradaki,120);};
+  ta.onclick=()=>bitir(o.girdi?g.value.trim():true);
+  ip.onclick=()=>bitir(o.girdi?null:false);
+  g.onkeydown=e=>{if(e.key==='Enter')ta.click();};
+  ov.classList.add('open');
+  if(o.girdi)setTimeout(()=>g.focus(),80);
+}
+window.alert=function(m){
+  m=String(m==null?'':m);
+  uyariPencere({baslik:/^(hata|.*hatas)/i.test(m)?'⚠ Hata':'Uyarı',mesaj:m});
+};
+const onayAsync=(mesaj,baslik)=>uyariPencere({baslik:baslik||'Emin misiniz?',mesaj,iptal:true,tamam:'Evet'});
+const girdiAsync=(mesaj,yerTutucu,baslik)=>uyariPencere({baslik:baslik||'Bilgi gir',mesaj,girdi:true,yerTutucu});
 function confirm_(title,desc,cb){
   CONFIRM_CB=cb;
   document.getElementById('confirm-title').textContent=title;
@@ -3794,7 +3831,7 @@ function kayitLinkHtml(){
     return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #d9ac5240;font-size:12px;"><div style="flex:1;min-width:0;"><div>${d}</div><div style="color:var(--text2);">${_kEsc(l.not||'(not yok)')} · ${kayitZamanStr(l.olusturma)}</div></div>${aktif?`<button class="btn btn-sm" onclick="kayitLinkKopyala('${l.id}')">Kopyala</button>`:''}<button class="btn btn-danger btn-sm" onclick="kayitLinkSil('${l.id}')">Sil</button></div>`;}).join('');
   return `<div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Her bağlantı yalnızca <b>bir kez</b> kullanılabilir; öğrenci formu gönderince bağlantı kapanır. Her öğrenci için ayrı bağlantı oluşturun.</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><input id="kf-link-not" class="input" placeholder="Not (örn. öğrenci adı)" style="flex:1;min-width:140px;" maxlength="60"><select id="kf-link-sure" class="input" style="width:auto;"><option value="1">1 gün</option><option value="3">3 gün</option><option value="7" selected>7 gün</option><option value="30">30 gün</option></select></div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;"><button class="btn btn-primary btn-sm" onclick="kayitLinkOlustur()">+ Bağlantı oluştur</button><button class="btn btn-sm" onclick="kayitOnizle()">👁 Formu önizle</button></div>${liste}`;
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;"><button class="btn btn-accent btn-sm" onclick="kayitLinkOlustur()">+ Bağlantı oluştur</button><button class="btn btn-sm" onclick="kayitOnizle()">👁 Formu önizle</button></div>${liste}`;
 }
 function kayitMetinHtml(){
   const m=KAYIT_DATA.metin?{...KAYIT_VARSAYILAN,...KAYIT_DATA.metin}:KAYIT_VARSAYILAN;
@@ -3803,7 +3840,7 @@ function kayitMetinHtml(){
   return `<div style="font-size:12px;color:var(--text2);">Metinler hukuki inceleme sonrası burada güncellenir. Her kayıtta metnin o anki sürümü başvuruyla birlikte saklanır; sonradan değiştirmek eski onayları etkilemez. Mevcut sürüm: <b>${_kEsc(m.surum||1)}</b>${KAYIT_DATA.metin?'':' (henüz yayınlanmadı – kaydedene kadar form çalışmaz)'}</div>
    ${ta('kf-aydinlatma-baslik','Aydınlatma metni başlığı',m.aydinlatma.baslik,1)}${ta('kf-aydinlatma-metin','Aydınlatma metni',m.aydinlatma.metin)}${rz}
    ${ta('kf-kurallar-baslik','Stüdyo kuralları başlığı',m.kurallar.baslik,1)}${ta('kf-kurallar-metin','Stüdyo kuralları',m.kurallar.metin)}${ta('kf-veli-metin','Veli/vasi beyanı (18 yaş altı)',m.veli.metin)}
-   <div style="margin-top:10px;"><button class="btn btn-primary btn-sm" onclick="kayitMetinKaydet()">Metinleri kaydet ve yayınla</button></div>`;
+   <div style="margin-top:10px;"><button class="btn btn-accent btn-sm" onclick="kayitMetinKaydet()">Metinleri kaydet ve yayınla</button></div>`;
 }
 async function kayitMetinKaydet(){
   const g=id=>{const e=document.getElementById(id);return e?e.value.trim():'';};
@@ -3827,7 +3864,7 @@ async function kayitLinkOlustur(){
 function kayitLinkKopyala(kod){
   const u=kayitLinkUrl(kod);
   const ok=()=>showToast('Bağlantı kopyalandı.');
-  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(ok,()=>prompt('Bağlantıyı kopyalayın:',u));else prompt('Bağlantıyı kopyalayın:',u);
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(ok,()=>girdiAsync('Bağlantıyı kopyalayın:',u,'Bağlantı').then(()=>{}));else girdiAsync('Bağlantıyı kopyalayın:',u,'Bağlantı');
 }
 async function kayitLinkSil(id){
   try{await db.collection('kayit_linkleri').doc(id).delete();KAYIT_DATA.linkler=KAYIT_DATA.linkler.filter(x=>x.id!==id);kayitAdminCiz();}catch(e){showToast('Silinemedi: '+(e.message||e),'error');}
@@ -6250,7 +6287,7 @@ async function ooKaydet(){
   if(OO_EDIT)liste=liste.map(o=>o.id===OO_EDIT?{...o,tarih,tutar,yontem}:o);
   else liste.push({id:ooYeniId(),tarih,tutar,yontem});
   const toplamOdenen=liste.reduce((s,o)=>s+(Number(o.tutar)||0),0),paketTutar=Number(p.tutar)||0;
-  if(toplamOdenen>paketTutar&&!confirm('Toplam ödeme ('+toplamOdenen.toLocaleString(LC())+' ₺) paket tutarını ('+paketTutar.toLocaleString(LC())+' ₺) aşıyor. Yine de kaydedilsin mi?'))return;
+  if(toplamOdenen>paketTutar&&!(await onayAsync('Toplam ödeme ('+toplamOdenen.toLocaleString(LC())+' ₺) paket tutarını ('+paketTutar.toLocaleString(LC())+' ₺) aşıyor. Yine de kaydedilsin mi?','Ödeme tutarı aşıyor')))return;
   await ooYaz(p,liste);
 }
 function ooSil(id){
@@ -6274,7 +6311,7 @@ async function ozelSaatDenetimi(){
     const og=S.ogrenciler.find(o=>o.id===p.ogrenciId);
     const b=Math.round(dusulen[p.id]*10)/10;
     const ad=og?((og.ad||'')+' '+(og.soyad||'')).trim():'?';
-    if(!confirm(ad+' · '+(Number(p.toplamSaat)||0)+' saatlik paket ('+formatDate(p.tarih)+')\nKayıtlı yapılan: '+fmtSaat(Number(p.yapilanSaat)||0)+' saat\nDüşülen derslerin toplamı: '+fmtSaat(b)+' saat\n\nYapılan saat '+fmtSaat(b)+' olarak düzeltilsin mi?\n(Dersler dışında elle saat eklediysen İptal de.)'))continue;
+    if(!(await onayAsync(ad+' · '+(Number(p.toplamSaat)||0)+' saatlik paket ('+formatDate(p.tarih)+')\nKayıtlı yapılan: '+fmtSaat(Number(p.yapilanSaat)||0)+' saat\nDüşülen derslerin toplamı: '+fmtSaat(b)+' saat\n\nYapılan saat '+fmtSaat(b)+' olarak düzeltilsin mi?\n(Dersler dışında elle saat eklediysen İptal de.)')))continue;
     const top=Number(p.toplamSaat)||0;
     try{await db.collection('ozelPaketler').doc(p.id).update({yapilanSaat:b,aktif:b<top});p.yapilanSaat=b;p.aktif=b<top;duzelen++;}catch(e){alert('Hata: '+e.message);}
   }
@@ -8545,9 +8582,9 @@ async function githubYedekTetikle(){
   let repo=localStorage.getItem('gh_repo');
 
   if(!token||!repo){
-    token=prompt('GitHub Personal Access Token girin:\n(github.com → Settings → Developer settings → Personal access tokens → Fine-grained → repo:actions:write yetkisi)');
+    token=await girdiAsync('GitHub Personal Access Token girin:\n(github.com → Settings → Developer settings → Personal access tokens → Fine-grained → repo:actions:write yetkisi)','ghp_…','GitHub Token');
     if(!token)return;
-    repo=prompt('GitHub repo adı girin (kullaniciad/repo-adi formatında):\nÖrnek: tihsametcakir/dans-studio');
+    repo=await girdiAsync('GitHub repo adı girin (kullaniciad/repo-adi formatında):\nÖrnek: tihsametcakir/dans-studio','kullaniciad/repo-adi','GitHub Repo');
     if(!repo)return;
     localStorage.setItem('gh_token',token);
     localStorage.setItem('gh_repo',repo);
@@ -12656,5 +12693,15 @@ function sonOdemelerFiltre(tip){
   }).join('');
 }
 </script>
+<div class="overlay" id="m-uyari" style="z-index:100000;"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:8px;" id="uyari-baslik">Uyarı</div>
+  <div class="uyari-metin" id="uyari-mesaj"></div>
+  <input id="uyari-girdi" class="input" style="display:none;width:100%;box-sizing:border-box;margin:-8px 0 16px;padding:11px 12px;border:1.5px solid #d9ac52a6;border-radius:12px;background:var(--surface2);color:var(--text);font:inherit;">
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-ghost" style="flex:1;padding:13px;display:none;" id="uyari-iptal">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" id="uyari-tamam">Tamam</button>
+  </div>
+</div></div>
 </body>
 </html>
