@@ -612,7 +612,7 @@ body.portal-modu .overlay{z-index:9500;}
 .search-wrap{position:relative;display:flex;align-items:center;}
 #og-arama:focus{border-color:#ff6b6b70;box-shadow:0 0 0 3px #ff6b6b1a;}
 #si-arama:focus{border-color:#a78bfa70;box-shadow:0 0 0 3px #a78bfa1a;}
-.ust-ekle-btn{flex:0 0 132px;width:132px;height:40px;padding:0 8px;white-space:nowrap;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;}
+.ust-ekle-btn{flex:0 0 auto;min-width:132px;width:auto;height:40px;padding:0 8px;white-space:nowrap;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;}
 .search-clear{position:absolute;right:10px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px;display:none;line-height:1;}
 .search-clear.visible{display:block;}
 
@@ -1643,10 +1643,10 @@ try{
     <div id="tatil-liste"></div>
   </div>
   <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#34d39914,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #34d39935;">
-    <div style="font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">🚫 Pratik Yapılmayan Günler</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bazı haftalar pratik yapılmıyor olabilir (tatil, iptal vb.) — o Cumartesiyi buradan işaretle, o dönem için ücrete dahil edilmesin.</div>
+    <div style="font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;" data-i18n="x_pratik_yok_baslik">🚫 Pratik Yapılmayan Günler</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;" data-i18n="x_pratik_yok_acik">Bazı haftalar pratik yapılmıyor olabilir (tatil, iptal vb.) — o Cumartesiyi buradan işaretle, o dönem için ücrete dahil edilmesin.</div>
     <div id="ga-pratik-iptal-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
-    <button class="btn btn-accent" style="width:100%;" onclick="gaPratikIptalEkle()">＋ Pratik Yapılmayan Tarih Ekle</button>
+    <button class="btn btn-accent" style="width:100%;" onclick="gaPratikIptalEkle()" data-i18n="x_pratik_yok_btn">＋ Pratik Yapılmayan Tarih Ekle</button>
   </div>
   <div id="egitmen-panel-content2"></div>
 </div>
@@ -1958,30 +1958,30 @@ try{
   <div class="sheet-title" id="m-sinif-title">Yeni Sınıf</div>
   <div id="si-legacy-kira-box" style="display:none;font-size:12px;color:var(--amber);background:var(--amberbg);border:1px solid #fbbf2430;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;line-height:1.5;">
     ⚠ Bu sınıfta eski, sabit bir kira kaydı (<b id="si-legacy-kira-tutar"></b>) var — bu yüzden "Eğitmenler &amp; Giderler" bölümündeki ortak kira geçmişindeki değişiklikler bu sınıf için <b>geçerli olmuyor</b>, hep bu sabit tutar kullanılıyor.
-    <button type="button" class="btn btn-sm btn-ghost" style="width:100%;margin-top:8px;" onclick="sinifLegacyKiraTemizle()">Sabit kira kaydını kaldır, ortak kira geçmişini kullan</button>
+    <button type="button" class="btn btn-sm btn-ghost" style="width:100%;margin-top:8px;" onclick="sinifLegacyKiraTemizle()" data-i18n="x_legacy_btn2">Sabit kira kaydını kaldır, ortak kira geçmişini kullan</button>
   </div>
-  <div class="field"><label data-i18n="sinif_adi">Sınıf Adı</label><input id="si-ad" placeholder="örn. Salsa Başlangıç"/></div>
+  <div class="field"><label data-i18n="sinif_adi">Sınıf Adı</label><input id="si-ad" placeholder="örn. Salsa Başlangıç" data-i18n-ph="x_orn_sinif"/></div>
   <div class="field"><label data-i18n="egitmen">Eğitmen</label><select id="si-egitmen"><option value="" data-i18n="secin">— Seçin —</option></select></div>
   <div class="field" id="si-asistan-alan" style="display:none;">
     <label data-i18n="asistan_pay_orani">Asistan Pay Oranı (%)</label>
     <input id="si-asistan-pct" type="number" placeholder="40" min="0" max="100"/>
     <div style="font-size:11px;color:var(--text3);margin-top:4px;" data-i18n="asistan_pay_aciklama">O ayın gelirinin bu yüzdesi asistan eğitmene ödenir.</div>
   </div>
-  <div class="field"><label>İkinci Eğitmen (opsiyonel)</label><select id="si-egitmen2"><option value="">— Yok —</option></select></div>
+  <div class="field"><label data-i18n="x_ikinci_egitmen">İkinci Eğitmen (opsiyonel)</label><select id="si-egitmen2"><option value="">— Yok —</option></select></div>
   <div class="field" id="si-asistan2-alan" style="display:none;">
-    <label>2. Eğitmen Pay Oranı (%)</label>
+    <label data-i18n="x_asistan2_pct">2. Eğitmen Pay Oranı (%)</label>
     <input id="si-asistan2-pct" type="number" placeholder="20" min="0" max="100"/>
-    <div style="font-size:11px;color:var(--text3);margin-top:4px;">O ayın gelirinin bu yüzdesi bu eğitmene ödenir (kira ve 1. eğitmenin payı düşüldükten sonra kalan tutarı geçmez).</div>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px;" data-i18n="x_asistan2_acik">O ayın gelirinin bu yüzdesi bu eğitmene ödenir (kira ve 1. eğitmenin payı düşüldükten sonra kalan tutarı geçmez).</div>
   </div>
   <div class="field"><label data-i18n="gun">Gün</label><select id="si-gun"><option value="Pazartesi" data-i18n="pazartesi">Pazartesi</option><option value="Salı" data-i18n="sali">Salı</option><option value="Çarşamba" data-i18n="carsamba">Çarşamba</option><option value="Perşembe" data-i18n="persembe">Perşembe</option><option value="Cuma" data-i18n="cuma">Cuma</option><option value="Cumartesi" data-i18n="cumartesi">Cumartesi</option><option value="Pazar" data-i18n="pazar">Pazar</option></select></div>
   <div class="field"><label data-i18n="saat">Saat</label><input id="si-saat" type="time" value="19:00"/></div>
   <div class="field"><label data-i18n="paket_ucreti_4h">4 Haftalık Paket Ücreti (₺)</label><input id="si-paket" type="number" placeholder="800"/></div>
   <div class="field"><label data-i18n="tek_ders_ucreti">Tek Ders Ücreti (₺)</label><input id="si-tekders" type="number" placeholder="250"/></div>
-  <div class="field"><label>Dönem Başlangıç Tarihi</label><input id="si-donem-baslangic" type="date"/>
-    <div style="font-size:11px;color:var(--text3);margin-top:4px;">Eğitmen ödeme dönemleri (Gider Raporu'ndaki "1. Dönem, 2. Dönem...") bu tarihten itibaren 4'er haftalık bloklar halinde ilerler — takvim ayı değil.</div>
+  <div class="field"><label data-i18n="x_donem_bas">Dönem Başlangıç Tarihi</label><input id="si-donem-baslangic" type="date"/>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px;" data-i18n="x_donem_bas_acik">Eğitmen ödeme dönemleri (Gider Raporu'ndaki "1. Dönem, 2. Dönem...") bu tarihten itibaren 4'er haftalık bloklar halinde ilerler — takvim ayı değil.</div>
   </div>
-  <div class="field"><label>Açılış Tarihi</label><input id="si-acilis" type="date"/>
-    <div id="si-acilis-ipucu" style="font-size:11px;color:var(--text3);margin-top:4px;">Sınıfın açıldığı gün. Takvimde ve yoklamada bu tarihten önceki haftalarda sınıf görünmez; sınıf detayında kaç hafta/ders geçtiği buradan hesaplanır.</div>
+  <div class="field"><label data-i18n="x_acilis">Açılış Tarihi</label><input id="si-acilis" type="date"/>
+    <div id="si-acilis-ipucu" style="font-size:11px;color:var(--text3);margin-top:4px;" data-i18n="x_acilis_acik">Sınıfın açıldığı gün. Takvimde ve yoklamada bu tarihten önceki haftalarda sınıf görünmez; sınıf detayında kaç hafta/ders geçtiği buradan hesaplanır.</div>
   </div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-sinif')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-si" onclick="saveSinif()" data-i18n="btn_kaydet">Kaydet</button></div>
 </div></div>
@@ -2306,23 +2306,23 @@ try{
 <div class="overlay" id="m-grup-kira"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:14px;" id="gk-baslik">Kira Değişikliği Ekle</div>
-  <div class="field"><label>Hangi Tarihten İtibaren Geçerli</label><input id="gk-tarih" type="date"/></div>
-  <div class="field"><label>Aylık Kira (₺)</label><input id="gk-tutar" type="number" placeholder="19600" inputmode="decimal"/></div>
+  <div class="field"><label data-i18n="x_gecerli_tarih">Hangi Tarihten İtibaren Geçerli</label><input id="gk-tarih" type="date"/></div>
+  <div class="field"><label data-i18n="x_aylik_kira">Aylık Kira (₺)</label><input id="gk-tutar" type="number" placeholder="19600" inputmode="decimal"/></div>
   <div style="display:flex;gap:10px;margin-top:6px;">
-    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-grup-kira')">İptal</button>
-    <button class="btn btn-accent" style="flex:1;padding:13px;" id="gk-kaydet" onclick="gaGrupKiraKaydet()">Kaydet</button>
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-grup-kira')" data-i18n="btn_iptal">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" id="gk-kaydet" onclick="gaGrupKiraKaydet()" data-i18n="btn_kaydet">Kaydet</button>
   </div>
 </div></div>
 
 <div class="overlay" id="m-pratik-kira"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:14px;" id="pk-baslik">Pratik Kirası Değişikliği Ekle</div>
-  <div class="field"><label>Hangi Tarihten İtibaren Geçerli</label><input id="pk-tarih" type="date"/></div>
-  <div class="field"><label>Kaç Saat (Her Cumartesi)</label><input id="pk-saat" type="number" placeholder="3" inputmode="decimal"/></div>
-  <div class="field"><label>Saatlik Ücret (₺)</label><input id="pk-saatlik-ucret" type="number" placeholder="1000" inputmode="decimal"/></div>
+  <div class="field"><label data-i18n="x_gecerli_tarih">Hangi Tarihten İtibaren Geçerli</label><input id="pk-tarih" type="date"/></div>
+  <div class="field"><label data-i18n="x_pk_saat">Kaç Saat (Her Cumartesi)</label><input id="pk-saat" type="number" placeholder="3" inputmode="decimal"/></div>
+  <div class="field"><label data-i18n="x_pk_ucret">Saatlik Ücret (₺)</label><input id="pk-saatlik-ucret" type="number" placeholder="1000" inputmode="decimal"/></div>
   <div style="display:flex;gap:10px;margin-top:6px;">
-    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-pratik-kira')">İptal</button>
-    <button class="btn btn-accent" style="flex:1;padding:13px;" id="pk-kaydet" onclick="gaPratikKiraKaydet()">Kaydet</button>
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-pratik-kira')" data-i18n="btn_iptal">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" id="pk-kaydet" onclick="gaPratikKiraKaydet()" data-i18n="btn_kaydet">Kaydet</button>
   </div>
 </div></div>
 
@@ -2330,32 +2330,32 @@ try{
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:14px;" data-i18n="tatil_gunleri">🎌 Tatil Günleri</div>
   <div class="field"><label data-i18n="tarih_seciniz">Tarih seçiniz</label><input id="tatil-tarih" type="date"/></div>
-  <div class="field"><label>Açıklama</label><input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad"/></div>
+  <div class="field"><label data-i18n="x_aciklama">Açıklama</label><input id="tatil-ad" type="text" placeholder="Açıklama (örn: Kurban Bayramı)" data-i18n-ph="ph_tatil_ad"/></div>
   <div style="display:flex;gap:10px;margin-top:6px;">
-    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-tatil')">İptal</button>
-    <button class="btn btn-accent" style="flex:1;padding:13px;" onclick="tatilEkle()">Kaydet</button>
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-tatil')" data-i18n="btn_iptal">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" onclick="tatilEkle()" data-i18n="btn_kaydet">Kaydet</button>
   </div>
 </div></div>
 
 <div class="overlay" id="m-pratik-iptal"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
-  <div style="font-size:17px;font-weight:600;margin-bottom:14px;">Pratik Yapılmayan Tarih Ekle</div>
-  <div class="field"><label>Hangi Cumartesi Pratik Yapılmadı</label><input id="pi-tarih" type="date"/></div>
-  <div class="field"><label>Açıklama</label><input id="pi-ad" type="text" placeholder="Açıklama (örn: Bayram tatili)"/></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:14px;" data-i18n="x_pratik_yok_form">Pratik Yapılmayan Tarih Ekle</div>
+  <div class="field"><label data-i18n="x_pratik_yok_hangi">Hangi Cumartesi Pratik Yapılmadı</label><input id="pi-tarih" type="date"/></div>
+  <div class="field"><label data-i18n="x_aciklama">Açıklama</label><input id="pi-ad" type="text" placeholder="Açıklama (örn: Bayram tatili)" data-i18n-ph="x_aciklama_ph_bayram"/></div>
   <div style="display:flex;gap:10px;margin-top:6px;">
-    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-pratik-iptal')">İptal</button>
-    <button class="btn btn-accent" style="flex:1;padding:13px;" onclick="gaPratikIptalKaydetForm()">Kaydet</button>
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-pratik-iptal')" data-i18n="btn_iptal">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" onclick="gaPratikIptalKaydetForm()" data-i18n="btn_kaydet">Kaydet</button>
   </div>
 </div></div>
 
 <div class="overlay" id="m-ozel-kira"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:14px;" id="ok-baslik">Kira Değişikliği Ekle</div>
-  <div class="field"><label>Hangi Tarihten İtibaren Geçerli</label><input id="ok-tarih" type="date"/></div>
-  <div class="field"><label>Aylık Kira (₺)</label><input id="ok-tutar" type="number" placeholder="10000" inputmode="decimal"/></div>
+  <div class="field"><label data-i18n="x_gecerli_tarih">Hangi Tarihten İtibaren Geçerli</label><input id="ok-tarih" type="date"/></div>
+  <div class="field"><label data-i18n="x_aylik_kira">Aylık Kira (₺)</label><input id="ok-tutar" type="number" placeholder="10000" inputmode="decimal"/></div>
   <div style="display:flex;gap:10px;margin-top:6px;">
-    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-ozel-kira')">İptal</button>
-    <button class="btn btn-accent" style="flex:1;padding:13px;" id="ok-kaydet" onclick="gaOzelKiraKaydet()">Kaydet</button>
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="closeModal('m-ozel-kira')" data-i18n="btn_iptal">İptal</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" id="ok-kaydet" onclick="gaOzelKiraKaydet()" data-i18n="btn_kaydet">Kaydet</button>
   </div>
 </div></div>
 
@@ -3144,6 +3144,138 @@ const TRANSLATIONS={
     aylik_ortak_kira:'Общая аренда в месяц (₺)', nin_ozel_dersleri:'Частные уроки {ad}', atanmamis_ozel_dersler:'Неназначенные частные уроки',
   },
 };
+Object.assign(TRANSLATIONS.tr,{
+  x_legacy_btn2:'Sabit kira kaydını kaldır, ortak kira geçmişini kullan',
+  x_eksik_band:'{n} öğrencinin eksik ödemesi var · toplam {t}',
+  x_orn_sinif:'örn. Salsa Başlangıç',
+  x_yok:'— Yok —',
+  x_ikinci_egitmen:'İkinci Eğitmen (opsiyonel)',
+  x_asistan2_pct:'2. Eğitmen Pay Oranı (%)',
+  x_asistan2_acik:'O ayın gelirinin bu yüzdesi bu eğitmene ödenir (kira ve 1. eğitmenin payı düşüldükten sonra kalan tutarı geçmez).',
+  x_donem_bas:'Dönem Başlangıç Tarihi',
+  x_donem_bas_acik:'Eğitmen ödeme dönemleri (Gider Raporu\'ndaki "1. Dönem, 2. Dönem...") bu tarihten itibaren 4\'er haftalık bloklar halinde ilerler — takvim ayı değil.',
+  x_acilis:'Açılış Tarihi',
+  x_acilis_acik:'Sınıfın açıldığı gün. Takvimde ve yoklamada bu tarihten önceki haftalarda sınıf görünmez; sınıf detayında kaç hafta/ders geçtiği buradan hesaplanır.',
+  x_acilis_oto:' Boş bırakırsan otomatik kullanılır: ',
+  x_pratik_yok_baslik:'🚫 Pratik Yapılmayan Günler',
+  x_pratik_yok_acik:'Bazı haftalar pratik yapılmıyor olabilir (tatil, iptal vb.) — o Cumartesiyi buradan işaretle, o dönem için ücrete dahil edilmesin.',
+  x_pratik_yok_btn:'＋ Pratik Yapılmayan Tarih Ekle',
+  x_pratik_yok_form:'Pratik Yapılmayan Tarih Ekle',
+  x_pratik_yok_hangi:'Hangi Cumartesi Pratik Yapılmadı',
+  x_aciklama:'Açıklama',
+  x_aciklama_ph_bayram:'Açıklama (örn: Bayram tatili)',
+  x_grup_kira_baslik:'💃 Grup Dersleri Kirası',
+  x_grup_kira_acik:'Bütün grup sınıflarının aynı kirayı ödediği tek bir yer — tek tek sınıf sınıf girmene gerek yok. Kira değiştiğinde buraya bir kayıt ekle, geçmiş dönemler eski tutarla, yeni dönemler yeni tutarla hesaplanmaya devam eder.',
+  x_kira_ekle_btn:'＋ Kira Değişikliği Ekle',
+  x_kira_ekle:'Kira Değişikliği Ekle',
+  x_kira_duzenle:'Kira Değişikliğini Düzenle',
+  x_pratik_kira_baslik:'🏋️ Cumartesi Pratik Kirası',
+  x_pratik_kira_acik:'Cumartesi pratik günü için kiralanan stüdyonun kaç saatliğine, saatte ne kadar ödendiği. Her sınıfın 4 haftalık dönemi normalde tam 4 Cumartesi içerir (aşağıda pratik yapılmayan bir Cumartesi işaretlemediğin sürece), tutar aktif tüm grup sınıfları arasında eşit bölünüp, kira gibi eğitmenlere pay dağıtılmadan önce gelirden düşülür. Tutar değişirse buraya yeni bir kayıt ekle — geçmiş dönemler eski tutarla hesaplanmaya devam eder.',
+  x_pratik_kira_btn:'＋ Pratik Kirası Değişikliği Ekle',
+  x_pratik_kira_ekle:'Pratik Kirası Değişikliği Ekle',
+  x_pratik_kira_duzenle:'Pratik Kirası Değişikliğini Düzenle',
+  x_gecerli_tarih:'Hangi Tarihten İtibaren Geçerli',
+  x_aylik_kira:'Aylık Kira (₺)',
+  x_pk_saat:'Kaç Saat (Her Cumartesi)',
+  x_pk_ucret:'Saatlik Ücret (₺)',
+  x_legacy_baslik:'⚠ Eski Sabit Kira Kayıtları',
+  x_legacy_acik:'Bu sınıflarda hâlâ eski, sabit bir kira kaydı var — bu yüzden aşağıdaki "Grup Dersleri Kirası" geçmişindeki değişiklikler bunlar için geçerli olmuyor, hep bu sabit tutarlar kullanılıyor:',
+  x_legacy_btn:'Hepsini Temizle, Ortak Kira Geçmişini Kullan',
+  x_pratik_kirasi:'Pratik Kirası',
+  x_pratik_kira_payi:'Pratik kirası payı',
+  x_gelir_not:'ℹ Buradaki sınıf gelirleri <b>takvim ayına göre değil</b>, her sınıfın kendi "Dönem Başlangıç Tarihi"nden itibaren ilerleyen 4 haftalık dönemlere göre, o dönemde <b>gerçekten verilen derslere</b> göre bölünür. Henüz verilmemiş derslerin payı, dersin verileceği döneme sayılır. Her sınıfın altındaki ‹ › okları ile o sınıfın dönemleri arasında gezebilirsin.',
+  x_iade_baslik:'↩ İadeler (son 12 ay)',
+  x_iade_not:'Brüt gelir iadenin yapıldığı aydan düşülür. Eğitmen hakedişinde ise iade edilen derslerin payı o derslerin düştüğü dönemden çıkar.',
+  x_ozel:'Özel'
+});
+Object.assign(TRANSLATIONS.en,{
+  x_legacy_btn2:'Remove the fixed rent record, use the shared rent history',
+  x_eksik_band:'{n} student(s) with unpaid balance · total {t}',
+  x_orn_sinif:'e.g. Salsa Beginner',
+  x_yok:'— None —',
+  x_ikinci_egitmen:'Second Instructor (optional)',
+  x_asistan2_pct:'2nd Instructor Share (%)',
+  x_asistan2_acik:'This percentage of that month\'s income is paid to this instructor (never more than what is left after rent and the 1st instructor\'s share).',
+  x_donem_bas:'Period Start Date',
+  x_donem_bas_acik:'Instructor payment periods ("Period 1, Period 2…" in the Expense Report) run in 4-week blocks from this date — not calendar months.',
+  x_acilis:'Opening Date',
+  x_acilis_acik:'The day the class opened. Before this date the class does not appear in the calendar or attendance; weeks/lessons elapsed in the class details are counted from here.',
+  x_acilis_oto:' If left empty, this is used automatically: ',
+  x_pratik_yok_baslik:'🚫 No-Practice Days',
+  x_pratik_yok_acik:'Practice may not be held some weeks (holiday, cancellation, etc.) — mark that Saturday here so it is not included in the fee for that period.',
+  x_pratik_yok_btn:'＋ Add No-Practice Date',
+  x_pratik_yok_form:'Add No-Practice Date',
+  x_pratik_yok_hangi:'Which Saturday Had No Practice',
+  x_aciklama:'Description',
+  x_aciklama_ph_bayram:'Description (e.g. Holiday)',
+  x_grup_kira_baslik:'💃 Group Classes Rent',
+  x_grup_kira_acik:'One place for the rent that all group classes pay — no need to enter it class by class. When the rent changes, add a record here; past periods keep the old amount and new periods use the new one.',
+  x_kira_ekle_btn:'＋ Add Rent Change',
+  x_kira_ekle:'Add Rent Change',
+  x_kira_duzenle:'Edit Rent Change',
+  x_pratik_kira_baslik:'🏋️ Saturday Practice Rent',
+  x_pratik_kira_acik:'For how many hours the studio is rented for Saturday practice and how much is paid per hour. Each class\'s 4-week period normally contains exactly 4 Saturdays (unless you mark a no-practice Saturday below); the amount is split equally among all active group classes and deducted from income before instructor shares, like rent. If the amount changes, add a new record here — past periods keep the old amount.',
+  x_pratik_kira_btn:'＋ Add Practice Rent Change',
+  x_pratik_kira_ekle:'Add Practice Rent Change',
+  x_pratik_kira_duzenle:'Edit Practice Rent Change',
+  x_gecerli_tarih:'Effective From',
+  x_aylik_kira:'Monthly Rent (₺)',
+  x_pk_saat:'Hours (Every Saturday)',
+  x_pk_ucret:'Hourly Rate (₺)',
+  x_legacy_baslik:'⚠ Old Fixed Rent Records',
+  x_legacy_acik:'These classes still have an old fixed rent record — so changes in the "Group Classes Rent" history below do not apply to them; these fixed amounts are always used:',
+  x_legacy_btn:'Clear All, Use Shared Rent History',
+  x_pratik_kirasi:'Practice Rent',
+  x_pratik_kira_payi:'Practice rent share',
+  x_gelir_not:'ℹ Class income here is <b>not by calendar month</b>: it is split by each class\'s own 4-week periods starting from its "Period Start Date", according to the <b>lessons actually given</b> in that period. The share of lessons not yet given is counted in the period when they will be given. Use the ‹ › arrows under each class to browse its periods.',
+  x_iade_baslik:'↩ Refunds (last 12 months)',
+  x_iade_not:'Gross income is reduced in the month the refund was made. In instructor earnings, the share of refunded lessons is removed from the period those lessons belong to.',
+  x_ozel:'Private'
+});
+Object.assign(TRANSLATIONS.ru,{
+  x_legacy_btn2:'Удалить фиксированную аренду, использовать общую историю аренды',
+  x_eksik_band:'Учеников с долгом: {n} · всего {t}',
+  x_orn_sinif:'напр. Сальса для начинающих',
+  x_yok:'— Нет —',
+  x_ikinci_egitmen:'Второй преподаватель (необязательно)',
+  x_asistan2_pct:'Доля 2-го преподавателя (%)',
+  x_asistan2_acik:'Этот процент дохода за месяц выплачивается этому преподавателю (не больше остатка после аренды и доли 1-го преподавателя).',
+  x_donem_bas:'Дата начала периода',
+  x_donem_bas_acik:'Периоды выплат преподавателям («Период 1, Период 2…» в отчёте о расходах) идут 4-недельными блоками от этой даты, а не по календарным месяцам.',
+  x_acilis:'Дата открытия',
+  x_acilis_acik:'День открытия группы. В неделях до этой даты группа не показывается в календаре и посещаемости; число прошедших недель/занятий считается отсюда.',
+  x_acilis_oto:' Если оставить пустым, автоматически используется: ',
+  x_pratik_yok_baslik:'🚫 Дни без практики',
+  x_pratik_yok_acik:'В некоторые недели практики может не быть (праздник, отмена и т. д.) — отметьте эту субботу здесь, и она не войдёт в оплату за период.',
+  x_pratik_yok_btn:'＋ Добавить дату без практики',
+  x_pratik_yok_form:'Добавить дату без практики',
+  x_pratik_yok_hangi:'В какую субботу практики не было',
+  x_aciklama:'Описание',
+  x_aciklama_ph_bayram:'Описание (напр.: праздник)',
+  x_grup_kira_baslik:'💃 Аренда групповых занятий',
+  x_grup_kira_acik:'Одно место для аренды, которую платят все группы — не нужно вводить по каждой группе. Когда аренда меняется, добавьте запись здесь: прошлые периоды считаются по старой сумме, новые — по новой.',
+  x_kira_ekle_btn:'＋ Добавить изменение аренды',
+  x_kira_ekle:'Добавить изменение аренды',
+  x_kira_duzenle:'Изменить запись об аренде',
+  x_pratik_kira_baslik:'🏋️ Аренда субботней практики',
+  x_pratik_kira_acik:'Сколько часов арендуется студия для субботней практики и сколько платят за час. 4-недельный период каждой группы обычно включает ровно 4 субботы (если ниже не отмечена суббота без практики); сумма делится поровну между всеми активными группами и вычитается из дохода до выплат преподавателям, как аренда. Если сумма изменится, добавьте новую запись — прошлые периоды считаются по старой.',
+  x_pratik_kira_btn:'＋ Добавить изменение аренды практики',
+  x_pratik_kira_ekle:'Добавить изменение аренды практики',
+  x_pratik_kira_duzenle:'Изменить запись об аренде практики',
+  x_gecerli_tarih:'Действует с даты',
+  x_aylik_kira:'Аренда в месяц (₺)',
+  x_pk_saat:'Сколько часов (каждую субботу)',
+  x_pk_ucret:'Почасовая ставка (₺)',
+  x_legacy_baslik:'⚠ Старые записи о фиксированной аренде',
+  x_legacy_acik:'У этих групп ещё есть старая фиксированная запись об аренде — поэтому изменения в истории «Аренда групповых занятий» ниже на них не действуют, всегда используются эти суммы:',
+  x_legacy_btn:'Очистить всё, использовать общую историю аренды',
+  x_pratik_kirasi:'Аренда практики',
+  x_pratik_kira_payi:'Доля аренды практики',
+  x_gelir_not:'ℹ Доход групп здесь считается <b>не по календарным месяцам</b>, а по 4-недельным периодам каждой группы, начиная с её «Даты начала периода», и делится по <b>фактически проведённым занятиям</b> этого периода. Доля ещё не проведённых занятий относится к периоду, когда они пройдут. Стрелками ‹ › под каждой группой можно листать её периоды.',
+  x_iade_baslik:'↩ Возвраты (последние 12 мес.)',
+  x_iade_not:'Валовой доход уменьшается в месяц, когда сделан возврат. В заработке преподавателя доля возвращённых занятий вычитается из периода, к которому эти занятия относятся.',
+  x_ozel:'Индив.'
+});
 function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIONS.tr[key]||key;}
 function LC(){return LANG==='en'?'en-US':LANG==='ru'?'ru-RU':'tr-TR';}
 function applyLang(){
@@ -3151,7 +3283,7 @@ function applyLang(){
     'navlbl-anasayfa':'nav_anasayfa','navlbl-ogrenciler':'nav_ogrenciler',
     'navlbl-siniflar':'nav_siniflar','navlbl-takvim':'nav_takvim','navlbl-yoklama':'nav_yoklama',
     'navlbl-odemeler':'nav_odemeler','navlbl-gelirgider':'nav_gelirgider',
-    'lbl-aktif-ogrenci':'lbl_aktif_ogrenci','lbl-kayit':'lbl_kayit','lbl-sinif':'lbl_aktif_sinif',
+    'lbl-aktif-ogrenci':'lbl_aktif_ogrenci','lbl-kayit':'lbl_kayit','lbl-sinif':'lbl_aktif_sinif','gg-lbl-gelir':'lbl_bu_ay_gelir','gg-lbl-net':'lbl_net',
     'lbl-bu-ay-gelir':'lbl_bu_ay_gelir','lbl-net':'lbl_net','lbl-paket-yenileme':'lbl_paket_yenileme',
     'navlbl-ozel':'nav_ozel',
     'lbl-filter-aktif':'filter_aktif','lbl-filter-pasif':'filter_pasif','lbl-filter-hepsi':'filter_hepsi',
@@ -3162,7 +3294,7 @@ function applyLang(){
   [['drawerBtnYoklama','drawer_yoklama'],['drawerBtnVideolar','drawer_videolar']].forEach(([id,k])=>{const el=document.querySelector('#'+id+' .dh-tx');if(el)el.textContent=t(k).replace(/^\S+\s+/,'');});
   document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=t(el.getAttribute('data-i18n'));});
   document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.getAttribute('data-i18n-ph'));});
-  const ph={'og-arama':'ph_og_arama','si-arama':'ph_si_arama'};
+  const ph={'og-arama':'ph_og_arama','ozel-arama':'ph_og_arama','si-arama':'ph_si_arama'};
   Object.keys(ph).forEach(id=>{const el=document.getElementById(id);if(el)el.placeholder=t(ph[id]);});
   const syncText=document.getElementById('syncText');
   if(syncText)syncText.textContent=syncText.textContent==='Kaydediliyor...'||syncText.textContent==='Saving...'||syncText.textContent==='Сохранение...'?t('sync_saving'):t('sync_live');
@@ -4404,10 +4536,10 @@ let EDIT_SINIF=null;
 function openSinifModal(id){
   EDIT_SINIF=id||null;
   const egSel=document.getElementById('si-egitmen');
-  egSel.innerHTML='<option value="">— Seçin —</option>'+
+  egSel.innerHTML='<option value="">'+t('secin')+'</option>'+
     S.egitmenler.map(e=>`<option value="${e.id}">${e.ad}${e.basEgitmen?' ⭐':''}</option>`).join('');
   const egSel2=document.getElementById('si-egitmen2');
-  egSel2.innerHTML='<option value="">— Yok —</option>'+
+  egSel2.innerHTML='<option value="">'+t('x_yok')+'</option>'+
     S.egitmenler.map(e=>`<option value="${e.id}">${e.ad}${e.basEgitmen?' ⭐':''}</option>`).join('');
 
   const guncelleSinifAlani=()=>{
@@ -6904,7 +7036,7 @@ let DP_TARIH=null,EDIT_DERS_PLAN=null;
 function otHucreTikla(tarih,saat){
   DP_TARIH=tarih;EDIT_DERS_PLAN=null;
   const ogSel=document.getElementById('dp-ogrenci');
-  ogSel.innerHTML='<option value="">— Seçin —</option>'+
+  ogSel.innerHTML='<option value="">'+t('secin')+'</option>'+
     [...dpOgrenciSecenekleri()].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'))
       .map(o=>`<option value="${o.id}">${o.ad} ${o.soyad||''}${o.asistan?' 🤝':''}</option>`).join('');
   document.getElementById('dp-egitmen').value='';
@@ -6987,7 +7119,7 @@ function otSeansDuzenle(id){
   if(s.dusuldu){alert('Bu ders zaten paketten düşüldü, düzenlenemez. Gerekirse silip yeniden planla.');return;}
   EDIT_DERS_PLAN=id;DP_TARIH=s.tarih;
   const ogSel=document.getElementById('dp-ogrenci');
-  ogSel.innerHTML='<option value="">— Seçin —</option>'+
+  ogSel.innerHTML='<option value="">'+t('secin')+'</option>'+
     [...S.ogrenciler].sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'))
       .map(o=>`<option value="${o.id}" ${o.id===s.ogrenciId?'selected':''}>${o.ad} ${o.soyad||''}</option>`).join('');
   document.getElementById('dp-saat').value=s.saat;
@@ -7757,7 +7889,7 @@ function renderOzel(){
   const aktifSayisi=sirali.filter(aktifPaketliMi).length;
   const eksikOgSayi=sirali.filter(og=>S.ozelPaketler.some(p=>p.ogrenciId===og.id&&ozelPaketEksikTutar(p)>0)).length;
   const eksikGenel=S.ozelPaketler.reduce((s,p)=>s+ozelPaketEksikTutar(p),0);
-  const eksikBand=eksikOgSayi?`<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:10px;border-radius:var(--radius-sm);background:var(--accentbg);border:1px solid #ff6b6b50;color:var(--accent);font-size:13px;font-weight:600;">⚠ ${eksikOgSayi} öğrencinin eksik ödemesi var · toplam ${eksikGenel.toLocaleString(LC())} ₺</div>`:'';
+  const eksikBand=eksikOgSayi?`<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:10px;border-radius:var(--radius-sm);background:var(--accentbg);border:1px solid #ff6b6b50;color:var(--accent);font-size:13px;font-weight:600;">⚠ ${t('x_eksik_band').replace('{n}',eksikOgSayi).replace('{t}',eksikGenel.toLocaleString(LC())+' ₺')}</div>`:'';
   el.innerHTML=eksikBand+sirali.map((og,ozelSira)=>{
     const baslik=(ozelSira===aktifSayisi&&aktifSayisi<sirali.length)?'<div style="font-size:12px;font-weight:600;color:var(--text2);margin:18px 2px 8px;text-transform:uppercase;letter-spacing:.04em;">'+t('ozel_aktif_paketsiz')+' ('+(sirali.length-aktifSayisi)+')</div>':'';
     return baslik+(()=>{
@@ -10366,9 +10498,9 @@ function sinifAcikMi(si,tarihStr){const a=sinifAcilisTarihi(si);return !a||tarih
 function sinifAcilisIpucuGuncelle(si){
   const el=document.getElementById('si-acilis-ipucu');
   if(!el)return;
-  const temel='Sınıfın açıldığı gün. Takvimde ve yoklamada bu tarihten önceki haftalarda sınıf görünmez; sınıf detayında kaç hafta/ders geçtiği buradan hesaplanır.';
+  const temel=t('x_acilis_acik');
   const a=si&&!si.acilisTarihi?sinifAcilis(si):null;
-  el.textContent=temel+(a?' Boş bırakırsan otomatik kullanılır: '+formatDateTamYil(a.tarih)+' ('+t(a.kaynak==='ilk_yoklama'?'ilk_yoklama_lbl':'ilk_odeme_lbl')+').':'');
+  el.textContent=temel+(a?t('x_acilis_oto')+formatDateTamYil(a.tarih)+' ('+t(a.kaynak==='ilk_yoklama'?'ilk_yoklama_lbl':'ilk_odeme_lbl')+').':'');
 }
 // Kapalı sınıfın kapanış tarihi: sınıf geçmişindeki son "kapatıldı" olayı
 function sinifKapanisTarihi(si){
@@ -10809,33 +10941,33 @@ async function renderEgitmenPanel(){
   let html=`
     ${legacySiniflar.length?`
     <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#ff6b6b14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #ff6b6b35;">
-      <div style="font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">⚠ Eski Sabit Kira Kayıtları</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bu sınıflarda hâlâ eski, sabit bir kira kaydı var — bu yüzden aşağıdaki "Grup Dersleri Kirası" geçmişindeki değişiklikler bunlar için geçerli olmuyor, hep bu sabit tutarlar kullanılıyor:</div>
+      <div style="font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('x_legacy_baslik')}</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('x_legacy_acik')}</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
         ${legacySiniflar.map(si=>`<div style="font-size:12.5px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;"><span>${si.ad}</span><b>${(si.kira||0).toLocaleString(LC())} ₺</b></div>`).join('')}
       </div>
-      <button class="btn btn-accent" style="width:100%;" onclick="tumLegacyKiralariTemizle()">Hepsini Temizle, Ortak Kira Geçmişini Kullan</button>
+      <button class="btn btn-accent" style="width:100%;" onclick="tumLegacyKiralariTemizle()">${t('x_legacy_btn')}</button>
     </div>`:''}
 
     <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#22d3ee14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #22d3ee35;">
-      <div style="font-size:12px;font-weight:600;color:var(--cyan);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">💃 Grup Dersleri Kirası</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Bütün grup sınıflarının aynı kirayı ödediği tek bir yer — tek tek sınıf sınıf girmene gerek yok. Kira değiştiğinde buraya bir kayıt ekle, geçmiş dönemler eski tutarla, yeni dönemler yeni tutarla hesaplanmaya devam eder.</div>
+      <div style="font-size:12px;font-weight:600;color:var(--cyan);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('x_grup_kira_baslik')}</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('x_grup_kira_acik')}</div>
       <div id="ga-grup-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
-      <button class="btn btn-accent" style="width:100%;" onclick="gaGrupKiraEkle()">＋ Kira Değişikliği Ekle</button>
+      <button class="btn btn-accent" style="width:100%;" onclick="gaGrupKiraEkle()">${t('x_kira_ekle_btn')}</button>
     </div>
 
     <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#34d39914,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #34d39935;">
-      <div style="font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">🏋️ Cumartesi Pratik Kirası</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">Cumartesi pratik günü için kiralanan stüdyonun kaç saatliğine, saatte ne kadar ödendiği. Her sınıfın 4 haftalık dönemi normalde tam 4 Cumartesi içerir (aşağıda pratik yapılmayan bir Cumartesi işaretlemediğin sürece), tutar aktif tüm grup sınıfları arasında eşit bölünüp, kira gibi eğitmenlere pay dağıtılmadan önce gelirden düşülür. Tutar değişirse buraya yeni bir kayıt ekle — geçmiş dönemler eski tutarla hesaplanmaya devam eder.</div>
+      <div style="font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">${t('x_pratik_kira_baslik')}</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('x_pratik_kira_acik')}</div>
       <div id="ga-pratik-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
-      <button class="btn btn-accent" style="width:100%;" onclick="gaPratikKiraEkle()">＋ Pratik Kirası Değişikliği Ekle</button>
+      <button class="btn btn-accent" style="width:100%;" onclick="gaPratikKiraEkle()">${t('x_pratik_kira_btn')}</button>
     </div>
 
     <div style="margin-bottom:14px;padding:14px;background:linear-gradient(135deg,#ff6b6b14,var(--surface2) 60%);border-radius:var(--radius);border:1px solid #ff6b6b35;">
       <div style="font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">🎓 ${t('ozel_ders_studyo_kirasi')}</div>
       <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;">${t('ozel_kira_aciklama')} Tutar değişirse (zam vb.) buraya yeni bir kayıt ekle — geçmiş aylar eski tutarla hesaplanmaya devam eder.</div>
       <div id="ga-ozel-kira-liste" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
-      <button class="btn btn-accent" style="width:100%;" onclick="gaOzelKiraEkle()">＋ Kira Değişikliği Ekle</button>
+      <button class="btn btn-accent" style="width:100%;" onclick="gaOzelKiraEkle()">${t('x_kira_ekle_btn')}</button>
     </div>`;
 
   el.innerHTML=html;
@@ -10889,7 +11021,7 @@ async function gaGrupKiraKaydetListe(liste){
 let GK_DUZENLE_IDX=null;
 function gaGrupKiraEkle(){
   GK_DUZENLE_IDX=null;
-  document.getElementById('gk-baslik').textContent='Kira Değişikliği Ekle';
+  document.getElementById('gk-baslik').textContent=t('x_kira_ekle');
   document.getElementById('gk-tarih').value=bugunTarih();
   document.getElementById('gk-tutar').value='';
   openModal('m-grup-kira');
@@ -10898,7 +11030,7 @@ function gaGrupKiraDuzenle(i){
   const mevcut=(GIDER_AYARLARI.grupKiraGecmisi||[])[i];
   if(!mevcut)return;
   GK_DUZENLE_IDX=i;
-  document.getElementById('gk-baslik').textContent='Kira Değişikliğini Düzenle';
+  document.getElementById('gk-baslik').textContent=t('x_kira_duzenle');
   document.getElementById('gk-tarih').value=mevcut.tarih;
   document.getElementById('gk-tutar').value=mevcut.tutar||'';
   openModal('m-grup-kira');
@@ -10953,7 +11085,7 @@ async function gaOzelKiraKaydetListe(liste){
 let OK_DUZENLE_IDX=null;
 function gaOzelKiraEkle(){
   OK_DUZENLE_IDX=null;
-  document.getElementById('ok-baslik').textContent='Kira Değişikliği Ekle';
+  document.getElementById('ok-baslik').textContent=t('x_kira_ekle');
   document.getElementById('ok-tarih').value=bugunTarih();
   document.getElementById('ok-tutar').value=GIDER_AYARLARI.kira||'';
   openModal('m-ozel-kira');
@@ -10962,7 +11094,7 @@ function gaOzelKiraDuzenle(i){
   const mevcut=(GIDER_AYARLARI.ozelKiraGecmisi||[])[i];
   if(!mevcut)return;
   OK_DUZENLE_IDX=i;
-  document.getElementById('ok-baslik').textContent='Kira Değişikliğini Düzenle';
+  document.getElementById('ok-baslik').textContent=t('x_kira_duzenle');
   document.getElementById('ok-tarih').value=mevcut.tarih;
   document.getElementById('ok-tutar').value=mevcut.tutar||'';
   openModal('m-ozel-kira');
@@ -11013,7 +11145,7 @@ async function gaPratikKiraKaydetListe(liste){
 let PK_DUZENLE_IDX=null;
 function gaPratikKiraEkle(){
   PK_DUZENLE_IDX=null;
-  document.getElementById('pk-baslik').textContent='Pratik Kirası Değişikliği Ekle';
+  document.getElementById('pk-baslik').textContent=t('x_pratik_kira_ekle');
   document.getElementById('pk-tarih').value=bugunTarih();
   document.getElementById('pk-saat').value='';
   document.getElementById('pk-saatlik-ucret').value='';
@@ -11023,7 +11155,7 @@ function gaPratikKiraDuzenle(i){
   const mevcut=(GIDER_AYARLARI.pratikKiraGecmisi||[])[i];
   if(!mevcut)return;
   PK_DUZENLE_IDX=i;
-  document.getElementById('pk-baslik').textContent='Pratik Kirası Değişikliğini Düzenle';
+  document.getElementById('pk-baslik').textContent=t('x_pratik_kira_duzenle');
   document.getElementById('pk-tarih').value=mevcut.tarih;
   document.getElementById('pk-saat').value=mevcut.saat||'';
   document.getElementById('pk-saatlik-ucret').value=mevcut.saatlikUcret||'';
@@ -11418,7 +11550,7 @@ async function renderGiderRapor(){
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--accentbg),transparent);border:1px solid #ff6b6b30;margin-bottom:10px;">
       <div style="font-size:11px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('giderler')}</div>
       <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('toplam_kira')}</span><span style="font-weight:600;color:var(--accent);">−${toplamKira.toLocaleString(LC())} ₺</span></div>
-      ${toplamPratikKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🏋️ Pratik Kirası</span><span style="font-weight:600;color:var(--accent);">−${toplamPratikKira.toLocaleString(LC())} ₺</span></div>`:''}
+      ${toplamPratikKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🏋️ ${t('x_pratik_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${toplamPratikKira.toLocaleString(LC())} ₺</span></div>`:''}
       ${toplamAsistanOdeme>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('asistan_odemeleri')}</span><span style="font-weight:600;color:var(--accent);">−${toplamAsistanOdeme.toLocaleString(LC())} ₺</span></div>`:''}
       ${ozelStudyoKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('ozel_ders_studyo_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${ozelStudyoKira.toLocaleString(LC())} ₺</span></div>`:''}
       <div class="gider-satir" style="border-top:1px solid #ff6b6b40;margin-top:4px;padding-top:8px;">
@@ -11451,7 +11583,7 @@ async function renderGiderRapor(){
 
   if(sinifDetaylar.length){
     html+=`<div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>
-    <div style="font-size:11px;color:var(--text3);background:var(--surface2);border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.5;">ℹ Buradaki sınıf gelirleri <b>takvim ayına göre değil</b>, her sınıfın kendi "Dönem Başlangıç Tarihi"nden itibaren ilerleyen 4 haftalık dönemlere göre, o dönemde <b>gerçekten verilen derslere</b> göre bölünür. Henüz verilmemiş derslerin payı, dersin verileceği döneme sayılır. Her sınıfın altındaki ‹ › okları ile o sınıfın dönemleri arasında gezebilirsin.</div>`;
+    <div style="font-size:11px;color:var(--text3);background:var(--surface2);border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.5;">${t('x_gelir_not')}</div>`;
     sinifDetaylar.forEach(d=>{
       const renk=RENK_BAR[d.idx%RENK_BAR.length];
       const karRenk=d.basEgitmenKar>=0?'var(--purple)':'var(--accent)';
@@ -11509,7 +11641,7 @@ async function renderGiderRapor(){
         </div>
         ${d.pratikPay>0?`
         <div class="gider-satir" style="font-size:12px;">
-          <span style="color:var(--text2);">🏋️ Pratik kirası payı</span>
+          <span style="color:var(--text2);">🏋️ ${t('x_pratik_kira_payi')}</span>
           <span style="color:var(--accent);font-weight:600;">−${d.pratikPay.toLocaleString(LC())} ₺</span>
         </div>`:''}
 
@@ -11820,7 +11952,7 @@ function renderGelirTrend(){
 
   const legendHtml=segmentler.map(s=>{
     const swatchBg=s.renk?`background:${s.renk};`:`background:linear-gradient(135deg,${s.desenRenkleri[0]} 50%,${s.desenRenkleri[1]} 50%);`;
-    return `<span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:10px;height:10px;${swatchBg}opacity:${s.tip==='ozel'?0.55:0.95};border-radius:2px;"></span>${s.ad} · ${s.tip==='grup'?'Grup':'Özel'}</span>`;
+    return `<span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:10px;height:10px;${swatchBg}opacity:${s.tip==='ozel'?0.55:0.95};border-radius:2px;"></span>${s.ad} · ${s.tip==='grup'?t('grup'):t('x_ozel')}</span>`;
   }).join('')
     +`<span style="display:flex;align-items:center;gap:4px;color:var(--text2);"><span style="display:inline-block;width:16px;height:2px;background:var(--cyan);border-radius:1px;"></span>${t('net_gelir')}</span>`;
 
@@ -11861,12 +11993,12 @@ function renderGelirTrend(){
   // İade detayı: iadenin YAPILDIĞI aya göre, ay ay (en yeni üstte)
   const iadeAylari=[...aylar].reverse().filter(a=>a.iadeler&&a.iadeler.length);
   if(iadeAylari.length){
-    html+=`<div style="margin-top:16px;"><div style="font-size:13px;font-weight:600;margin-bottom:8px;">↩ İadeler (son 12 ay)</div>`
+    html+=`<div style="margin-top:16px;"><div style="font-size:13px;font-weight:600;margin-bottom:8px;">${t('x_iade_baslik')}</div>`
       +iadeAylari.map(a=>`<div style="border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;">
         <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;"><span>${a.label}</span><span style="color:var(--amber);">−${a.iadeToplam.toLocaleString(LC())} ₺</span></div>
-        ${a.iadeler.map(x=>`<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--text2);padding:3px 0;"><span>${formatDate(x.tarih)} · ${x.ogrenci} · ${x.sinif} · ${x.ders} ders</span><span style="white-space:nowrap;">−${x.tutar.toLocaleString(LC())} ₺</span></div>`).join('')}
+        ${a.iadeler.map(x=>`<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--text2);padding:3px 0;"><span>${formatDate(x.tarih)} · ${x.ogrenci} · ${x.sinif} · ${x.ders} ${t('ders')}</span><span style="white-space:nowrap;">−${x.tutar.toLocaleString(LC())} ₺</span></div>`).join('')}
       </div>`).join('')
-      +`<div style="font-size:11px;color:var(--text3);">Brüt gelir iadenin yapıldığı aydan düşülür. Eğitmen hakedişinde ise iade edilen derslerin payı o derslerin düştüğü dönemden çıkar.</div></div>`;
+      +`<div style="font-size:11px;color:var(--text3);">${t('x_iade_not')}</div></div>`;
   }
 
   el.innerHTML=html;
