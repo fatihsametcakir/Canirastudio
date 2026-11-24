@@ -746,6 +746,9 @@ textarea{border:1.5px solid #d9ac5280;box-shadow:inset 0 0 0 1px #d9ac5214;}
 :root[data-acik="1"] .takvim-mod-btn.active{box-shadow:inset 0 0 0 1.5px #9a6f1ca0;}
 :root[data-acik="1"] .hafta-gun-btn,:root[data-acik="1"] .ot-legend-item{border-color:#9a6f1c80;}
 :root[data-acik="1"] .hafta-gun-btn.secili{border-color:#9a6f1c;}
+/* pencere içi tüm düğmeler aynı biçim: hap + altın çerçeve (renk tonları korunur; geri almak için bu bloğu sil) */
+.sheet .btn,.confirm-sheet .btn{border-radius:99px!important;border:1.5px solid #d9ac52a6!important;}
+:root[data-acik="1"] .sheet .btn,:root[data-acik="1"] .confirm-sheet .btn{border-color:#9a6f1ca0!important;}
 </style>
 <style>
 #splash{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 38%,#ff6b6b1c,transparent 60%),radial-gradient(ellipse at 50% 100%,#a78bfa1a,transparent 55%),var(--bg);transition:opacity .6s ease;}
