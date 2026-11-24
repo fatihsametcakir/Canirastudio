@@ -4021,6 +4021,79 @@ function kayitLinkHtml(){
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><input id="kf-link-not" class="input" placeholder="Not (örn. öğrenci adı)" style="flex:1;min-width:140px;" maxlength="60"><select id="kf-link-sure" class="input" style="width:auto;"><option value="1">1 gün</option><option value="3">3 gün</option><option value="7" selected>7 gün</option><option value="30">30 gün</option></select><select id="kf-link-dil" class="input" style="width:auto;" title="Formun açılış dili"><option value="tr">Türkçe</option><option value="en">English</option><option value="ru">Русский</option></select></div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;"><button class="btn btn-accent btn-sm" onclick="kayitLinkOlustur()">+ Bağlantı oluştur</button><button class="btn btn-sm" onclick="kayitOnizle()">👁 Formu önizle</button></div>${liste}`;
 }
+// ── Form metinleri: belge olarak önizle / PDF / Word ──
+const KAYIT_BELGE_ET={
+tr:{lang:'tr-TR',baslik:'Öğrenci Kayıt Formu',b1:'1. Öğrenci bilgileri',alanlar:['Ad','Soyad','Cinsiyet (Kadın / Erkek)','Doğum tarihi','Telefon','E-posta (isteğe bağlı)','Acil durumda aranacak kişi ve telefonu'],veliBaslik:'Veli / vasi bilgileri (öğrenci 18 yaşından küçükse)',veliAlan:['Veli / vasi ad soyad','Yakınlık','Veli / vasi telefon'],b2:'2. Aydınlatma metni',aydOnay:'Aydınlatma metnini okudum ve anladım.',b3:'3. Açık rıza beyanları',rizaNot:'İsteğe bağlıdır; vermemeniz kaydınızı etkilemez. Rızanızı dilediğiniz zaman geri alabilirsiniz.',b4:'4. Bilgilendirme',kurOnay:'Yukarıdaki bilgilendirmeleri okudum, anladım ve kabul ediyorum.',veliB:'5. Veli / vasi beyanı',veliOnay:'Veli/vasi olarak yukarıdaki beyanı onaylıyorum.',tarih:'Tarih',imza:'İmza',surum:'Metin sürümü',trNot:'[Bu bölümün çevirisi yok – Türkçe metin gösteriliyor]',onay:'☐'},
+en:{lang:'en',baslik:'Student Registration Form',b1:'1. Student details',alanlar:['First name','Last name','Gender (Female / Male)','Date of birth','Phone','E-mail (optional)','Emergency contact (name and phone)'],veliBaslik:'Parent / guardian details (if the student is under 18)',veliAlan:['Parent / guardian full name','Relationship','Parent / guardian phone'],b2:'2. Privacy notice',aydOnay:'I have read and understood the privacy notice.',b3:'3. Explicit consent statements',rizaNot:'These are optional; declining will not affect your registration. You may withdraw your consent at any time.',b4:'4. Information',kurOnay:'I have read, understood and accept the information above.',veliB:'5. Parent / guardian declaration',veliOnay:'As parent / guardian, I confirm the declaration above.',tarih:'Date',imza:'Signature',surum:'Text version',trNot:'[No translation for this section – Turkish text shown]',onay:'☐'},
+ru:{lang:'ru',baslik:'Регистрационная форма ученика',b1:'1. Данные ученика',alanlar:['Имя','Фамилия','Пол (женский / мужской)','Дата рождения','Телефон','Электронная почта (по желанию)','Контакт на случай экстренной ситуации (имя и телефон)'],veliBaslik:'Данные родителя / опекуна (если ученику нет 18 лет)',veliAlan:['ФИО родителя / опекуна','Степень родства','Телефон родителя / опекуна'],b2:'2. Уведомление о персональных данных',aydOnay:'Я прочитал(а) и понял(а) уведомление о персональных данных.',b3:'3. Заявления о явном согласии',rizaNot:'Эти согласия необязательны: отказ не повлияет на вашу регистрацию. Вы можете отозвать согласие в любое время.',b4:'4. Информация',kurOnay:'Я прочитал(а), понял(а) и принимаю изложенную выше информацию.',veliB:'5. Заявление родителя / опекуна',veliOnay:'Как родитель / опекун, я подтверждаю приведённое выше заявление.',tarih:'Дата',imza:'Подпись',surum:'Версия текста',trNot:'[Перевода этого раздела нет – показан турецкий текст]',onay:'☐'}
+};
+function kayitBelgeHtml(dil){
+  const E=KAYIT_BELGE_ET[dil]||KAYIT_BELGE_ET.tr,tr=kayitMetinAlanlariOku(),trk=kayitTrAnahtar(tr);
+  const esc=x=>_kEsc(String(x||'')).replace(/\n/g,'<br>');
+  let eksik=false;
+  const al=a=>{ // seçilen dildeki metin; yoksa Türkçe + uyarı
+    if(dil==='tr')return {m:trk[a]||'',tr:false};
+    const e=document.getElementById('kc-'+dil+'-'+a),v=e?e.value.trim():'';
+    if(v)return {m:v,tr:false};
+    if(trk[a])eksik=true;
+    return {m:trk[a]||'',tr:!!trk[a]};
+  };
+  const blok=(bas,metin,notla)=>`<div class="bl"><h3>${esc(bas)}</h3><p>${esc(metin)}</p>${notla?`<p class="nt">${esc(E.trNot)}</p>`:''}</div>`;
+  const kutu=t=>`<p class="ck">${E.onay} ${esc(t)}</p>`;
+  const alanSatir=a=>`<tr><td class="lb">${esc(a)}</td><td class="ln">&nbsp;</td></tr>`;
+  const ayB=al('ayd_baslik'),ayM=al('ayd_metin'),kB=al('kur_baslik'),kM=al('kur_metin'),vM=al('veli_metin');
+  let h=`<h1>CAN &amp; IRINA STUDIO</h1><h2>${esc(E.baslik)}</h2>
+  <div class="bl"><h3>${esc(E.b1)}</h3><table>${E.alanlar.map(alanSatir).join('')}</table>
+  <p class="alt">${esc(E.veliBaslik)}</p><table>${E.veliAlan.map(alanSatir).join('')}</table></div>
+  ${blok(E.b2.split('. ')[0]+'. '+(ayB.m||E.b2.split('. ')[1]),ayM.m,ayB.tr||ayM.tr)}${kutu(E.aydOnay)}`;
+  const riz=tr.rizalar.filter(r=>r.aktif);
+  if(riz.length){
+    h+=`<div class="bl"><h3>${esc(E.b3)}</h3><p class="nt">${esc(E.rizaNot)}</p></div>`;
+    riz.forEach(r=>{const b=al('r_'+r.id+'_baslik'),m=al('r_'+r.id+'_metin'),k=al('r_'+r.id+'_kutu');h+=blok(b.m,m.m,b.tr||m.tr||k.tr)+kutu(k.m);});
+  }
+  h+=`${blok(E.b4.split('. ')[0]+'. '+(kB.m||E.b4.split('. ')[1]),kM.m,kB.tr||kM.tr)}${kutu(E.kurOnay)}
+  ${blok(E.veliB,vM.m,vM.tr)}${kutu(E.veliOnay)}
+  <table class="im"><tr><td>${esc(E.tarih)}: ____ / ____ / ________</td><td>${esc(E.imza)}: ______________________</td></tr></table>
+  <p class="alt">${esc(E.surum)}: ${esc(((KAYIT_DATA.metin||{}).surum)||1)} · ${new Date().toLocaleDateString(E.lang)}</p>`;
+  return h;
+}
+const KAYIT_BELGE_CSS=`body{font-family:Arial,Helvetica,sans-serif;color:#111;font-size:12.5px;line-height:1.5;margin:0;padding:0}h1{font-size:20px;letter-spacing:.08em;text-align:center;margin:0 0 2px}h2{font-size:15px;text-align:center;font-weight:600;margin:0 0 14px}h3{font-size:14px;margin:0 0 4px;border-bottom:1px solid #b8872a;padding-bottom:2px}.bl{margin:12px 0 4px}h3{page-break-after:avoid}p{margin:4px 0}.nt{font-style:italic;color:#666;font-size:12px}.alt{margin-top:10px;font-weight:600}.ck{margin:4px 0 10px;font-weight:600}table{width:100%;border-collapse:collapse}td.lb{width:42%;padding:5px 6px 5px 0}td.ln{border-bottom:1px solid #666}table.im{margin-top:24px}table.im td{padding:10px 0;width:50%}`;
+function kayitBelgeSayfa(dil,yazdirDugme){
+  const E=KAYIT_BELGE_ET[dil]||KAYIT_BELGE_ET.tr;
+  return `<!doctype html><html lang="${E.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Can &amp; Irina Studio – ${_kEsc(E.baslik)}</title><style>${KAYIT_BELGE_CSS}body{max-width:760px;margin:0 auto;padding:24px 18px}.pr{position:sticky;top:0;background:#fff;padding:8px 0;text-align:right}.pr button{font:inherit;padding:8px 16px;border:1.5px solid #b8872a;border-radius:99px;background:#fff;cursor:pointer}@media print{.pr{display:none}body{padding:0}}</style></head><body>${yazdirDugme?'<div class="pr"><button onclick="window.print()">🖨 Yazdır / PDF olarak kaydet</button></div>':''}${kayitBelgeHtml(dil)}</body></html>`;
+}
+function kayitBelgeDil(){return (document.getElementById('kf-belge-dil')||{value:'tr'}).value;}
+function kayitBelgeOnizle(){
+  const w=window.open('','_blank');
+  if(!w){showToast('Açılır pencere engellendi. Tarayıcıdan izin verin.','error');return;}
+  w.document.open();w.document.write(kayitBelgeSayfa(kayitBelgeDil(),true));w.document.close();
+}
+function kayitBelgeIndir(blob,ad){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=ad;document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(u);},1500);}
+function kayitBelgeWord(){
+  const d=kayitBelgeDil();
+  const html=kayitBelgeSayfa(d,false).replace('<html ','<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" ');
+  kayitBelgeIndir(new Blob(['﻿',html],{type:'application/msword'}),'CanIrina_Kayit_Formu_'+d.toUpperCase()+'.doc');
+}
+async function kayitBelgePdf(){
+  const d=kayitBelgeDil();
+  try{
+    if(!window.html2pdf){await new Promise((ok,hata)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';s.onload=ok;s.onerror=hata;document.head.appendChild(s);});}
+    // dış kap ekran dışında konumlanır; html2pdf'e konumsuz iç öğe verilir (aksi halde kopyası 0 yükseklikte kalır)
+    const kap=document.createElement('div');
+    kap.id='kf-pdf-kap';kap.style.cssText='position:absolute;left:-10000px;top:0;width:714px;';
+    const ic=document.createElement('div');
+    ic.style.cssText="width:714px;box-sizing:border-box;padding-right:18px;background:#fff;font-family:Arial,Helvetica,sans-serif;color:#111;font-size:12.5px";
+    ic.innerHTML=`<style>${KAYIT_BELGE_CSS}</style>${kayitBelgeHtml(d)}`;
+    kap.appendChild(ic);document.body.appendChild(kap);
+    showToast('PDF hazırlanıyor…');
+    await window.html2pdf().set({margin:[12,12,14,12],filename:'CanIrina_Kayit_Formu_'+d.toUpperCase()+'.pdf',image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.ck','table.im','h3']}}).from(ic).save();
+    kap.remove();
+  }catch(e){
+    document.querySelectorAll('#kf-pdf-kap').forEach(x=>x.remove());
+    showToast('PDF oluşturulamadı; önizleme açılıyor (Yazdır → PDF olarak kaydet).','error');kayitBelgeOnizle();
+  }
+}
+
 function kayitMetinHtml(){
   const m=KAYIT_DATA.metinTaslak||(KAYIT_DATA.metin?{...KAYIT_VARSAYILAN,...KAYIT_DATA.metin}:KAYIT_VARSAYILAN);
   const ta=(id,et,v,s)=>`<label style="display:block;font-size:12px;color:var(--text2);margin:8px 0 3px;">${et}</label>${s?`<input id="${id}" class="input" value="${_kEsc(v)}">`:`<textarea id="${id}" class="input" rows="6" style="width:100%;resize:vertical;">${_kEsc(v)}</textarea>`}`;
@@ -4030,6 +4103,7 @@ function kayitMetinHtml(){
    ${ta('kf-kurallar-baslik','Stüdyo kuralları başlığı',m.kurallar.baslik,1)}${ta('kf-kurallar-metin','Stüdyo kuralları',m.kurallar.metin)}${ta('kf-veli-metin','Veli/vasi beyanı (18 yaş altı)',m.veli.metin)}`;
   const sek=KAYIT_DILLER.map(([k,ad])=>`<button class="btn btn-sm${k===KAYIT_DIL?' btn-accent':''}" id="kf-tab-${k}" onclick="kayitDilSec('${k}')">${ad}</button>`).join('');
   return `<div style="display:flex;gap:6px;margin-bottom:6px;">${sek}</div>
+   <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 10px;padding:8px;border:1px solid #d9ac5240;border-radius:10px;"><span style="font-size:12px;color:var(--text2);">📄 Form belgesi:</span><select id="kf-belge-dil" class="input" style="width:auto;"><option value="tr">Türkçe</option><option value="en">English</option><option value="ru">Русский</option></select><button class="btn btn-sm" onclick="kayitBelgeOnizle()">👁 Önizle</button><button class="btn btn-sm" onclick="kayitBelgePdf()">⬇ PDF</button><button class="btn btn-sm" onclick="kayitBelgeWord()">⬇ Word</button></div>
    <div id="kf-pane-tr" style="display:${KAYIT_DIL==='tr'?'block':'none'};">${tr}</div>
    <div id="kf-pane-en" style="display:${KAYIT_DIL==='en'?'block':'none'};">${kayitCevirePaneHtml('en',m)}</div>
    <div id="kf-pane-ru" style="display:${KAYIT_DIL==='ru'?'block':'none'};">${kayitCevirePaneHtml('ru',m)}</div>
