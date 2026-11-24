@@ -3853,9 +3853,9 @@ const KAYIT_VARSAYILAN={
   aydinlatma:{baslik:'Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni',metin:'[TASLAK – hukuki inceleme gerekir]\n\nVeri sorumlusu: Can & Irina Studio.\n\nİşlenen veriler: ad-soyad, doğum tarihi, telefon, e-posta, acil durum iletişim bilgisi, (18 yaşından küçükse) veli/vasi bilgisi; form gönderimi sırasında IP adresi, cihaz/tarayıcı bilgisi ve gönderim zamanı.\n\nİşleme amaçları: kayıt ve ders organizasyonu, ödeme ve iletişim süreçlerinin yürütülmesi, onay beyanlarının ispatı.\n\nHukuki sebep: sözleşmenin kurulması/ifası, hukuki yükümlülük, meşru menfaat (IP ve cihaz bilgisi için ispat amacıyla).\n\nHaklarınız: KVKK m.11 kapsamındaki haklarınızı stüdyoya başvurarak kullanabilirsiniz.'},
   rizalar:[
     {id:'iletisim',baslik:'İletişim İzni (Açık Rıza)',metin:'[TASLAK]\n\nDers duyuruları dışındaki tanıtım, kampanya ve etkinlik bilgilendirmelerinin telefon/WhatsApp/e-posta ile tarafıma iletilmesine açık rıza veriyorum. Rızamı dilediğim zaman geri alabileceğimi biliyorum.',kutu:'İletişim izni için açık rıza veriyorum.',aktif:true},
-    {id:'gorsel',baslik:'Görüntü Paylaşım İzni (Açık Rıza)',metin:'[TASLAK]\n\nDers ve etkinliklerde çekilen fotoğraf/video kayıtlarının stüdyonun sosyal medya hesaplarında ve tanıtım materyallerinde kullanılmasına açık rıza veriyorum. Rızamı dilediğim zaman geri alabileceğimi biliyorum.',kutu:'Görüntülerimin paylaşılmasına açık rıza veriyorum.',aktif:true}
+    {id:'gorsel',baslik:'Fotoğraf ve Video Paylaşımına İlişkin Açık Rıza Beyanı',metin:'Can & Irina Studio tarafından dersler veya stüdyo etkinlikleri sırasında çekilen, öğrencinin fotoğrafını ve/veya görüntüsünü içeren fotoğraf ve videoların; stüdyonun kendisine ait Instagram hesabı ve diğer sosyal medya hesaplarında, stüdyonun faaliyetlerini, derslerini ve çalışmalarını tanıtmak amacıyla paylaşılmasına ilişkin açık rızamla onay veriyorum.\n\nStüdyo içinde çekilen fotoğraf/video, tanıtım amaçlı kullanılabilir (istemeyen öğrenciler bunu kayıt sırasında belirtebilir).\n\nVerilen açık rıza, stüdyoya yazılı bildirimde bulunularak her zaman geri alınabilir. Geri alma bildirimi sonrasında yeni paylaşım yapılmaz ve stüdyonun kontrolündeki hesaplarda bulunan içeriklerin kaldırılması için işlem yapılır.',kutu:'Fotoğraf ve video paylaşımına açık rıza veriyorum.',aktif:true}
   ],
-  kurallar:{baslik:'Stüdyo Kuralları',metin:'[TASLAK]\n\n1. Derslere zamanında gelinir; iptaller en az 24 saat önceden bildirilir.\n2. Paket süreleri ve telafi koşulları stüdyo duyurularına tabidir.\n3. Stüdyo ekipmanına ve diğer öğrencilere saygı gösterilir.\n4. Ödemeler belirlenen tarihlerde yapılır.'},
+  kurallar:{baslik:'Bilgilendirme',metin:'1. Öğrenci, katılmadığı dersin hakkını kaybeder; telafi dersi verilmez.\n2. Ödenen ücretler hiçbir koşulda iade edilmez.\n3. Derslere kıyafet temizliğine ve kişisel koku konusuna dikkat ederek gelinmelidir.\n4. Derslere zamanında katılım önemlidir; geç kalan öğrenciler dersin akışını bozmamak için eğitmenin yönlendirmesine uymalıdır.\n5. Sağlık durumu, sakatlık veya fiziksel kısıtlama varsa kayıt sırasında stüdyoya bildirilmelidir.\n6. İletişim bilgilerinde (telefon, adres vb.) değişiklik olması durumunda stüdyoya bilgi verilmelidir.\n7. Kayıt, belirtilen dönem/paket için geçerlidir; dondurma veya iptal talepleri yönetime iletilmelidir.'},
   veli:{metin:'18 yaşından küçük öğrencinin velisi/vasisi olduğumu, yukarıdaki aydınlatma metnini ve stüdyo kurallarını okuduğumu ve öğrencinin kaydına izin verdiğimi beyan ederim.'}
 };
 let KAYIT_DATA={basvurular:[],linkler:[],metin:null};
@@ -3867,11 +3867,11 @@ ayd_metin:'[DRAFT – legal review required]\n\nData controller: Can & Irina Stu
 r_iletisim_baslik:'Communication Consent (Explicit Consent)',
 r_iletisim_metin:'[DRAFT]\n\nI give my explicit consent to receive promotional, campaign and event information, other than class announcements, by phone/WhatsApp/e-mail. I understand that I may withdraw my consent at any time.',
 r_iletisim_kutu:'I give my explicit consent to be contacted for these purposes.',
-r_gorsel_baslik:'Image Sharing Consent (Explicit Consent)',
-r_gorsel_metin:'[DRAFT]\n\nI give my explicit consent to the use of photographs/videos taken during classes and events on the studio’s social media accounts and in its promotional materials. I understand that I may withdraw my consent at any time.',
-r_gorsel_kutu:'I give my explicit consent to the sharing of my images.',
-kur_baslik:'Studio Rules',
-kur_metin:'[DRAFT]\n\n1. Please arrive on time for classes; cancellations must be notified at least 24 hours in advance.\n2. Package durations and make-up conditions are subject to the studio’s announcements.\n3. Respect is shown to studio equipment and to other students.\n4. Payments are made on the agreed dates.',
+r_gorsel_baslik:'Explicit Consent Statement on Sharing Photographs and Videos',
+r_gorsel_metin:'I give my explicit consent to photographs and videos showing the student’s photograph and/or image, taken by Can & Irina Studio during classes or studio events, being shared on the studio’s own Instagram account and other social media accounts for the purpose of promoting the studio’s activities, classes and work.\n\nPhotographs/videos taken inside the studio may be used for promotional purposes (students who do not wish this may say so at registration).\n\nThe explicit consent given may be withdrawn at any time by written notice to the studio. After a withdrawal notice, no new content will be shared, and steps will be taken to remove content on accounts under the studio’s control.',
+r_gorsel_kutu:'I give my explicit consent to the sharing of photographs and videos.',
+kur_baslik:'Information',
+kur_metin:'1. A student who does not attend a class forfeits the right to that class; no make-up class is given.\n2. Fees paid are not refundable under any circumstances.\n3. Students must come to classes with attention to the cleanliness of their clothing and to personal odour.\n4. Punctuality is important; students who arrive late must follow the instructor’s directions so as not to disrupt the flow of the class.\n5. Any health condition, injury or physical limitation must be reported to the studio at the time of registration.\n6. The studio must be informed of any change in contact details (telephone, address, etc.).\n7. Registration is valid for the stated term/package; requests for freezing or cancellation must be submitted to the management.',
 veli_metin:'I declare that I am the parent/legal guardian of the student, who is under 18, that I have read the privacy notice and the studio rules above, and that I consent to the student’s registration.'},
 ru:{
 ayd_baslik:'Уведомление об обработке персональных данных',
@@ -3879,11 +3879,11 @@ ayd_metin:'[ЧЕРНОВИК – требуется юридическая пр�
 r_iletisim_baslik:'Согласие на связь (явное согласие)',
 r_iletisim_metin:'[ЧЕРНОВИК]\n\nДаю явное согласие на получение рекламной информации, информации об акциях и мероприятиях (помимо объявлений о занятиях) по телефону/WhatsApp/электронной почте. Мне известно, что я могу отозвать согласие в любое время.',
 r_iletisim_kutu:'Даю явное согласие на связь с этой целью.',
-r_gorsel_baslik:'Согласие на публикацию изображений (явное согласие)',
-r_gorsel_metin:'[ЧЕРНОВИК]\n\nДаю явное согласие на использование фотографий и видео, снятых во время занятий и мероприятий, в аккаунтах студии в социальных сетях и в рекламных материалах. Мне известно, что я могу отозвать согласие в любое время.',
-r_gorsel_kutu:'Даю явное согласие на публикацию моих изображений.',
-kur_baslik:'Правила студии',
-kur_metin:'[ЧЕРНОВИК]\n\n1. На занятия приходят вовремя; об отмене сообщают не менее чем за 24 часа.\n2. Сроки действия пакетов и условия отработки пропущенных занятий определяются объявлениями студии.\n3. К оборудованию студии и другим ученикам относятся с уважением.\n4. Оплата вносится в установленные сроки.',
+r_gorsel_baslik:'Явное согласие на публикацию фотографий и видеозаписей',
+r_gorsel_metin:'Я даю явное согласие на публикацию фотографий и видеозаписей с моим изображением, сделанных Can & Irina Studio во время занятий или мероприятий студии, на официальной странице студии в Instagram и в других её аккаунтах в социальных сетях в целях продвижения деятельности, занятий и работы студии.\n\nФотографии и видеозаписи, сделанные в студии, могут использоваться в рекламных целях (ученики, не желающие этого, могут сообщить об этом при регистрации).\n\nДанное явное согласие может быть в любой момент отозвано путём письменного уведомления студии. После получения уведомления об отзыве новые публикации не производятся, и принимаются меры для удаления материалов с аккаунтов, находящихся под контролем студии.',
+r_gorsel_kutu:'Я даю явное согласие на публикацию фотографий и видеозаписей.',
+kur_baslik:'Информация',
+kur_metin:'1. Ученик, не посетивший занятие, теряет право на него; отработка пропущенного занятия не предоставляется.\n2. Уплаченные суммы ни при каких условиях не возвращаются.\n3. На занятия следует приходить, соблюдая чистоту одежды и личную гигиену (в том числе в отношении запаха).\n4. Своевременное посещение занятий важно; опоздавшие ученики должны следовать указаниям преподавателя, чтобы не нарушать ход занятия.\n5. О состоянии здоровья, травмах или физических ограничениях необходимо сообщить студии при регистрации.\n6. В случае изменения контактных данных (телефон, адрес и т. д.) необходимо сообщить об этом студии.\n7. Регистрация действительна на указанный период/пакет; запросы на заморозку или отмену направляются администрации.',
 veli_metin:'Заявляю, что являюсь родителем/законным представителем ученика, которому нет 18 лет, что ознакомился(лась) с приведёнными выше уведомлением о персональных данных и правилами студии и даю согласие на регистрацию ученика.'}
 };
 const KAYIT_DILLER=[['tr','Türkçe'],['en','English'],['ru','Русский']];
@@ -3897,7 +3897,7 @@ function kayitTrAnahtar(m){
 const KAYIT_ETIKET={ayd_baslik:'Aydınlatma başlığı',ayd_metin:'Aydınlatma metni',kur_baslik:'Kurallar başlığı',kur_metin:'Kurallar',veli_metin:'Veli/vasi beyanı'};
 function kayitEtiket(a){if(KAYIT_ETIKET[a])return KAYIT_ETIKET[a];const mm=a.match(/^r_(.+)_(baslik|metin|kutu)$/);return mm?('Rıza ('+mm[1]+') '+({baslik:'başlığı',metin:'metni',kutu:'onay kutusu yazısı'})[mm[2]]):a;}
 function kayitCeviriDeger(dil,a,trDeger){
-  const st=((KAYIT_DATA.metin||{}).ceviri||{})[dil]||{};
+  const st=(((KAYIT_DATA.metinTaslak||KAYIT_DATA.metin)||{}).ceviri||{})[dil]||{};
   if(st[a])return st[a];
   const dv=(KAYIT_CEVIRI_VARSAYILAN[dil]||{})[a],dtr=kayitTrAnahtar(KAYIT_VARSAYILAN)[a];
   if(dv&&dtr===trDeger)return {m:dv,k:dtr};
@@ -4000,10 +4000,10 @@ function kayitLinkHtml(){
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;"><button class="btn btn-accent btn-sm" onclick="kayitLinkOlustur()">+ Bağlantı oluştur</button><button class="btn btn-sm" onclick="kayitOnizle()">👁 Formu önizle</button></div>${liste}`;
 }
 function kayitMetinHtml(){
-  const m=KAYIT_DATA.metin?{...KAYIT_VARSAYILAN,...KAYIT_DATA.metin}:KAYIT_VARSAYILAN;
+  const m=KAYIT_DATA.metinTaslak||(KAYIT_DATA.metin?{...KAYIT_VARSAYILAN,...KAYIT_DATA.metin}:KAYIT_VARSAYILAN);
   const ta=(id,et,v,s)=>`<label style="display:block;font-size:12px;color:var(--text2);margin:8px 0 3px;">${et}</label>${s?`<input id="${id}" class="input" value="${_kEsc(v)}">`:`<textarea id="${id}" class="input" rows="6" style="width:100%;resize:vertical;">${_kEsc(v)}</textarea>`}`;
   const rz=(m.rizalar||[]).map((r,i)=>`<div style="margin-top:10px;padding:10px;border:1px solid #d9ac5240;border-radius:8px;"><b style="font-size:12px;">Açık rıza ${i+1}</b> <label style="font-size:12px;margin-left:8px;"><input type="checkbox" id="kf-r${i}-aktif" ${r.aktif!==false?'checked':''}> formda göster</label>${ta('kf-r'+i+'-baslik','Başlık',r.baslik,1)}${ta('kf-r'+i+'-metin','Metin',r.metin)}${ta('kf-r'+i+'-kutu','Onay kutusu yazısı',r.kutu,1)}</div>`).join('');
-  const tr=`<div style="font-size:12px;color:var(--text2);">Metinler hukuki inceleme sonrası burada güncellenir. Her kayıtta metnin o anki sürümü başvuruyla birlikte saklanır; sonradan değiştirmek eski onayları etkilemez. Mevcut sürüm: <b>${_kEsc(m.surum||1)}</b>${KAYIT_DATA.metin?'':' (henüz yayınlanmadı – kaydedene kadar form çalışmaz)'}</div>
+  const tr=`<div style="margin-bottom:8px;"><button class="btn btn-sm" onclick="kayitAvukatYukle()">⚖️ Avukat metnini yükle</button></div><div style="font-size:12px;color:var(--text2);">Metinler hukuki inceleme sonrası burada güncellenir. Her kayıtta metnin o anki sürümü başvuruyla birlikte saklanır; sonradan değiştirmek eski onayları etkilemez. Mevcut sürüm: <b>${_kEsc(m.surum||1)}</b>${KAYIT_DATA.metin?'':' (henüz yayınlanmadı – kaydedene kadar form çalışmaz)'}</div>
    ${ta('kf-aydinlatma-baslik','Aydınlatma metni başlığı',m.aydinlatma.baslik,1)}${ta('kf-aydinlatma-metin','Aydınlatma metni',m.aydinlatma.metin)}${rz}
    ${ta('kf-kurallar-baslik','Stüdyo kuralları başlığı',m.kurallar.baslik,1)}${ta('kf-kurallar-metin','Stüdyo kuralları',m.kurallar.metin)}${ta('kf-veli-metin','Veli/vasi beyanı (18 yaş altı)',m.veli.metin)}`;
   const sek=KAYIT_DILLER.map(([k,ad])=>`<button class="btn btn-sm${k===KAYIT_DIL?' btn-accent':''}" id="kf-tab-${k}" onclick="kayitDilSec('${k}')">${ad}</button>`).join('');
@@ -4012,6 +4012,13 @@ function kayitMetinHtml(){
    <div id="kf-pane-en" style="display:${KAYIT_DIL==='en'?'block':'none'};">${kayitCevirePaneHtml('en',m)}</div>
    <div id="kf-pane-ru" style="display:${KAYIT_DIL==='ru'?'block':'none'};">${kayitCevirePaneHtml('ru',m)}</div>
    <div style="margin-top:10px;"><button class="btn btn-accent btn-sm" onclick="kayitMetinKaydet()">Metinleri kaydet ve yayınla</button></div>`;
+}
+async function kayitAvukatYukle(){
+  if(!(await onayAsync('Stüdyo kuralları ve fotoğraf/video rızası avukat metniyle değiştirilir; İngilizce/Rusça çeviriler hazır metinle gelir. Kaydedene kadar yayınlanmaz.','Avukat metni yüklensin mi?')))return;
+  const cur=KAYIT_DATA.metinTaslak||(KAYIT_DATA.metin?{...KAYIT_VARSAYILAN,...KAYIT_DATA.metin}:KAYIT_VARSAYILAN);
+  const riz=(cur.rizalar||[]).map(r=>r.id==='gorsel'?{...r,...KAYIT_VARSAYILAN.rizalar.find(x=>x.id==='gorsel')}:r);
+  KAYIT_DATA.metinTaslak={...cur,kurallar:KAYIT_VARSAYILAN.kurallar,rizalar:riz,ceviri:{}};
+  kayitAdminCiz();showToast('Avukat metni yüklendi. Kontrol edip "Metinleri kaydet ve yayınla"ya basın.');
 }
 async function kayitMetinKaydet(){
   const eski=KAYIT_DATA.metin;
@@ -4032,7 +4039,7 @@ async function kayitMetinKaydet(){
     if(Object.keys(c).length)ceviri[d]=c;
   });
   if(Object.keys(ceviri).length)veri.ceviri=ceviri;
-  try{await db.collection('ayarlar').doc('kayitFormu').set(veri);KAYIT_DATA.metin=veri;KAYIT_ONAY={};showToast('Metinler yayınlandı (sürüm '+veri.surum+').');kayitAdminCiz();}catch(e){showToast('Kaydedilemedi: '+(e.message||e),'error');}
+  try{await db.collection('ayarlar').doc('kayitFormu').set(veri);KAYIT_DATA.metin=veri;KAYIT_DATA.metinTaslak=null;KAYIT_ONAY={};showToast('Metinler yayınlandı (sürüm '+veri.surum+').');kayitAdminCiz();}catch(e){showToast('Kaydedilemedi: '+(e.message||e),'error');}
 }
 function kayitOnizle(){window.open(location.origin+location.pathname.replace(/[^/]*$/,'')+'kayit.html?onizle=1','_blank');}
 async function kayitLinkOlustur(){
