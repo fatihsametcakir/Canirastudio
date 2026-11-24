@@ -1514,7 +1514,7 @@ try{
   <div class="page" id="pg-siniflar">
     <div style="display:flex;gap:8px;margin:4px 0 12px;align-items:stretch;">
     <div style="position:relative;flex:1;min-width:0;">
-      <div class="search-wrap"><input id="si-arama" placeholder="Sınıf ara..." oninput="renderSiniflar();toggleClear('si-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s;"/><button id="si-arama-clear" class="search-clear" onclick="clearSearch('si-arama',renderSiniflar)">✕</button></div>
+      <div class="search-wrap"><input id="si-arama" placeholder="Sınıf veya öğrenci ara..." oninput="renderSiniflar();toggleClear('si-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s;"/><button id="si-arama-clear" class="search-clear" onclick="clearSearch('si-arama',renderSiniflar)">✕</button></div>
       <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
     </div>
     <button class="btn btn-accent btn-sm ust-ekle-btn" onclick="openSinifModal()" data-i18n="btn_yeni_sinif">＋ Yeni Sınıf</button>
@@ -3364,6 +3364,24 @@ window.alert=function(m){
 const onayAsync=(mesaj,baslik)=>uyariPencere({baslik:baslik||'Emin misiniz?',mesaj,iptal:true,tamam:'Evet'});
 const girdiAsync=(mesaj,yerTutucu,baslik)=>uyariPencere({baslik:baslik||'Bilgi gir',mesaj,girdi:true,yerTutucu});
 const bosCta=(etiket,fn)=>'<button class="btn btn-accent" style="margin-top:14px;padding:12px 22px;" onclick="'+fn+'">＋ '+etiket+'</button>';
+// Silmeden sonra birkaç saniye "Geri al" bildirimi gösterir
+function geriAlBildirimi(mesaj,geriAl){
+  const c=document.getElementById('toast-container');if(!c)return;
+  const t=document.createElement('div');t.className='toast toast-success';t.style.pointerEvents='auto';t.style.display='flex';t.style.alignItems='center';t.style.gap='12px';
+  const m=document.createElement('span');m.textContent=mesaj;
+  const b=document.createElement('button');b.textContent='Geri al';b.style.cssText='background:transparent;color:#fff;border:1.5px solid #ffffffb0;border-radius:99px;padding:4px 12px;font:inherit;font-size:13px;cursor:pointer;';
+  const kapat=()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);};
+  b.onclick=async()=>{b.disabled=true;kapat();try{await geriAl();showToast('Geri alındı ✓');}catch(e){showToast('Geri alınamadı: '+(e.message||e),'error');}};
+  t.append(m,b);c.appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+  setTimeout(kapat,8000);
+}
+async function odemeGeriYukle(kopya){
+  const {id,...veri}=kopya;
+  await db.collection('odemeler').doc(id).set(veri);
+  if(!S.odemeler.some(o=>o.id===id))S.odemeler.push(kopya);_poll('odemeler');
+  try{renderAll();}catch(e){}
+}
 function confirm_(title,desc,cb){
   CONFIRM_CB=cb;
   document.getElementById('confirm-title').textContent=title;
@@ -5970,7 +5988,7 @@ async function saveOdemeDevam(siId,ogId,tutar){
   }catch(e){showToast('Kayıt başarısız: '+e.message,'error');}
   btn.disabled=false;setSyncing(false);
 }
-async function silOdeme(){if(!EDIT_ODEME)return;const _od=S.odemeler.find(o=>o.id===EDIT_ODEME);confirm_('Ödemeyi Sil',_od&&_od.iade?'Bu ödeme kaydı kalıcı olarak silinecek. Üzerindeki iade kaydı ('+(_od.iade.tutar||0).toLocaleString('tr-TR')+' ₺) da silinir.':'Bu ödeme kaydı kalıcı olarak silinecek.',async()=>{setSyncing(true);await db.collection('odemeler').doc(EDIT_ODEME).delete();_poll('odemeler');setSyncing(false);closeModal('m-odeme');});}
+async function silOdeme(){if(!EDIT_ODEME)return;const _od=S.odemeler.find(o=>o.id===EDIT_ODEME);confirm_('Ödemeyi Sil',_od&&_od.iade?'Bu ödeme kaydı kalıcı olarak silinecek. Üzerindeki iade kaydı ('+(_od.iade.tutar||0).toLocaleString('tr-TR')+' ₺) da silinir.':'Bu ödeme kaydı kalıcı olarak silinecek.',async()=>{setSyncing(true);const _kopya=_od?JSON.parse(JSON.stringify(_od)):null;await db.collection('odemeler').doc(EDIT_ODEME).delete();_poll('odemeler');setSyncing(false);closeModal('m-odeme');if(_kopya)geriAlBildirimi('Ödeme silindi',()=>odemeGeriYukle(_kopya));});}
 function openOdemeDetay(ogId,siId){const og=S.ogrenciler.find(o=>o.id===ogId);const si=S.siniflar.find(s=>s.id===siId);const list=ogSiOd(ogId,siId).sort((a,b)=>b.olusturma-a.olusturma);document.getElementById('m-odeme-detay-title').textContent=(og?og.ad+' '+og.soyad:'')+(si?' · '+si.ad:'');const el=document.getElementById('m-odeme-detay-content');if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">Henüz ödeme kaydı yok</div></div>';openModal('m-odeme-detay');return;}el.innerHTML=list.map(od=>`<div class="odeme-gecmis-item"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--green);font-size:15px;font-weight:600;">${(od.tutar||0).toLocaleString(LC())} ₺</span><div style="display:flex;gap:6px;align-items:center;"><span class="badge badge-amber">${od.yontem||'—'}</span><button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="closeModal('m-odeme-detay');openOdemeModal('${ogId}','${siId}','${od.id}')">Düzenle</button></div></div><div style="font-size:12px;color:var(--text2);">${formatDate(od.tarih)}${od.aylar&&od.aylar.length?' · '+od.aylar.map(a=>ayLabel(a)).join(', '):''}</div>${od.iade?`<div style="font-size:12px;color:var(--amber);margin-top:3px;">↩ İade: −${(od.iade.tutar||0).toLocaleString(LC())} ₺ · ${od.iade.ders} ders · ${formatDate(od.iade.tarih)}</div>`:''}${od.not?`<div style="font-size:12px;color:var(--text2);margin-top:3px;">${od.not}</div>`:''}</div>`).join('');openModal('m-odeme-detay');}
 
 // ── ÖZEL DERSE ÖĞRENCİ EKLE (birleşik model) ────────────
@@ -7314,7 +7332,7 @@ function renderSiniflar(){
   const aramaEl=document.getElementById('si-arama');
   const arama=(aramaEl?aramaEl.value:'').toLowerCase().trim();
   let liste=[...S.siniflar].sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
-  if(arama)liste=liste.filter(s=>s.ad.toLowerCase().includes(arama));
+  if(arama)liste=liste.filter(s=>s.ad.toLowerCase().includes(arama)||(s.kayitlar||[]).some(k=>{const o=S.ogrenciler.find(x=>x.id===k.ogrenciId);return o&&((o.ad||'')+' '+(o.soyad||'')).toLowerCase().includes(arama);}));
   // Gün butonları (sayılar: aktif sınıf adedi, arama filtresi uygulanmış)
   const chipEl=document.getElementById('sinif-gun-chips');
   if(chipEl){
@@ -12670,10 +12688,11 @@ async function cakisanOdemeSil(odemeId,idx){
   confirm_('Ödemeyi Sil','Bu ödeme kaydı kalıcı olarak silinecek. Emin misiniz?',async()=>{
     setSyncing(true);
     try{
+      const _kopya2=S.odemeler.find(o=>o.id===odemeId);const _k2=_kopya2?JSON.parse(JSON.stringify(_kopya2)):null;
       await db.collection('odemeler').doc(odemeId).delete();
       S.odemeler=S.odemeler.filter(o=>o.id!==odemeId);
       _poll('odemeler');
-      showToast('Ödeme silindi ✓','success');
+      if(_k2)geriAlBildirimi('Ödeme silindi',()=>odemeGeriYukle(_k2));else showToast('Ödeme silindi ✓','success');
       openCakisanOdemelerModal();
     }catch(e){
       showToast('Silinemedi: '+e.message,'error');
