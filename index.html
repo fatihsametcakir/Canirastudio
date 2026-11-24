@@ -3946,7 +3946,8 @@ function kayitCeviriIceAktar(){
 
 const _kEsc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function kayitZamanStr(ms){if(!ms)return '';const d=new Date(ms);const p=n=>String(n).padStart(2,'0');return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());}
-function kayitLinkUrl(kod){return location.origin+location.pathname.replace(/[^/]*$/,'')+'kayit.html?k='+kod;}
+function kayitLinkUrl(kod,dil){return location.origin+location.pathname.replace(/[^/]*$/,'')+'kayit.html?k='+kod+(dil?'&lang='+dil:'');}
+const KAYIT_DIL_AD={tr:'Türkçe',en:'English',ru:'Русский'};
 async function renderKayitAdmin(){
   const el=document.getElementById('kayit-admin-content');if(!el)return;
   if(!KAYIT_DATA._yuklendi)el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text2);">Yükleniyor…</div>';
@@ -3994,9 +3995,9 @@ function kayitLinkHtml(){
   const liste=KAYIT_DATA.linkler.map(l=>{
     const d=l.kullanildi?'✔ Kullanıldı':(l.bitis||0)<simdi?'⌛ Süresi doldu':'🟢 Aktif · '+kayitZamanStr(l.bitis)+'’e kadar';
     const aktif=!l.kullanildi&&(l.bitis||0)>=simdi;
-    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #d9ac5240;font-size:12px;"><div style="flex:1;min-width:0;"><div>${d}</div><div style="color:var(--text2);">${_kEsc(l.not||'(not yok)')} · ${kayitZamanStr(l.olusturma)}</div></div>${aktif?`<button class="btn btn-sm" onclick="kayitLinkKopyala('${l.id}')">Kopyala</button>`:''}<button class="btn btn-danger btn-sm" onclick="kayitLinkSil('${l.id}')">Sil</button></div>`;}).join('');
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #d9ac5240;font-size:12px;"><div style="flex:1;min-width:0;"><div>${d}</div><div style="color:var(--text2);">${_kEsc(l.not||'(not yok)')} · ${KAYIT_DIL_AD[l.dil||'tr']||'Türkçe'} · ${kayitZamanStr(l.olusturma)}</div></div>${aktif?`<button class="btn btn-sm" onclick="kayitLinkKopyala('${l.id}')">Kopyala</button>`:''}<button class="btn btn-danger btn-sm" onclick="kayitLinkSil('${l.id}')">Sil</button></div>`;}).join('');
   return `<div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Her bağlantı yalnızca <b>bir kez</b> kullanılabilir; öğrenci formu gönderince bağlantı kapanır. Her öğrenci için ayrı bağlantı oluşturun.</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><input id="kf-link-not" class="input" placeholder="Not (örn. öğrenci adı)" style="flex:1;min-width:140px;" maxlength="60"><select id="kf-link-sure" class="input" style="width:auto;"><option value="1">1 gün</option><option value="3">3 gün</option><option value="7" selected>7 gün</option><option value="30">30 gün</option></select></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><input id="kf-link-not" class="input" placeholder="Not (örn. öğrenci adı)" style="flex:1;min-width:140px;" maxlength="60"><select id="kf-link-sure" class="input" style="width:auto;"><option value="1">1 gün</option><option value="3">3 gün</option><option value="7" selected>7 gün</option><option value="30">30 gün</option></select><select id="kf-link-dil" class="input" style="width:auto;" title="Formun açılış dili"><option value="tr">Türkçe</option><option value="en">English</option><option value="ru">Русский</option></select></div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;"><button class="btn btn-accent btn-sm" onclick="kayitLinkOlustur()">+ Bağlantı oluştur</button><button class="btn btn-sm" onclick="kayitOnizle()">👁 Formu önizle</button></div>${liste}`;
 }
 function kayitMetinHtml(){
@@ -4047,12 +4048,14 @@ async function kayitLinkOlustur(){
   const kod=btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
   const gun=+(document.getElementById('kf-link-sure')||{value:7}).value||7;
   const not=((document.getElementById('kf-link-not')||{}).value||'').trim().slice(0,60);
-  const veri={olusturma:Date.now(),bitis:Date.now()+gun*86400000,not,kullanildi:false};
+  const dil=(document.getElementById('kf-link-dil')||{value:'tr'}).value;
+  const veri={olusturma:Date.now(),bitis:Date.now()+gun*86400000,not,dil:KAYIT_DIL_AD[dil]?dil:'tr',kullanildi:false};
   try{await db.collection('kayit_linkleri').doc(kod).set(veri);KAYIT_DATA.linkler.unshift({...veri,id:kod});kayitAdminCiz();kayitLinkKopyala(kod);}
   catch(e){showToast('Bağlantı oluşturulamadı: '+(e.message||e),'error');}
 }
 function kayitLinkKopyala(kod){
-  const u=kayitLinkUrl(kod);
+  const lk=KAYIT_DATA.linkler.find(x=>x.id===kod);
+  const u=kayitLinkUrl(kod,lk&&lk.dil);
   const ok=()=>showToast('Bağlantı kopyalandı.');
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(ok,()=>girdiAsync('Bağlantıyı kopyalayın:',u,'Bağlantı').then(()=>{}));else girdiAsync('Bağlantıyı kopyalayın:',u,'Bağlantı');
 }
