@@ -1061,9 +1061,9 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 .page :is(.stats-row,.gg-grid,.video-grid){gap:4px!important;}
 .page .stats-row{margin-bottom:8px!important;}
 /* AÇILIŞ: Can & Irina bloğu ekranın ortasında; taçlar en üstte (JS ortala() ile). Geri almak için bu bloğu sil + ortala() eski haline */
-#splash{justify-content:center!important;padding-top:0!important;}
-@media(max-height:760px){#splash{justify-content:flex-start!important;padding-top:122px!important;}}
-#splash .sp-imza{bottom:calc(max(30px,env(safe-area-inset-bottom)) + 22px)!important;}
+#splash{justify-content:center!important;padding-top:64px!important;}
+@media(max-height:760px){#splash{justify-content:flex-start!important;padding-top:150px!important;}}
+#splash .sp-imza{bottom:max(14px,env(safe-area-inset-bottom))!important;}
 </style>
 </head>
 <body>
@@ -1076,7 +1076,7 @@ try{
   const host=sp&&sp.querySelector('.sp-taclar');
   if(!host)return;
   // taçlar ekranın en üstünde: imza bloğunun içinde durdukları için yukarı taşı (3D yüklenmese de CSS taçlar için geçerli)
-  const tasi=()=>{let y=0,el=host.parentElement;while(el&&el!==sp){y+=el.offsetTop;el=el.offsetParent;}host.style.top=Math.round(8-y)+'px';};
+  const tasi=()=>{let y=0,el=host.parentElement;while(el&&el!==sp){y+=el.offsetTop;el=el.offsetParent;}host.style.top=Math.round((innerHeight<760?36:84)-y)+'px';};
   tasi();setTimeout(tasi,300);setTimeout(tasi,1300);window.addEventListener('resize',tasi);
   const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
   if(!document.body.contains(host))return;
@@ -1235,7 +1235,7 @@ try{
     const yt=el=>{let y=0;while(el&&el!==sp){y+=el.offsetTop;el=el.offsetParent;}return y;};
     // taçlar ekranın en üstünde (imza bloğunun içinde durduğu için yukarı taşınır)
     const imza=host.parentElement;
-    host.style.top=Math.round(8-yt(imza))+'px';
+    host.style.top=Math.round((innerHeight<760?36:84)-yt(imza))+'px';
   }
   ortala();setTimeout(ortala,300);setTimeout(ortala,1300);window.addEventListener('resize',ortala);
   let t0=performance.now();
