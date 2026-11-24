@@ -3530,29 +3530,61 @@ function startListeners(){
 // Nav
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('pg-'+p).classList.add('active');}
 
-// ── SEKMELER ARASI KAYDIRMA (izole özellik — sorun çıkarsa sadece bunu geri al) ──
-// Tüm sekmelerde sağa/sola kaydırma ile bitişik footer sekmesine (döngüsel) geçiş.
-// Sonda sola kaydırınca başa, başta sağa kaydırınca sona döner.
-// Sadece passive touchstart/touchend dinleyicileri kullanılıyor, hiçbir yerde
-// preventDefault çağrılmıyor — dikey kaydırmayı engellemesi teknik olarak mümkün değil.
+// ── SEKMELER ARASI KAYDIRMA (izole özellik — sorun çıkarsa sadece bu bloğu geri al) ──
+// Sağa/sola kaydırınca bitişik alt sekmeye (döngüsel) geçer. Hiçbir yerde preventDefault yok,
+// dinleyiciler passive: dikey kaydırmayı engelleyemez.
+// Hassasiyet: kısa mesafe (~%11 genişlik, en az 40px) YA DA hızlı fırlatma yeterli.
+// Yanlış tetiklenmemesi için: dikey niyet erken fark edilirse iptal, kenardan başlayan (sistem geri
+// hareketi), çoklu parmak, açık pencere/menü, form alanı, yatay kaydırılabilir alan, metin seçimi ve
+// ana sekme olmayan sayfalar (detay/rapor) yok sayılır; geçişten sonra 500 ms kilit vardır.
 (function(){
-  let bx=0,by=0,bt=0,yatayKaydirmaIcinde=false;
   const appEl=document.querySelector('.app');
   if(!appEl)return;
+  const ANA_SAYFALAR=['anasayfa','ogrenciler','siniflar','takvim','yoklama','odemeler','gelirgider','ozel'];
+  let bx=0,by=0,bt=0,iptal=true,son=0;
+  const yatayKaydirilabilir=el=>{
+    for(;el&&el!==appEl&&el.nodeType===1;el=el.parentElement){
+      if(el.scrollWidth>el.clientWidth+2){const ox=getComputedStyle(el).overflowX;if(ox==='auto'||ox==='scroll')return true;}
+    }
+    return false;
+  };
   appEl.addEventListener('touchstart',function(e){
-    bx=e.touches[0].clientX;by=e.touches[0].clientY;bt=Date.now();
-    yatayKaydirmaIcinde=!!e.target.closest('.hafta-gunler,.gelir-chart-wrap,.yatay-kaydirma-alani');
+    iptal=true;
+    if(e.touches.length!==1)return;
+    const t=e.touches[0],w=window.innerWidth||360;
+    if(t.clientX<14||t.clientX>w-14)return; // kenar: sistem geri/ileri hareketi
+    if(document.querySelector('.overlay.open,.drawer-overlay.open'))return; // pencere/menü açık
+    if(ANA_SAYFALAR.indexOf(PAGE)<0)return; // detay/rapor sayfaları
+    const el=e.target;
+    if(el.closest&&el.closest('input,textarea,select,[contenteditable="true"],canvas,.hafta-gunler,.gelir-chart-wrap,.yatay-kaydirma-alani'))return;
+    if(yatayKaydirilabilir(el))return;
+    bx=t.clientX;by=t.clientY;bt=Date.now();iptal=false;
   },{passive:true});
+  appEl.addEventListener('touchmove',function(e){
+    if(iptal)return;
+    if(e.touches.length!==1){iptal=true;return;}
+    const dx=e.touches[0].clientX-bx,dy=e.touches[0].clientY-by;
+    if(Math.abs(dy)>16&&Math.abs(dy)>Math.abs(dx)*0.8)iptal=true; // dikey kaydırma niyeti
+  },{passive:true});
+  appEl.addEventListener('touchcancel',function(){iptal=true;},{passive:true});
   appEl.addEventListener('touchend',function(e){
-    if(yatayKaydirmaIcinde)return;
-    const dx=e.changedTouches[0].clientX-bx;
-    const dy=e.changedTouches[0].clientY-by;
-    const sure=Date.now()-bt;
-    if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.4||sure>600)return;
-    const navItems=Array.from(document.querySelectorAll('.nav-item')).filter(b=>!b.classList.contains('yetki-gizli'));
+    if(iptal)return;iptal=true;
+    const t=e.changedTouches[0];if(!t)return;
+    const dx=t.clientX-bx,dy=t.clientY-by,sure=Math.max(1,Date.now()-bt),ax=Math.abs(dx),ay=Math.abs(dy);
+    if(sure>900)return; // yavaş sürükleme (seçme/okuma) sayılmaz
+    if(ax<ay*1.25)return; // yeterince yatay değil
+    const minMesafe=Math.max(40,(window.innerWidth||360)*0.11);
+    const hizli=ax>=26&&(ax/sure)>0.3; // kısa ama hızlı fırlatma
+    if(ax<minMesafe&&!hizli)return;
+    if(Date.now()-son<500)return;
+    try{if(window.getSelection&&String(window.getSelection()).length>0)return;}catch(_){}
+    // Yalnızca GÖRÜNEN yönetici sekmeleri: eğitmen paneli çubuğundaki gizli düğmeler (egTab) listeye girmesin
+    // (eski kodda bunlar da sayılıyor, ilk 'active' gizli eğitmen düğmesi bulunduğu için kaydırma çoğu zaman boşa gidiyordu)
+    const navItems=Array.from(document.querySelectorAll('.nav-item')).filter(b=>!b.classList.contains('yetki-gizli')&&b.offsetParent!==null&&/goTo\(/.test(b.getAttribute('onclick')||''));
     const suankiIdx=navItems.findIndex(b=>b.classList.contains('active'));
     if(suankiIdx===-1)return;
     const hedefIdx=dx<0?(suankiIdx+1)%navItems.length:(suankiIdx-1+navItems.length)%navItems.length;
+    son=Date.now();
     navItems[hedefIdx].click();
   },{passive:true});
 })();
@@ -3873,7 +3905,7 @@ const KAYIT_VARSAYILAN={
   surum:1,
   aydinlatma:{baslik:'Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni',metin:'Veri sorumlusu: Can & Irina Studio (şahıs işletmesi). Adres: Acıbadem, Fatih Sk. Alkan İş Merkezi No:6 Kat:2 Kısım:26, 34718 Kadıköy/İstanbul. E-posta: gayesidaryigit@gmail.com\n\nİşlenen kişisel veriler: Kimlik bilgileri (ad-soyad, doğum tarihi, cinsiyet); iletişim bilgileri (telefon, e-posta, acil durum iletişim bilgisi); öğrenci 18 yaşından küçükse veli/vasi bilgileri; ders, devam ve ödeme kayıtları; dansa engel olabilecek bir sağlık durumu veya sakatlığa ilişkin öğrencinin kendi beyanı; rıza verilmişse fotoğraf ve video kayıtları; bu formun gönderilmesi sırasında IP adresi, cihaz/tarayıcı bilgileri ve gönderim zamanı.\n\nİşleme amaçları: Kayıt işlemlerinin yapılması ve derslerin organize edilmesi; ders, devam ve ödeme takibi; ders duyurularının ve gerekli bilgilendirmelerin iletilmesi; ders güvenliğinin sağlanması; verilen onayların ispatı ve formun güvenliği; yasal yükümlülüklerin yerine getirilmesi.\n\nHukuki sebepler (KVKK m.5/2 ve m.6): Sözleşmenin kurulması veya ifası; hukuki yükümlülüğün yerine getirilmesi; bir hakkın tesisi, kullanılması veya korunması; meşru menfaat (IP adresi ve cihaz bilgisi, onayların ispatı ve güvenlik amacıyla). Sağlık durumuna ilişkin beyan ile fotoğraf/video paylaşımı için ayrıca açık rıza. Ders duyuruları ve ders/ödeme bilgilendirmeleri kayıt ilişkisinin gereğidir; stüdyo reklam veya kampanya amaçlı ileti göndermez.\n\nToplama yöntemi: Veriler bu kayıt formu ile, sözlü veya yazılı beyanla ve ders/ödeme süreçleri sırasında toplanır.\n\nAktarım: Kişisel veriler, yasal yükümlülükler çerçevesinde yetkili kamu kurum ve kuruluşlarına aktarılabilir. Verilerin saklandığı yazılım ve barındırma hizmetleri (Google / Firebase) yurt dışındaki sunucularda yer alabilir; yurt dışına aktarım KVKK m.9\'a uygun şekilde ve gerekli önlemler alınarak yapılır. Veriler bunun dışında üçüncü kişilerle paylaşılmaz.\n\nSaklama süreleri: Kimlik, iletişim, ders ve ödeme kayıtları ile IP/cihaz ve onay kayıtları, öğrencilik ilişkisinin sona ermesinden itibaren 5 yıl saklanır; sağlık durumuna ilişkin beyan öğrencilik sona erince silinir; fotoğraf ve video paylaşımları rıza geri alınana kadar tutulur; onaylanmayan veya reddedilen başvurular 1 yıl saklanır. Süresi dolan veriler en geç 6 ayda bir periyodik olarak silinir, yok edilir veya anonim hale getirilir.\n\nHaklarınız: KVKK m.11 uyarınca verilerinizin işlenip işlenmediğini öğrenme, bilgi talep etme, işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme, aktarılan üçüncü kişileri öğrenme, eksik veya yanlış verilerin düzeltilmesini, silinmesini veya yok edilmesini isteme, itiraz etme ve zarar halinde tazminat talep etme haklarına sahipsiniz. Başvurularınızı gayesidaryigit@gmail.com adresine iletebilirsiniz; başvurular en geç 30 gün içinde sonuçlandırılır.'},
   rizalar:[
-    {id:'iletisim',baslik:'İletişim İzni (Açık Rıza)',metin:'[TASLAK]\n\nDers duyuruları dışındaki tanıtım, kampanya ve etkinlik bilgilendirmelerinin telefon/WhatsApp/e-posta ile tarafıma iletilmesine açık rıza veriyorum. Rızamı dilediğim zaman geri alabileceğimi biliyorum.',kutu:'İletişim izni için açık rıza veriyorum.',aktif:false},
+    {id:'iletisim',baslik:'İletişim İzni (Açık Rıza)',metin:'Ders duyuruları dışındaki tanıtım, kampanya ve etkinlik bilgilendirmelerinin telefon/WhatsApp/e-posta ile tarafıma iletilmesine açık rıza veriyorum. Rızamı dilediğim zaman geri alabileceğimi biliyorum.',kutu:'İletişim izni için açık rıza veriyorum.',aktif:false},
     {id:'gorsel',baslik:'Fotoğraf ve Video Paylaşımına İlişkin Açık Rıza Beyanı',metin:'Can & Irina Studio tarafından dersler veya stüdyo etkinlikleri sırasında çekilen, öğrencinin fotoğrafını ve/veya görüntüsünü içeren fotoğraf ve videoların; stüdyonun kendisine ait Instagram hesabı ve diğer sosyal medya hesaplarında, stüdyonun faaliyetlerini, derslerini ve çalışmalarını tanıtmak amacıyla paylaşılmasına ilişkin açık rızamla onay veriyorum.\n\nStüdyo içinde çekilen fotoğraf/video, tanıtım amaçlı kullanılabilir (istemeyen öğrenciler bunu kayıt sırasında belirtebilir).\n\nVerilen açık rıza, stüdyoya yazılı bildirimde bulunularak her zaman geri alınabilir. Geri alma bildirimi sonrasında yeni paylaşım yapılmaz ve stüdyonun kontrolündeki hesaplarda bulunan içeriklerin kaldırılması için işlem yapılır.',kutu:'Fotoğraf ve video paylaşımına açık rıza veriyorum.',aktif:true}
   ],
   kurallar:{baslik:'Bilgilendirme',metin:'1. Öğrenci, katılmadığı dersin hakkını kaybeder; telafi dersi verilmez.\n2. Ödenen ücretler hiçbir koşulda iade edilmez.\n3. Derslere kıyafet temizliğine ve kişisel koku konusuna dikkat ederek gelinmelidir.\n4. Derslere zamanında katılım önemlidir; geç kalan öğrenciler dersin akışını bozmamak için eğitmenin yönlendirmesine uymalıdır.\n5. Sağlık durumu, sakatlık veya fiziksel kısıtlama varsa kayıt sırasında stüdyoya bildirilmelidir.\n6. İletişim bilgilerinde (telefon, adres vb.) değişiklik olması durumunda stüdyoya bilgi verilmelidir.\n7. Kayıt, belirtilen dönem/paket için geçerlidir; dondurma veya iptal talepleri yönetime iletilmelidir.'},
@@ -3886,7 +3918,7 @@ en:{
 ayd_baslik:'Privacy Notice on the Processing of Personal Data',
 ayd_metin:'Data controller: Can & Irina Studio (sole proprietorship). Address: Acıbadem, Fatih Sk. Alkan İş Merkezi No:6 Kat:2 Kısım:26, 34718 Kadıköy/İstanbul. E-mail: gayesidaryigit@gmail.com\n\nPersonal data processed: Identity details (full name, date of birth, gender); contact details (telephone, e-mail, emergency contact); if the student is under 18, parent/guardian details; class, attendance and payment records; the student’s own statement of any health condition or injury that may affect dancing; photographs and videos, where consent has been given; and, when this form is submitted, the IP address, device/browser information and time of submission.\n\nPurposes of processing: Carrying out registration and organising classes; tracking classes, attendance and payments; sending class announcements and necessary notices; ensuring safety in classes; evidencing the consents given and securing the form; and complying with legal obligations.\n\nLegal bases (KVKK Articles 5/2 and 6): Establishment or performance of a contract; compliance with a legal obligation; establishment, exercise or protection of a right; and legitimate interests (for the IP address and device information, to evidence consents and for security). Explicit consent is additionally relied on for the health statement and for sharing photographs/videos. Class announcements and class/payment notices are part of the registration relationship; the studio does not send advertising or promotional messages.\n\nMethod of collection: Data is collected through this registration form, through oral or written statements, and during class and payment processes.\n\nTransfers: Personal data may be transferred to authorised public bodies and institutions where legally required. The software and hosting services that store the data (Google / Firebase) may be located on servers abroad; any transfer abroad is carried out in accordance with Article 9 of the KVKK and with the necessary safeguards. Otherwise, data is not shared with third parties.\n\nRetention periods: Identity, contact, class and payment records, as well as IP/device and consent records, are retained for 5 years after the student relationship ends; the health statement is deleted when the student relationship ends; photographs and videos that have been shared are kept until consent is withdrawn; applications that are not approved or are rejected are kept for 1 year. Data whose retention period has expired is deleted, destroyed or anonymised at periodic intervals of no more than 6 months.\n\nYour rights: Under Article 11 of the KVKK you have the right to learn whether your data is processed, to request information, to learn the purpose of processing and whether it is used accordingly, to learn the third parties to whom it is transferred, to request correction, deletion or destruction of incomplete or inaccurate data, to object, and to claim compensation for damage. You may send your requests to gayesidaryigit@gmail.com; requests are concluded within 30 days at the latest.',
 r_iletisim_baslik:'Communication Consent (Explicit Consent)',
-r_iletisim_metin:'[DRAFT]\n\nI give my explicit consent to receive promotional, campaign and event information, other than class announcements, by phone/WhatsApp/e-mail. I understand that I may withdraw my consent at any time.',
+r_iletisim_metin:'I give my explicit consent to receive promotional, campaign and event information, other than class announcements, by phone/WhatsApp/e-mail. I understand that I may withdraw my consent at any time.',
 r_iletisim_kutu:'I give my explicit consent to be contacted for these purposes.',
 r_gorsel_baslik:'Explicit Consent Statement on Sharing Photographs and Videos',
 r_gorsel_metin:'I give my explicit consent to photographs and videos showing the student’s photograph and/or image, taken by Can & Irina Studio during classes or studio events, being shared on the studio’s own Instagram account and other social media accounts for the purpose of promoting the studio’s activities, classes and work.\n\nPhotographs/videos taken inside the studio may be used for promotional purposes (students who do not wish this may say so at registration).\n\nThe explicit consent given may be withdrawn at any time by written notice to the studio. After a withdrawal notice, no new content will be shared, and steps will be taken to remove content on accounts under the studio’s control.',
@@ -3898,7 +3930,7 @@ ru:{
 ayd_baslik:'Уведомление об обработке персональных данных',
 ayd_metin:'Оператор персональных данных: Can & Irina Studio (индивидуальное предприятие). Адрес: Acıbadem, Fatih Sk. Alkan İş Merkezi No:6 Kat:2 Kısım:26, 34718 Kadıköy/İstanbul. Эл. почта: gayesidaryigit@gmail.com\n\nОбрабатываемые персональные данные: идентификационные данные (фамилия и имя, дата рождения, пол); контактные данные (телефон, адрес электронной почты, контакт для экстренной связи); если ученику нет 18 лет, данные родителя/законного представителя; данные о занятиях, посещаемости и платежах; собственное заявление ученика о состоянии здоровья или травме, которые могут мешать танцам; фотографии и видеозаписи (при наличии согласия); а также при отправке этой формы – IP-адрес, сведения об устройстве и браузере и время отправки.\n\nЦели обработки: оформление регистрации и организация занятий; учёт занятий, посещаемости и платежей; направление объявлений о занятиях и необходимых уведомлений; обеспечение безопасности на занятиях; подтверждение данных согласий и защита формы; исполнение требований законодательства.\n\nПравовые основания (статьи 5/2 и 6 Закона KVKK): заключение или исполнение договора; исполнение юридической обязанности; установление, осуществление или защита права; законные интересы (в отношении IP-адреса и данных об устройстве – для подтверждения согласий и в целях безопасности). Для заявления о состоянии здоровья и для публикации фотографий и видеозаписей дополнительно требуется явное согласие. Объявления о занятиях и уведомления о занятиях и платежах являются частью отношений по регистрации; студия не рассылает рекламных сообщений.\n\nСпособ сбора: данные собираются через эту регистрационную форму, из устных или письменных заявлений, а также в ходе процессов проведения занятий и оплаты.\n\nПередача данных: персональные данные могут передаваться уполномоченным государственным органам в случаях, предусмотренных законом. Программное обеспечение и хостинг, в которых хранятся данные (Google / Firebase), могут находиться на серверах за пределами Турции; передача за границу осуществляется в соответствии со статьёй 9 Закона KVKK и с принятием необходимых мер. В остальных случаях данные третьим лицам не передаются.\n\nСроки хранения: идентификационные и контактные данные, данные о занятиях и платежах, а также записи об IP-адресе, устройстве и согласиях хранятся 5 лет после прекращения отношений с учеником; заявление о состоянии здоровья удаляется по окончании этих отношений; опубликованные фотографии и видео хранятся до отзыва согласия; неодобренные или отклонённые заявки хранятся 1 год. Данные, срок хранения которых истёк, удаляются, уничтожаются или обезличиваются периодически, не реже одного раза в 6 месяцев.\n\nВаши права: в соответствии со статьёй 11 Закона KVKK вы вправе узнать, обрабатываются ли ваши данные, запросить информацию, узнать цель обработки и использование данных по назначению, узнать третьих лиц, которым передаются данные, требовать исправления, удаления или уничтожения неполных или неточных данных, возражать против обработки и требовать возмещения ущерба. Обращения можно направлять на адрес gayesidaryigit@gmail.com; они рассматриваются не позднее чем в течение 30 дней.',
 r_iletisim_baslik:'Согласие на связь (явное согласие)',
-r_iletisim_metin:'[ЧЕРНОВИК]\n\nДаю явное согласие на получение рекламной информации, информации об акциях и мероприятиях (помимо объявлений о занятиях) по телефону/WhatsApp/электронной почте. Мне известно, что я могу отозвать согласие в любое время.',
+r_iletisim_metin:'Даю явное согласие на получение рекламной информации, информации об акциях и мероприятиях (помимо объявлений о занятиях) по телефону/WhatsApp/электронной почте. Мне известно, что я могу отозвать согласие в любое время.',
 r_iletisim_kutu:'Даю явное согласие на связь с этой целью.',
 r_gorsel_baslik:'Явное согласие на публикацию фотографий и видеозаписей',
 r_gorsel_metin:'Я даю явное согласие на публикацию фотографий и видеозаписей с моим изображением, сделанных Can & Irina Studio во время занятий или мероприятий студии, на официальной странице студии в Instagram и в других её аккаунтах в социальных сетях в целях продвижения деятельности, занятий и работы студии.\n\nФотографии и видеозаписи, сделанные в студии, могут использоваться в рекламных целях (ученики, не желающие этого, могут сообщить об этом при регистрации).\n\nДанное явное согласие может быть в любой момент отозвано путём письменного уведомления студии. После получения уведомления об отзыве новые публикации не производятся, и принимаются меры для удаления материалов с аккаунтов, находящихся под контролем студии.',
