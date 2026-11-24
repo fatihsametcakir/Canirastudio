@@ -1064,6 +1064,10 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 #splash{justify-content:center!important;padding-top:120px!important;padding-bottom:190px!important;}
 #splash .sp-line{margin-top:40px!important;}
 #splash .sp-imza{bottom:max(14px,env(safe-area-inset-bottom))!important;}
+/* HAMBURGER MENÜ: cam (glass) zemin (geri almak için bu bloğu sil) */
+.drawer{background:linear-gradient(135deg,rgba(255,255,255,.14) 0%,rgba(255,255,255,.04) 38%,rgba(255,255,255,0) 62%),color-mix(in srgb,var(--surface) 16%,transparent)!important;backdrop-filter:blur(26px) saturate(200%) brightness(1.08)!important;-webkit-backdrop-filter:blur(26px) saturate(200%) brightness(1.08)!important;box-shadow:0 22px 60px -12px rgba(0,0,0,.7),0 2px 12px -2px rgba(0,0,0,.35),inset 0 1.5px 0 rgba(255,255,255,.35),inset 0 0 0 1px rgba(255,255,255,.07)!important;}
+:root[data-acik="1"] .drawer{background:linear-gradient(135deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.18) 40%,rgba(255,255,255,.04) 70%),color-mix(in srgb,var(--surface) 14%,transparent)!important;box-shadow:0 22px 60px -14px rgba(0,0,0,.4),0 2px 12px -2px rgba(0,0,0,.18),inset 0 1.5px 0 rgba(255,255,255,.9),inset 0 0 0 1px rgba(255,255,255,.35)!important;}
+.drawer-overlay{background:#00000050;backdrop-filter:blur(2px);}
 </style>
 </head>
 <body>
@@ -4115,11 +4119,7 @@ async function kayitBelgePdf(){
     kap.id='kf-pdf-kap';kap.style.cssText='position:absolute;left:-10000px;top:0;width:714px;';
     const ic=document.createElement('div');
     ic.style.cssText="width:714px;box-sizing:border-box;padding-right:18px;background:#fff;font-family:Arial,Helvetica,sans-serif;color:#111;font-size:12.5px";
-    ic.innerHTML=`<style>${KAYIT_BELGE_CSS}/* HAMBURGER MENÜ: cam (glass) zemin (geri almak için bu bloğu sil) */
-.drawer{background:linear-gradient(135deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.05) 38%,rgba(255,255,255,0) 62%),color-mix(in srgb,var(--surface) 46%,transparent)!important;backdrop-filter:blur(30px) saturate(190%) brightness(1.05)!important;-webkit-backdrop-filter:blur(30px) saturate(190%) brightness(1.05)!important;box-shadow:0 22px 60px -12px rgba(0,0,0,.7),0 2px 12px -2px rgba(0,0,0,.35),inset 0 1.5px 0 rgba(255,255,255,.35),inset 0 0 0 1px rgba(255,255,255,.07)!important;}
-:root[data-acik="1"] .drawer{background:linear-gradient(135deg,rgba(255,255,255,.7) 0%,rgba(255,255,255,.28) 40%,rgba(255,255,255,.1) 70%),color-mix(in srgb,var(--surface) 42%,transparent)!important;box-shadow:0 22px 60px -14px rgba(0,0,0,.4),0 2px 12px -2px rgba(0,0,0,.18),inset 0 1.5px 0 rgba(255,255,255,.9),inset 0 0 0 1px rgba(255,255,255,.35)!important;}
-.drawer-overlay{background:#00000050;backdrop-filter:blur(2px);}
-</style>${kayitBelgeHtml(d)}`;
+    ic.innerHTML=`<style>${KAYIT_BELGE_CSS}</style>${kayitBelgeHtml(d)}`;
     kap.appendChild(ic);document.body.appendChild(kap);
     showToast('PDF hazırlanıyor…');
     await window.html2pdf().set({margin:[12,12,14,12],filename:'CanIrina_Kayit_Formu_'+d.toUpperCase()+'.pdf',image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.ck','table.im','h3']}}).from(ic).save();
