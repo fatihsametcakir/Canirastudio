@@ -11549,10 +11549,10 @@ async function renderGiderRapor(){
 
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--accentbg),transparent);border:1px solid #ff6b6b30;margin-bottom:10px;">
       <div style="font-size:11px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">${t('giderler')}</div>
-      <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('toplam_kira')}</span><span style="font-weight:600;color:var(--accent);">−${toplamKira.toLocaleString(LC())} ₺</span></div>
+      <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🏠 ${t('toplam_kira')}</span><span style="font-weight:600;color:var(--accent);">−${toplamKira.toLocaleString(LC())} ₺</span></div>
       ${toplamPratikKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🏋️ ${t('x_pratik_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${toplamPratikKira.toLocaleString(LC())} ₺</span></div>`:''}
-      ${toplamAsistanOdeme>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('asistan_odemeleri')}</span><span style="font-weight:600;color:var(--accent);">−${toplamAsistanOdeme.toLocaleString(LC())} ₺</span></div>`:''}
-      ${ozelStudyoKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('ozel_ders_studyo_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${ozelStudyoKira.toLocaleString(LC())} ₺</span></div>`:''}
+      ${toplamAsistanOdeme>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🧑‍🏫 ${t('asistan_odemeleri')}</span><span style="font-weight:600;color:var(--accent);">−${toplamAsistanOdeme.toLocaleString(LC())} ₺</span></div>`:''}
+      ${ozelStudyoKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🎓 ${t('ozel_ders_studyo_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${ozelStudyoKira.toLocaleString(LC())} ₺</span></div>`:''}
       <div class="gider-satir" style="border-top:1px solid #ff6b6b40;margin-top:4px;padding-top:8px;">
         <span style="font-weight:700;">${t('toplam_gider')}</span>
         <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamPratikKira+toplamAsistanOdeme+ozelStudyoKira>0?(toplamKira+toplamPratikKira+toplamAsistanOdeme+ozelStudyoKira).toLocaleString(LC())+' ₺':'0 ₺'}</span>
