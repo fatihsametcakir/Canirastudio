@@ -1060,6 +1060,10 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 .page :is(.card,.sinif-karti,.odeme-card,.odeme-sinif-grup,.ozel-og-kart,.pay-alert,.gider-ozet-kart,.egitmen-pay-kart,.takvim-ders-kart,.reten-kart,.student-item.og-satir){margin-bottom:4px!important;}
 .page :is(.stats-row,.gg-grid,.video-grid){gap:4px!important;}
 .page .stats-row{margin-bottom:8px!important;}
+/* AÇILIŞ: Can & Irina bloğu ekranın ortasında; taçlar en üstte (JS ortala() ile). Geri almak için bu bloğu sil + ortala() eski haline */
+#splash{justify-content:center!important;padding-top:0!important;}
+@media(max-height:760px){#splash{justify-content:flex-start!important;padding-top:122px!important;}}
+#splash .sp-imza{bottom:calc(max(30px,env(safe-area-inset-bottom)) + 22px)!important;}
 </style>
 </head>
 <body>
@@ -1071,6 +1075,9 @@ try{
   const sp=document.getElementById('splash');
   const host=sp&&sp.querySelector('.sp-taclar');
   if(!host)return;
+  // taçlar ekranın en üstünde: imza bloğunun içinde durdukları için yukarı taşı (3D yüklenmese de CSS taçlar için geçerli)
+  const tasi=()=>{let y=0,el=host.parentElement;while(el&&el!==sp){y+=el.offsetTop;el=el.offsetParent;}host.style.top=Math.round(8-y)+'px';};
+  tasi();setTimeout(tasi,300);setTimeout(tasi,1300);window.addEventListener('resize',tasi);
   const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
   if(!document.body.contains(host))return;
   const W=host.clientWidth||390,H=150;
@@ -1226,8 +1233,9 @@ try{
     const cizgi=sp.querySelector('.sp-line'),kucuk=sp.querySelector('.sp-imza small');if(!cizgi||!kucuk)return;
     // animasyon (transform) ölçümü kaydırmasın diye offset tabanlı yerleşim koordinatı kullan
     const yt=el=>{let y=0;while(el&&el!==sp){y+=el.offsetTop;el=el.offsetParent;}return y;};
-    const a=yt(cizgi)+cizgi.offsetHeight,b=yt(kucuk),h=yt(host);
-    cv.style.top=Math.round((a+b)/2-h-H/2-20)+'px';
+    // taçlar ekranın en üstünde (imza bloğunun içinde durduğu için yukarı taşınır)
+    const imza=host.parentElement;
+    host.style.top=Math.round(8-yt(imza))+'px';
   }
   ortala();setTimeout(ortala,300);setTimeout(ortala,1300);window.addEventListener('resize',ortala);
   let t0=performance.now();
