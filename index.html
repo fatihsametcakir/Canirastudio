@@ -1087,6 +1087,18 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 :root[data-acik="1"] #splash .sp-spot i.n em{background:linear-gradient(to bottom,rgba(255,214,120,.42),rgba(255,204,100,.14))}
 @keyframes spotAc{0%{opacity:0}18%{opacity:.7}26%{opacity:.25}40%{opacity:.9}100%{opacity:1}}
 @keyframes spotNefes{0%,100%{opacity:1}50%{opacity:.82}}
+/* Telefon yatayken açılış ekranı kompakt */
+@media (orientation:landscape) and (max-height:520px){
+#splash{padding-top:8px!important;padding-bottom:8px!important;justify-content:center!important}
+#splash .sp-taclar,#splash .sp-spot{display:none!important}
+#splash .sp-mark{width:64px!important;margin-bottom:2px!important}
+#splash .sp-logo,#splash .sp-logo>span,#splash .sp-gold{font-size:28px!important;line-height:1.05!important}
+#splash .sp-logo em{margin-top:6px!important;font-size:11px!important}
+#splash .sp-line{margin-top:8px!important;width:140px!important}
+#splash .sp-imza{position:static!important;margin-top:6px!important}
+#splash .sp-imza small{margin-bottom:0!important;font-size:10px!important}
+#splash .sp-ark svg{width:200px!important;height:auto!important;margin-top:-18px!important}
+}
 /* Açılış: logo harfleri sağdan ve soldan kayarak yerine gelir */
 #splash{overflow:hidden}
 @keyframes spLtL{0%{opacity:0;transform:translateX(-15vw)}45%{opacity:1}100%{opacity:1;transform:none}}
@@ -1150,8 +1162,12 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
   var a=document.createElement('div'),b=document.createElement('div');
   [a,b].forEach(function(e){e.className='sp-spot';e.innerHTML='<i class="o"><em></em></i><i class="n"><em></em></i><b></b>';sp.appendChild(e);});
   function yerles(){
-    var cx=innerWidth/2,gap=85,yy=(innerHeight<760?60:84)+60,w=170;
-    [[a,-gap],[b,gap]].forEach(function(p){var e=p[0];e.style.width=w+'px';e.style.height=yy+'px';e.style.left=(cx+p[1]-w/2)+'px';});
+    var cx=innerWidth/2,gap=85,ty=(innerHeight<760?60:84)+58,w=170,ox=-18,oy=-18;
+    [[a,ox,-gap],[b,innerWidth-ox,gap]].forEach(function(p){
+      var e=p[0],sx=p[1],tx=cx+p[2],dx=tx-sx,dy=ty-oy,L=Math.sqrt(dx*dx+dy*dy),ang=-Math.atan2(dx,dy)*180/Math.PI;
+      e.style.width=w+'px';e.style.height=L+'px';e.style.left=(sx-w/2)+'px';e.style.top=oy+'px';
+      e.style.transformOrigin='50% 0';e.style.transform='rotate('+ang+'deg)';
+    });
   }
   yerles();[300,900,1500].forEach(function(t){setTimeout(yerles,t)});window.addEventListener('resize',yerles);
 }catch(e){}})();

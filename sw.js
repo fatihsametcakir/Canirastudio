@@ -1,4 +1,4 @@
-const CACHE = 'dans-studio-v2';
+const CACHE = 'dans-studio-v3';
 const URLS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
