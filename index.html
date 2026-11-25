@@ -1064,6 +1064,10 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 #splash{justify-content:center!important;padding-top:120px!important;padding-bottom:190px!important;}
 #splash .sp-line{margin-top:40px!important;}
 #splash .sp-imza{bottom:max(14px,env(safe-area-inset-bottom))!important;}
+@keyframes spUzak{0%{opacity:0;transform:scale(.04)}35%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes spUzakK{0%{opacity:0;transform:scale(.04)}35%{opacity:.85}100%{opacity:.85;transform:none}}
+#splash .sp-imza small{opacity:0;animation:spUzakK 1.1s .9s cubic-bezier(.1,.7,.2,1) both!important;transform-origin:50% 50%}
+#splash .sp-imza b.sp-ark{display:block;clip-path:none;opacity:0;animation:spUzak 1.2s 1.15s cubic-bezier(.1,.7,.2,1) both;transform-origin:50% 50%}
 /* Açılış: logo harfleri sağdan ve soldan kayarak yerine gelir */
 #splash{overflow:hidden}
 @keyframes spLtL{0%{opacity:0;transform:translateX(-15vw)}45%{opacity:1}100%{opacity:1;transform:none}}
