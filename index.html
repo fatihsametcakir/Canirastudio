@@ -1099,6 +1099,15 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 #splash .sp-imza small{margin-bottom:0!important;font-size:10px!important}
 #splash .sp-ark svg{width:200px!important;height:auto!important;margin-top:-18px!important}
 }
+/* Bilgisayar/geniş ekran, alçak pencere: açılış ekranı yüksekliğe göre ölçeklenir (çizgi imzaya binmesin) */
+@media (min-width:700px) and (min-height:521px) and (max-height:899px){
+#splash .sp-mark{width:min(66vw,270px,15.5vh)!important;margin-bottom:6px!important}
+#splash .sp-logo,#splash .sp-logo>span,#splash .sp-gold{font-size:min(7vh,60px)!important;line-height:1.05!important}
+#splash .sp-logo em{margin-top:8px!important;font-size:min(1.9vh,13px)!important}
+#splash .sp-line{margin-top:min(3.4vh,30px)!important}
+}
+/* Bilgisayarda üst çubuk, alttaki kartlarla aynı genişlikte */
+@media (min-width:900px){.topbar{max-width:1008px!important}}
 /* Açılış: logo harfleri sağdan ve soldan kayarak yerine gelir */
 #splash{overflow:hidden}
 @keyframes spLtL{0%{opacity:0;transform:translateX(-15vw)}45%{opacity:1}100%{opacity:1;transform:none}}
@@ -1124,6 +1133,10 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 .gg-grid{max-width:none!important}
 #gg-ozet-row{max-width:none!important}
 }
+/* Bilgisayarda kartın altında açılan içerik */
+.inline-slot{margin:2px 0 10px;padding:14px 16px;border:1px solid var(--border2);border-radius:var(--radius);background:color-mix(in srgb,var(--surface) 70%,transparent)}
+.inline-slot>.page.inline-page{display:block!important;animation:none!important;padding:0!important;margin:0}
+.sinif-karti.inline-acik,.gg-card.inline-acik{box-shadow:0 0 0 1px var(--border2),0 6px 20px -8px #0008}
 </style>
 </head>
 <body>
@@ -3856,10 +3869,62 @@ function goTo(p,btn){
   if(fab)fab.style.display=(p==='anasayfa'||p==='ayarlar'||p==='yoklama'||p==='takvim'||p==='videolar'||p==='gelirgider'||p==='odemeler'||p==='ozel'||p==='siniflar'||p==='ogrenciler')?'none':'flex';
   renderAll();
 }
-function openSinifDetay(id){PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');{const f=document.getElementById('mainFab');if(f)f.style.display='none';}const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
+// ── Bilgisayarda (geniş ekran) kartlar yeni sayfa yerine kartın hemen altında açılır ──
+const MASAUSTU=()=>window.matchMedia&&window.matchMedia('(min-width:900px)').matches;
+const INLINE_ORG={};
+function inlineYerlestir(pgId,anchor,grid){
+  const pg=document.getElementById('pg-'+pgId);if(!pg||!anchor)return null;
+  if(!INLINE_ORG[pgId])INLINE_ORG[pgId]={parent:pg.parentNode,next:pg.nextSibling};
+  let slot=pg.parentNode&&pg.parentNode.classList&&pg.parentNode.classList.contains('inline-slot')?pg.parentNode:null;
+  if(!slot){slot=document.createElement('div');slot.className='inline-slot';pg.classList.add('inline-page');slot.appendChild(pg);}
+  if(grid)slot.style.gridColumn='1 / -1';
+  anchor.after(slot);
+  return slot;
+}
+function inlineKaldir(pgId){
+  const o=INLINE_ORG[pgId];if(!o)return;
+  const pg=document.getElementById('pg-'+pgId);
+  if(pg){const slot=pg.parentNode;pg.classList.remove('inline-page');
+    if(o.parent&&o.parent.isConnected)o.parent.insertBefore(pg,o.next&&o.next.parentNode===o.parent?o.next:null);
+    if(slot&&slot.classList&&slot.classList.contains('inline-slot'))slot.remove();}
+  delete INLINE_ORG[pgId];
+}
+let INLINE_SINIF=null;
+function sinifInlineGoster(){
+  const id=INLINE_SINIF;if(!id)return;
+  const kart=document.querySelector('#sinif-list .sinif-karti[onclick*="\''+id+'\'"]');
+  if(!kart||!S.siniflar.some(x=>x.id===id)){INLINE_SINIF=null;inlineKaldir('sinif-detay');return;}
+  CUR_SINIF=id;
+  inlineYerlestir('sinif-detay',kart,false);
+  document.querySelectorAll('#sinif-list .sinif-karti').forEach(k=>k.classList.toggle('inline-acik',k===kart));
+  renderSinifDetay(id);
+}
+function sinifInlineToggle(id){
+  if(INLINE_SINIF===id){INLINE_SINIF=null;inlineKaldir('sinif-detay');document.querySelectorAll('#sinif-list .sinif-karti').forEach(k=>k.classList.remove('inline-acik'));return;}
+  inlineKaldir('sinif-detay');INLINE_SINIF=id;sinifInlineGoster();
+  const sl=document.querySelector('.inline-slot');if(sl&&sl.scrollIntoView)setTimeout(()=>sl.scrollIntoView({block:'nearest',behavior:'smooth'}),60);
+}
+const _renderSiniflarOrj=renderSiniflar;
+renderSiniflar=function(){inlineKaldir('sinif-detay');_renderSiniflarOrj.apply(this,arguments);if(INLINE_SINIF)sinifInlineGoster();};
+let GG_INLINE=null;
+const GG_BTN={'aylik-gelir':'openAylikGelir','gider-rapor':'openGiderRaporu','gelir-trend':'openAylikGelirTrend','egitmen-panel':'openEgitmenGiderler','egitmenler':'openEgitmenlerSayfa','tutma-orani':'openTutmaOrani'};
+function ggInline(id,renderFn){
+  const fn=GG_BTN[id];if(!fn)return false;
+  const btn=document.querySelector('#pg-gelirgider .gg-card[onclick^="'+fn+'("]');if(!btn)return false;
+  if(GG_INLINE===id){inlineKaldir(id);GG_INLINE=null;btn.classList.remove('inline-acik');return true;}
+  if(GG_INLINE){inlineKaldir(GG_INLINE);document.querySelectorAll('#pg-gelirgider .gg-card').forEach(b=>b.classList.remove('inline-acik'));}
+  GG_INLINE=id;inlineYerlestir(id,btn,true);btn.classList.add('inline-acik');
+  if(renderFn)renderFn();
+  giderAyarlariTazele(true).then(ch=>{if(ch&&renderFn&&GG_INLINE===id)renderFn();});
+  setTimeout(()=>btn.scrollIntoView({block:'nearest',behavior:'smooth'}),60);
+  return true;
+}
+function openSinifDetay(id){if(MASAUSTU()&&PAGE==='siniflar'){sinifInlineToggle(id);return;}inlineKaldir('sinif-detay');INLINE_SINIF=null;PREV_PAGE=PAGE;PAGE='sinif-detay';CUR_SINIF=id;showPage('sinif-detay');{const f=document.getElementById('mainFab');if(f)f.style.display='none';}const si=S.siniflar.find(s=>s.id===id);setTopbar(true,si?si.ad:'Sınıf');renderSinifDetay(id);}
 // Gelir/Gider ekranındaki rapor kartları: popup yerine tam sayfa olarak açılır
 // (mobil ve masaüstünde aynı — sadece geri tuşu/topbar back ile kapanır).
 function openRaporSayfa(id,i18nKey,renderFn){
+  if(MASAUSTU()&&PAGE==='gelirgider'&&ggInline(id,renderFn))return;
+  if(GG_INLINE){inlineKaldir(GG_INLINE);GG_INLINE=null;}
   PREV_PAGE=PAGE;PAGE=id;showPage(id);setTopbar(true,t(i18nKey));
   const fab=document.getElementById('mainFab');if(fab)fab.style.display='none';
   if(renderFn)renderFn();
