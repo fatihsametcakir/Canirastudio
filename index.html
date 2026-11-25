@@ -1283,7 +1283,7 @@ try{
   }
   function yuva(kral,xpos){
     const tilt=new THREE.Group(),don=new THREE.Group();
-    tilt.rotation.order='ZXY';tilt.rotation.set(.2,0,kral?THREE.MathUtils.degToRad(45):THREE.MathUtils.degToRad(-45));
+    tilt.rotation.order='ZXY';tilt.rotation.set(.2,0,kral?THREE.MathUtils.degToRad(30):THREE.MathUtils.degToRad(-30));
     don.add(tac(kral));tilt.add(don);tilt.position.set(xpos,-.1,0);tilt.scale.setScalar(.88);scene.add(tilt);return don;
   }
   const dK=yuva(true,-1.75),dQ=yuva(false,1.75);cv.style.opacity='.88';
