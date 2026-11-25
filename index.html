@@ -4954,7 +4954,7 @@ async function saveSinifOgrenci(){
   try{
     const fresh=await db.collection('siniflar').doc(CUR_SINIF).get();
     const mevcutKayitlar=fresh.exists?(fresh.data().kayitlar||[]):(si.kayitlar||[]);
-    const kayitlar=[...mevcutKayitlar,...yeniKayitlar];
+    const zatenVar=new Set(mevcutKayitlar.map(k=>k.ogrenciId));const kayitlar=[...mevcutKayitlar,...yeniKayitlar.filter(k=>!zatenVar.has(k.ogrenciId))];
     await db.collection('siniflar').doc(CUR_SINIF).update({kayitlar});
     // Local state güncelle
     const idx=S.siniflar.findIndex(s=>s.id===CUR_SINIF);
@@ -13017,7 +13017,7 @@ async function ogDetaySinifEkleYap(siId,tasinacakSiId){
       const yeniKayit={id:'k'+Date.now(),ogrenciId:og.id,tip:'paket',hak:4,basTarih:bas,bitisTarih:bit};
       const fresh=await db.collection('siniflar').doc(siId).get();
       const mevcutKayitlar=fresh.exists?(fresh.data().kayitlar||[]):(si.kayitlar||[]);
-      const kayitlar=[...mevcutKayitlar,yeniKayit];
+      const kayitlar=mevcutKayitlar.some(k=>k.ogrenciId===og.id)?mevcutKayitlar:[...mevcutKayitlar,yeniKayit];
       await db.collection('siniflar').doc(siId).update({kayitlar});
       const idx=S.siniflar.findIndex(s=>s.id===siId);
       if(idx>=0)S.siniflar[idx]={...S.siniflar[idx],kayitlar};
