@@ -7285,7 +7285,7 @@ function otOtoDusKontrol(){
 }
 
 // ── RENDER ─────────────────────────────────────────────
-function getYaklasanlar(){const res=[];S.siniflar.forEach(si=>{if((si.durum||'aktif')==='pasif')return; /* kapalı sınıflar paket yenileme listesinde görünmez */ (si.kayitlar||[]).forEach(k=>{if(k.tip!=='paket')return;if(k.donduruldu)return;const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);if(!og||(og.durum||'aktif')==='pasif')return;const h=hesaplaKayit(k.ogrenciId,si.id);const b=h?h.bitisTarih:k.bitisTarih;const dl=daysLeft(b);if(dl<=7){res.push({og,kayit:k,sinif:si,dl,hesap:h});}});});return res.sort((a,b)=>a.dl-b.dl);}
+function getYaklasanlar(){const res=[];S.siniflar.forEach(si=>{if((si.durum||'aktif')==='pasif')return; /* kapalı sınıflar paket yenileme listesinde görünmez */ const gorulen=new Set();(si.kayitlar||[]).forEach(k=>{if(k.tip!=='paket')return;if(k.donduruldu)return;if(gorulen.has(k.ogrenciId))return;gorulen.add(k.ogrenciId);const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);if(!og||(og.durum||'aktif')==='pasif')return;const h=hesaplaKayit(k.ogrenciId,si.id);const b=h?h.bitisTarih:k.bitisTarih;const dl=daysLeft(b);if(dl<=7){res.push({og,kayit:k,sinif:si,dl,hesap:h});}});});return res.sort((a,b)=>a.dl-b.dl);}
 
 // Aktif öğrenci kartındaki "i" düğmesi: kişi sayısı, dağılım ve sınıf kayıtlarını ayrı ayrı gösterir
 const OG_BILGI_METIN={
