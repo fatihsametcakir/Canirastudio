@@ -1118,6 +1118,16 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
   setTimeout(function(){kayit.forEach(function(x){x[0].textContent=x[1];});},2100);
 }catch(e){}})();
 </script>
+<script>
+/* Logo (CI) taçların tam ortasına hizalansın: çizimin gerçek merkezi ile ekran ortası arasındaki farkı kapat */
+(function(){try{
+  var sv=document.querySelector('#splash .sp-mark');if(!sv)return;
+  var x1=1e9,x2=-1e9;sv.querySelectorAll('path,line,circle').forEach(function(e){var b=e.getBBox();x1=Math.min(x1,b.x);x2=Math.max(x2,b.x+b.width);});
+  var vb=sv.viewBox.baseVal,cx=(x1+x2)/2,vc=vb.x+vb.width/2;
+  function uygula(){var w=sv.getBoundingClientRect().width||sv.clientWidth;sv.style.position='relative';sv.style.left=(-(cx-vc)*(w/vb.width))+'px';}
+  uygula();window.addEventListener('resize',uygula);
+}catch(e){}})();
+</script>
 <script type="module">
 // Açılış ekranı: gerçek 3D taçlar (Three.js). Yüklenemezse CSS taçlar kalır.
 (async()=>{
