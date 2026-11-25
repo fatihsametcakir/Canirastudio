@@ -1099,9 +1099,9 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
     });
     var hs=el.querySelectorAll('.sp-h'),isEm=el.tagName==='EM';
     hs.forEach(function(h,j){
-      var r=h.getBoundingClientRect(),mid=(hs.length-1)/2,sol=(j<=mid);
+      var r=h.getBoundingClientRect(),dx=(r.left+r.width/2)-(pr.left+pr.width/2),sol=(dx<=0);
       if(!isEm){var f=((r.left+r.width/2)-pr.left)/pr.width;f=Math.max(0,Math.min(1,f));var st=a[2];h.style.setProperty('--cd',rn(st[0],f));h.style.setProperty('--cl',rn(st[1],f));}
-      var sira=Math.abs(j-mid);
+      var sira=Math.abs(dx)/(pr.width/2)*6;
       h.className='sp-h '+(sol?'l':'r');
       h.style.animationDelay=(a[1]+sira*.055)+'s';
     });
