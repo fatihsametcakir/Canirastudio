@@ -1074,7 +1074,7 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 @media(max-height:760px){#splash .sp-mark{width:min(52vw,190px)!important}}
 /* Taçları aydınlatan tepe spotları */
 #splash .sp-spot{position:absolute;top:0;left:0;z-index:3;pointer-events:none;opacity:0;animation:spotAc 1.4s .35s ease-out forwards,spotNefes 4s 1.8s ease-in-out infinite;mix-blend-mode:screen}
-#splash .sp-spot i{position:absolute;inset:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,rgba(0,0,0,.95) 30%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.05) 100%);mask-image:linear-gradient(to bottom,#000 0,rgba(0,0,0,.95) 30%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.05) 100%)}
+#splash .sp-spot i{position:absolute;inset:0;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 18%,rgba(0,0,0,.95) 30%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.05) 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 18%,rgba(0,0,0,.95) 30%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.05) 100%)}
 #splash .sp-spot i em{position:absolute;inset:0}
 #splash .sp-spot i.o{filter:blur(16px)}
 #splash .sp-spot i.o em{clip-path:polygon(44% 0,56% 0,104% 100%,-4% 100%);background:linear-gradient(to bottom,rgba(255,236,190,.42),rgba(255,226,170,.22))}
@@ -1148,7 +1148,7 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 (function(){try{
   var sp=document.getElementById('splash'),host=sp&&sp.querySelector('.sp-taclar');if(!host)return;
   var a=document.createElement('div'),b=document.createElement('div');
-  [a,b].forEach(function(e){e.className='sp-spot';e.innerHTML='<i class="o"><em></em></i><i class="n"><em></em></i><b></b><u></u>';sp.appendChild(e);});
+  [a,b].forEach(function(e){e.className='sp-spot';e.innerHTML='<i class="o"><em></em></i><i class="n"><em></em></i><b></b>';sp.appendChild(e);});
   function yerles(){
     var cx=innerWidth/2,gap=85,yy=(innerHeight<760?60:84)+60,w=170;
     [[a,-gap],[b,gap]].forEach(function(p){var e=p[0];e.style.width=w+'px';e.style.height=yy+'px';e.style.left=(cx+p[1]-w/2)+'px';});
