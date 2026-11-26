@@ -1002,7 +1002,7 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 :root[data-acik="1"] [onclick^="toggleOgGrupByIdx("]{border-top-color:#9a6f1ca0!important;border-right-color:#9a6f1ca0!important;border-bottom-color:#9a6f1ca0!important;box-shadow:inset 0 0 0 1px #9a6f1c22}
 .topbar{border-color:#d9ac52b8;box-shadow:0 0 0 5px color-mix(in srgb,var(--bg) 55%,transparent),0 14px 34px -8px rgba(0,0,0,.85),0 2px 10px -2px rgba(0,0,0,.5),inset 0 0 0 1px #d9ac5226,inset 0 1px 0 #f4dc9233}
 :root[data-acik="1"] .topbar{border-color:#9a6f1cc0;box-shadow:0 0 0 5px color-mix(in srgb,var(--bg) 55%,transparent),0 14px 34px -8px rgba(0,0,0,.4),0 2px 10px -2px rgba(0,0,0,.25),inset 0 0 0 1px #9a6f1c26}
-#filter-aktif,#filter-pasif,#filter-hepsi,#btn-gruplu,#btn-tumunu,.drawer-hizli .drawer-btn{border:1.5px solid #d9ac52a6!important}
+#filter-aktif,#filter-pasif,#filter-hepsi,#btn-tumunu,.drawer-hizli .drawer-btn{border:1.5px solid #d9ac52a6!important}
 :root[data-acik="1"] #filter-aktif,:root[data-acik="1"] #filter-pasif,:root[data-acik="1"] #filter-hepsi,:root[data-acik="1"] #btn-gruplu,:root[data-acik="1"] #btn-tumunu,:root[data-acik="1"] .drawer-hizli .drawer-btn{border-color:#9a6f1ca0!important}
 #sinif-gun-chips .tab-btn{border:1.5px solid #d9ac52a6!important}
 :root[data-acik="1"] #sinif-gun-chips .tab-btn{border-color:#9a6f1ca0!important}
@@ -1770,8 +1770,9 @@ try{
       <button class="btn btn-sm" id="filter-hepsi" onclick="setOgrenciFilter('hepsi')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-hepsi">Hepsi</span> <span id="cnt-filter-hepsi" style="opacity:.75;font-weight:500;"></span></button>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <button id="btn-gruplu" class="btn btn-sm" style="flex:1;background:var(--greenbg);color:var(--green);border:1px solid #34d39966;box-shadow:0 3px 10px -3px #34d39970;" onclick="setOgGruplu(true)"><span id="lbl-siniftagore">Sınıfa Göre</span></button>
-      <button id="btn-tumunu" class="btn btn-sm btn-ghost" style="flex:1;" onclick="setOgGruplu(false)"><span id="lbl-tumunugoster">Tümünü Göster</span></button>
+      <select id="og-egitmen-sel" class="tema-sel" aria-label="Eğitmen" onchange="setOgEgitmen(this.value)" style="flex:1 1 0;min-width:0;"></select>
+      <select id="og-sinif-sel" class="tema-sel" aria-label="Sınıf" onchange="setOgSinif(this.value)" style="flex:1 1 0;min-width:0;"></select>
+      <button id="btn-tumunu" class="btn btn-sm btn-ghost" style="flex:1 1 0;min-width:0;white-space:nowrap;" onclick="setOgGruplu(false)"><span id="lbl-tumunugoster">Tümünü Göster</span></button>
     </div>
     <div id="og-siralama-row" style="display:none;gap:5px;margin-bottom:10px;flex-wrap:nowrap;">
       <button class="btn btn-sm" id="sir-ad" onclick="setOgSiralama('ad')" style="font-size:11px;flex:1 1 0;min-width:0;padding:6px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--greenbg);color:var(--green);border:1px solid #34d39966;box-shadow:0 3px 10px -3px #34d39970;">A-Z</button>
@@ -3575,6 +3576,7 @@ function cycleLang(){
   localStorage.setItem('appLang',LANG);
   applyLang();
 }
+let OG_EGITMEN='hepsi', OG_SINIF='hepsi';
 let OG_FILTER='aktif', OG_GRUPLU=true, OG_SIRALAMA='ad', OG_AD_TERS=false, ODEME_TAB='odemeler';
 let OD_AYLAR=[], OD_ONCEKI=new Set(), OD_ESKI_AYLAR=[];
 let ODEME_ACIK=new Set(), GELIR_ACIK=new Set();
@@ -4124,12 +4126,14 @@ function fabAction(){if(PAGE==='ogrenciler')openOgrenciModal();else if(PAGE==='s
 // Filtreler
 
 window._ogSiraArr=[];
+function setOgEgitmen(v){OG_EGITMEN=v;renderOgrenciler();}
+function setOgSinif(v){OG_SINIF=v;setOgGruplu(true);}
 function setOgGruplu(gruplu){
   OG_GRUPLU=gruplu;
-  const gb=document.getElementById('btn-gruplu');
+  const gb=document.getElementById('og-sinif-sel');
   const tb=document.getElementById('btn-tumunu');
   const sr=document.getElementById('og-siralama-row');
-  if(gb){gb.style.background=gruplu?'var(--greenbg)':'var(--surface2)';gb.style.color=gruplu?'var(--green)':'var(--text2)';gb.style.border=gruplu?'1px solid #34d39966':'1px solid var(--border2)';gb.style.boxShadow=gruplu?'0 3px 10px -3px #34d39970':'none';}
+  if(gb){gb.style.setProperty('background-color',gruplu?'var(--greenbg)':'var(--surface2)','important');gb.style.setProperty('color',gruplu?'var(--green)':'var(--text)','important');}
   if(tb){tb.style.background=gruplu?'var(--surface2)':'var(--greenbg)';tb.style.color=gruplu?'var(--text2)':'var(--green)';tb.style.border=gruplu?'1px solid var(--border2)':'1px solid #34d39966';tb.style.boxShadow=gruplu?'none':'0 3px 10px -3px #34d39970';}
   if(sr)sr.style.display=gruplu?'none':'flex';
   renderOgrenciler();
@@ -7926,8 +7930,21 @@ function renderAnasayfa(){
   el.innerHTML=html||'<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">'+t('her_sey_yolunda')+'</div></div>';
 }
 
+function ogFiltreKutulari(){
+  const es=document.getElementById('og-egitmen-sel'),ss=document.getElementById('og-sinif-sel');if(!es||!ss)return;
+  if(OG_EGITMEN!=='hepsi'&&!S.egitmenler.some(e=>e.id===OG_EGITMEN))OG_EGITMEN='hepsi';
+  es.innerHTML='<option value="hepsi">'+(LANG==='en'?'All instructors':LANG==='ru'?'Все преподаватели':'Tüm eğitmenler')+'</option>'+[...S.egitmenler].sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr')).map(e=>`<option value="${e.id}">${e.ad}</option>`).join('');
+  es.value=OG_EGITMEN;
+  const adlar=[...new Set(S.siniflar.filter(x=>OG_EGITMEN==='hepsi'||x.egitmenId===OG_EGITMEN||x.egitmen2Id===OG_EGITMEN).map(x=>x.ad))].sort((a,b)=>a.localeCompare(b,'tr'));
+  if(OG_SINIF!=='hepsi'&&!adlar.includes(OG_SINIF))OG_SINIF='hepsi';
+  ss.innerHTML='<option value="hepsi">'+(LANG==='en'?'All classes':LANG==='ru'?'Все классы':'Tüm sınıflar')+'</option>'+adlar.map(a=>`<option value="${a.replace(/"/g,'&quot;')}">${a}</option>`).join('');
+  ss.value=OG_SINIF;
+  ss.style.setProperty('background-color',OG_GRUPLU?'var(--greenbg)':'var(--surface2)','important');ss.style.setProperty('color',OG_GRUPLU?'var(--green)':'var(--text)','important');
+}
+function ogSinifUygun(si){return (OG_SINIF==='hepsi'||si.ad===OG_SINIF)&&(OG_EGITMEN==='hepsi'||si.egitmenId===OG_EGITMEN||si.egitmen2Id===OG_EGITMEN);}
 function renderOgrenciler(){
   const el=document.getElementById('ogrenci-list');
+  ogFiltreKutulari();
   // Filtre düğmelerindeki adetler (asistanlar listede görünmediği için sayılmaz)
   {const sayilan=S.ogrenciler.filter(o=>!o.asistan);
    const adet={aktif:sayilan.filter(o=>(o.durum||'aktif')==='aktif').length,pasif:sayilan.filter(o=>o.durum==='pasif').length,hepsi:sayilan.length};
@@ -7939,8 +7956,11 @@ function renderOgrenciler(){
   else if(OG_FILTER==='pasif')liste=liste.filter(o=>o.durum==='pasif');
   if(!arama)liste=liste.filter(o=>!o.asistan); // asistanlar yalnız aramada görünür (aktif/pasif/tümü listelerinde yok)
   if(arama)liste=liste.filter(o=>(o.ad+' '+(o.soyad||'')+' '+(o.tel||'')).toLowerCase().includes(arama));
+  if(OG_EGITMEN!=='hepsi'||OG_SINIF!=='hepsi'){ // eğitmen / sınıf seçimi: yalnız o sınıflardaki (eğitmen seçiliyse özel dersi de olan) öğrenciler
+    liste=liste.filter(o=>S.siniflar.some(si=>ogSinifUygun(si)&&(si.kayitlar||[]).some(k=>k.ogrenciId===o.id))||(OG_SINIF==='hepsi'&&OG_EGITMEN!=='hepsi'&&S.ozelPaketler.some(p=>p.ogrenciId===o.id&&(p.egitmenIds||[]).includes(OG_EGITMEN))));
+  }
   if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">♟</div><div class="empty-text">'+(arama?t('no_result'):OG_FILTER==='pasif'?t('empty_ogrenci_pasif'):t('empty_ogrenci'))+'</div>'+((!arama&&OG_FILTER!=='pasif'&&!S.ogrenciler.length)?bosCta('İlk öğrenciyi ekle','openOgrenciModal()'):'')+'</div>';return;}
-  function siniflari(id){return S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===id)).map(s=>s.ad);}
+  function siniflari(id){return S.siniflar.filter(s=>ogSinifUygun(s)&&(s.kayitlar||[]).some(k=>k.ogrenciId===id)).map(s=>s.ad);}
   const gruplar={};const sinifsizlar=[];const sadeceOzel=[];const asistanlar=[];
   liste.forEach(og=>{
     if(og.asistan){if(arama)asistanlar.push(og);return;} // asistanlar listeyi kalabalıklaştırmaz; yalnız aramada görünür
