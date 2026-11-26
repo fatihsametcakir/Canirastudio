@@ -1283,6 +1283,11 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 :root[data-acik="1"] #pg-gelirgider .stat-card.s4{background-color:#22d3ee3d!important;}
 :root[data-acik="1"] #pg-gider-rapor .gider-ozet-kart,:root[data-acik="1"] #pg-gelir-trend .gider-ozet-kart{background-blend-mode:multiply;filter:saturate(1.35) contrast(1.02);}
 
+/* Açılış: Can & Irina / Dance Studio / Management yazıları daha yavaş gelir (animasyonlar 1.75x hızlandırıldığı için süreler buna göre uzun) */
+#splash .sp-gold{animation:spRise 2.5s 0s cubic-bezier(.25,.6,.25,1) forwards!important}
+#splash .sp-logo span{animation:spRise 2.5s .25s cubic-bezier(.25,.6,.25,1) forwards!important}
+#splash .sp-logo em{animation:spSpace 2.6s .6s ease forwards!important}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
