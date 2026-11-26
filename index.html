@@ -7810,6 +7810,13 @@ function renderOgrenciler(){
   sinifsizlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   sadeceOzel.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   asistanlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
+  // Uzun adı kısaltır: ikinci adı varsa ya da çok uzunsa "Fatih Samet Çakır" -> "Fatih S.Ç."
+  function kisaAd(ad,soyad){
+    const tam=((ad||'')+' '+(soyad||'')).trim();
+    const k=tam.split(/\s+/).filter(Boolean);
+    if(k.length<2||(k.length<=2&&tam.length<=20))return tam;
+    return k[0]+' '+k.slice(1).map(x=>x.charAt(0).toLocaleUpperCase('tr')+'.').join('');
+  }
   function row(og,sn,goster,num,renk){
     const p=og.durum==='pasif';
     const snKisa=sn?sn.split(',')[0].trim():'';
@@ -7818,7 +7825,7 @@ function renderOgrenciler(){
     const notIcon=og.not?' 📝':'';
     return `<div class="student-item${p?' pasif':''}${renk?' og-satir':''}"${renk?` style="--sr:${renk};"`:''}>
       <div class="student-info" onclick="openOgDetay('${og.id}')">
-        <div class="student-name">${og.ad} ${og.soyad||''}${snSpan}${pasifBadge}${notIcon}</div>
+        <div class="student-name" title="${og.ad} ${og.soyad||''}">${kisaAd(og.ad,og.soyad)}${snSpan}${pasifBadge}${notIcon}</div>
       </div>
       <div class="student-actions">
         <button class="btn btn-ghost btn-sm" style="padding:4px 8px;font-size:15px;line-height:1;font-weight:700;" title="${t('btn_detay')}" aria-label="${t('btn_detay')}" onclick="openOgDetay('${og.id}')">⋯</button>
