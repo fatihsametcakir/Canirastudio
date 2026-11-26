@@ -1070,8 +1070,14 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 #splash .sp-imza b.sp-ark{display:block;clip-path:none;opacity:0;animation:spUzak 1.2s 1.15s cubic-bezier(.1,.7,.2,1) both;transform-origin:50% 50%}
 #splash{will-change:transform,opacity}
 #splash.out{opacity:0;filter:none;transform:scale(9);transition:transform 1.1s cubic-bezier(.65,0,.95,.5),opacity 1.1s cubic-bezier(.55,0,1,.7)}
-#splash .sp-mark{width:min(66vw,270px,28vh)!important}
-@media(max-height:760px){#splash .sp-mark{width:min(52vw,190px)!important}}
+#splash .sp-mark{width:min(60vw,250px,26vh)!important;margin-top:18px!important}
+@media(max-height:760px){#splash .sp-mark{width:min(44vw,160px)!important;margin-top:22px!important}}
+@media(max-height:680px) and (max-width:700px){
+#splash .sp-mark{width:min(40vw,145px)!important;margin-top:22px!important;margin-bottom:4px!important}
+#splash .sp-logo,#splash .sp-logo>span,#splash .sp-gold{font-size:min(10.5vw,38px)!important}
+#splash .sp-logo em{margin-top:10px!important}
+#splash .sp-line{margin-top:22px!important}
+}
 /* Taçları aydınlatan tepe spotları */
 #splash .sp-spot{position:absolute;top:0;left:0;z-index:3;pointer-events:none;opacity:0;animation:spotAc 1.4s .35s ease-out forwards,spotNefes 4s 1.8s ease-in-out infinite;mix-blend-mode:screen}
 #splash .sp-spot i{position:absolute;inset:0;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 18%,rgba(0,0,0,.95) 30%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.05) 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 18%,rgba(0,0,0,.95) 30%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.05) 100%)}
