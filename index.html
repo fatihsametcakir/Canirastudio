@@ -1663,6 +1663,7 @@ try{
       <button class="btn btn-sm" id="sir-ad" onclick="setOgSiralama('ad')" style="font-size:11px;background:var(--cyanbg);color:var(--cyan);border:1px solid #22d3ee40;box-shadow:0 3px 10px -3px #22d3ee70;">A-Z</button>
       <button class="btn btn-sm btn-ghost" id="sir-son" onclick="setOgSiralama('son')" style="font-size:11px;"><span id="lbl-sonEklenen">Son Eklenen</span></button>
       <button class="btn btn-sm btn-ghost" id="sir-ilk" onclick="setOgSiralama('ilk')" style="font-size:11px;"><span id="lbl-ilkEklenen">İlk Eklenen</span></button>
+      <button class="btn btn-sm btn-ghost" id="sir-pasif" onclick="setOgSiralama('pasif')" style="font-size:11px;"><span id="lbl-sonPasif">Son Pasife Alınan</span></button>
     </div>
     <div id="ogrenci-list"></div>
   </div>
@@ -2725,7 +2726,7 @@ const TRANSLATIONS={
     drawer_ozel:'✦ Özel Dersler', drawer_videolar:'🎬 Ders Videoları', drawer_yoklama:'✓ Yoklama', nav_ozel:'Özel Dersler',
     filter_aktif:'Aktif', filter_pasif:'Pasif', filter_hepsi:'Hepsi',
     siniftagore:'Sınıfa Göre', tumunugoster:'Tümünü Göster',
-    sonEklenen:'Son Eklenen', ilkEklenen:'İlk Eklenen',
+    sonEklenen:'Son Eklenen', ilkEklenen:'İlk Eklenen', sonPasif:'Son Pasife Alınan',
     ph_og_arama:'İsim veya telefon ara...', ph_si_arama:'Sınıf ara...',
     btn_duzenle:'✎ Düzenle', btn_sil:'Sil', btn_kaydet:'Kaydet', btn_iptal:'İptal',
     empty_ogrenci:'Henüz öğrenci eklenmedi.', empty_sinif:'Henüz sınıf eklenmedi.',
@@ -2914,7 +2915,7 @@ const TRANSLATIONS={
     drawer_ozel:'✦ Private Lessons', drawer_videolar:'🎬 Lesson Videos', drawer_yoklama:'✓ Attendance', nav_ozel:'Private Lessons',
     filter_aktif:'Active', filter_pasif:'Inactive', filter_hepsi:'All',
     siniftagore:'By Class', tumunugoster:'Show All',
-    sonEklenen:'Recently Added', ilkEklenen:'First Added',
+    sonEklenen:'Recently Added', ilkEklenen:'First Added', sonPasif:'Recently Deactivated',
     ph_og_arama:'Search name or phone...', ph_si_arama:'Search class...',
     btn_duzenle:'✎ Edit', btn_sil:'Delete', btn_kaydet:'Save', btn_iptal:'Cancel',
     empty_ogrenci:'No students added yet.', empty_sinif:'No classes added yet.',
@@ -3103,7 +3104,7 @@ const TRANSLATIONS={
     drawer_ozel:'✦ Частные уроки', drawer_videolar:'🎬 Видео уроков', drawer_yoklama:'✓ Посещаемость', nav_ozel:'Частные уроки',
     filter_aktif:'Активные', filter_pasif:'Неактивные', filter_hepsi:'Все',
     siniftagore:'По группам', tumunugoster:'Показать всех',
-    sonEklenen:'Недавно добавленные', ilkEklenen:'Первые добавленные',
+    sonEklenen:'Недавно добавленные', ilkEklenen:'Первые добавленные', sonPasif:'Недавно деактивированные',
     ph_og_arama:'Поиск по имени или телефону...', ph_si_arama:'Поиск группы...',
     btn_duzenle:'✎ Изменить', btn_sil:'Удалить', btn_kaydet:'Сохранить', btn_iptal:'Отмена',
     empty_ogrenci:'Учеников пока нет.', empty_sinif:'Групп пока нет.',
@@ -3424,7 +3425,7 @@ function applyLang(){
     'navlbl-ozel':'nav_ozel',
     'lbl-filter-aktif':'filter_aktif','lbl-filter-pasif':'filter_pasif','lbl-filter-hepsi':'filter_hepsi',
     'lbl-siniftagore':'siniftagore','lbl-tumunugoster':'tumunugoster',
-    'lbl-sonEklenen':'sonEklenen','lbl-ilkEklenen':'ilkEklenen',
+    'lbl-sonEklenen':'sonEklenen','lbl-ilkEklenen':'ilkEklenen','lbl-sonPasif':'sonPasif',
   };
   Object.keys(map).forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t(map[id]);});
   [['drawerBtnYoklama','drawer_yoklama'],['drawerBtnVideolar','drawer_videolar']].forEach(([id,k])=>{const el=document.querySelector('#'+id+' .dh-tx');if(el)el.textContent=t(k).replace(/^\S+\s+/,'');});
@@ -4014,8 +4015,9 @@ function setOgGruplu(gruplu){
 function setOgSiralama(tip){
   if(tip==='ad')OG_AD_TERS=(OG_SIRALAMA==='ad')?!OG_AD_TERS:false; // A-Z butonuna tekrar basınca Z-A
   OG_SIRALAMA=tip;
+  if(tip==='pasif'&&OG_FILTER==='aktif')setOgrenciFilter('pasif'); // pasif sıralaması aktif listede anlamsız
   {const ab=document.getElementById('sir-ad');if(ab)ab.textContent=OG_AD_TERS?'Z-A':'A-Z';}
-  ['ad','son','ilk'].forEach(t=>{
+  ['ad','son','ilk','pasif'].forEach(t=>{
     const b=document.getElementById('sir-'+t);
     if(!b)return;
     if(tip===t){b.style.background='var(--cyanbg)';b.style.color='var(--cyan)';b.style.border='1px solid #22d3ee40';b.style.boxShadow='0 3px 10px -3px #22d3ee70';}
@@ -6193,7 +6195,7 @@ async function ogrenciPasifeAlYap(id,plan){
         }
       }
     }
-    await db.collection('ogrenciler').doc(id).update({durum:'pasif'});
+    await db.collection('ogrenciler').doc(id).update({durum:'pasif',pasifTarih:Date.now()});
     await ogrenciOlayEkle(id,null,null,'pasif');
     _poll('ogrenciler');
     if(plan)_poll('odemeler');
@@ -7833,7 +7835,18 @@ function renderOgrenciler(){
   const siraKapali=siraTum.filter(ad=>sinifKapaliMi(ad));
   let html='';
   if(!OG_GRUPLU){
+    const pasifZ=(og)=>{ // pasife alınma zamanı: kayıtlı alan, yoksa geçmiş günlüğündeki son 'pasif' olayı
+      if(og.pasifTarih)return og.pasifTarih;
+      let m=0;(S.ogrenciGecmisi||[]).forEach(e=>{if(e.ogrenciId===og.id&&e.olay==='pasif'&&(e.olusturma||0)>m)m=e.olusturma;});
+      return m;
+    };
     const tumListe=[...liste].sort((a,b)=>{
+      if(OG_SIRALAMA==='pasif'){
+        const pa=a.durum==='pasif'?1:0,pb=b.durum==='pasif'?1:0;
+        if(pa!==pb)return pb-pa;
+        const d=pasifZ(b)-pasifZ(a);
+        if(d)return d;
+      }
       if(OG_SIRALAMA==='son')return 0; // Firestore'dan gelen sıra (son eklenen sonda)
       if(OG_SIRALAMA==='ilk')return 0; // İlk eklenen önde (ters çevir)
       const c=(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr');
