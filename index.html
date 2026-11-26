@@ -1270,6 +1270,9 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 /* Açılış logosu dönerken akıcı olsun: çizgi çizilirken çok katmanlı gölge filtresi her karede yeniden boyanıyordu */
 #splash .sp-mark{filter:none!important;will-change:transform,opacity;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0);}
 
+#pg-ozel .tab-row .tab-btn{white-space:nowrap;padding-left:6px;padding-right:6px;line-height:1.2;}
+.tema-dd-item{white-space:normal;overflow-wrap:anywhere;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -13586,8 +13589,9 @@ function sonOdemelerFiltre(tip){
       dd.appendChild(b);
     });
     document.body.appendChild(dd);
-    var r=sel.getBoundingClientRect(),vh=window.innerHeight;
-    dd.style.minWidth=r.width+'px';dd.style.left=Math.max(8,Math.min(r.left,window.innerWidth-r.width-8))+'px';
+    var r=sel.getBoundingClientRect(),vh=window.innerHeight,vw=window.innerWidth;
+    dd.style.minWidth=Math.min(r.width,vw-16)+'px';dd.style.maxWidth=(vw-16)+'px';
+    var dw=dd.offsetWidth;dd.style.left=Math.max(8,Math.min(r.left,vw-dw-8))+'px';
     var altBos=vh-r.bottom-12,ustBos=r.top-12,yukari=altBos<180&&ustBos>altBos;
     dd.style.maxHeight=Math.max(120,Math.min(yukari?ustBos:altBos,Math.round(vh*.5)))+'px';
     if(yukari){dd.style.bottom=(vh-r.top+6)+'px';}else{dd.style.top=(r.bottom+6)+'px';}
@@ -13639,9 +13643,9 @@ function sonOdemelerFiltre(tip){
       el.style.setProperty('font-size',fs+'px','important');
     }catch(e){}
   }
-  function hepsi(){bekle=false;document.querySelectorAll('select.tema-sel,#btn-tumunu').forEach(sigdir);}
+  function hepsi(){bekle=false;document.querySelectorAll('select.tema-sel,#btn-tumunu,#pg-ozel .tab-row .tab-btn').forEach(sigdir);}
   function planla(){if(!bekle){bekle=true;requestAnimationFrame(hepsi);}}
-  new MutationObserver(function(m){for(var i=0;i<m.length;i++){var t=m[i].target;if(m[i].type==='attributes'&&t.matches&&t.matches('select.tema-sel,#btn-tumunu'))continue;planla();return;}}).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['style','class']});
+  new MutationObserver(function(m){for(var i=0;i<m.length;i++){var t=m[i].target;if(m[i].type==='attributes'&&t.matches&&t.matches('select.tema-sel,#btn-tumunu,#pg-ozel .tab-row .tab-btn'))continue;planla();return;}}).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['style','class']});
   window.addEventListener('resize',planla);document.addEventListener('change',planla,true);window.addEventListener('load',planla);
 })();
 </script>
