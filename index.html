@@ -1456,8 +1456,8 @@ try{
 /* Açılış toplam ~3 sn: tüm splash animasyonları hızlandırılır */
 (function(){var R=1.75,n=0,iv=setInterval(function(){try{document.getAnimations().forEach(function(a){var t=a.effect&&a.effect.target;if(t&&t.closest&&t.closest('#splash')&&a.playbackRate!==R)a.playbackRate=R;});}catch(x){}if(++n>40)clearInterval(iv);},50);})();</script>
 
-<div id="login-screen" style="padding-top:24px;position:relative;">
-  <button id="langBtnLogin" onclick="cycleLang()" title="Dil / Language / Язык" style="position:absolute;top:14px;right:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:99px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text);z-index:2;">TR</button>
+<div id="login-screen" style="padding-top:calc(env(safe-area-inset-top,0px) + 28px);position:relative;">
+  <button id="langBtnLogin" onclick="cycleLang()" title="Dil / Language / Язык" style="position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:99px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text);z-index:2;">TR</button>
   <div class="login-logo">Can & Irina<br><span>Studio</span></div>
   <div class="login-sub" id="login-sub-text" data-i18n="yonetim_paneli">Yönetim Paneli</div>
   <div class="login-box">
