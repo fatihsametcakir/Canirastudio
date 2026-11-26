@@ -7907,7 +7907,7 @@ function renderOgrenciler(){
       <div class="student-actions">
         <button class="btn btn-ghost btn-sm" style="padding:4px 8px;font-size:15px;line-height:1;font-weight:700;" title="${t('btn_detay')}" aria-label="${t('btn_detay')}" onclick="openOgDetay('${og.id}')">⋯</button>
         <button class="btn btn-ghost btn-sm" style="padding:4px 8px;font-size:13px;line-height:1;" title="${t('btn_duzenle_kisa')}" aria-label="${t('btn_duzenle_kisa')}" onclick="openOgrenciModal('${og.id}')">✏️</button>
-        <button class="btn ${p?'btn-green':'btn-amber'} btn-sm" style="padding:4px 8px;font-size:11px;" onclick="toggleOgrenciDurum('${og.id}')">${p?t('filter_aktif'):t('filter_pasif')}</button>
+        <button class="btn ${p?'btn-amber':'btn-green'} btn-sm" style="padding:4px 8px;font-size:11px;" onclick="toggleOgrenciDurum('${og.id}')">${p?t('filter_pasif'):t('filter_aktif')}</button>
       </div>
     </div>`;
   }
