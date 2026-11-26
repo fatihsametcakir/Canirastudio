@@ -13674,5 +13674,26 @@ function sonOdemelerFiltre(tip){
   window.addEventListener('resize',planla);document.addEventListener('change',planla,true);window.addEventListener('load',planla);
 })();
 </script>
+<script>
+/* Tek seferlik: Stüdyo bilgisi olmayan eski özel dersleri veritabanında Stüdyo 1 yapar (yalnızca sahip hesabıyla, bir kez) */
+(function(){
+  var n=0,bitti=false,iv=setInterval(async function(){
+    try{
+      if(bitti||++n>120){clearInterval(iv);return;}
+      if(localStorage.getItem('studyoMig1')==='1'){clearInterval(iv);return;}
+      if(typeof AUTH==='undefined'||AUTH.email!=='fatihsametcakir@gmail.com'||PORTAL_OG_ID)return;
+      if(!S.ozelSeanslar||!S.ozelSeanslar.length)return;
+      bitti=true;clearInterval(iv);
+      var eksik=S.ozelSeanslar.filter(function(x){return x.studyo==null;});
+      var ok=0;
+      for(var k=0;k<eksik.length;k++){
+        await db.collection('ozelSeanslar').doc(eksik[k].id).update({studyo:1});ok++;eksik[k].studyo=1;
+      }
+      localStorage.setItem('studyoMig1','1');
+      if(ok&&typeof showToast==='function')showToast(ok+' eski özel ders Stüdyo 1 olarak güncellendi');
+    }catch(e){bitti=false;}
+  },2000);
+})();
+</script>
 </body>
 </html>
