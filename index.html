@@ -1234,6 +1234,12 @@ html.ios-notch #splash .sp-cer .k4{right:20px;bottom:calc(var(--fb) + 11px);}
 #splash .sp-line{clip-path:none!important;box-shadow:none!important;animation:spLine2 1.1s 0s ease forwards!important;filter:drop-shadow(0 0 2px #d9ac5266);} /* ışıma çizginin kendi (uçlarda sönen) şeklini izler: köşeli kalıp yok */
 #splash .sp-line::after{top:-4px;left:0;width:90px;height:10px;border-radius:50%;background:radial-gradient(ellipse at center,#fff6d6cc,#fff6d600 70%);filter:none;-webkit-mask-image:none;mask-image:none;opacity:0;animation:spGlintYumusak 2.4s cubic-bezier(.5,0,.3,1) 1.2s infinite;}
 @keyframes spGlintYumusak{0%{left:0;opacity:0}20%{opacity:1}80%{opacity:1}100%{left:calc(100% - 90px);opacity:0}}
+/* Yükleniyor ara ekranı: açılış ekranındaki "Can & Irina Dance Studio" stiliyle aynı (altın, Cormorant) */
+#loading .logo{font-family:'Cormorant Garamond','Fraunces',serif;font-size:min(10.5vw,40px);font-weight:600;letter-spacing:.04em;line-height:1.15;color:#d9ac52;}
+#loading .logo span{color:#d9ac52;font-style:normal;font-size:min(9.6vw,36px);}
+#loading .spinner{border-color:#d9ac5233;border-top-color:#d9ac52;}
+:root[data-acik="1"] #loading .logo,:root[data-acik="1"] #loading .logo span{color:#8a6112;}
+:root[data-acik="1"] #loading .spinner{border-color:#9a6f1c33;border-top-color:#8a6112;}
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -1697,7 +1703,7 @@ try{
 </div></div>
 
 <div id="loading" style="display:none;">
-  <div class="logo">Can & Irina<br><span>Studio</span></div>
+  <div class="logo">Can & Irina<br><span>Dance Studio</span></div>
   <div class="spinner"></div>
   <div style="font-size:13px;color:var(--text3);" data-i18n="yukleniyor">Yükleniyor...</div>
 </div>
