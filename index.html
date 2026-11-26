@@ -1885,8 +1885,10 @@ try{
     </div>
     <div id="ozel-list" style="display:none;"></div>
     <div id="ozel-takvim-blok">
-    <div style="margin:4px 0 8px;"><select id="ot-studyo-sel" class="tema-sel" aria-label="Stüdyo" onchange="otStudyoSec(this.value)" style="width:100%;"></select></div>
-    <div id="ot-legend" style="display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;margin:4px 0 12px;-webkit-overflow-scrolling:touch;padding:10px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);"></div>
+    <div style="display:flex;gap:8px;align-items:stretch;margin:4px 0 12px;">
+    <div id="ot-legend" style="display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin:0;-webkit-overflow-scrolling:touch;padding:9px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);flex:0 1 auto;min-width:0;"></div>
+    <select id="ot-studyo-sel" class="tema-sel" aria-label="Stüdyo" onchange="otStudyoSec(this.value)" style="flex:1 1 0;min-width:96px;"></select>
+    </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin:0 0 14px;gap:8px;">
       <button class="btn btn-ghost ot-hafta-ok" style="width:clamp(44px,13vw,64px);height:44px;padding:0;font-size:24px;line-height:1;flex-shrink:0;" onclick="otHaftaDegistir(-1)" aria-label="‹">‹</button>
       <div id="ot-hafta-label" class="ot-hafta-kutu"></div>
