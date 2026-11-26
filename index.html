@@ -2409,6 +2409,7 @@ try{
   <div class="field" id="dp-egitmen-multi-wrap" style="display:none;"><label>Dersi Veren Eğitmen</label><select id="dp-egitmen-select"></select></div>
   <div class="field"><label>Başlangıç Saati</label><input id="dp-saat" type="time" step="1800"/></div>
   <div class="field"><label>Süre</label><select id="dp-sure"><option value="0.5">0.5 saat</option><option value="1" selected>1 saat</option><option value="1.5">1.5 saat</option><option value="2">2 saat</option></select></div>
+  <div class="field"><label>Stüdyo</label><select id="dp-studyo"><option value="1">Stüdyo 1</option><option value="2">Stüdyo 2</option><option value="3">Stüdyo 3</option></select></div>
   <div id="dp-paket-uyari" style="display:none;font-size:12px;color:var(--accent);background:var(--accentbg);border:1px solid #ff6b6b30;border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px;" data-i18n="aktif_paket_olmadan_ders_engel">Bu öğrencinin aktif paketi yok — ders planlanamaz. Önce paket ekleyin.</div>
   <div id="dp-mevcut" style="display:none;margin-bottom:8px;"></div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ders-planla')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-dp" onclick="saveDersPlan()" data-i18n="btn_kaydet">Kaydet</button></div>
@@ -7387,7 +7388,7 @@ function renderOzelTakvim(){
       const genislikYuzde=(100-REZERV_YUZDE)/toplamKolon;
       const solYuzde=genislikYuzde*s._kol;
       const span=Math.min(s._span,OT_TOPLAM_SLOT-s._start);
-      const etiket=(og?og.ad+' '+(og.soyad||''):'')+' · '+s.saat+' · '+fmtSaat(s.sure||1)+' saat'+(s.dusuldu?' · düşüldü':'');
+      const etiket=(og?og.ad+' '+(og.soyad||''):'')+' · '+s.saat+' · '+fmtSaat(s.sure||1)+' saat · Stüdyo '+(s.studyo||1)+(s.dusuldu?' · düşüldü':'');
       const adSoyad=og?(og.ad+' '+(og.soyad||'')).trim():'';
       html+=`<div class="ot-block" style="grid-column:${dayIdx+2};grid-row:${s._start+2} / span ${span};left:${solYuzde}%;width:${genislikYuzde}%;background:${otCinsiyetRenk(og)};box-shadow:inset 5px 0 0 ${egitmenRenk(s.egitmenId)};${s.dusuldu?'opacity:.55;':''}"
         onmousedown="otLpBaslat('${tarih}','${s.saat}')" onmouseup="otLpBitir()" onmouseleave="otLpBitir()"
@@ -7425,6 +7426,7 @@ function otHucreTikla(tarih,saat){
   document.getElementById('dp-paket-uyari').style.display='none';
   document.getElementById('dp-saat').value=saat;
   document.getElementById('dp-sure').value='1';
+  document.getElementById('dp-studyo').value='1';
   const dObj=new Date(tarih+'T00:00:00');
   document.getElementById('m-ders-planla-title').textContent=`Ders Planla — ${OT_GUN_ADLARI_F()[dObj.getDay()]} ${dObj.getDate()} ${dObj.toLocaleDateString(LC(),{month:'short'})}`;
   openModal('m-ders-planla');
@@ -7463,6 +7465,7 @@ async function saveDersPlan(){
   const og=S.ogrenciler.find(o=>o.id===ogId);
   const saat=document.getElementById('dp-saat').value;
   const sure=parseFloat(document.getElementById('dp-sure').value);
+  const studyo=parseInt(document.getElementById('dp-studyo').value)||1;
   if(!saat){alert('Saat girin.');return;}
   const asistanMi=ogAsistanMi(og);
   const paket=asistanMi?null:dpAktifPaket(ogId);
@@ -7481,12 +7484,12 @@ async function saveDersPlan(){
   try{
     if(EDIT_DERS_PLAN){
       await db.collection('ozelSeanslar').doc(EDIT_DERS_PLAN).update({
-        ogrenciId:ogId,egitmenId,paketId:paket?paket.id:null,tarih:DP_TARIH,saat,sure
+        ogrenciId:ogId,egitmenId,paketId:paket?paket.id:null,tarih:DP_TARIH,saat,sure,studyo
       });
       EDIT_DERS_PLAN=null;
     }else{
       await db.collection('ozelSeanslar').add({
-        ogrenciId:ogId,egitmenId,paketId:paket?paket.id:null,tarih:DP_TARIH,saat,sure,
+        ogrenciId:ogId,egitmenId,paketId:paket?paket.id:null,tarih:DP_TARIH,saat,sure,studyo,
         dusuldu:false,olusturma:Date.now(),kaynak:'takvim'
       });
     }
@@ -7504,6 +7507,7 @@ function otSeansDuzenle(id){
       .map(o=>`<option value="${o.id}" ${o.id===s.ogrenciId?'selected':''}>${o.ad} ${o.soyad||''}</option>`).join('');
   document.getElementById('dp-saat').value=s.saat;
   document.getElementById('dp-sure').value=String(s.sure||1);
+  document.getElementById('dp-studyo').value=String(s.studyo||1); // eski dersler Stüdyo 1 sayılır
   dpOgrenciChange();
   const multiSel=document.getElementById('dp-egitmen-select');
   if(multiSel&&s.egitmenId&&[...multiSel.options].some(o=>o.value===s.egitmenId))multiSel.value=s.egitmenId;
@@ -7521,7 +7525,7 @@ function otSeansDetay(id){
   document.getElementById('m-seans-detay-content').innerHTML=`
     <div class="grad-card gc-cyan" style="margin-bottom:16px;">
       <div style="font-size:14px;color:var(--text2);margin-bottom:4px;">${formatDate(s.tarih)} · ${s.saat}</div>
-      <div style="font-size:18px;font-weight:600;font-family:Fraunces,serif;">${fmtSaat(s.sure||1)} saat${eg?' · '+eg.ad:''}</div>
+      <div style="font-size:18px;font-weight:600;font-family:Fraunces,serif;">${fmtSaat(s.sure||1)} saat${eg?' · '+eg.ad:''} · Stüdyo ${s.studyo||1}</div>
       <div style="font-size:12px;color:var(--text3);margin-top:6px;">${durum}</div>
     </div>
     <div style="display:flex;gap:8px;">
