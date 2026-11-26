@@ -285,7 +285,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .video-kart .vk-chevron{position:absolute;top:12px;right:12px;font-size:14px;color:var(--text3);transition:transform .15s;}
 .video-kart.expanded .vk-chevron{transform:rotate(180deg);}
 .ot-grid{display:grid;grid-template-columns:44px repeat(7,1fr);position:relative;}
-.ot-gun-header{font-size:11px;color:var(--text2);text-align:center;padding:6px 2px;border-bottom:1px solid var(--border2);}
+.ot-gun-header{font-size:11px;color:var(--text2);text-align:center;padding:6px 2px;border-bottom:1px solid #ffffff4d;border-top:1px solid #ffffff4d;border-left:1px solid #ffffff30;}
+.ot-kose{grid-column:1;grid-row:1;position:sticky;left:0;z-index:4;background:var(--bg);border-top:1px solid #ffffff4d;border-bottom:1px solid #ffffff4d;font-size:10px;font-weight:600;color:var(--text3);display:flex;align-items:center;justify-content:center;}
+.ot-grid{border-right:1px solid #ffffff30;border-bottom:1px solid #ffffff4d;}
 .ot-gun-header .ot-gun-num{font-size:13px;font-weight:600;color:var(--text);margin-top:2px;}
 .ot-saat-label{font-size:10px;color:var(--text3);padding:2px 6px 0 0;text-align:right;border-top:1px solid #ffffff4d;position:sticky;left:0;z-index:3;background:var(--bg);box-shadow:2px 0 6px -2px rgba(0,0,0,.5);}
 .ot-hucre{border-top:1px dashed #ffffff26;border-left:1px solid #ffffff30;cursor:pointer;}
@@ -1156,6 +1158,13 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 #splash .sp-line{--lw:100vw;max-width:none;flex-shrink:0;align-self:center;}
 @media (orientation:landscape) and (max-height:520px){#splash .sp-line{width:100vw!important}}
 #splash{overflow:hidden}
+/* Haftalık takvim ızgarası: açık temada çizgiler görünür */
+:root[data-acik="1"] .ot-gun-header{border-color:#3d3a4f55;}
+:root[data-acik="1"] .ot-kose{border-color:#3d3a4f55;color:#3d3a4f;}
+:root[data-acik="1"] .ot-hucre{border-left-color:#3d3a4f33;border-top-color:#3d3a4f26;}
+:root[data-acik="1"] .ot-hucre.ot-saat-cizgi{border-top-color:#3d3a4f4d;}
+:root[data-acik="1"] .ot-saat-label{border-top-color:#3d3a4f4d;}
+:root[data-acik="1"] .ot-grid{border-right-color:#3d3a4f33;border-bottom-color:#3d3a4f4d;}
 </style>
 </head>
 <body>
@@ -3308,6 +3317,7 @@ Object.assign(TRANSLATIONS.tr,{
   x_pratik_yok_form:'Pratik Yapılmayan Tarih Ekle',
   x_pratik_yok_hangi:'Hangi Cumartesi Pratik Yapılmadı',
   x_aciklama:'Açıklama',
+  x_saat:'Saat',
   x_grup_ogr:'Grup Sınıfı Öğrencileri',
   x_aciklama_ph_bayram:'Açıklama (örn: Bayram tatili)',
   x_grup_kira_baslik:'💃 Grup Dersleri Kirası',
@@ -3353,6 +3363,7 @@ Object.assign(TRANSLATIONS.en,{
   x_pratik_yok_form:'Add No-Practice Date',
   x_pratik_yok_hangi:'Which Saturday Had No Practice',
   x_aciklama:'Description',
+  x_saat:'Time',
   x_grup_ogr:'Group Class Students',
   x_aciklama_ph_bayram:'Description (e.g. Holiday)',
   x_grup_kira_baslik:'💃 Group Classes Rent',
@@ -3398,6 +3409,7 @@ Object.assign(TRANSLATIONS.ru,{
   x_pratik_yok_form:'Добавить дату без практики',
   x_pratik_yok_hangi:'В какую субботу практики не было',
   x_aciklama:'Описание',
+  x_saat:'Время',
   x_grup_ogr:'Ученики групп',
   x_aciklama_ph_bayram:'Описание (напр.: праздник)',
   x_grup_kira_baslik:'💃 Аренда групповых занятий',
@@ -7176,7 +7188,7 @@ function renderOzelTakvim(){
     +[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('');
 
   // Başlık satırı
-  let html=`<div style="grid-column:1;grid-row:1;position:sticky;left:0;z-index:4;background:var(--bg);"></div>`;
+  let html=`<div class="ot-kose">${t('x_saat')}</div>`;
   gunler.forEach((d,i)=>{
     const bugun=otTarihStr(d)===otTarihStr(simdikiZaman());
     html+=`<div class="ot-gun-header" style="grid-column:${i+2};grid-row:1;">${OT_GUN_ADLARI_F()[d.getDay()]}<div class="ot-gun-num" style="${bugun?'color:var(--accent);':''}">${d.getDate()}</div></div>`;
