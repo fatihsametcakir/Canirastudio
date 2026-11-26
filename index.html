@@ -13584,10 +13584,18 @@ function sonOdemelerFiltre(tip){
     var se=dd.querySelector('.sec');if(se&&se.scrollIntoView)se.scrollIntoView({block:'nearest'});
   }
   function hedef(e){var t=e.target;return t&&t.closest?t.closest('select.tema-sel'):null;}
-  ['mousedown','touchstart'].forEach(function(n){document.addEventListener(n,function(e){if(hedef(e))e.preventDefault();},{capture:true,passive:false});});
+  var sonDokunma=0,ty=0,tx=0,kaydi=false;
+  document.addEventListener('mousedown',function(e){if(hedef(e))e.preventDefault();},true);
+  document.addEventListener('touchstart',function(e){var t0=e.touches&&e.touches[0];if(t0){ty=t0.clientY;tx=t0.clientX;kaydi=false;}},{capture:true,passive:true});
+  document.addEventListener('touchmove',function(e){var t0=e.touches&&e.touches[0];if(t0&&(Math.abs(t0.clientY-ty)>10||Math.abs(t0.clientX-tx)>10))kaydi=true;},{capture:true,passive:true});
+  document.addEventListener('touchend',function(e){
+    var s=hedef(e);
+    if(s){e.preventDefault();sonDokunma=Date.now();if(!kaydi)ac(s);return;}
+    if(dd&&!(e.target.closest&&e.target.closest('.tema-dd')))kapat();
+  },{capture:true,passive:false});
   document.addEventListener('click',function(e){
     var s=hedef(e);
-    if(s){e.preventDefault();e.stopPropagation();ac(s);return;}
+    if(s){e.preventDefault();e.stopPropagation();if(Date.now()-sonDokunma>600)ac(s);return;}
     if(dd&&!(e.target.closest&&e.target.closest('.tema-dd')))kapat();
   },true);
   document.addEventListener('keydown',function(e){
