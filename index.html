@@ -299,7 +299,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .ot-block:active{transform:scale(.94);}
 .ot-block-adsoyad{font-size:9.5px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word;max-width:100%;}
 .ot-block:active{opacity:.85;}
-.ot-legend-item{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);background:var(--surface2);padding:4px 9px;border-radius:99px;border:1px solid var(--border2);}
+.ot-legend-item{flex-shrink:0;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);background:var(--surface2);padding:4px 9px;border-radius:99px;border:1px solid var(--border2);}
 .ot-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;box-shadow:0 0 5px currentColor;}
 .video-kart .vk-dots{position:absolute;top:8px;left:8px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-size:16px;line-height:1;cursor:pointer;z-index:3;}
 .video-kart .vk-dots:active{opacity:.8;}
@@ -1172,6 +1172,8 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 :root[data-acik="1"] #pg-ozel .tab-btn.active{border-color:#9a6f1c;box-shadow:inset 0 0 0 1px #9a6f1c55;}
 /* Açılış çıkışı kısa (toplam ~2 sn) */
 #splash.out{transition:transform .5s cubic-bezier(.65,0,.95,.5),opacity .5s cubic-bezier(.55,0,1,.7)!important}
+#ot-legend{gap:5px!important;padding:8px!important;}
+#ot-legend .ot-legend-item{font-size:10.5px;padding:3px 7px;gap:4px;border-width:1.5px;}
 </style>
 </head>
 <body>
@@ -1741,12 +1743,12 @@ try{
     </div>
     <div id="ozel-list" style="display:none;"></div>
     <div id="ozel-takvim-blok">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 14px;gap:8px;">
+    <div id="ot-legend" style="display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;margin:4px 0 12px;-webkit-overflow-scrolling:touch;padding:10px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:0 0 14px;gap:8px;">
       <button class="btn btn-ghost" style="width:64px;height:44px;padding:0;font-size:24px;line-height:1;" onclick="otHaftaDegistir(-1)" aria-label="‹">‹</button>
-      <div style="flex:1;text-align:center;font-size:14px;font-weight:600;" id="ot-hafta-label"></div>
+      <div style="flex:1;text-align:center;font-size:18px;font-weight:700;" id="ot-hafta-label"></div>
       <button class="btn btn-ghost" style="width:64px;height:44px;padding:0;font-size:24px;line-height:1;" onclick="otHaftaDegistir(1)" aria-label="›">›</button>
     </div>
-    <div id="ot-legend" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding:10px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);"></div>
     <div class="yatay-kaydirma-alani" style="overflow-x:auto;">
       <div id="ot-grid" style="min-width:600px;"></div>
     </div>
@@ -7140,8 +7142,10 @@ function otCinsiyetRenk(og){
 function egitmenRenk(id){
   if(!id)return '#5c5a78';
   const idx=S.egitmenler.findIndex(e=>e.id===id);
-  return RENK_BAR[(idx<0?0:idx)%RENK_BAR.length];
+  return OT_EGITMEN_PALET[(idx<0?0:idx)%OT_EGITMEN_PALET.length];
 }
+// Eğitmen renkleri: cinsiyet renklerinden (pembe/mavi/turuncu) uzak tonlar
+const OT_EGITMEN_PALET=['#22c55e','#a855f7','#eab308','#14b8a6','#ef4444','#94a3b8'];
 const OT_GUN_ADLARI_MAP={
   tr:['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'],
   en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
@@ -7193,7 +7197,6 @@ function renderOzelTakvim(){
   }).join('')||'<span style="font-size:11px;color:var(--text3);">Özel öğrencilere eğitmen atayınca burada renk listesi görünür.</span>';
   // Blok rengi cinsiyeti/asistanı, sol şerit eğitmeni gösterir
   legendEl.innerHTML=legendEl.innerHTML
-    +'<div style="flex-basis:100%;height:0;"></div>'
     +[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('');
 
   // Başlık satırı
