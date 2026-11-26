@@ -1712,16 +1712,27 @@ try{
   <div class="page" id="pg-ozel">
     <div style="display:flex;gap:8px;margin:4px 0 10px;align-items:stretch;">
     <div style="position:relative;flex:1;min-width:0;">
-      <div class="search-wrap"><input id="ozel-arama" placeholder="İsim veya telefon ara..." oninput="OZEL_ARA=this.value;renderOzel();toggleClear('ozel-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-size:14px;font-family:inherit;outline:none;"/><button class="search-clear" id="ozel-arama-clear" onclick="clearSearch('ozel-arama',()=>{OZEL_ARA='';renderOzel();})">✕</button></div>
+      <div class="search-wrap"><input id="ozel-arama" placeholder="İsim veya telefon ara..." oninput="OZEL_ARA=this.value;if(OZEL_SEKME!=='liste'&&this.value)ozelSekme('liste');else renderOzel();toggleClear('ozel-arama-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-size:14px;font-family:inherit;outline:none;"/><button class="search-clear" id="ozel-arama-clear" onclick="clearSearch('ozel-arama',()=>{OZEL_ARA='';renderOzel();})">✕</button></div>
       <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
     </div>
     <button class="btn btn-accent btn-sm ust-ekle-btn" onclick="ozelEkleBaslat()" data-i18n="btn_yeni_ozel">＋ Yeni Özel Ders</button>
     </div>
     <div class="tab-row">
-      <button class="tab-btn active" data-i18n="nav_ogrenciler">Öğrenciler</button>
-      <button class="tab-btn" onclick="openOzelTakvim()" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
+      <button class="tab-btn" id="ozsek-liste" onclick="ozelSekme('liste')" data-i18n="nav_ogrenciler">Öğrenciler</button>
+      <button class="tab-btn active" id="ozsek-takvim" onclick="ozelSekme('takvim')" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
     </div>
-    <div id="ozel-list"></div>
+    <div id="ozel-list" style="display:none;"></div>
+    <div id="ozel-takvim-blok">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 14px;gap:8px;">
+      <button class="btn btn-ghost btn-sm" style="width:40px;padding:0;" onclick="otHaftaDegistir(-1)">‹</button>
+      <div style="flex:1;text-align:center;font-size:14px;font-weight:600;" id="ot-hafta-label"></div>
+      <button class="btn btn-ghost btn-sm" style="width:40px;padding:0;" onclick="otHaftaDegistir(1)">›</button>
+    </div>
+    <div id="ot-legend" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"></div>
+    <div class="yatay-kaydirma-alani" style="overflow-x:auto;">
+      <div id="ot-grid" style="min-width:600px;"></div>
+    </div>
+    </div>
   </div>
 
   <!-- GELİR & GİDER -->
@@ -1803,22 +1814,6 @@ try{
 
 
   <!-- ÖZEL DERS HAFTALIK TAKVİM -->
-  <div class="page" id="pg-ozel-takvim">
-    <div class="tab-row">
-      <button class="tab-btn" onclick="goBack()" data-i18n="nav_ogrenciler">Öğrenciler</button>
-      <button class="tab-btn active" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
-    </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 14px;gap:8px;">
-      <button class="btn btn-ghost btn-sm" style="width:40px;padding:0;" onclick="otHaftaDegistir(-1)">‹</button>
-      <div style="flex:1;text-align:center;font-size:14px;font-weight:600;" id="ot-hafta-label"></div>
-      <button class="btn btn-ghost btn-sm" style="width:40px;padding:0;" onclick="otHaftaDegistir(1)">›</button>
-    </div>
-    <div id="ot-legend" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"></div>
-    <div class="yatay-kaydirma-alani" style="overflow-x:auto;">
-      <div id="ot-grid" style="min-width:600px;"></div>
-    </div>
-  </div>
-
   <!-- ÖDEMELER -->
   <div class="page" id="pg-odemeler">
     <div id="odeme-content"></div>
@@ -3813,7 +3808,7 @@ function startListeners(){
 }
 
 // Nav
-function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('pg-'+p).classList.add('active');}
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('pg-'+p).classList.add('active');if(p==='ozel'&&typeof ozelSekme==='function')ozelSekme('takvim',true);}
 
 // ── SEKMELER ARASI KAYDIRMA (izole özellik — sorun çıkarsa sadece bu bloğu geri al) ──
 // Sağa/sola kaydırınca bitişik alt sekmeye (döngüsel) geçer. Hiçbir yerde preventDefault yok,
@@ -7085,16 +7080,27 @@ function otGetMonday(d){const x=new Date(d);const day=x.getDay();const diff=(day
 let OT_WEEK_START=otGetMonday(simdikiZaman());
 function otTarihStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function otHaftaDegistir(dir){OT_WEEK_START=new Date(OT_WEEK_START.getTime()+dir*7*86400000);renderOzelTakvim();}
-function openOzelTakvim(){
-  PREV_PAGE=PAGE;PAGE='ozel-takvim';showPage('ozel-takvim');setTopbar(true,t('btn_haftalik_takvim').replace('📅 ',''));
-  const fab=document.getElementById('mainFab');if(fab)fab.style.display='none';
-  OT_WEEK_START=otGetMonday(simdikiZaman()); // her açılışta bu hafta
-  renderOzelTakvim();
-  otBugunuGoster();
+// Özel Dersler sayfası iki sekmeli: Haftalık Takvim (varsayılan, her açılışta) ve Öğrenciler listesi.
+// Arama çubuğu ve "Yeni Özel Ders" butonu iki sekmede de yerinde kalır.
+let OZEL_SEKME='takvim';
+function ozelSekme(k,haftaSifirla){
+  OZEL_SEKME=k;
+  const tk=k==='takvim';
+  const l=document.getElementById('ozel-list'),b=document.getElementById('ozel-takvim-blok');
+  if(l)l.style.display=tk?'none':'';
+  if(b)b.style.display=tk?'':'none';
+  const bl=document.getElementById('ozsek-liste'),bt=document.getElementById('ozsek-takvim');
+  if(bl)bl.classList.toggle('active',!tk);
+  if(bt)bt.classList.toggle('active',tk);
+  if(tk){
+    if(haftaSifirla)OT_WEEK_START=otGetMonday(simdikiZaman());
+    renderOzelTakvim();otBugunuGoster();
+  }else renderOzel();
 }
+function openOzelTakvim(){ozelSekme('takvim',true);}
 // Takvim yatay kaydırılabilir: açılınca bugünün sütunu görünür olsun (Pazartesi başta, Pazar sonda kalır)
 function otBugunuGoster(){
-  const kap=document.querySelector('#pg-ozel-takvim .yatay-kaydirma-alani');
+  const kap=document.querySelector('#ozel-takvim-blok .yatay-kaydirma-alani');
   const basliklar=document.querySelectorAll('#ot-grid .ot-gun-header');
   if(!kap||!basliklar.length)return;
   const idx=(simdikiZaman().getDay()+6)%7; // Pzt=0 ... Paz=6
@@ -7394,7 +7400,7 @@ function otOtoDusKontrol(){
     if(!paketId&&ogAsistanMi(S.ogrenciler.find(o=>o.id===s.ogrenciId))){
       // Asistan: paket/ödeme yok; ders saati geçince sadece "yapıldı" işaretlenir
       OT_ISLENEN.add(s.id);
-      db.collection('ozelSeanslar').doc(s.id).update({dusuldu:true}).then(()=>{s.dusuldu=true;OT_ISLENEN.delete(s.id);if(PAGE==='ozel-takvim')renderOzelTakvim();}).catch(()=>OT_ISLENEN.delete(s.id));
+      db.collection('ozelSeanslar').doc(s.id).update({dusuldu:true}).then(()=>{s.dusuldu=true;OT_ISLENEN.delete(s.id);if(PAGE==='ozel'&&OZEL_SEKME==='takvim')renderOzelTakvim();}).catch(()=>OT_ISLENEN.delete(s.id));
       return;
     }
     if(!paketId){
@@ -7422,7 +7428,7 @@ function otOtoDusKontrol(){
           s.dusuldu=true;
         }
         _poll('ozelPaketler');_poll('ozelSeanslar');
-        if(PAGE==='ozel-takvim')renderOzelTakvim();
+        if(PAGE==='ozel'&&OZEL_SEKME==='takvim')renderOzelTakvim();
         if(PAGE==='ozel')renderOzel();
       }catch(e){}
       OT_ISLENEN.delete(s.id);
@@ -8677,7 +8683,7 @@ function renderAll(){
   if(PAGE==='sinif-detay')renderSinifDetay(CUR_SINIF);
   renderOzel();renderOdemeler();renderYoklama();renderTakvim();renderVideolar();
   if(document.getElementById('m-tel-eksik')?.classList.contains('open'))renderTelEksik();
-  if(PAGE==='ozel-takvim')renderOzelTakvim();
+  if(PAGE==='ozel'&&OZEL_SEKME==='takvim')renderOzelTakvim();
 
   // Portal açıksa güncelle
   if(PORTAL_OG_ID&&document.getElementById('portal-screen').style.display!=='none'){
