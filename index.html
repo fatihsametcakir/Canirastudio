@@ -8255,6 +8255,7 @@ function renderSiniflar(){
   }
 
   if(!html) html='<div class="empty"><div class="empty-icon">◈</div><div class="empty-text">Sonuç bulunamadı</div></div>';
+  else html='<div class="og-gruplar-kutu">'+html+'</div>'; // sınıf listesi tek altın çerçevede (Öğrenciler ile aynı)
   el.innerHTML=html;
 }
 
@@ -13668,32 +13669,44 @@ function sonOdemelerFiltre(tip){
 })();
 </script>
 <script>
-/* Kutulara sığdırma: gerçek yazı tipiyle ölçüp, yazı kutuya sığana kadar küçültür (Sınıflar/Öğrenciler/Özel Dersler açılır kutuları ve Tümünü Göster) */
+/* Kutulara sığdırma: gerçek yazı tipiyle ölçüp, yazı kutuya sığana kadar küçültür.
+   Kıpırdama olmasın diye: yalnız metin/genişlik gerçekten değişince yeniden hesaplar, aksi halde dokunmaz. */
 (function(){
-  var cv=document.createElement('canvas').getContext('2d'),bekle=false;
+  var cv=document.createElement('canvas').getContext('2d'),bekle=false,SEC='select.tema-sel,#btn-tumunu,#pg-ozel .tab-row .tab-btn';
   function sigdir(el){
     try{
       if(!el.offsetWidth)return;
-      var cs=getComputedStyle(el),sel=el.tagName==='SELECT';
+      var sel=el.tagName==='SELECT';
       var metin=sel?(el.options[el.selectedIndex]?el.options[el.selectedIndex].text:''):el.textContent.trim();
       if(!metin)return;
+      var anahtar=metin+'|'+innerWidth;
+      if(el.__sg===anahtar)return; // değişmedi: dokunma
+      var cs=getComputedStyle(el);
       var pad=parseFloat(cs.paddingLeft)+parseFloat(cs.paddingRight)+(sel?0:2);
       var avail=el.clientWidth-pad-2;
       el.style.removeProperty('font-size');
-      var fs=parseFloat(getComputedStyle(el).fontSize),w;
+      var cs2=getComputedStyle(el),fs=parseFloat(cs2.fontSize),w;
       for(var k=0;k<14;k++){
-        cv.font=cs.fontStyle+' '+cs.fontWeight+' '+fs+'px '+cs.fontFamily;
-        w=cv.measureText(metin).width+(parseFloat(cs.letterSpacing)||0)*metin.length;
+        cv.font=cs2.fontStyle+' '+cs2.fontWeight+' '+fs+'px '+cs2.fontFamily;
+        w=cv.measureText(metin).width+(parseFloat(cs2.letterSpacing)||0)*metin.length;
         if(w<=avail||fs<=8.5)break;
         fs-=.5;
       }
+      fs=Math.round(fs*2)/2;
       el.style.setProperty('font-size',fs+'px','important');
+      el.__sg=metin+'|'+innerWidth;
     }catch(e){}
   }
-  function hepsi(){bekle=false;document.querySelectorAll('select.tema-sel,#btn-tumunu,#pg-ozel .tab-row .tab-btn').forEach(sigdir);}
+  function esle(){ // Özel Dersler: Stüdyo kutusu, Eğitmen kutusuyla aynı genişlikte
+    var a=document.getElementById('ot-studyo-sel'),r=document.getElementById('ot-egitmen-sel');
+    if(a&&r&&r.offsetWidth&&Math.abs((parseFloat(a.style.width)||0)-r.offsetWidth)>1){a.style.boxSizing='border-box';a.style.flex='0 0 auto';a.style.minWidth='0';a.style.marginLeft='auto';a.style.width=r.offsetWidth+'px';}
+  }
+  function hepsi(){bekle=false;document.querySelectorAll(SEC).forEach(sigdir);esle();}
   function planla(){if(!bekle){bekle=true;requestAnimationFrame(hepsi);}}
-  new MutationObserver(function(m){for(var i=0;i<m.length;i++){var t=m[i].target;if(m[i].type==='attributes'&&t.matches&&t.matches('select.tema-sel,#btn-tumunu,#pg-ozel .tab-row .tab-btn'))continue;planla();return;}}).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['style','class']});
+  new MutationObserver(planla).observe(document.body,{subtree:true,childList:true,characterData:true});
   window.addEventListener('resize',planla);document.addEventListener('change',planla,true);window.addEventListener('load',planla);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){document.querySelectorAll(SEC).forEach(function(e){e.__sg=null;});planla();});
+  setInterval(planla,800); // sayfa değişince görünür olan kutular için (değişmeyenler atlanır)
 })();
 </script>
 <script>
