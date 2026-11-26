@@ -1789,9 +1789,9 @@ try{
       <button class="btn btn-sm" id="filter-hepsi" onclick="setOgrenciFilter('hepsi')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-hepsi">Hepsi</span> <span id="cnt-filter-hepsi" style="opacity:.75;font-weight:500;"></span></button>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <select id="og-egitmen-sel" class="tema-sel" aria-label="Eğitmen" onchange="setOgEgitmen(this.value)" style="flex:1.3 1 0;min-width:0;"></select>
-      <select id="og-sinif-sel" class="tema-sel" aria-label="Sınıf" onchange="setOgSinif(this.value)" style="flex:1.1 1 0;min-width:0;"></select>
-      <button id="btn-tumunu" class="btn btn-sm btn-ghost" style="flex:.95 1 0;min-width:0;white-space:nowrap;padding-left:6px;padding-right:6px;font-size:clamp(10.5px,3vw,12px);" onclick="setOgGruplu(false)"><span id="lbl-tumunugoster">Tümünü Göster</span></button>
+      <select id="og-egitmen-sel" class="tema-sel" aria-label="Eğitmen" onchange="setOgEgitmen(this.value)" style="flex:1.2 1 0;min-width:0;"></select>
+      <select id="og-sinif-sel" class="tema-sel" aria-label="Sınıf" onchange="setOgSinif(this.value)" style="flex:.95 1 0;min-width:0;"></select>
+      <button id="btn-tumunu" class="btn btn-sm btn-ghost" style="flex:1.15 1 0;min-width:0;white-space:nowrap;padding-left:3px;padding-right:3px;font-size:clamp(10px,2.9vw,12px);letter-spacing:-.02em;" onclick="setOgGruplu(false)"><span id="lbl-tumunugoster">Tümünü Göster</span></button>
     </div>
     <div id="og-siralama-row" style="display:none;gap:5px;margin-bottom:10px;flex-wrap:nowrap;">
       <button class="btn btn-sm" id="sir-ad" onclick="setOgSiralama('ad')" style="font-size:11px;flex:1 1 0;min-width:0;padding:6px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--greenbg);color:var(--green);border:1px solid #34d39966;box-shadow:0 3px 10px -3px #34d39970;">A-Z</button>
@@ -7956,7 +7956,7 @@ function ogFiltreKutulari(){
   es.value=OG_EGITMEN;
   const adlar=[...new Set(S.siniflar.filter(x=>OG_EGITMEN==='hepsi'||x.egitmenId===OG_EGITMEN||x.egitmen2Id===OG_EGITMEN).map(x=>x.ad))].sort((a,b)=>a.localeCompare(b,'tr'));
   if(OG_SINIF!=='hepsi'&&!adlar.includes(OG_SINIF))OG_SINIF='hepsi';
-  ss.innerHTML='<option value="hepsi">'+(LANG==='en'?'All classes':LANG==='ru'?'Все классы':'Tüm sınıflar')+'</option>'+adlar.map(a=>`<option value="${a.replace(/"/g,'&quot;')}">${a}</option>`).join('');
+  ss.innerHTML='<option value="hepsi">'+(LANG==='en'?(innerWidth<350?'Classes':'All classes'):LANG==='ru'?(innerWidth<350?'Классы':'Все классы'):(innerWidth<350?'Sınıflar':'Tüm sınıflar'))+'</option>'+adlar.map(a=>`<option value="${a.replace(/"/g,'&quot;')}">${a}</option>`).join('');
   ss.value=OG_SINIF;
   ss.style.setProperty('background-color',OG_GRUPLU?'var(--greenbg)':'var(--surface2)','important');ss.style.setProperty('color',OG_GRUPLU?'var(--green)':'var(--text)','important');
 }
