@@ -1821,6 +1821,7 @@ try{
     <div class="tab-row">
       <button class="tab-btn" id="ozsek-liste" onclick="ozelSekme('liste')" data-i18n="nav_ogrenciler">Öğrenciler</button>
       <button class="tab-btn active" id="ozsek-takvim" onclick="ozelSekme('takvim')" data-i18n="btn_haftalik_takvim">📅 Haftalık Takvim</button>
+      <select id="ot-egitmen-sel" class="tema-sel" aria-label="Eğitmen" onchange="otEgitmenSec(this.value)" style="flex:1 1 0;min-width:0;"></select>
     </div>
     <div id="ozel-list" style="display:none;"></div>
     <div id="ozel-takvim-blok">
@@ -7193,9 +7194,12 @@ function otHaftaDegistir(dir){OT_WEEK_START=new Date(OT_WEEK_START.getTime()+dir
 // Özel Dersler sayfası iki sekmeli: Haftalık Takvim (varsayılan, her açılışta) ve Öğrenciler listesi.
 // Arama çubuğu ve "Yeni Özel Ders" butonu iki sekmede de yerinde kalır.
 let OZEL_SEKME='takvim';
+let OT_EGITMEN='hepsi';
+function otEgitmenSec(v){OT_EGITMEN=v;renderOzelTakvim();}
 function ozelSekme(k,haftaSifirla){
   OZEL_SEKME=k;
   const tk=k==='takvim';
+  {const es=document.getElementById('ot-egitmen-sel');if(es)es.style.display=tk?'':'none';}
   const l=document.getElementById('ozel-list'),b=document.getElementById('ozel-takvim-blok');
   if(l)l.style.display=tk?'none':'';
   if(b)b.style.display=tk?'':'none';
@@ -7283,15 +7287,12 @@ function renderOzelTakvim(){
   const gunAy=(d)=>d.toLocaleDateString(LC(),{day:'numeric',month:'long'}); // uzun ay adı, dile uygun çekim (ноября)
   labelEl.textContent=`${gunAy(ilkGun)} – ${gunAy(sonGun)}`;
 
-  const kullanilanEgitmenIds=[...new Set(S.ozelPaketler.flatMap(p=>p.egitmenIds||[]))];
-  legendEl.innerHTML=kullanilanEgitmenIds.map(id=>{
-    const eg=S.egitmenler.find(e=>e.id===id);
-    if(!eg)return'';
-    return `<span class="ot-legend-item"><span class="ot-legend-dot" style="background:${egitmenRenk(id)};color:${egitmenRenk(id)};border:1px solid #9a9aaa99;"></span>${eg.ad}</span>`;
-  }).join('')||'<span style="font-size:11px;color:var(--text3);">Özel öğrencilere eğitmen atayınca burada renk listesi görünür.</span>';
-  // Blok rengi cinsiyeti/asistanı, sol şerit eğitmeni gösterir
-  legendEl.innerHTML=legendEl.innerHTML
-    +[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('');
+  // Eğitmen seçim kutusu (Tüm eğitmenler / tek eğitmen)
+  if(OT_EGITMEN!=='hepsi'&&!S.egitmenler.some(e=>e.id===OT_EGITMEN))OT_EGITMEN='hepsi';
+  {const es=document.getElementById('ot-egitmen-sel');
+   if(es){es.innerHTML='<option value="hepsi">'+(LANG==='en'?'All instructors':LANG==='ru'?'Все преподаватели':'Tüm eğitmenler')+'</option>'+[...S.egitmenler].sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr')).map(e=>`<option value="${e.id}">${e.ad}</option>`).join('');es.value=OT_EGITMEN;}}
+  // Renk boncukları: blok rengi cinsiyeti/asistanı gösterir
+  legendEl.innerHTML=[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('');
 
   // Başlık satırı
   let html=`<div class="ot-kose">${t('x_saat')}</div>`;
@@ -7319,7 +7320,7 @@ function renderOzelTakvim(){
   // Ders blokları — süreye göre dolu, çakışanlar yan yana
   gunler.forEach((d,dayIdx)=>{
     const tarih=otTarihStr(d);
-    let seanslar=S.ozelSeanslar.filter(s=>s.tarih===tarih&&s.saat!=null&&otSlotIndex(s.saat)!==null)
+    let seanslar=S.ozelSeanslar.filter(s=>s.tarih===tarih&&s.saat!=null&&otSlotIndex(s.saat)!==null&&(OT_EGITMEN==='hepsi'||s.egitmenId===OT_EGITMEN))
       .map(s=>({...s,_start:otSlotIndex(s.saat),_span:otSureSlot(s.sure)}))
       .filter(s=>s._start>=0&&s._start<OT_TOPLAM_SLOT)
       .sort((a,b)=>a._start-b._start);
