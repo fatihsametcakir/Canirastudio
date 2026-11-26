@@ -8052,7 +8052,6 @@ function renderSinifDetay(siId){
     const bc=sinifKapali?'badge-gray':donduruldu?'badge-amber':hicOdemeYok?'badge-red':!odendi?'badge-red':dl<=0&&gh===0?'badge-red':dl<=0&&gh>0?'badge-amber':dl<=3?'badge-amber':dl<=7?'badge-cyan':'badge-green';
     const badgeText=donduruldu?'⏸':hicOdemeYok?t('odeme_bekleniyor'):gh+' '+t('ders')+manuelHakEtiketi(h);
     return `<div class="cs-item" style="${donduruldu?'opacity:.65;':''}">
-      <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:32px;height:32px;font-size:11px;">${initials(og.ad,og.soyad||'')}</div>
       <div style="flex:1;min-width:0;">
         <div style="font-size:13px;font-weight:500;">${donduruldu?'🧊 ':''}${og.ad} ${og.soyad||''}</div>
         <div style="font-size:11px;color:var(--text3);">${donduruldu?t('donduruldu'):k.tip==='paket'?t('paket'):t('tek')} · ${hicOdemeYok?t('henuz_odeme_yok'):formatDate(gb)}</div>
@@ -8159,10 +8158,6 @@ function renderOzel(){
     }).join(''):`<div style="font-size:13px;color:var(--text3);padding:8px 0;">${t('henuz_paket_yok')}</div>`;
     return `<div class="ozel-og-kart" style="--og-renk:${ozelOgRenk(siraliHepsi.indexOf(og))};">
       <div class="ozel-og-header" onclick="toggleOzelOgAcik('${og.id}')" style="cursor:pointer;">
-        <div style="position:relative;flex-shrink:0;">
-          <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}">${initials(og.ad,og.soyad||'')}</div>
-          <div style="position:absolute;bottom:-3px;right:-3px;background:var(--purple);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--surface);">${ozelSira+1}</div>
-        </div>
         <div style="flex:1;min-width:0;">
           <div class="ozel-og-isim" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${og.ad} ${og.soyad||''}</div>
           ${!ogAcik?`<div style="font-size:11px;color:var(--text2);margin-top:2px;">${ozetMetin}</div>`:''}
@@ -8291,7 +8286,6 @@ function renderOdemeler(){
       html+=`<div class="odeme-card" style="${donduruldu?'opacity:.7;':''}">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
           <div style="display:flex;align-items:center;gap:8px;min-width:0;">
-            <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div>
             <div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div>
             <div style="font-size:11px;color:var(--text2);">${donduruldu?'🧊 '+t('donduruldu'):k.tip==='paket'?t('paket'):t('tek')} · ${gh} ${t('ders')}${manuelHakEtiketi(h)}${k.tip==='paket'&&h?.bitisTarih?' · '+t('bitis')+': '+formatDate(h.bitisTarih):''}</div></div>
           </div>
@@ -8316,7 +8310,7 @@ function renderOdemeler(){
       const topOzel=paketler.reduce((s,p)=>s+ozelPaketOdenen(p),0);
       const eksikO=paketler.reduce((s,p)=>s+ozelPaketEksikTutar(p),0);
       const aktif=paketler.find(ozelPaketAktifMi);
-      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text2);">${ozelKalanSaatMetni(paketler)||t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${topOzel.toLocaleString(LC())} ₺</div>${eksikO>0?`<div style="font-size:11px;color:var(--accent);font-weight:600;">Kalan ${eksikO.toLocaleString(LC())} ₺</div>`:''}</div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),t('ozel_dersler'))}</div></div>`;
+      html+=`<div class="odeme-card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div style="display:flex;align-items:center;gap:8px;min-width:0;"><div><div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div><div style="font-size:11px;color:var(--text2);">${ozelKalanSaatMetni(paketler)||t('aktif_paket_yok')}</div></div></div><div style="text-align:right;flex-shrink:0;"><span class="badge ${aktif?'badge-cyan':'badge-gray'}">${aktif?t('filter_aktif'):t('bitti')}</span><div style="font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;">${topOzel.toLocaleString(LC())} ₺</div>${eksikO>0?`<div style="font-size:11px;color:var(--accent);font-weight:600;">Kalan ${eksikO.toLocaleString(LC())} ₺</div>`:''}</div></div><div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-purple btn-sm" style="flex:1;" onclick="openOzelPaketModal('${og.id}')">${t('btn_yeni_paket')}</button><button class="btn btn-sm" style="flex:1;background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="goTo('ozel',null)">${t('derse_git')}</button>${waBtnPopup(og.tel,og.ad+' '+(og.soyad||''),t('ozel_dersler'))}</div></div>`;
     });
     html+=`</div></div>`;
   }
@@ -9803,7 +9797,6 @@ function yoklamaAlBaslat(sinifId,tarih,zorlaEdit){
       ${aktifOgList.length?aktifOgList.map(og=>`
         <label class="eg-check-row" style="padding:11px 2px;">
           <input type="checkbox" class="yal-cb" value="${og.id}" ${mevcutGelenler.has(og.id)?'checked':''}/>
-          <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:26px;height:26px;font-size:10px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
           <span style="flex:1;">${og.ad} ${og.soyad||''}</span>
         </label>`).join(''):'<div style="font-size:13px;color:var(--text3);padding:12px 0;">'+t('sinifta_aktif_ogrenci_yok')+'</div>'}
     </div>
@@ -9826,7 +9819,6 @@ function yoklamaGoster(sinifId,tarih){
       ${aktifOgList.map(og=>{
         const geldi=gelenler.has(og.id);
         return `<div onclick="closeModal('m-kayit-islem');openOgDetay('${og.id}','yoklama')" style="display:flex;align-items:center;gap:10px;padding:12px 10px;margin-bottom:7px;border-radius:var(--radius-sm);cursor:pointer;background:${geldi?'#34d39922':'#ff6b6b22'};border:1.5px solid ${geldi?'#34d399':'#ff6b6b'};">
-          <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:26px;height:26px;font-size:10px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
           <span style="flex:1;font-size:14px;font-weight:600;color:${geldi?'#34d399':'#ff6b6b'};">${og.ad} ${og.soyad||''}</span>
           <span style="width:26px;height:26px;border-radius:50%;background:${geldi?'#34d399':'#ff6b6b'};color:#0d0d14;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;">${geldi?'✓':'✕'}</span>
         </div>`;
@@ -10018,7 +10010,6 @@ function yoklamaGecmis(sinifId){
         const pct=ist.toplam?Math.round((ist.geldi/ist.toplam)*100):0;
         const renk=pct>=80?'var(--green)':pct>=50?'var(--amber)':'var(--accent)';
         return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);">
-          <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:28px;height:28px;font-size:10px;">${initials(og.ad,og.soyad||'')}</div>
           <div style="flex:1;min-width:0;">
             <div style="font-size:13px;font-weight:500;">${og.ad} ${og.soyad||''}</div>
             <div style="height:4px;border-radius:2px;background:var(--surface2);margin-top:4px;overflow:hidden;">
@@ -10192,7 +10183,6 @@ function yoklamaOgrenciModal(sinifId){
     document.getElementById('m-yok-og-liste').innerHTML=aktifOgList.map(og=>{
       const geldi=ogBugunGeldiMi(si.id,og.id);
       return `<div class="yoklama-og-item">
-        <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:36px;height:36px;font-size:13px;">${initials(og.ad,og.soyad||'')}</div>
         <div style="flex:1;min-width:0;">
           <div style="font-size:14px;font-weight:500;">${og.ad} ${og.soyad||''}</div>
           ${geldi?`<div style="font-size:11px;color:var(--green);">✓ Bugün kaydedildi</div>`:''}
@@ -10431,7 +10421,6 @@ function renderDevamsiz(){
       <div class="odeme-sinif-body${acik?' open':''}" id="devamsiz-body-${key}">
         ${grp.ogrenciler.map(og=>`
           <div style="display:flex;align-items:center;gap:10px;padding:11px;margin-bottom:7px;border-radius:var(--radius-sm);background:#ff6b6b1e;border:1.5px solid #ff6b6b;">
-            <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:30px;height:30px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
             <div style="flex:1;min-width:0;">
               <div style="font-size:14px;font-weight:600;color:var(--accent);">${og.ad} ${og.soyad||''}</div>
             </div>
@@ -10485,7 +10474,6 @@ function renderTelEksik(){
       </div>
       <div class="odeme-sinif-body${acik?' open':''}" id="tel-eksik-body-${key}">
         ${g.ogrenciler.map(og=>`<div onclick="openOgrenciModal('${og.id}')" style="display:flex;align-items:center;gap:10px;padding:10px 11px;margin-bottom:7px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);cursor:pointer;">
-          <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:30px;height:30px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
           <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;">${waHtmlEsc(og.ad+' '+(og.soyad||''))}</div><div style="font-size:11px;color:var(--amber);">${og.tel?waHtmlEsc(og.tel)+' · '+t('tel_gecersiz_kisa'):t('tel_yok_kisa')}</div></div>
           <span style="color:var(--cyan);font-size:12px;">✎ ${t('btn_duzenle_kisa')}</span></div>`).join('')}
       </div>
@@ -10566,7 +10554,6 @@ function renderDevamsizPasif(){
           const sinifMetni=pasifOgrenciSinifAdlari(og).join(', ');
           return `<div style="display:flex;align-items:center;gap:10px;padding:10px 11px;margin-bottom:7px;border-radius:var(--radius-sm);background:${sec?'var(--greenbg)':'var(--surface2)'};border:1px solid ${sec?'#34d39950':'var(--border)'};">
             <input type="checkbox" ${sec?'checked':''} onchange="devamsizPasifSecimDegis('${og.id}',this.checked)" style="width:18px;height:18px;accent-color:var(--green);flex-shrink:0;"/>
-            <div class="avatar ${og.cinsiyet==='e'?'av-e':'av-k'}" style="width:30px;height:30px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
             <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;">${waHtmlEsc(og.ad+' '+(og.soyad||''))}</div>${telGecerliMi(og.tel)?'':'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;"><span style="font-size:11px;color:var(--amber);">'+t('tel_yok_kisa')+'</span></div>'}</div>
             ${waBtnPopup(og.tel,og.ad,sinifMetni,null,'kampanya')}
           </div>`;}).join('')}
