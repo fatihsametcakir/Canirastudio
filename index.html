@@ -1174,6 +1174,9 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 #splash.out{transition:transform .5s cubic-bezier(.65,0,.95,.5),opacity .5s cubic-bezier(.55,0,1,.7)!important}
 #ot-legend{gap:5px!important;padding:8px!important;}
 #ot-legend .ot-legend-item{font-size:10.5px;padding:3px 7px;gap:4px;border-width:1.5px;}
+/* Hafta aralığı: uzun ay adları, ekrana sığar, altın çerçeveli kutu */
+.ot-hafta-kutu{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;height:44px;padding:0 4px;text-align:center;font-weight:700;font-size:clamp(10.5px,3.9vw,17px);white-space:nowrap;overflow:hidden;color:var(--text);background:var(--surface);border:1.5px solid #d9ac52a6;border-radius:var(--radius-sm);box-shadow:inset 0 0 0 1px #d9ac5220;}
+:root[data-acik="1"] .ot-hafta-kutu{border-color:#9a6f1ca0;box-shadow:inset 0 0 0 1px #9a6f1c20;}
 </style>
 </head>
 <body>
@@ -1745,9 +1748,9 @@ try{
     <div id="ozel-takvim-blok">
     <div id="ot-legend" style="display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;margin:4px 0 12px;-webkit-overflow-scrolling:touch;padding:10px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin:0 0 14px;gap:8px;">
-      <button class="btn btn-ghost" style="width:64px;height:44px;padding:0;font-size:24px;line-height:1;" onclick="otHaftaDegistir(-1)" aria-label="‹">‹</button>
-      <div style="flex:1;text-align:center;font-size:18px;font-weight:700;" id="ot-hafta-label"></div>
-      <button class="btn btn-ghost" style="width:64px;height:44px;padding:0;font-size:24px;line-height:1;" onclick="otHaftaDegistir(1)" aria-label="›">›</button>
+      <button class="btn btn-ghost" style="width:clamp(44px,13vw,64px);height:44px;padding:0;font-size:24px;line-height:1;flex-shrink:0;" onclick="otHaftaDegistir(-1)" aria-label="‹">‹</button>
+      <div id="ot-hafta-label" class="ot-hafta-kutu"></div>
+      <button class="btn btn-ghost" style="width:clamp(44px,13vw,64px);height:44px;padding:0;font-size:24px;line-height:1;flex-shrink:0;" onclick="otHaftaDegistir(1)" aria-label="›">›</button>
     </div>
     <div class="yatay-kaydirma-alani" style="overflow-x:auto;">
       <div id="ot-grid" style="min-width:600px;"></div>
@@ -7186,8 +7189,8 @@ function renderOzelTakvim(){
   const legendEl=document.getElementById('ot-legend');
   const gunler=Array.from({length:7},(_,i)=>new Date(OT_WEEK_START.getTime()+i*86400000));
   const ilkGun=gunler[0],sonGun=gunler[6];
-  const ayKisa=(d)=>d.toLocaleDateString(LC(),{month:'short'});
-  labelEl.textContent=`${ilkGun.getDate()} ${ayKisa(ilkGun)} – ${sonGun.getDate()} ${ayKisa(sonGun)}`;
+  const gunAy=(d)=>d.toLocaleDateString(LC(),{day:'numeric',month:'long'}); // uzun ay adı, dile uygun çekim (ноября)
+  labelEl.textContent=`${gunAy(ilkGun)} – ${gunAy(sonGun)}`;
 
   const kullanilanEgitmenIds=[...new Set(S.ozelPaketler.flatMap(p=>p.egitmenIds||[]))];
   legendEl.innerHTML=kullanilanEgitmenIds.map(id=>{
