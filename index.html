@@ -7794,6 +7794,7 @@ function renderOgrenciler(){
   let liste=S.ogrenciler;
   if(OG_FILTER==='aktif')liste=liste.filter(o=>(o.durum||'aktif')==='aktif');
   else if(OG_FILTER==='pasif')liste=liste.filter(o=>o.durum==='pasif');
+  liste=liste.filter(o=>!o.asistan); // asistanlar öğrenci listesinde (arama dahil) hiç gösterilmez
   if(arama)liste=liste.filter(o=>(o.ad+' '+(o.soyad||'')+' '+(o.tel||'')).toLowerCase().includes(arama));
   if(!liste.length){el.innerHTML='<div class="empty"><div class="empty-icon">♟</div><div class="empty-text">'+(arama?t('no_result'):OG_FILTER==='pasif'?t('empty_ogrenci_pasif'):t('empty_ogrenci'))+'</div>'+((!arama&&OG_FILTER!=='pasif'&&!S.ogrenciler.length)?bosCta('İlk öğrenciyi ekle','openOgrenciModal()'):'')+'</div>';return;}
   function siniflari(id){return S.siniflar.filter(s=>(s.kayitlar||[]).some(k=>k.ogrenciId===id)).map(s=>s.ad);}
