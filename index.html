@@ -4092,7 +4092,7 @@ function toggleOgGrup(ad){
   else window._ogGrupAcik.add(ad);
   renderOgrenciler();
 }
-function setOgrenciFilter(f){OG_FILTER=f;['aktif','pasif','hepsi'].forEach(k=>{const b=document.getElementById('filter-'+k);if(k===f){b.style.background='var(--greenbg)';b.style.color='var(--accent)';b.style.border='1px solid #34d39966';b.style.boxShadow='0 3px 10px -3px #34d39970';}else{b.style.background='var(--surface2)';b.style.color='var(--text2)';b.style.border='1px solid var(--border2)';b.style.boxShadow='none';}});renderOgrenciler();}
+function setOgrenciFilter(f){OG_FILTER=f;['aktif','pasif','hepsi'].forEach(k=>{const b=document.getElementById('filter-'+k);if(k===f){b.style.background='var(--greenbg)';b.style.color='var(--green)';b.style.border='1px solid #34d39966';b.style.boxShadow='0 3px 10px -3px #34d39970';}else{b.style.background='var(--surface2)';b.style.color='var(--text2)';b.style.border='1px solid var(--border2)';b.style.boxShadow='none';}});renderOgrenciler();}
 function toggleOdemeSinif(id){if(ODEME_ACIK.has(id))ODEME_ACIK.delete(id);else ODEME_ACIK.add(id);const body=document.getElementById('odeme-body-'+id),chev=document.getElementById('odeme-chev-'+id);if(!body||!chev)return;const a=ODEME_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
 function toggleGiderKart(id){if(GIDER_RAPOR_ACIK.has(id))GIDER_RAPOR_ACIK.delete(id);else GIDER_RAPOR_ACIK.add(id);const body=document.getElementById('gr-body-'+id),chev=document.getElementById('gr-chev-'+id);if(!body||!chev)return;const a=GIDER_RAPOR_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
 function toggleGelirSinif(id){
