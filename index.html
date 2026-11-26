@@ -1211,6 +1211,9 @@ button[style*="background:var(--surface2)"],button[style*="background: var(--sur
 /* Açılış: "Can & Irina" üzerindeki ışıltı şeridi katmanı yok; yapı "Dance Studio" ile aynı (sadece düz altın gradyan) */
 #splash .sp-logo.sp-lt .sp-gold{background-image:linear-gradient(100deg,#f8e7ae,#d9ac52 40%,#f4dc92 65%,#b0842f);background-size:100% 100%;background-position:0 0;background-repeat:no-repeat;animation:none;opacity:1;}
 :root[data-acik="1"] #splash .sp-logo.sp-lt .sp-gold{background-image:linear-gradient(100deg,#8a6112,#b8872a 40%,#9a6f1c 65%,#6e4c0c);}
+/* Açılış: logo harflerinde gölge yok */
+#splash .sp-gold,#splash .sp-logo span,#splash .sp-lt .sp-h,:root[data-acik="1"] #splash .sp-gold,:root[data-acik="1"] #splash .sp-logo span{filter:none!important;text-shadow:none!important;}
+#splash .sp-logo em,:root[data-acik="1"] #splash .sp-logo em{text-shadow:none!important;filter:none!important;}
 </style>
 </head>
 <body>
