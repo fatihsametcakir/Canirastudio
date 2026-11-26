@@ -1228,6 +1228,8 @@ html.ios-notch #splash .sp-cer .k1{left:20px;top:calc(var(--ft) + 11px);}
 html.ios-notch #splash .sp-cer .k2{right:20px;top:calc(var(--ft) + 11px);}
 html.ios-notch #splash .sp-cer .k3{left:20px;bottom:calc(var(--fb) + 11px);}
 html.ios-notch #splash .sp-cer .k4{right:20px;bottom:calc(var(--fb) + 11px);}
+/* Alt navigasyon: seçili olmayan simgeler, seçilince alacakları rengin %10'u kadar tonlu */
+.nav-item:not(.active) .nav-icon-wrap,:root[data-acik="1"] .nav-item:not(.active) .nav-icon-wrap{background:color-mix(in srgb,var(--item-color,var(--accent)) 10%,transparent);}
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
