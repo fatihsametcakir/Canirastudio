@@ -551,7 +551,7 @@ body.portal-modu .overlay{z-index:9500;}
 /* Slide-over panel */
 .drawer-overlay{position:fixed;inset:0;background:#00000070;z-index:300;display:none;backdrop-filter:blur(3px);}
 .drawer-overlay.open{display:block;}
-.drawer{position:fixed;top:10px;left:10px;bottom:10px;width:min(300px,85vw);background:color-mix(in srgb,var(--surface) 86%,transparent);border:1.5px solid color-mix(in srgb,var(--text) 30%,transparent);border-radius:30px;box-shadow:0 18px 50px -10px rgba(0,0,0,.85),0 2px 12px -2px rgba(0,0,0,.5),inset 0 1px 0 color-mix(in srgb,var(--text) 14%,transparent);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);z-index:301;transform:translateX(calc(-100% - 20px));transition:transform .28s cubic-bezier(.4,0,.2,1);overflow:hidden;display:flex;flex-direction:column;}
+.drawer{position:fixed;top:max(10px,calc(env(safe-area-inset-top,0px) + 4px));left:10px;bottom:max(10px,calc(env(safe-area-inset-bottom,0px) - 4px));width:min(300px,85vw);background:color-mix(in srgb,var(--surface) 86%,transparent);border:1.5px solid color-mix(in srgb,var(--text) 30%,transparent);border-radius:30px;box-shadow:0 18px 50px -10px rgba(0,0,0,.85),0 2px 12px -2px rgba(0,0,0,.5),inset 0 1px 0 color-mix(in srgb,var(--text) 14%,transparent);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);z-index:301;transform:translateX(calc(-100% - 20px));transition:transform .28s cubic-bezier(.4,0,.2,1);overflow:hidden;display:flex;flex-direction:column;}
 .drawer .drawer-hizli .drawer-btn{border-radius:20px !important;}
 .drawer .acc-item{border-radius:22px;}
 .drawer-header{padding-top:18px;}
