@@ -7196,7 +7196,6 @@ function ozelSekme(k,haftaSifirla){
     renderOzelTakvim();otBugunuGoster();
   }else renderOzel();
 }
-function openOzelTakvim(){ozelSekme('takvim',true);}
 // Takvim yatay kaydırılabilir: açılınca bugünün sütunu görünür olsun (Pazartesi başta, Pazar sonda kalır)
 let OT_BUGUN_BEKLE=false;
 function otBugunuGoster(){
@@ -7943,13 +7942,6 @@ function renderOgrenciler(){
   sinifsizlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   sadeceOzel.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   asistanlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
-  // Adı kısaltır: ilk ad tam, diğerleri baş harf: "Fatih Samet Çakır" -> "Fatih S.Ç.", "Ateş Yaylıoğlu" -> "Ateş Y."
-  function kisaAd(ad,soyad){
-    const tam=((ad||'')+' '+(soyad||'')).trim();
-    const k=tam.split(/\s+/).filter(Boolean);
-    if(k.length<2)return tam;
-    return k[0]+' '+k.slice(1).map(x=>x.charAt(0).toLocaleUpperCase('tr')+'.').join('');
-  }
   function row(og,sn,goster,num,renk){
     const p=og.durum==='pasif';
     const snKisa=sn?sn.split(',')[0].trim():'';
