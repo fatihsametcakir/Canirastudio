@@ -7359,7 +7359,7 @@ function renderOzelTakvim(){
   {const es=document.getElementById('ot-egitmen-sel');
    if(es){es.innerHTML='<option value="hepsi">'+(LANG==='en'?'All instructors':LANG==='ru'?'Все преподаватели':'Tüm eğitmenler')+'</option>'+[...S.egitmenler].sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr')).map(e=>`<option value="${e.id}">${e.ad}</option>`).join('');es.value=OT_EGITMEN;}}
   {const ss=document.getElementById('ot-studyo-sel');
-   if(ss){ss.innerHTML='<option value="hepsi">'+(LANG==='en'?'All studios':LANG==='ru'?'Все студии':'Tüm stüdyolar')+'</option>'+[1,2,3].map(n=>'<option value="'+n+'">Stüdyo '+n+'</option>').join('');ss.value=String(OT_STUDYO);}}
+   if(ss){ss.innerHTML='<option value="hepsi">'+(LANG==='en'?(innerWidth<420?'Studios':'All studios'):LANG==='ru'?(innerWidth<420?'Студии':'Все студии'):(innerWidth<420?'Stüdyolar':'Tüm stüdyolar'))+'</option>'+[1,2,3].map(n=>'<option value="'+n+'">Stüdyo '+n+'</option>').join('');ss.value=String(OT_STUDYO);}}
   // Renk boncukları: blok rengi cinsiyeti/asistanı gösterir
   legendEl.innerHTML=[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('');
 
