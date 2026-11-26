@@ -7246,7 +7246,8 @@ function otHaftaDegistir(dir){OT_WEEK_START=new Date(OT_WEEK_START.getTime()+dir
 // Özel Dersler sayfası iki sekmeli: Haftalık Takvim (varsayılan, her açılışta) ve Öğrenciler listesi.
 // Arama çubuğu ve "Yeni Özel Ders" butonu iki sekmede de yerinde kalır.
 let OZEL_SEKME='takvim';
-let OT_EGITMEN='hepsi';
+let OT_EGITMEN='hepsi',OT_STUDYO='hepsi';
+function otStudyoSec(v){OT_STUDYO=v;renderOzelTakvim();}
 function otEgitmenSec(v){OT_EGITMEN=v;renderOzelTakvim();}
 function ozelSekme(k,haftaSifirla){
   OZEL_SEKME=k;
@@ -7344,7 +7345,8 @@ function renderOzelTakvim(){
   {const es=document.getElementById('ot-egitmen-sel');
    if(es){es.innerHTML='<option value="hepsi">'+(LANG==='en'?'All instructors':LANG==='ru'?'Все преподаватели':'Tüm eğitmenler')+'</option>'+[...S.egitmenler].sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr')).map(e=>`<option value="${e.id}">${e.ad}</option>`).join('');es.value=OT_EGITMEN;}}
   // Renk boncukları: blok rengi cinsiyeti/asistanı gösterir
-  legendEl.innerHTML=[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('');
+  legendEl.innerHTML=[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('')
+    +'<select class="tema-sel ot-studyo-sel" aria-label="Stüdyo" onchange="otStudyoSec(this.value)" style="flex:1 1 110px;min-width:104px;max-width:170px;margin-left:auto;padding-top:6px!important;padding-bottom:6px!important;"><option value="hepsi"'+(OT_STUDYO==='hepsi'?' selected':'')+'>'+(LANG==='en'?'All studios':LANG==='ru'?'Все студии':'Tüm stüdyolar')+'</option>'+[1,2,3].map(n=>'<option value="'+n+'"'+(String(OT_STUDYO)===String(n)?' selected':'')+'>Stüdyo '+n+'</option>').join('')+'</select>';
 
   // Başlık satırı
   let html=`<div class="ot-kose">${t('x_saat')}</div>`;
@@ -7372,7 +7374,7 @@ function renderOzelTakvim(){
   // Ders blokları — süreye göre dolu, çakışanlar yan yana
   gunler.forEach((d,dayIdx)=>{
     const tarih=otTarihStr(d);
-    let seanslar=S.ozelSeanslar.filter(s=>s.tarih===tarih&&s.saat!=null&&otSlotIndex(s.saat)!==null&&(OT_EGITMEN==='hepsi'||s.egitmenId===OT_EGITMEN))
+    let seanslar=S.ozelSeanslar.filter(s=>s.tarih===tarih&&s.saat!=null&&otSlotIndex(s.saat)!==null&&(OT_EGITMEN==='hepsi'||s.egitmenId===OT_EGITMEN)&&(OT_STUDYO==='hepsi'||String(s.studyo||1)===String(OT_STUDYO)))
       .map(s=>({...s,_start:otSlotIndex(s.saat),_span:otSureSlot(s.sure)}))
       .filter(s=>s._start>=0&&s._start<OT_TOPLAM_SLOT)
       .sort((a,b)=>a._start-b._start);
