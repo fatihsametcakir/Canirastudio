@@ -12121,13 +12121,21 @@ function retHaftaDetayi(si,ayrilanlar){
   ayrilanlar.forEach(k=>{
     const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);
     const ad=og?((og.ad||'')+' '+(og.soyad||'')).trim():'Silinmiş öğrenci';
-    // Başlangıç: bu sınıfa 'giris' olayı ya da kayıt başlangıç tarihi (hangisi daha erkense)
+    const odL=(S.odemeler||[]).filter(o=>o.ogrenciId===k.ogrenciId&&o.sinifId===si.id);
+    // Başlangıç: ilk ödeme tarihi, kayıt başlangıcı ve 'giris' olaylarından en erken olan
     const girisler=(S.ogrenciGecmisi||[]).filter(e=>e.ogrenciId===k.ogrenciId&&e.olay==='giris'&&(!e.sinifId||e.sinifId===si.id)).map(e=>tarihMs(e.tarih)).filter(x=>x!=null);
-    const adaylar=[tarihMs(k.basTarih),...girisler].filter(x=>x!=null);
+    const adaylar=[tarihMs(k.basTarih),...girisler,...odL.map(o=>tarihMs(o.tarih))].filter(x=>x!=null);
     const bas=adaylar.length?Math.min(...adaylar):null;
-    // Bitiş: pasife alınma zamanı (kayıtlı alan, yoksa geçmişteki son 'pasif' olayı)
+    // Ayrılış: pasife alınma kaydı varsa o; yoksa son yoklama günü; o da yoksa son ödenen dönemin bitişi
     let pas=og&&og.pasifTarih?og.pasifTarih:null;
     if(!pas){let m=0;(S.ogrenciGecmisi||[]).forEach(e=>{if(e.ogrenciId===k.ogrenciId&&e.olay==='pasif'&&(e.olusturma||0)>m)m=e.olusturma;});pas=m||null;}
+    if(!pas){let m=0;(S.yoklamalar||[]).forEach(y=>{if(y.ogrenciId===k.ogrenciId&&y.sinifId===si.id){const x=tarihMs(y.tarih);if(x&&x>m)m=x;}});pas=m||null;}
+    if(!pas){let m=0;odL.forEach(o=>(o.aylar||[]).forEach(a=>{
+      const de=/^d(\d+)$/.exec(a);let x=null;
+      if(de){try{x=sinifDonemAraligi(si,parseInt(de[1],10)).bitis.getTime();}catch(e){}}
+      else{const ay=/^(\d{4})-(\d{2})$/.exec(a);if(ay)x=new Date(+ay[1],+ay[2],0).getTime();}
+      if(x&&x>m)m=x;}));pas=m||null;}
+    if(!pas)pas=tarihMs(k.bitisTarih); // hiç ödeme/yoklama yoksa kaydın kendi bitiş tarihi
     if(bas==null||pas==null||pas<bas){bilinmeyen.push(ad);return;}
     const hafta=Math.floor((pas-bas)/(7*gunMs))+1;
     (kovalar[hafta]=kovalar[hafta]||[]).push(ad);if(hafta>enSon)enSon=hafta;
@@ -12138,6 +12146,7 @@ function retHaftaDetayi(si,ayrilanlar){
     </div>`;
   let h='<div onclick="event.stopPropagation()" style="margin-top:8px;"><div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em;">Kaçıncı haftada bıraktı</div>';
   for(let n=1;n<=enSon;n++)h+=satir(n+'. hafta',kovalar[n]||[]);
+  h+='<div style="font-size:10px;color:var(--text3);margin-top:6px;line-height:1.4;">Başlangıç: ilk ödeme/kayıt tarihi. Ayrılış: pasife alınma kaydı yoksa son yoklama, o da yoksa son ödenen dönemin bitişi, o da yoksa kaydın bitiş tarihi esas alınır (tahmini).</div>';
   if(bilinmeyen.length)h+=satir('Tarihi bilinmeyen',bilinmeyen);
   return h+'</div>';
 }
