@@ -1200,6 +1200,9 @@ button[style*="background:var(--surface2)"],button[style*="background: var(--sur
 #splash .sp-taclar.uc-boyut{animation:spRise .7s ease forwards;}
 #splash .sp-taclar.uc-2d{animation:spRise .7s ease forwards;}
 #splash .sp-taclar.uc-2d .sp-tac{display:block!important;}
+/* Son Ödemeler butonu: tema zeminiyle çakışmasın, koyu zeminli altın çerçeveli */
+.btn-son-odeme{background:linear-gradient(135deg,#2e2514,#4d3b18)!important;color:#f8e7ae!important;border:1.5px solid #d9ac52!important;box-shadow:inset 0 0 0 1px #f4dc9233,0 4px 12px -4px #000000a0;font-weight:600;}
+:root[data-acik="1"] .btn-son-odeme{box-shadow:inset 0 0 0 1px #f4dc9233,0 4px 12px -4px #3d2a0a80;}
 </style>
 </head>
 <body>
@@ -8312,7 +8315,7 @@ function renderOdemeler(){
     </div>
     <button class="btn btn-accent btn-sm ust-ekle-btn" onclick="openOdemeModal()">＋ ${t('odeme_ekle')}</button>
   </div>
-  <div style="display:flex;gap:8px;margin:0 0 12px;"><button class="btn btn-sm" style="flex:1;background:#fbbf2422;color:var(--amber);border:1px solid #fbbf2450;" onclick="openSonOdemelerModal()">🕐 ${t('son_odemeler')}</button></div>`;
+  <div style="display:flex;gap:8px;margin:0 0 12px;"><button class="btn btn-sm btn-son-odeme" style="flex:1;" onclick="openSonOdemelerModal()">🕐 ${t('son_odemeler')}</button></div>`;
   const aramaKucuk=ODEME_ARAMA.trim().toLocaleLowerCase('tr');
   const aramaEslesir=(ad,soyad)=>!aramaKucuk||(ad+' '+(soyad||'')).toLocaleLowerCase('tr').includes(aramaKucuk);
   // Grup sınıfları
