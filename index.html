@@ -1198,8 +1198,8 @@ button[style*="background:var(--surface2)"],button[style*="background: var(--sur
 /* Açılış taçları: 3D hazır olana kadar hiçbir şey (2D yedek) gösterme; hazır olunca yumuşak belir */
 #splash .sp-taclar{animation:none;opacity:0;}
 #splash .sp-taclar .sp-tac{display:none!important;}
-#splash .sp-taclar.uc-boyut{animation:spRise .7s ease forwards;}
-#splash .sp-taclar.uc-2d{animation:spRise .7s ease forwards;}
+#splash .sp-taclar.uc-boyut,#splash .sp-taclar.uc-2d{animation:spTacIn 2.2s cubic-bezier(.3,.1,.3,1) forwards;}
+@keyframes spTacIn{from{opacity:0}to{opacity:1}} /* yalnız saydamdan netleşme: kayma/bulanıklık yok */
 #splash .sp-taclar.uc-2d .sp-tac{display:block!important;}
 /* Son Ödemeler butonu: diğer ekranlardaki altın tonlu, çerçeveli butonlarla aynı */
 .btn-son-odeme{border:1.5px solid #d9ac52a6;box-shadow:inset 0 0 0 1px #d9ac5220;font-weight:600;color:var(--text);}
