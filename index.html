@@ -7168,6 +7168,7 @@ function otCinsiyetRenk(og){
 function egitmenRenk(id){
   if(!id)return '#5c5a78';
   const idx=S.egitmenler.findIndex(e=>e.id===id);
+  if(idx>=0&&/^can(\s|$)/i.test((S.egitmenler[idx].ad||'').trim()))return '#ffffff'; // Can: beyaz
   return OT_EGITMEN_PALET[(idx<0?0:idx)%OT_EGITMEN_PALET.length];
 }
 // Eğitmen renkleri: cinsiyet renklerinden (pembe/mavi/turuncu) uzak tonlar
@@ -7219,7 +7220,7 @@ function renderOzelTakvim(){
   legendEl.innerHTML=kullanilanEgitmenIds.map(id=>{
     const eg=S.egitmenler.find(e=>e.id===id);
     if(!eg)return'';
-    return `<span class="ot-legend-item"><span class="ot-legend-dot" style="background:${egitmenRenk(id)};color:${egitmenRenk(id)};"></span>${eg.ad}</span>`;
+    return `<span class="ot-legend-item"><span class="ot-legend-dot" style="background:${egitmenRenk(id)};color:${egitmenRenk(id)};border:1px solid #00000040;"></span>${eg.ad}</span>`;
   }).join('')||'<span style="font-size:11px;color:var(--text3);">Özel öğrencilere eğitmen atayınca burada renk listesi görünür.</span>';
   // Blok rengi cinsiyeti/asistanı, sol şerit eğitmeni gösterir
   legendEl.innerHTML=legendEl.innerHTML
