@@ -7215,7 +7215,7 @@ function otCinsiyetRenk(og){
 function egitmenRenk(id){
   if(!id)return '#5c5a78';
   const idx=S.egitmenler.findIndex(e=>e.id===id);
-  if(idx>=0&&/^can(\s|$)/i.test((S.egitmenler[idx].ad||'').trim()))return '#111111'; // Can: siyah
+  if(idx>=0&&/^can(\s|$)/i.test((S.egitmenler[idx].ad||'').trim()))return '#ffffff'; // Can: parlak beyaz
   return OT_EGITMEN_PALET[(idx<0?0:idx)%OT_EGITMEN_PALET.length];
 }
 // Eğitmen renkleri: cinsiyet renklerinden (pembe/mavi/turuncu) uzak tonlar
