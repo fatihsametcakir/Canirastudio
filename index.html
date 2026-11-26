@@ -1172,7 +1172,7 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 :root[data-acik="1"] #pg-ozel .tab-btn,:root[data-acik="1"] #pg-ozel .btn{border-color:#9a6f1ca0;box-shadow:inset 0 0 0 1px #9a6f1c20;}
 :root[data-acik="1"] #pg-ozel .tab-btn.active{border-color:#9a6f1c;box-shadow:inset 0 0 0 1px #9a6f1c55;}
 /* Açılış çıkışı kısa (toplam ~2 sn) */
-#splash.out{transition:transform .5s cubic-bezier(.65,0,.95,.5),opacity .5s cubic-bezier(.55,0,1,.7)!important}
+#splash.out{transition:transform .8s cubic-bezier(.65,0,.95,.5),opacity .8s cubic-bezier(.55,0,1,.7)!important}
 #ot-legend{gap:5px!important;padding:8px!important;}
 #ot-legend .ot-legend-item{font-size:10.5px;padding:3px 7px;gap:4px;border-width:1.5px;}
 /* Hafta aralığı: uzun ay adları, ekrana sığar, altın çerçeveli kutu */
@@ -1441,9 +1441,9 @@ try{
 }catch(e){try{var h=document.querySelector('#splash .sp-taclar');if(h&&!h.classList.contains('uc-boyut'))h.classList.add('uc-2d');}catch(x){}}
 })();
 </script>
-<script>setTimeout(function(){var e=document.getElementById('splash');if(!e)return;try{var m=e.querySelector('.sp-mark').getBoundingClientRect();e.style.transformOrigin=(m.left+m.width/2)+'px '+(m.top+m.height/2)+'px';}catch(x){}e.classList.add('out');setTimeout(function(){e.remove();},500);},1500);
-/* Açılış toplam ~2 sn: tüm splash animasyonları hızlandırılır */
-(function(){var R=2.6,n=0,iv=setInterval(function(){try{document.getAnimations().forEach(function(a){var t=a.effect&&a.effect.target;if(t&&t.closest&&t.closest('#splash')&&a.playbackRate!==R)a.playbackRate=R;});}catch(x){}if(++n>40)clearInterval(iv);},50);})();</script>
+<script>setTimeout(function(){var e=document.getElementById('splash');if(!e)return;try{var m=e.querySelector('.sp-mark').getBoundingClientRect();e.style.transformOrigin=(m.left+m.width/2)+'px '+(m.top+m.height/2)+'px';}catch(x){}e.classList.add('out');setTimeout(function(){e.remove();},800);},2200);
+/* Açılış toplam ~3 sn: tüm splash animasyonları hızlandırılır */
+(function(){var R=1.75,n=0,iv=setInterval(function(){try{document.getAnimations().forEach(function(a){var t=a.effect&&a.effect.target;if(t&&t.closest&&t.closest('#splash')&&a.playbackRate!==R)a.playbackRate=R;});}catch(x){}if(++n>40)clearInterval(iv);},50);})();</script>
 
 <div id="login-screen" style="padding-top:24px;position:relative;">
   <button id="langBtnLogin" onclick="cycleLang()" title="Dil / Language / Язык" style="position:absolute;top:14px;right:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:99px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text);z-index:2;">TR</button>
