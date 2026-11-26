@@ -7995,7 +7995,6 @@ function renderAnasayfa(){
     html+='</div>';
   }
 
-  if(OG_GRUPLU&&html)html='<div class="og-gruplar-kutu">'+html+'</div>'; // sınıf grupları tek altın çerçevede
   el.innerHTML=html||'<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">'+t('her_sey_yolunda')+'</div></div>';
 }
 
@@ -8165,6 +8164,7 @@ function renderOgrenciler(){
       });
     }
   }
+  if(OG_GRUPLU&&html)html='<div class="og-gruplar-kutu">'+html+'</div>'; // sınıf grupları tek altın çerçevede
   el.innerHTML=html;
 }
 
