@@ -1273,6 +1273,16 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 #pg-ozel .tab-row .tab-btn{white-space:nowrap;padding-left:6px;padding-right:6px;line-height:1.2;}
 .tema-dd-item{white-space:normal;overflow-wrap:anywhere;}
 
+/* Açık tema: Gelir-Gider kartlarının renkleri daha belirgin */
+:root[data-acik="1"] .gg-card{background:linear-gradient(145deg,color-mix(in srgb,var(--gg-c) 34%,var(--surface)),color-mix(in srgb,var(--gg-c) 10%,var(--surface)) 85%)!important;border-color:color-mix(in srgb,var(--gg-c) 70%,#9a6f1c)!important;}
+:root[data-acik="1"] .gg-card-ikon{background:color-mix(in srgb,var(--gg-c) 45%,transparent);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--gg-c) 60%,transparent);}
+:root[data-acik="1"] #pg-gelirgider .stat-card.s1,:root[data-acik="1"] #pg-gelirgider .stat-card.s2,:root[data-acik="1"] #pg-gelirgider .stat-card.s3,:root[data-acik="1"] #pg-gelirgider .stat-card.s4{background-image:none!important;}
+:root[data-acik="1"] #pg-gelirgider .stat-card.s1{background-color:#ff6b6b3d!important;}
+:root[data-acik="1"] #pg-gelirgider .stat-card.s2{background-color:#a78bfa40!important;}
+:root[data-acik="1"] #pg-gelirgider .stat-card.s3{background-color:#22d3ee40!important;}
+:root[data-acik="1"] #pg-gelirgider .stat-card.s4{background-color:#22d3ee3d!important;}
+:root[data-acik="1"] #pg-gider-rapor .gider-ozet-kart,:root[data-acik="1"] #pg-gelir-trend .gider-ozet-kart{background-blend-mode:multiply;filter:saturate(1.35) contrast(1.02);}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
