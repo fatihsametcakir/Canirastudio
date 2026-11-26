@@ -1180,6 +1180,11 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 /* Hafta okları ve tarih kutusu: siyah değil, altın tonlu zemin */
 #pg-ozel .ot-hafta-ok,#pg-ozel .ot-hafta-kutu{background:linear-gradient(180deg,color-mix(in srgb,#d9ac52 26%,var(--surface2)),color-mix(in srgb,#d9ac52 14%,var(--surface2)));color:var(--text);}
 :root[data-acik="1"] #pg-ozel .ot-hafta-ok,:root[data-acik="1"] #pg-ozel .ot-hafta-kutu{background:linear-gradient(180deg,#f6e9c6,#efdcab);}
+/* Tüm ekranlar: nötr (ghost / pasif sekme / pasif filtre) butonların zemini altın tonlu */
+.btn-ghost,.tab-btn:not(.active){background:linear-gradient(180deg,color-mix(in srgb,#d9ac52 24%,var(--surface2)),color-mix(in srgb,#d9ac52 13%,var(--surface2)));}
+button[style*="background:var(--surface2)"],button[style*="background: var(--surface2)"]{background:linear-gradient(180deg,color-mix(in srgb,#d9ac52 24%,var(--surface2)),color-mix(in srgb,#d9ac52 13%,var(--surface2)))!important;}
+:root[data-acik="1"] .btn-ghost,:root[data-acik="1"] .tab-btn:not(.active){background:linear-gradient(180deg,#f6e9c6,#efdcab);}
+:root[data-acik="1"] button[style*="background:var(--surface2)"],:root[data-acik="1"] button[style*="background: var(--surface2)"]{background:linear-gradient(180deg,#f6e9c6,#efdcab)!important;}
 </style>
 </head>
 <body>
