@@ -1301,6 +1301,11 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 /* Takvim stüdyo kutusu: dolgusuz (beyaz arka plan yok), yalnız altın çerçeve */
 select.tema-sel.ot-studyo-sel{background-color:transparent!important;box-shadow:none!important;}
 
+/* Öğrenciler: filtreler ayrı bir kutuda, liste altında ayrı durur */
+.og-filtre-kutu{background:var(--surface);border:1.5px solid #d9ac5280;border-radius:var(--radius-sm);padding:10px 10px 2px;margin:2px 0 16px;box-shadow:0 6px 16px -10px #00000070;}
+:root[data-acik="1"] .og-filtre-kutu{border-color:#9a6f1c80;box-shadow:0 6px 16px -10px #3a2c0f55;}
+.og-filtre-kutu>div:last-child{margin-bottom:10px!important;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -1814,6 +1819,7 @@ try{
     </div>
     <button class="btn btn-accent btn-sm ust-ekle-btn" onclick="openOgrenciModal()" data-i18n="btn_yeni_ogrenci">＋ Yeni Öğrenci</button>
     </div>
+    <div class="og-filtre-kutu">
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <button class="btn btn-sm" id="filter-aktif" onclick="setOgrenciFilter('aktif')" style="flex:1;background:var(--greenbg);color:var(--green);border:1px solid #34d39966;box-shadow:0 3px 10px -3px #34d39970;"><span id="lbl-filter-aktif">Aktif</span> <span id="cnt-filter-aktif" style="opacity:.75;font-weight:500;"></span></button>
       <button class="btn btn-sm" id="filter-pasif" onclick="setOgrenciFilter('pasif')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-pasif">Pasif</span> <span id="cnt-filter-pasif" style="opacity:.75;font-weight:500;"></span></button>
@@ -1829,6 +1835,7 @@ try{
       <button class="btn btn-sm btn-ghost" id="sir-son" onclick="setOgSiralama('son')" style="font-size:11px;flex:1 1 0;min-width:0;padding:6px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><span id="lbl-sonEklenen">Son Eklenen</span></button>
       <button class="btn btn-sm btn-ghost" id="sir-ilk" onclick="setOgSiralama('ilk')" style="font-size:11px;flex:1 1 0;min-width:0;padding:6px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><span id="lbl-ilkEklenen">İlk Eklenen</span></button>
       <button class="btn btn-sm btn-ghost" id="sir-pasif" onclick="setOgSiralama('pasif')" style="font-size:11px;flex:1 1 0;min-width:0;padding:6px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><span id="lbl-sonPasif">Son Pasif</span></button>
+    </div>
     </div>
     <div id="ogrenci-list"></div>
   </div>
