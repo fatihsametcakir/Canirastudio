@@ -1294,6 +1294,10 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 :root[data-acik="1"] .gg-card{background:linear-gradient(145deg,color-mix(in srgb,var(--gg-c) 30%,#ffffff),color-mix(in srgb,var(--gg-c) 12%,#ffffff) 90%)!important;border-color:var(--gg-c)!important;}
 :root[data-acik="1"] .gg-card-ikon{background:color-mix(in srgb,var(--gg-c) 38%,transparent)!important;}
 
+/* Takvimde stüdyo rozeti (S1/S2/S3): bloğun sol üst köşesinde küçük koyu etiket */
+.ot-block-studyo{position:absolute;top:1px;left:1px;z-index:1;font-size:8px;font-weight:800;line-height:1;letter-spacing:.02em;padding:2px 3px;border-radius:4px;background:#0d0d14d9;color:#f6e19a;pointer-events:none;}
+.ot-block:has(.ot-block-studyo) .ot-block-adsoyad{padding-top:7px;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -7395,7 +7399,7 @@ function renderOzelTakvim(){
         ontouchstart="otLpBaslat('${tarih}','${s.saat}')" ontouchend="otLpBitir()" ontouchmove="otLpBitir()"
         onclick="event.stopPropagation();if(!OT_LP_TETIKLENDI)otSeansDetay('${s.id}')"
         title="${etiket} — uzun basarak bu saate yeni ders ekleyebilirsiniz">
-        <span class="ot-block-adsoyad">${adSoyad}</span>
+        <span class="ot-block-studyo">S${s.studyo||1}</span><span class="ot-block-adsoyad">${adSoyad}</span>
       </div>`;
     });
     // Dolu saatlere de yeni ders ekleyebilmek için, boş bırakılan kenar şeride
