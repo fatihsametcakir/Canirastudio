@@ -1157,8 +1157,8 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 #splash .sp-mark{transform-origin:50% 50%;animation:spMarkUzak 2.1s cubic-bezier(.1,.7,.2,1) .15s both!important;}
 @media(prefers-reduced-motion:reduce){#splash .sp-mark{animation:none!important}}
 /* Açılış: ortadaki çizgi ekranı boydan boya kaplar */
-#splash .sp-line{--lw:100vw;max-width:none;flex-shrink:0;align-self:center;}
-@media (orientation:landscape) and (max-height:520px){#splash .sp-line{width:100vw!important}}
+#splash .sp-line{--lw:calc(100vw - 52px);max-width:none;flex-shrink:0;align-self:center;} /* çerçevenin (16px + kalınlık) içinde kalır */
+@media (orientation:landscape) and (max-height:520px){#splash .sp-line{width:calc(100vw - 52px)!important}}
 #splash{overflow:hidden}
 /* Haftalık takvim ızgarası: açık temada çizgiler görünür */
 :root[data-acik="1"] .ot-gun-header{border-color:#3d3a4f55;}
