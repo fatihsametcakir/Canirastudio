@@ -1219,6 +1219,15 @@ html.ios-notch .drawer{border-radius:46px;top:max(10px,calc(env(safe-area-inset-
 html.ios-notch .drawer-header{padding-left:26px;padding-right:24px;}
 html.ios-notch .topbar{border-radius:30px;}
 html.ios-notch .sheet,html.ios-notch .confirm-sheet{border-radius:34px 34px 0 0;}
+/* iPhone açılış çerçevesi: üstte Dynamic Island'ın, altta ana ekran çizgisinin hemen dışında; köşeler ekran köşesiyle uyumlu */
+html.ios-notch #splash .sp-cer{--ft:calc(env(safe-area-inset-top,0px) + 2px);--fb:calc(env(safe-area-inset-bottom,0px)*.55 + 9px);}
+html.ios-notch #splash .sp-cer .c1{inset:var(--ft) 9px var(--fb) 9px;border-radius:46px;}
+html.ios-notch #splash .sp-cer .c2{inset:calc(var(--ft) + 7px) 16px calc(var(--fb) + 7px) 16px;border-radius:39px;}
+html.ios-notch #splash .sp-cer .c3{inset:calc(var(--ft) + 4px) 13px calc(var(--fb) + 4px) 13px;border-radius:42px;}
+html.ios-notch #splash .sp-cer .k1{left:20px;top:calc(var(--ft) + 11px);}
+html.ios-notch #splash .sp-cer .k2{right:20px;top:calc(var(--ft) + 11px);}
+html.ios-notch #splash .sp-cer .k3{left:20px;bottom:calc(var(--fb) + 11px);}
+html.ios-notch #splash .sp-cer .k4{right:20px;bottom:calc(var(--fb) + 11px);}
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
