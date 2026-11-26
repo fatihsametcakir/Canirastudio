@@ -1298,8 +1298,6 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 .ot-block-studyo{position:absolute;top:1px;left:1px;z-index:1;font-size:8px;font-weight:800;line-height:1;letter-spacing:.02em;padding:2px 3px;border-radius:4px;background:#0d0d14d9;color:#f6e19a;pointer-events:none;}
 .ot-block:has(.ot-block-studyo) .ot-block-adsoyad{padding-top:7px;}
 
-/* Takvim stüdyo kutusu: dolgusuz (beyaz arka plan yok), yalnız altın çerçeve */
-select.tema-sel.ot-studyo-sel{background-color:transparent!important;box-shadow:none!important;}
 
 /* Öğrenciler: filtreler ayrı bir kutuda, liste altında ayrı durur */
 .og-filtre-kutu{background:var(--surface);border:1.5px solid #d9ac5280;border-radius:var(--radius-sm);padding:10px 10px 2px;margin:2px 0 16px;box-shadow:0 6px 16px -10px #00000070;}
@@ -1883,6 +1881,7 @@ try{
     </div>
     <div id="ozel-list" style="display:none;"></div>
     <div id="ozel-takvim-blok">
+    <div style="margin:4px 0 8px;"><select id="ot-studyo-sel" class="tema-sel" aria-label="Stüdyo" onchange="otStudyoSec(this.value)" style="width:100%;"></select></div>
     <div id="ot-legend" style="display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;margin:4px 0 12px;-webkit-overflow-scrolling:touch;padding:10px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin:0 0 14px;gap:8px;">
       <button class="btn btn-ghost ot-hafta-ok" style="width:clamp(44px,13vw,64px);height:44px;padding:0;font-size:24px;line-height:1;flex-shrink:0;" onclick="otHaftaDegistir(-1)" aria-label="‹">‹</button>
@@ -7354,9 +7353,10 @@ function renderOzelTakvim(){
   if(OT_EGITMEN!=='hepsi'&&!S.egitmenler.some(e=>e.id===OT_EGITMEN))OT_EGITMEN='hepsi';
   {const es=document.getElementById('ot-egitmen-sel');
    if(es){es.innerHTML='<option value="hepsi">'+(LANG==='en'?'All instructors':LANG==='ru'?'Все преподаватели':'Tüm eğitmenler')+'</option>'+[...S.egitmenler].sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr')).map(e=>`<option value="${e.id}">${e.ad}</option>`).join('');es.value=OT_EGITMEN;}}
+  {const ss=document.getElementById('ot-studyo-sel');
+   if(ss){ss.innerHTML='<option value="hepsi">'+(LANG==='en'?'All studios':LANG==='ru'?'Все студии':'Tüm stüdyolar')+'</option>'+[1,2,3].map(n=>'<option value="'+n+'">Stüdyo '+n+'</option>').join('');ss.value=String(OT_STUDYO);}}
   // Renk boncukları: blok rengi cinsiyeti/asistanı gösterir
-  legendEl.innerHTML=[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('')
-    +'<select class="tema-sel ot-studyo-sel" aria-label="Stüdyo" onchange="otStudyoSec(this.value)" style="flex:1 1 110px;min-width:104px;max-width:170px;margin-left:auto;padding-top:6px!important;padding-bottom:6px!important;"><option value="hepsi"'+(OT_STUDYO==='hepsi'?' selected':'')+'>'+(LANG==='en'?'All studios':LANG==='ru'?'Все студии':'Tüm stüdyolar')+'</option>'+[1,2,3].map(n=>'<option value="'+n+'"'+(String(OT_STUDYO)===String(n)?' selected':'')+'>Stüdyo '+n+'</option>').join('')+'</select>';
+  legendEl.innerHTML=[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('');
 
   // Başlık satırı
   let html=`<div class="ot-kose">${t('x_saat')}</div>`;
