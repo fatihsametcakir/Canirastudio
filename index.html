@@ -1245,6 +1245,12 @@ html.ios-notch #splash .sp-cer .k4{right:20px;bottom:calc(var(--fb) + 11px);}
 :root[data-acik="1"] #splash .sp-imza b{color:#f6ecd0;text-shadow:0 0 14px #e0b45766,0 2px 4px #00000070;}
 :root[data-acik="1"] #splash .sp-imza small{color:#f1e2b8;opacity:.95;text-shadow:0 1px 3px #000000a0;}
 
+/* Temaya uygun açılır kutular (eğitmen / gün / sınıf) */
+select.tema-sel{-webkit-appearance:none!important;appearance:none!important;background-color:var(--surface2)!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23d9ac52' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 11px center!important;background-size:12px 8px!important;border:1.5px solid #d9ac52a6!important;border-radius:var(--radius-sm)!important;color:var(--text)!important;font-weight:600!important;padding:10px 30px 10px 12px!important;font-size:13px!important;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;cursor:pointer;box-shadow:0 3px 10px -4px #d9ac5255;outline:none;}
+select.tema-sel:focus{border-color:#e8c06a!important;box-shadow:0 0 0 3px #d9ac5233;}
+select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:500;}
+:root[data-acik="1"] select.tema-sel{border-color:#9a6f1ca0!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%239a6f1c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;box-shadow:0 3px 10px -4px #9a6f1c55;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -8097,7 +8103,7 @@ function renderSiniflar(){
       [...S.egitmenler].sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr')).map(e=>`<option value="${e.id}"${SINIF_EGITMEN_FILTRE===e.id?' selected':''}>${e.ad}</option>`).join('');
     const gunOps='<option value="hepsi"'+(SINIF_GUN_FILTRE==='hepsi'?' selected':'')+'>'+(LANG==='en'?'All days':LANG==='ru'?'Все дни':'Tüm günler')+' ('+aktifL.length+')</option>'+
       SINIF_GUNLER.map(g=>`<option value="${g}"${SINIF_GUN_FILTRE===g?' selected':''}>${g} (${aktifL.filter(s=>s.gun===g).length})</option>`).join('');
-    chipEl.innerHTML=`<select style="${stil}" onchange="setSinifEgitmenFiltre(this.value)" aria-label="Eğitmen">${egOps}</select><select style="${stil}" onchange="setSinifGunFiltre(this.value)" aria-label="Gün">${gunOps}</select>`;
+    chipEl.innerHTML=`<select class="tema-sel" style="${stil}" onchange="setSinifEgitmenFiltre(this.value)" aria-label="Eğitmen">${egOps}</select><select class="tema-sel" style="${stil}" onchange="setSinifGunFiltre(this.value)" aria-label="Gün">${gunOps}</select>`;
   }
   if(SINIF_GUN_FILTRE!=='hepsi'){
     liste=liste.filter(s=>s.gun===SINIF_GUN_FILTRE).sort((a,b)=>saatSiraDegeri(a.saat)-saatSiraDegeri(b.saat)||a.ad.localeCompare(b.ad,'tr'));
