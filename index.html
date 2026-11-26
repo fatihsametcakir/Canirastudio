@@ -1018,7 +1018,7 @@ body,body *:not(#splash):not(#splash *):not(.topbar-title):not(.topbar-title *):
 .cs-item .badge{font-size:10px!important;padding:2px 7px;white-space:nowrap}
 .cs-item .btn-sm{padding:4px 9px;font-size:12px}
 .cs-item .avatar{width:30px!important;height:30px!important}
-#sinif-gun-chips{overflow:hidden!important;gap:3px!important}
+#sinif-gun-chips{overflow:hidden!important;gap:8px!important}
 #sinif-gun-chips .tab-btn{padding:7px 1px!important;font-size:11.5px!important;letter-spacing:-.01em;min-width:0!important;overflow:hidden;text-overflow:clip}
 #sinif-gun-chips .tab-btn:last-child{flex:1.45 1 0!important}
 @media(max-width:380px){#sinif-gun-chips .tab-btn{font-size:10.5px!important}}
@@ -1785,7 +1785,7 @@ try{
     </div>
     <button class="btn btn-accent btn-sm ust-ekle-btn" onclick="openSinifModal()" data-i18n="btn_yeni_sinif">＋ Yeni Sınıf</button>
     </div>
-    <div id="sinif-gun-chips" style="display:flex;gap:5px;overflow-x:auto;margin:0 0 12px;padding-bottom:2px;-webkit-overflow-scrolling:touch;"></div>
+    <div id="sinif-gun-chips" style="display:flex;gap:8px;margin:0 0 12px;"></div>
     <div id="sinif-list"></div>
   </div>
   <div class="page" id="pg-sinif-detay"><div id="sinif-detay-content"></div></div>
@@ -8076,7 +8076,9 @@ function renderOgrenciler(){
 let SINIF_GUN_FILTRE='hepsi';
 const SINIF_GUNLER=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma'];
 const SINIF_GUN_KISA={tr:['Pzt','Sal','Çar','Per','Cum'],en:['Mon','Tue','Wed','Thu','Fri'],ru:['Пн','Вт','Ср','Чт','Пт']};
+let SINIF_EGITMEN_FILTRE='hepsi';
 function setSinifGunFiltre(g){SINIF_GUN_FILTRE=g;renderSiniflar();}
+function setSinifEgitmenFiltre(g){SINIF_EGITMEN_FILTRE=g;renderSiniflar();}
 function saatSiraDegeri(s){const m=String(s||'').match(/(\d{1,2})[:.](\d{2})/);return m?(+m[1])*60+(+m[2]):9999;}
 function renderSiniflar(){
   const el=document.getElementById('sinif-list');
@@ -8084,13 +8086,18 @@ function renderSiniflar(){
   const arama=(aramaEl?aramaEl.value:'').toLowerCase().trim();
   let liste=[...S.siniflar].sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
   if(arama)liste=liste.filter(s=>s.ad.toLowerCase().includes(arama)||(s.kayitlar||[]).some(k=>{const o=S.ogrenciler.find(x=>x.id===k.ogrenciId);return o&&((o.ad||'')+' '+(o.soyad||'')).toLowerCase().includes(arama);}));
-  // Gün butonları (sayılar: aktif sınıf adedi, arama filtresi uygulanmış)
+  // Eğitmen ve gün seçim kutuları (gün sayıları: aktif sınıf adedi, arama + eğitmen filtresi uygulanmış)
+  if(SINIF_EGITMEN_FILTRE!=='hepsi'&&!S.egitmenler.some(e=>e.id===SINIF_EGITMEN_FILTRE))SINIF_EGITMEN_FILTRE='hepsi';
+  if(SINIF_EGITMEN_FILTRE!=='hepsi')liste=liste.filter(s=>s.egitmenId===SINIF_EGITMEN_FILTRE||s.egitmen2Id===SINIF_EGITMEN_FILTRE);
   const chipEl=document.getElementById('sinif-gun-chips');
   if(chipEl){
     const aktifL=liste.filter(s=>(s.durum||'aktif')!=='pasif');
-    const kisa=SINIF_GUN_KISA[LANG]||SINIF_GUN_KISA.tr;
-    const chip=(key,etiket,say)=>`<button class="tab-btn${SINIF_GUN_FILTRE===key?' active':''}" style="flex:1 1 0;min-width:0;white-space:nowrap;padding:7px 3px;font-size:12px;" onclick="setSinifGunFiltre('${key}')">${etiket} (${say})</button>`;
-    chipEl.innerHTML=SINIF_GUNLER.map((g,i)=>chip(g,kisa[i],aktifL.filter(s=>s.gun===g).length)).join('')+chip('hepsi',t('filter_hepsi'),aktifL.length);
+    const stil='flex:1 1 0;min-width:0;background:var(--surface2);color:var(--text);border:1.5px solid #d9ac52a6;border-radius:var(--radius-sm);padding:10px 10px;font-size:13px;font-family:inherit;';
+    const egOps='<option value="hepsi"'+(SINIF_EGITMEN_FILTRE==='hepsi'?' selected':'')+'>'+(LANG==='en'?'All instructors':LANG==='ru'?'Все преподаватели':'Tüm eğitmenler')+'</option>'+
+      [...S.egitmenler].sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr')).map(e=>`<option value="${e.id}"${SINIF_EGITMEN_FILTRE===e.id?' selected':''}>${e.ad}</option>`).join('');
+    const gunOps='<option value="hepsi"'+(SINIF_GUN_FILTRE==='hepsi'?' selected':'')+'>'+(LANG==='en'?'All days':LANG==='ru'?'Все дни':'Tüm günler')+' ('+aktifL.length+')</option>'+
+      SINIF_GUNLER.map(g=>`<option value="${g}"${SINIF_GUN_FILTRE===g?' selected':''}>${g} (${aktifL.filter(s=>s.gun===g).length})</option>`).join('');
+    chipEl.innerHTML=`<select style="${stil}" onchange="setSinifEgitmenFiltre(this.value)" aria-label="Eğitmen">${egOps}</select><select style="${stil}" onchange="setSinifGunFiltre(this.value)" aria-label="Gün">${gunOps}</select>`;
   }
   if(SINIF_GUN_FILTRE!=='hepsi'){
     liste=liste.filter(s=>s.gun===SINIF_GUN_FILTRE).sort((a,b)=>saatSiraDegeri(a.saat)-saatSiraDegeri(b.saat)||a.ad.localeCompare(b.ad,'tr'));
@@ -8100,7 +8107,7 @@ function renderSiniflar(){
   const pasifler=liste.filter(s=>s.durum==='pasif');
 
   if(!liste.length){
-    el.innerHTML='<div class="empty"><div class="empty-icon">◈</div><div class="empty-text">'+(arama?t('no_result'):(SINIF_GUN_FILTRE!=='hepsi'?t('bu_gun_ders_yok'):t('empty_sinif')))+'</div>'+((!arama&&SINIF_GUN_FILTRE==='hepsi'&&!S.siniflar.length)?bosCta('İlk sınıfı oluştur','openSinifModal()'):'')+'</div>';
+    el.innerHTML='<div class="empty"><div class="empty-icon">◈</div><div class="empty-text">'+(arama?t('no_result'):(SINIF_GUN_FILTRE!=='hepsi'?t('bu_gun_ders_yok'):SINIF_EGITMEN_FILTRE!=='hepsi'?t('no_result'):t('empty_sinif')))+'</div>'+((!arama&&SINIF_GUN_FILTRE==='hepsi'&&SINIF_EGITMEN_FILTRE==='hepsi'&&!S.siniflar.length)?bosCta('İlk sınıfı oluştur','openSinifModal()'):'')+'</div>';
     return;
   }
 
