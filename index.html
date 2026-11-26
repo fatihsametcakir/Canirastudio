@@ -7817,13 +7817,12 @@ function renderOgrenciler(){
     const pasifBadge=p?'<span class="badge badge-gray" style="font-size:9px;padding:1px 5px;">'+t('filter_pasif')+'</span>':'';
     const notIcon=og.not?' 📝':'';
     return `<div class="student-item${p?' pasif':''}${renk?' og-satir':''}"${renk?` style="--sr:${renk};"`:''}>
-      ${num?'<div style="font-size:10px;color:var(--text3);width:18px;text-align:right;flex-shrink:0;">'+num+'</div>':''}<div class="avatar ${p?'av-pasif':og.cinsiyet==='e'?'av-e':'av-k'}" style="width:32px;height:32px;font-size:11px;flex-shrink:0;">${initials(og.ad,og.soyad||'')}</div>
       <div class="student-info" onclick="openOgDetay('${og.id}')">
         <div class="student-name">${og.ad} ${og.soyad||''}${snSpan}${pasifBadge}${notIcon}</div>
       </div>
       <div class="student-actions">
-        <button class="btn btn-ghost btn-sm" style="padding:4px 8px;font-size:11px;" onclick="openOgDetay('${og.id}')">${t('btn_detay')}</button>
-        <button class="btn btn-ghost btn-sm" style="padding:4px 8px;font-size:11px;" onclick="openOgrenciModal('${og.id}')">${t('btn_duzenle_kisa')}</button>
+        <button class="btn btn-ghost btn-sm" style="padding:4px 8px;font-size:15px;line-height:1;font-weight:700;" title="${t('btn_detay')}" aria-label="${t('btn_detay')}" onclick="openOgDetay('${og.id}')">⋯</button>
+        <button class="btn btn-ghost btn-sm" style="padding:4px 8px;font-size:13px;line-height:1;" title="${t('btn_duzenle_kisa')}" aria-label="${t('btn_duzenle_kisa')}" onclick="openOgrenciModal('${og.id}')">✏️</button>
         <button class="btn ${p?'btn-green':'btn-amber'} btn-sm" style="padding:4px 8px;font-size:11px;" onclick="toggleOgrenciDurum('${og.id}')">${p?t('filter_aktif'):t('filter_pasif')}</button>
       </div>
     </div>`;
