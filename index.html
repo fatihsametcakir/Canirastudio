@@ -7810,11 +7810,11 @@ function renderOgrenciler(){
   sinifsizlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   sadeceOzel.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
   asistanlar.sort((a,b)=>(a.ad+(a.soyad||'')).localeCompare(b.ad+(b.soyad||''),'tr'));
-  // Uzun adı kısaltır: ikinci adı varsa ya da çok uzunsa "Fatih Samet Çakır" -> "Fatih S.Ç."
+  // Adı kısaltır: ilk ad tam, diğerleri baş harf: "Fatih Samet Çakır" -> "Fatih S.Ç.", "Ateş Yaylıoğlu" -> "Ateş Y."
   function kisaAd(ad,soyad){
     const tam=((ad||'')+' '+(soyad||'')).trim();
     const k=tam.split(/\s+/).filter(Boolean);
-    if(k.length<2||(k.length<=2&&tam.length<=20))return tam;
+    if(k.length<2)return tam;
     return k[0]+' '+k.slice(1).map(x=>x.charAt(0).toLocaleUpperCase('tr')+'.').join('');
   }
   function row(og,sn,goster,num,renk){
