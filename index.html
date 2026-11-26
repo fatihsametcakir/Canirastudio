@@ -12112,6 +12112,36 @@ function giderAyDegis(ay){
   renderGiderRapor();
 }
 
+// Bırakanların hangi haftada ayrıldığı: kayıt/giriş tarihinden pasife alınma tarihine kadar geçen hafta
+function retDetayToggle(id){if(!window._retAcik)window._retAcik=new Set();if(window._retAcik.has(id))window._retAcik.delete(id);else window._retAcik.add(id);renderRetention();}
+function retHaftaDetayi(si,ayrilanlar){
+  const gunMs=86400000;
+  const tarihMs=(t)=>{if(!t)return null;const d=new Date(String(t).length<=10?t+'T00:00:00':t);return isNaN(d)?null:d.getTime();};
+  const kovalar={1:[],2:[],3:[],4:[],5:[]},bilinmeyen=[];
+  ayrilanlar.forEach(k=>{
+    const og=S.ogrenciler.find(o=>o.id===k.ogrenciId);
+    const ad=og?((og.ad||'')+' '+(og.soyad||'')).trim():'Silinmiş öğrenci';
+    // Başlangıç: bu sınıfa 'giris' olayı ya da kayıt başlangıç tarihi (hangisi daha erkense)
+    const girisler=(S.ogrenciGecmisi||[]).filter(e=>e.ogrenciId===k.ogrenciId&&e.olay==='giris'&&(!e.sinifId||e.sinifId===si.id)).map(e=>tarihMs(e.tarih)).filter(x=>x!=null);
+    const adaylar=[tarihMs(k.basTarih),...girisler].filter(x=>x!=null);
+    const bas=adaylar.length?Math.min(...adaylar):null;
+    // Bitiş: pasife alınma zamanı (kayıtlı alan, yoksa geçmişteki son 'pasif' olayı)
+    let pas=og&&og.pasifTarih?og.pasifTarih:null;
+    if(!pas){let m=0;(S.ogrenciGecmisi||[]).forEach(e=>{if(e.ogrenciId===k.ogrenciId&&e.olay==='pasif'&&(e.olusturma||0)>m)m=e.olusturma;});pas=m||null;}
+    if(bas==null||pas==null||pas<bas){bilinmeyen.push(ad);return;}
+    const hafta=Math.min(5,Math.floor((pas-bas)/(7*gunMs))+1);
+    kovalar[hafta].push(ad);
+  });
+  const satir=(baslik,liste)=>`<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:5px 0;border-top:1px dashed var(--border2);">
+      <span style="color:var(--text2);white-space:nowrap;">${baslik}</span>
+      <span style="text-align:right;color:${liste.length?'var(--accent)':'var(--text3)'};font-weight:${liste.length?600:400};">${liste.length?liste.length+' kişi bıraktı':'bırakan yok'}${liste.length?'<div style="font-size:10px;font-weight:400;color:var(--text3);">'+liste.join(', ')+'</div>':''}</span>
+    </div>`;
+  let h='<div onclick="event.stopPropagation()" style="margin-top:8px;"><div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em;">Kaçıncı haftada bıraktı</div>';
+  [1,2,3,4].forEach(n=>{h+=satir(n+'. hafta',kovalar[n]);});
+  if(kovalar[5].length)h+=satir('5. hafta ve sonrası',kovalar[5]);
+  if(bilinmeyen.length)h+=satir('Tarihi bilinmeyen',bilinmeyen);
+  return h+'</div>';
+}
 function renderRetention(){
   const el=document.getElementById('retention-content');
   if(!el)return;
@@ -12171,7 +12201,9 @@ function renderRetention(){
     const aktifSay=aktifler.length;
     const barRenk=kapali?'var(--text3)':pct>=75?'var(--green)':pct>=50?'var(--amber)':'var(--accent)';
 
-    html+=`<div class="reten-kart${kapali?' reten-kapali':''}" style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;border-left:3px solid ${kapali?'var(--text3)':renk};${kapali?'opacity:.55;filter:grayscale(1);':''}">
+    const acikMi=window._retAcik&&window._retAcik.has(si.id);
+    const detayHtml=acikMi?retHaftaDetayi(si,ayrilanlar):'';
+    html+=`<div class="reten-kart${kapali?' reten-kapali':''}" onclick="retDetayToggle('${si.id}')" style="cursor:pointer;background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;border-left:3px solid ${kapali?'var(--text3)':renk};${kapali?'opacity:.55;filter:grayscale(1);':''}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
         <div style="font-size:13px;font-weight:600;">${kapali?'🔒 ':''}${si.ad}</div>
         <div style="font-size:15px;font-weight:700;color:${barRenk};">${pct}%</div>
@@ -12184,7 +12216,8 @@ function renderRetention(){
         <span style="color:var(--green);">✓ ${aktifSay} ${t('devam')}</span>
         ${dondurulmus.length?`<span style="color:var(--amber);">❄ ${dondurulmus.length} ${t('donduruldu_kucuk')}</span>`:''}
         ${ayrilanlar.length?`<span style="color:var(--accent);">✗ ${ayrilanlar.length} ${t('ayrilmis')}</span>`:''}
-      </div>
+        <span style="margin-left:auto;color:var(--text3);transition:transform .2s;transform:rotate(${acikMi?90:0}deg);">›</span>
+      </div>${detayHtml}
     </div>`;
   });
 
