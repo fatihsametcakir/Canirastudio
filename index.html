@@ -7952,7 +7952,7 @@ function renderAnasayfa(){
 function ogFiltreKutulari(){
   const es=document.getElementById('og-egitmen-sel'),ss=document.getElementById('og-sinif-sel');if(!es||!ss)return;
   if(OG_EGITMEN!=='hepsi'&&!S.egitmenler.some(e=>e.id===OG_EGITMEN))OG_EGITMEN='hepsi';
-  es.innerHTML='<option value="hepsi">'+(LANG==='en'?'All instructors':LANG==='ru'?'Все преподаватели':'Tüm eğitmenler')+'</option>'+[...S.egitmenler].sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr')).map(e=>`<option value="${e.id}">${e.ad}</option>`).join('');
+  es.innerHTML='<option value="hepsi">'+(LANG==='en'?(innerWidth<350?'Instructors':'All instructors'):LANG==='ru'?(innerWidth<350?'Преподав.':'Все преподаватели'):(innerWidth<350?'Eğitmenler':'Tüm eğitmenler'))+'</option>'+[...S.egitmenler].sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr')).map(e=>`<option value="${e.id}">${e.ad}</option>`).join('');
   es.value=OG_EGITMEN;
   const adlar=[...new Set(S.siniflar.filter(x=>OG_EGITMEN==='hepsi'||x.egitmenId===OG_EGITMEN||x.egitmen2Id===OG_EGITMEN).map(x=>x.ad))].sort((a,b)=>a.localeCompare(b,'tr'));
   if(OG_SINIF!=='hepsi'&&!adlar.includes(OG_SINIF))OG_SINIF='hepsi';
