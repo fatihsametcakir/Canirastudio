@@ -1251,6 +1251,15 @@ select.tema-sel:focus{border-color:#e8c06a!important;box-shadow:0 0 0 3px #d9ac5
 select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:500;}
 :root[data-acik="1"] select.tema-sel{border-color:#9a6f1ca0!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%239a6f1c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;box-shadow:0 3px 10px -4px #9a6f1c55;}
 
+.tema-dd{position:fixed;z-index:200000;background:var(--surface);border:1.5px solid #d9ac52a6;border-radius:var(--radius-sm);box-shadow:0 14px 34px -8px #000000aa,0 0 0 1px #d9ac5224 inset;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:5px;animation:temaDdIn .14s ease-out;}
+@keyframes temaDdIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.tema-dd-item{padding:11px 12px;border-radius:7px;font-size:14px;font-weight:500;color:var(--text);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tema-dd-item+.tema-dd-item{margin-top:2px;}
+.tema-dd-item:hover,.tema-dd-item:active{background:var(--surface2);}
+.tema-dd-item.sec{background:var(--greenbg);color:var(--green);font-weight:700;}
+.tema-dd-item.sec::after{content:" \2713";}
+:root[data-acik="1"] .tema-dd{border-color:#9a6f1ca0;box-shadow:0 14px 30px -10px #3a2c0f66;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -13551,5 +13560,43 @@ function sonOdemelerFiltre(tip){
     <button class="btn btn-accent" style="flex:1;padding:13px;" id="uyari-tamam">Tamam</button>
   </div>
 </div></div>
+<script>
+/* Temaya uygun açılır liste: select.tema-sel için sistemin kendi seçici penceresi yerine kendi listemiz */
+(function(){
+  var dd=null,aktif=null;
+  function kapat(){if(dd){dd.remove();dd=null;}aktif=null;}
+  function ac(sel){
+    if(aktif===sel){kapat();return;}
+    kapat();aktif=sel;
+    dd=document.createElement('div');dd.className='tema-dd';dd.setAttribute('role','listbox');
+    Array.prototype.forEach.call(sel.options,function(o){
+      var b=document.createElement('div');b.className='tema-dd-item'+(o.value===sel.value?' sec':'');b.setAttribute('role','option');
+      b.textContent=o.textContent;b.dataset.v=o.value;
+      b.addEventListener('click',function(ev){ev.stopPropagation();sel.value=o.value;kapat();sel.dispatchEvent(new Event('change',{bubbles:true}));});
+      dd.appendChild(b);
+    });
+    document.body.appendChild(dd);
+    var r=sel.getBoundingClientRect(),vh=window.innerHeight;
+    dd.style.minWidth=r.width+'px';dd.style.left=Math.max(8,Math.min(r.left,window.innerWidth-r.width-8))+'px';
+    var altBos=vh-r.bottom-12,ustBos=r.top-12,yukari=altBos<180&&ustBos>altBos;
+    dd.style.maxHeight=Math.max(120,Math.min(yukari?ustBos:altBos,Math.round(vh*.5)))+'px';
+    if(yukari){dd.style.bottom=(vh-r.top+6)+'px';}else{dd.style.top=(r.bottom+6)+'px';}
+    var se=dd.querySelector('.sec');if(se&&se.scrollIntoView)se.scrollIntoView({block:'nearest'});
+  }
+  function hedef(e){var t=e.target;return t&&t.closest?t.closest('select.tema-sel'):null;}
+  ['mousedown','touchstart'].forEach(function(n){document.addEventListener(n,function(e){if(hedef(e))e.preventDefault();},{capture:true,passive:false});});
+  document.addEventListener('click',function(e){
+    var s=hedef(e);
+    if(s){e.preventDefault();e.stopPropagation();ac(s);return;}
+    if(dd&&!(e.target.closest&&e.target.closest('.tema-dd')))kapat();
+  },true);
+  document.addEventListener('keydown',function(e){
+    var s=hedef(e)||(document.activeElement&&document.activeElement.matches&&document.activeElement.matches('select.tema-sel')?document.activeElement:null);
+    if(e.key==='Escape'){kapat();return;}
+    if(s&&(e.key==='Enter'||e.key===' '||e.key==='ArrowDown')){e.preventDefault();ac(s);}
+  },true);
+  window.addEventListener('resize',kapat);window.addEventListener('scroll',function(e){if(dd&&!(e.target&&e.target.closest&&e.target.closest('.tema-dd')))kapat();},true);
+})();
+</script>
 </body>
 </html>
