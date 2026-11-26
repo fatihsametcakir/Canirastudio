@@ -3305,6 +3305,7 @@ Object.assign(TRANSLATIONS.tr,{
   x_pratik_yok_form:'Pratik Yapılmayan Tarih Ekle',
   x_pratik_yok_hangi:'Hangi Cumartesi Pratik Yapılmadı',
   x_aciklama:'Açıklama',
+  x_grup_ogr:'Grup Sınıfı Öğrencileri',
   x_aciklama_ph_bayram:'Açıklama (örn: Bayram tatili)',
   x_grup_kira_baslik:'💃 Grup Dersleri Kirası',
   x_grup_kira_acik:'Bütün grup sınıflarının aynı kirayı ödediği tek bir yer — tek tek sınıf sınıf girmene gerek yok. Kira değiştiğinde buraya bir kayıt ekle, geçmiş dönemler eski tutarla, yeni dönemler yeni tutarla hesaplanmaya devam eder.',
@@ -3349,6 +3350,7 @@ Object.assign(TRANSLATIONS.en,{
   x_pratik_yok_form:'Add No-Practice Date',
   x_pratik_yok_hangi:'Which Saturday Had No Practice',
   x_aciklama:'Description',
+  x_grup_ogr:'Group Class Students',
   x_aciklama_ph_bayram:'Description (e.g. Holiday)',
   x_grup_kira_baslik:'💃 Group Classes Rent',
   x_grup_kira_acik:'One place for the rent that all group classes pay — no need to enter it class by class. When the rent changes, add a record here; past periods keep the old amount and new periods use the new one.',
@@ -3393,6 +3395,7 @@ Object.assign(TRANSLATIONS.ru,{
   x_pratik_yok_form:'Добавить дату без практики',
   x_pratik_yok_hangi:'В какую субботу практики не было',
   x_aciklama:'Описание',
+  x_grup_ogr:'Ученики групп',
   x_aciklama_ph_bayram:'Описание (напр.: праздник)',
   x_grup_kira_baslik:'💃 Аренда групповых занятий',
   x_grup_kira_acik:'Одно место для аренды, которую платят все группы — не нужно вводить по каждой группе. Когда аренда меняется, добавьте запись здесь: прошлые периоды считаются по старой сумме, новые — по новой.',
@@ -7865,13 +7868,22 @@ function renderOgrenciler(){
       return OG_AD_TERS?-c:c;
     });
     if(OG_SIRALAMA==='son')tumListe.reverse();
-    html='<div class="card" style="padding:8px 6px;">'+tumListe.map((og,i)=>{
+    const rowTum=(og,i)=>{
       // Satır rengi: öğrencinin ilk (aktif öncelikli) sınıfının rengi; sınıfsızsa mor/gri
       const ss=S.siniflar.filter(x=>(x.kayitlar||[]).some(k=>k.ogrenciId===og.id));
       const si0=ss.find(x=>x.durum!=='pasif')||ss[0];
       const renk=si0?RENK_BAR[S.siniflar.indexOf(si0)%RENK_BAR.length]:'var(--text3)';
       return row(og,siniflari(og.id).join(', '),true,i+1,renk);
-    }).join('')+'</div>';
+    };
+    // Bölümler: üstte grup sınıfı öğrencileri, altta özel ders öğrencileri, en altta sınıfsız/diğer (sıralama her bölümde aynen uygulanır)
+    const bGrup=[],bOzel=[],bDiger=[];
+    tumListe.forEach(og=>{
+      if(siniflari(og.id).length)bGrup.push(og);
+      else if(ozelDersPaketiVarMi(og.id))bOzel.push(og);
+      else bDiger.push(og);
+    });
+    const bolum=(baslik,renk,arr)=>arr.length?'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin:10px 0 6px;font-size:13px;font-weight:600;border-radius:var(--radius-sm);background:color-mix(in srgb,'+renk+' 14%,var(--surface2));border-left:3px solid '+renk+';"><span>'+baslik+'</span><span style="font-size:12px;color:var(--text2);font-weight:400;">'+arr.length+' '+t('lbl_ogrenci_kucuk')+'</span></div><div class="card" style="padding:8px 6px;">'+arr.map(rowTum).join('')+'</div>':'';
+    html=bolum(t('x_grup_ogr'),'var(--cyan)',bGrup)+bolum(t('sadece_ozel_ders'),'var(--purple)',bOzel)+bolum(t('sinifsiz'),'var(--text3)',bDiger);
   } else {
     window._ogSiraArr=[...sira,...(sadeceOzel.length?['__sadeceozel__']:[]),...(sinifsizlar.length?['__sinifsiz__']:[]),...(asistanlar.length?['__asistan__']:[]),...siraKapali];
     if(!window._ogGrupAcik)window._ogGrupAcik=new Set();
