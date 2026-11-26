@@ -2408,8 +2408,8 @@ try{
   <div class="field" id="dp-egitmen-single-wrap"><label>Eğitmen</label><input id="dp-egitmen" disabled placeholder="Öğrenci seçince otomatik gelir"/></div>
   <div class="field" id="dp-egitmen-multi-wrap" style="display:none;"><label>Dersi Veren Eğitmen</label><select id="dp-egitmen-select"></select></div>
   <div class="field"><label>Başlangıç Saati</label><input id="dp-saat" type="time" step="1800"/></div>
-  <div class="field"><label>Süre</label><select id="dp-sure"><option value="0.5">0.5 saat</option><option value="1" selected>1 saat</option><option value="1.5">1.5 saat</option><option value="2">2 saat</option></select></div>
-  <div class="field"><label>Stüdyo</label><select id="dp-studyo"><option value="1">Stüdyo 1</option><option value="2">Stüdyo 2</option><option value="3">Stüdyo 3</option></select></div>
+  <div class="field"><label>Süre</label><select id="dp-sure" class="tema-sel" style="width:100%;"><option value="0.5">0.5 saat</option><option value="1" selected>1 saat</option><option value="1.5">1.5 saat</option><option value="2">2 saat</option></select></div>
+  <div class="field"><label>Stüdyo</label><select id="dp-studyo" class="tema-sel" style="width:100%;"><option value="1">Stüdyo 1</option><option value="2">Stüdyo 2</option><option value="3">Stüdyo 3</option></select></div>
   <div id="dp-paket-uyari" style="display:none;font-size:12px;color:var(--accent);background:var(--accentbg);border:1px solid #ff6b6b30;border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px;" data-i18n="aktif_paket_olmadan_ders_engel">Bu öğrencinin aktif paketi yok — ders planlanamaz. Önce paket ekleyin.</div>
   <div id="dp-mevcut" style="display:none;margin-bottom:8px;"></div>
   <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal('m-ders-planla')" data-i18n="btn_iptal">İptal</button><button class="btn btn-accent" id="btn-save-dp" onclick="saveDersPlan()" data-i18n="btn_kaydet">Kaydet</button></div>
