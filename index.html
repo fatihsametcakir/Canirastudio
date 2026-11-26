@@ -1285,10 +1285,10 @@ html.ios-notch #splash .sp-cer .k4{right:20px;bottom:calc(var(--fb) + 11px);}
 /* Logo (CI) taçların tam ortasına hizalansın: çizimin gerçek merkezi ile ekran ortası arasındaki farkı kapat */
 (function(){try{
   var sv=document.querySelector('#splash .sp-mark');if(!sv)return;
-  var x1=1e9,x2=-1e9;sv.querySelectorAll('path,line,circle').forEach(function(e){var b=e.getBBox();x1=Math.min(x1,b.x);x2=Math.max(x2,b.x+b.width);});
+  var x1=1e9,x2=-1e9;sv.querySelectorAll('path,line').forEach(function(e){var b=e.getBBox();x1=Math.min(x1,b.x);x2=Math.max(x2,b.x+b.width);});
   var vb=sv.viewBox.baseVal,cx=(x1+x2)/2,vc=vb.x+vb.width/2;
-  function uygula(){var w=sv.getBoundingClientRect().width||sv.clientWidth;sv.style.position='relative';sv.style.left=(-(cx-vc)*(w/vb.width))+'px';}
-  uygula();window.addEventListener('resize',uygula);
+  function uygula(){var w=parseFloat(getComputedStyle(sv).width)||sv.clientWidth||sv.getBoundingClientRect().width;sv.style.position='relative';sv.style.left=(-(cx-vc)*(w/vb.width))+'px';}
+  uygula();setTimeout(uygula,50);setTimeout(uygula,400);window.addEventListener('resize',uygula);
 }catch(e){}})();
 </script>
 <script>
