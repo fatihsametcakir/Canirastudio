@@ -7188,14 +7188,21 @@ function ozelSekme(k,haftaSifirla){
 }
 function openOzelTakvim(){ozelSekme('takvim',true);}
 // Takvim yatay kaydırılabilir: açılınca bugünün sütunu görünür olsun (Pazartesi başta, Pazar sonda kalır)
+let OT_BUGUN_BEKLE=false;
 function otBugunuGoster(){
   const kap=document.querySelector('#ozel-takvim-blok .yatay-kaydirma-alani');
-  const basliklar=document.querySelectorAll('#ot-grid .ot-gun-header');
-  if(!kap||!basliklar.length)return;
-  const idx=(simdikiZaman().getDay()+6)%7; // Pzt=0 ... Paz=6
-  const h=basliklar[idx];if(!h)return;
-  const dene=()=>{kap.scrollLeft=Math.max(0,h.offsetLeft-44);};
-  dene();requestAnimationFrame(dene);setTimeout(dene,250); // sayfa geçiş animasyonu bitince de yerinde kalsın
+  if(!kap)return;
+  OT_BUGUN_BEKLE=true;
+  const dene=()=>{
+    const basliklar=document.querySelectorAll('#ot-grid .ot-gun-header');
+    if(!basliklar.length)return;
+    const idx=(simdikiZaman().getDay()+6)%7; // Pzt=0 ... Paz=6
+    const h=basliklar[idx];if(!h)return;
+    kap.scrollLeft=Math.max(0,h.offsetLeft-44);
+  };
+  dene();requestAnimationFrame(dene);
+  [250,600,1200].forEach(t=>setTimeout(dene,t)); // sayfa geçişi / veri yüklemesi sonrası da bugün solda kalsın
+  setTimeout(()=>{OT_BUGUN_BEKLE=false;},1300);
 }
 // Özel ders takvimi blok rengi: kadın pembe, erkek mavi, asistan turuncu (eğitmen rengi sol şeritte gösterilir)
 function otCinsiyetRenk(og){
@@ -7332,7 +7339,9 @@ function renderOzelTakvim(){
     });
   });
 
+  const _kap0=document.querySelector('#ozel-takvim-blok .yatay-kaydirma-alani');const _sl0=_kap0?_kap0.scrollLeft:0;
   gridEl.innerHTML=`<div class="ot-grid" style="grid-template-rows:auto repeat(${OT_TOPLAM_SLOT},20px);">${html}</div>`;
+  if(_kap0&&_sl0>0&&!OT_BUGUN_BEKLE)_kap0.scrollLeft=_sl0; // veri yenilenince kaydırma konumu sıfırlanmasın
 }
 
 let DP_TARIH=null,EDIT_DERS_PLAN=null;
