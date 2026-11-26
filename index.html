@@ -2632,6 +2632,9 @@ async function authToken(){
     _authYenileniyor=fetch('https://securetoken.googleapis.com/v1/token?key='+FS_KEY,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(AUTH.refresh)})
       .then(r=>r.json()).then(d=>{
         if(d.id_token){AUTH.idToken=d.id_token;AUTH.exp=Date.now()+(Number(d.expires_in)||3600)*1000;if(d.refresh_token&&d.refresh_token!==AUTH.refresh){const kalici=!!localStorage.getItem('fb_refresh');authSakla(d.refresh_token,kalici);}return AUTH.idToken;}
+        // Token gerçekten geçersizse (hesap silindi/devre dışı, token iptal) oturum biter; diğer hatalar geçicidir (iPhone arka plandan dönerken ağ henüz hazır olmayabilir)
+        const kod=(d.error&&d.error.message)||'';
+        if(/INVALID_REFRESH_TOKEN|TOKEN_EXPIRED|USER_DISABLED|USER_NOT_FOUND|INVALID_GRANT_TYPE|MISSING_REFRESH_TOKEN/.test(kod))AUTH.gecersiz=true;
         return null;
       }).catch(()=>null).finally(()=>{_authYenileniyor=null;});
   }
@@ -2640,9 +2643,11 @@ async function authToken(){
 // Kilitli veritabanı kimliksiz istekte 401/403 verir → eski (kimliksiz) oturumu kapatıp giriş ekranına dön
 function authGerekli(){
   try{
+    if(AUTH.refresh&&!AUTH.gecersiz)return; // kimlikli oturum: geçici ağ/token hatasında çıkış yapma
     if(sessionStorage.getItem('auth_yonlendirme')==='1')return;
     // Yalnızca eski (kimliksiz) bir yönetici oturumu açıkken yönlendir; giriş ekranındayken sayfayı yenileme
     if(sessionStorage.getItem('giris_yapildi')!=='1'&&localStorage.getItem('giris_kalici')!=='1')return;
+    if(AUTH.gecersiz)authTemizle(); // token gerçekten geçersiz: kayıtlı oturumu da sil
     sessionStorage.setItem('auth_yonlendirme','1');
     sessionStorage.removeItem('giris_yapildi');localStorage.removeItem('giris_kalici');
     location.reload();
@@ -2650,7 +2655,8 @@ function authGerekli(){
 }
 async function fsFetch(url,opts){
   opts=opts||{};
-  const tok=await authToken();
+  let tok=await authToken();
+  if(!tok&&AUTH.refresh&&!AUTH.gecersiz){await new Promise(z=>setTimeout(z,700));tok=await authToken();} // iPhone arka plandan dönünce ağ geç gelebilir: bir kez daha dene
   if(tok)opts={...opts,headers:{...(opts.headers||{}),Authorization:'Bearer '+tok}};
   const r=await fetch(url,opts);
   if((r.status===401||r.status===403)&&!tok)authGerekli();
