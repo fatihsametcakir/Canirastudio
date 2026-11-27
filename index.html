@@ -12125,6 +12125,7 @@ async function renderGiderRapor(){
         </div>
         <div style="font-size:22px;font-weight:700;color:${netKar>=0?'var(--cyan)':'var(--accent)'};">${netKar>=0?'+':''}${netKar.toLocaleString(LC())} ₺</div>
       </div>
+      ${netKar===0?`<div style="font-size:10.5px;color:var(--amber);margin-top:6px;line-height:1.4;">ℹ️ ${toplamGelir>0?'Bu ayki gelir giderleri tam karşıladığı için net kâr 0 ₺.':'Bu ay henüz gelir kaydı olmadığı için net kâr 0 ₺.'}</div>`:''}
     </div>`;
 
   if(sinifDetaylar.length){
@@ -12200,6 +12201,12 @@ async function renderGiderRapor(){
           <span style="color:var(--text2);">⭐ ${isAsistan?t('stuydo_kari'):(d.egitmen?.ad||basEgitmen?.ad||t('bas_egitmen'))} ${isAsistan?'':t('kari')}</span>
           <span style="color:${karRenk};">${d.basEgitmenKar.toLocaleString(LC())} ₺</span>
         </div>`}
+        ${(d.basEgitmenKar===0&&!d.ikiBasEgitmen)?(()=>{
+          let neden;
+          if(!(d.sinifGelir>0))neden='Bu dönem bu sınıftan ödeme alınmadığı için gelir 0 ₺; kâr da 0 ₺.';
+          else{const kal=[];if(d.kira>0)kal.push('kira ('+d.kira.toLocaleString(LC())+' ₺)');if(d.pratikPay>0)kal.push('pratik kirası payı ('+d.pratikPay.toLocaleString(LC())+' ₺)');if(isAsistan&&d.asistanOdeme>0)kal.push((d.asistanAd||'asistan')+' payı ('+d.asistanOdeme.toLocaleString(LC())+' ₺)');if(d.asistan2Odeme>0)kal.push((d.asistan2Ad||'2. asistan')+' payı ('+d.asistan2Odeme.toLocaleString(LC())+' ₺)');
+            neden='Gelir ('+d.sinifGelir.toLocaleString(LC())+' ₺) '+(kal.length?kal.join(' + ')+' ile':'giderlerle')+' tamamen karşılandığı için geriye kâr kalmadı.';}
+          return '<div style="font-size:10.5px;color:var(--amber);margin:2px 0 0;line-height:1.4;">ℹ️ '+neden+'</div>';})():''}
         ${(d.sinifGelir>0&&(d.kira+d.pratikPay)>=d.sinifGelir&&(d.ikiBasEgitmen||!isAsistan))?(()=>{const gider_=d.kira+d.pratikPay;const fark_=gider_-d.sinifGelir;return `<div style="font-size:10.5px;color:var(--text3);margin:2px 0 0;">${t(fark_>0?'kira_oncelik_notu':'kira_oncelik_notu_esit').replace('{tutar}',d.sinifGelir.toLocaleString(LC())).replace('{gider}',gider_.toLocaleString(LC())).replace('{fark}',fark_.toLocaleString(LC()))}</div>`;})():''}
         </div>
       </div>`;
