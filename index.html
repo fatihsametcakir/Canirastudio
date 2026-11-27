@@ -8233,7 +8233,7 @@ function renderSiniflar(){
     const kadinSayi=aktifOgList.filter(o=>(o.cinsiyet||'k')==='k').length;
     const erkekSayi=aktifOgList.filter(o=>o.cinsiyet==='e').length;
     const cinsBilgi=aktifSayi>0?` · ♀${kadinSayi} ♂${erkekSayi}`:'';
-    const cinsBadge=aktifSayi>0?' · <span class="cins-k">'+kadinSayi+' '+t('ot_kadin').toLocaleLowerCase(LC())+'</span> <span class="cins-e">'+erkekSayi+' '+t('ot_erkek').toLocaleLowerCase(LC())+'</span>':'';
+    const cinsBadge=aktifSayi>0?' · <span class="cins-k">'+kadinSayi+' '+t('ot_kadin').toLocaleLowerCase(LC())+'</span> - <span class="cins-e">'+erkekSayi+' '+t('ot_erkek').toLocaleLowerCase(LC())+'</span>':'';
     const kayitBadge=toplamSayi>aktifSayi?' ('+toplamSayi+' '+t('kayitli')+')':'';
     const kartRenk=pasif?'var(--border2)':RENK_BAR[origIdx%RENK_BAR.length];
     return `<div class="sinif-karti" onclick="openSinifDetay('${si.id}')" style="${pasif?'opacity:.55;':''}--card-color:${kartRenk};">
