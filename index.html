@@ -2924,7 +2924,7 @@ let S={ogrenciler:[],siniflar:[],odemeler:[],ozelOgrenciler:[],ozelPaketler:[],y
 
 /* ── ŞUBE KATMANI ── ayarlar/subeler belgesinde 2+ şube varsa devreye girer; yoksa uygulama eskisi gibi çalışır.
    subeId'si olmayan eski kayıtlar listedeki İLK şubeye (Kadıköy) aittir. Öğrenci ve eğitmen kartları ortak havuzdadır. */
-const SUBE_KOLEKSIYON=['siniflar','odemeler','ozelPaketler','ozelSeanslar','yoklamalar'];
+const SUBE_KOLEKSIYON=['siniflar','odemeler','ozelPaketler','ozelSeanslar','yoklamalar','videoSiniflar'];
 let SUBE={liste:[],aktif:null}; const S_RAW={};
 function subeAktifMi(){return SUBE.liste.length>=2&&!!SUBE.aktif;}
 function subeVarsayilanId(){return SUBE.liste[0]?SUBE.liste[0].id:null;}
