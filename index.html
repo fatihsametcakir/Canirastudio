@@ -8247,7 +8247,7 @@ function renderSiniflar(){
           <span style="font-size:18px;color:var(--text3);flex-shrink:0;">›</span>
         </div>
         <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">
-          <span class="badge ${pasif?'badge-gray':aktifSayi>0?'badge-green':'badge-gray'}" style="font-size:10px;">${aktifSayi} ${t('badge_aktif')}${cinsBadge}${kayitBadge}</span>
+          <span class="badge ${pasif?'badge-gray':aktifSayi>0?'badge-green':'badge-gray'}" style="font-size:10px;">${aktifSayi} ${t('badge_aktif')}${cinsBadge}</span>
           ${!pasif?'<span class="badge badge-amber" style="font-size:10px;">'+((si.paket||0).toLocaleString(LC()))+' ₺</span><span class="badge badge-cyan" style="font-size:10px;">'+((si.tekders||0).toLocaleString(LC()))+' ₺ '+t('tek')+'</span>':''}
         </div>
       </div>
