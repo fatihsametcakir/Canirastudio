@@ -1329,7 +1329,7 @@ input.sube-girdi::placeholder{color:var(--text3);font-weight:500;}
 html.sube-var #topbar-brand{position:static;transform:none;flex:1 1 0;min-width:0;max-width:none;text-align:center;overflow:hidden;}
 html.sube-var #topbar-brand>div{justify-content:center;}
 @media(max-width:345px){html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:10.5px}html.sube-var .topbar-left{gap:5px}html.sube-var #sube-sel{max-width:19vw}html.sube-var #topbar-sag{gap:4px!important}}
-html.sube-var #topbarSub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+html.sube-var #topbarSub{white-space:nowrap;overflow:visible;font-size:10.5px;}
 html.sube-var #topbar-brand .tb-mark{display:none}
 html.sube-var .topbar-title{flex-direction:column;align-items:center;gap:0;line-height:1.05}
 html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:14.5px}
@@ -2237,14 +2237,6 @@ try{
         <button class="btn btn-cyan" style="width:100%;margin-bottom:10px;" onclick="openTelEksikModal()">📵 <span data-i18n="tel_eksik_btn">Numarası Eksik Öğrenciler</span></button>
         <button class="btn btn-danger" style="width:100%;margin-bottom:10px;" onclick="veriSilAc('ogrenci')">👤 Öğrenci Sil</button>
         <button class="btn btn-danger" style="width:100%;margin-bottom:10px;" onclick="veriSilAc('sinif')">🏫 Sınıf Sil</button>
-        <div class="drawer-sep"></div>
-        <button class="btn btn-danger" style="width:100%;margin-bottom:10px;" onclick="silKategori('odemeler')" data-i18n="sil_odemeler">Tüm Ödemeleri Sil</button>
-        <button class="btn btn-danger" style="width:100%;margin-bottom:10px;" onclick="silKategori('ozelPaketler')" data-i18n="sil_ozel_paketler">Tüm Özel Paketleri Sil</button>
-        <button class="btn btn-danger" style="width:100%;margin-bottom:10px;" onclick="silKategori('ozelOgrenciler')" data-i18n="sil_ozel_ogrenciler">Tüm Özel Öğrencileri Sil</button>
-        <button class="btn btn-danger" style="width:100%;margin-bottom:10px;" onclick="silKategori('siniflar')" data-i18n="sil_siniflar">Tüm Sınıfları Sil</button>
-        <button class="btn btn-danger" style="width:100%;margin-bottom:10px;" onclick="silKategori('ogrenciler')" data-i18n="sil_ogrenciler">Tüm Öğrencileri Sil</button>
-        <div class="drawer-sep"></div>
-        <button class="btn btn-danger" style="width:100%;font-weight:600;" onclick="tumVerileriSifirla()" data-i18n="tum_verileri_sifirla">⚠ Tüm Verileri Sıfırla</button>
       </div>
     </div>
 
@@ -2578,6 +2570,10 @@ try{
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:6px;" id="veri-sil-baslik">Sil</div>
   <div id="veri-sil-liste-alani">
+    <div id="veri-sil-filtre" style="display:none;gap:8px;margin-bottom:10px;">
+      <select id="veri-sil-sube" class="tema-sel" aria-label="Şube" onchange="veriSilSubeSec(this.value)" style="flex:1 1 0;min-width:0;"></select>
+      <select id="veri-sil-sinif" class="tema-sel" aria-label="Sınıf" onchange="veriSilSinifSec(this.value)" style="flex:1.2 1 0;min-width:0;"></select>
+    </div>
     <div style="position:relative;margin-bottom:10px;">
       <div class="search-wrap"><input id="veri-sil-ara" placeholder="İsim ara..." oninput="veriSilListele();toggleClear('veri-sil-ara-clear',this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 38px 11px 38px;color:var(--text);font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s;"/><button id="veri-sil-ara-clear" class="search-clear" onclick="clearSearch('veri-sil-ara',veriSilListele)">✕</button></div>
       <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);">🔍</span>
@@ -6143,9 +6139,10 @@ async function paketOdemeleriniIsaretle(ogId,siId){
 let _VERI_SIL={tur:null,id:null};
 function veriSilAc(tur){
   if(typeof drawerKapat==='function')drawerKapat();
-  _VERI_SIL={tur,id:null};
+  _VERI_SIL={tur,id:null,sube:(typeof subeAktifMi==='function'&&subeAktifMi())?SUBE.aktif:'hepsi',sinif:'hepsi'};
   document.getElementById('veri-sil-baslik').textContent=tur==='ogrenci'?'👤 Öğrenci Sil':'🏫 Sınıf Sil';
   document.getElementById('veri-sil-ara').value='';{const c=document.getElementById('veri-sil-ara-clear');if(c)c.classList.remove('visible');}
+  veriSilFiltreCiz();
   veriSilGeri();
   openModal('m-veri-sil');
 }
@@ -6169,17 +6166,39 @@ function veriSilListele(){
       return{id:og.id,ad:((og.ad||'')+' '+(og.soyad||'')).trim(),kilitli:odemeSayisi>0,alt:[(og.durum||'aktif')==='pasif'?'pasif':'aktif',siniflar.length?siniflar.join(', '):'sınıfsız',odemeSayisi?'🔒 '+odemeSayisi+' ödeme':'ödeme yok'].join(' · ')};
     });
   } else {
-    satirlar=S.siniflar.map(si=>{
+    satirlar=veriSilSiniflar().filter(si=>_VERI_SIL.sinif==='hepsi'||si.id===_VERI_SIL.sinif).map(si=>{
       const ogSayisi=(si.kayitlar||[]).length;
-      const odemeSayisi=S.odemeler.filter(o=>o.sinifId===si.id).length;
+      const odemeSayisi=veriSilOdemeleri('sinif',si.id).length;
       return{id:si.id,ad:si.ad,kilitli:odemeSayisi>0,alt:[(si.gun||'')+' '+(si.saat||''),(si.durum||'aktif')==='pasif'?'kapalı':'açık',ogSayisi+' kayıt',odemeSayisi?'🔒 '+odemeSayisi+' ödeme':'ödeme yok'].join(' · ')};
     });
   }
   satirlar=satirlar.filter(x=>!q||(x.ad+' '+x.alt).toLocaleLowerCase('tr-TR').includes(q)).sort((a,b)=>(a.kilitli-b.kilitli)||a.ad.localeCompare(b.ad,'tr'));
   kutu.innerHTML=satirlar.length?satirlar.map(x=>`<div class="veri-sil-satir" onclick="veriSilSec('${x.id}')" style="padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:6px;cursor:pointer;background:var(--surface2);${x.kilitli?'opacity:.6;':''}"><div style="font-size:14px;font-weight:600;">${x.ad}</div><div style="font-size:11.5px;color:var(--text3);margin-top:2px;">${x.alt}</div></div>`).join(''):'<div style="padding:16px;text-align:center;font-size:13px;color:var(--text3);">Sonuç yok</div>';
 }
+function veriSilSiniflar(){
+  const hepsi=(typeof S_RAW!=='undefined'&&S_RAW.siniflar)?S_RAW.siniflar:S.siniflar;
+  const sb=_VERI_SIL.sube;
+  if(typeof subeAktifMi==='function'&&subeAktifMi()&&sb&&sb!=='hepsi')return hepsi.filter(si=>(si.subeId||subeVarsayilanId())===sb);
+  return hepsi;
+}
+function veriSilFiltreCiz(){
+  const kutu=document.getElementById('veri-sil-filtre');if(!kutu)return;
+  if(_VERI_SIL.tur!=='sinif'){kutu.style.display='none';return;}
+  kutu.style.display='flex';
+  const sube=document.getElementById('veri-sil-sube'),sinif=document.getElementById('veri-sil-sinif');
+  const cokSube=typeof subeAktifMi==='function'&&subeAktifMi();
+  sube.style.display=cokSube?'':'none';
+  if(cokSube){sube.innerHTML=SUBE.liste.map(b=>'<option value="'+b.id+'">'+String(b.ad).replace(/</g,'&lt;')+'</option>').join('');sube.value=_VERI_SIL.sube;}
+  const l=veriSilSiniflar().slice().sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr'));
+  if(_VERI_SIL.sinif!=='hepsi'&&!l.some(x=>x.id===_VERI_SIL.sinif))_VERI_SIL.sinif='hepsi';
+  sinif.innerHTML='<option value="hepsi">Tüm sınıflar</option>'+l.map(x=>'<option value="'+x.id+'">'+String(x.ad||'').replace(/</g,'&lt;')+'</option>').join('');
+  sinif.value=_VERI_SIL.sinif;
+}
+function veriSilSubeSec(v){_VERI_SIL.sube=v;_VERI_SIL.sinif='hepsi';veriSilFiltreCiz();veriSilListele();}
+function veriSilSinifSec(v){_VERI_SIL.sinif=v;veriSilListele();}
 function veriSilOdemeleri(tur,id){
-  return S.odemeler.filter(o=>tur==='ogrenci'?o.ogrenciId===id:o.sinifId===id);
+  const od=(typeof S_RAW!=='undefined'&&S_RAW.odemeler)?S_RAW.odemeler:S.odemeler;
+  return od.filter(o=>tur==='ogrenci'?o.ogrenciId===id:o.sinifId===id);
 }
 function veriSilSec(id){
   _VERI_SIL.id=id;
@@ -6187,7 +6206,7 @@ function veriSilSec(id){
   const tur=_VERI_SIL.tur;
   let ad='';
   if(tur==='ogrenci'){const og=S.ogrenciler.find(o=>o.id===id);if(!og)return;ad=((og.ad||'')+' '+(og.soyad||'')).trim();}
-  else{const si=S.siniflar.find(x=>x.id===id);if(!si)return;ad=si.ad;}
+  else{const si=veriSilSiniflar().find(x=>x.id===id);if(!si)return;ad=si.ad;}
   const odemeler=veriSilOdemeleri(tur,id);
   const kilitli=odemeler.length>0;
   const toplam=odemeler.reduce((a,o)=>a+(o.tutar||0),0);
@@ -6199,7 +6218,7 @@ function veriSilSec(id){
     const kayitSayisi=S.siniflar.filter(si=>(si.kayitlar||[]).some(k=>k.ogrenciId===id)).length;
     ozet=`<b>${ad}</b> kalıcı olarak silinecek. ${kayitSayisi} sınıf kaydı da temizlenecek.`;
   } else {
-    const si=S.siniflar.find(x=>x.id===id);
+    const si=veriSilSiniflar().find(x=>x.id===id);
     ozet=`<b>${ad}</b> ve ona bağlı ${(si.kayitlar||[]).length} öğrenci kaydı kalıcı olarak silinecek.`;
   }
   document.getElementById('veri-sil-ozet').innerHTML=ozet;
@@ -9909,26 +9928,6 @@ async function sifreliOnayUygula(){
   btn.disabled=false;
   if(islem){try{await islem();}catch(e){alert('Hata: '+e.message);}}
 }
-async function silKategori(koleksiyon){
-  const adlar={odemeler:'Tüm ödeme kayıtları',ozelPaketler:'Tüm özel ders paketleri',ozelOgrenciler:'Tüm özel ders öğrencileri',siniflar:'Tüm sınıflar ve kayıtları',ogrenciler:'Tüm grup öğrencileri'};
-  confirm_('Emin misiniz?',`${adlar[koleksiyon]||koleksiyon} kalıcı olarak silinecek.\n\n🔒 Devam ederseniz silme işlemi için giriş şifreniz istenecek.`,()=>sifreliOnayAc('Şifre onayı',`${adlar[koleksiyon]||koleksiyon} kalıcı olarak silinecek. Onaylamak için giriş şifreni gir.`,async()=>{
-    setSyncing(true);
-    await sildKoleksiyon(koleksiyon);
-    // Sınıflar silinince özel ders paketleri de silinmeli mi? — hayır, ayrı koleksiyon
-    setSyncing(false);
-    alert('Silme işlemi tamamlandı.');
-  }));
-}
-
-async function tumVerileriSifirla(){
-  confirm_('Tüm Verileri Sıfırla','Bu işlem GERİ ALINAMAZ. Tüm öğrenciler, sınıflar, ödemeler ve özel ders kayıtları silinecek.\n\n🔒 Devam ederseniz silme işlemi için giriş şifreniz istenecek.',()=>sifreliOnayAc('Şifre onayı','Tüm veriler kalıcı olarak silinecek. Onaylamak için giriş şifreni gir.',async()=>{
-    setSyncing(true);
-    await Promise.all(['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler'].map(k=>sildKoleksiyon(k)));
-    setSyncing(false);
-    alert('Tüm veriler silindi.');
-  }));
-}
-
 function toastGoster(msg,sure=2800){
   document.querySelectorAll('.toast').forEach(t=>t.remove());
   const t=document.createElement('div');
