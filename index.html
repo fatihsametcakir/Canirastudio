@@ -1843,7 +1843,7 @@ try{
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <select id="og-egitmen-sel" class="tema-sel" aria-label="Eğitmen" onchange="setOgEgitmen(this.value)" style="flex:1.2 1 0;min-width:0;"></select>
       <select id="og-sinif-sel" class="tema-sel" aria-label="Sınıf" onchange="setOgSinif(this.value)" style="flex:.95 1 0;min-width:0;"></select>
-      <button id="btn-tumunu" class="btn btn-sm btn-ghost" style="flex:1.15 1 0;min-width:0;white-space:nowrap;padding-left:3px;padding-right:3px;font-size:clamp(10px,2.9vw,12px);letter-spacing:-.02em;" onclick="setOgGruplu(false)"><span id="lbl-tumunugoster">Tümünü Göster</span></button>
+      <button id="btn-tumunu" class="btn btn-sm btn-ghost" style="flex:1.15 1 0;min-width:0;white-space:nowrap;padding-left:3px;padding-right:3px;font-size:clamp(10px,2.9vw,12px);letter-spacing:-.02em;" onclick="setOgGruplu(!OG_GRUPLU)"><span id="lbl-tumunugoster">Tümünü Göster</span></button>
     </div>
     <div id="og-siralama-row" style="display:none;gap:5px;margin-bottom:10px;flex-wrap:nowrap;">
       <button class="btn btn-sm" id="sir-ad" onclick="setOgSiralama('ad')" style="font-size:11px;flex:1 1 0;min-width:0;padding:6px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--greenbg);color:var(--green);border:1px solid #34d39966;box-shadow:0 3px 10px -3px #34d39970;">A-Z</button>
