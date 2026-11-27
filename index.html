@@ -1799,7 +1799,7 @@ try{
       <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 5l-7 7 7 7"/></svg></button>
       <div id="topbar-brand" style="min-width:0;"><div style="display:flex;align-items:center;gap:7px;min-width:0;"><svg class="tb-mark" viewBox="20 30 150 140" width="30" height="28" aria-hidden="true"><defs><linearGradient id="tbg" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="170" y2="180"><stop offset="0" stop-color="#f8e7ae"/><stop offset=".38" stop-color="#d9ac52"/><stop offset=".62" stop-color="#f4dc92"/><stop offset="1" stop-color="#b0842f"/></linearGradient></defs><g fill="none" stroke="url(#tbg)" stroke-linecap="round"><path d="M146 60 A56 56 0 1 0 146 140" stroke-width="8"/><path d="M138 70 A44 44 0 1 0 138 130" stroke-width="4"/><line x1="112" y1="52" x2="112" y2="148" stroke-width="8"/><line x1="121" y1="62" x2="121" y2="138" stroke-width="4"/></g><circle cx="150" cy="100" r="7" fill="url(#tbg)"/></svg><div style="min-width:0;">
         <div class="topbar-title"><b class="tb-gold">Can &amp; Irina</b><span>Dance Studio</span></div>
-        <div class="topbar-sub" id="topbarSub"></div>
+        <div class="topbar-sub" id="topbarSub"></div><select id="sube-sel" class="tema-sel" aria-label="Şube" onchange="subeDegistir(this.value)" style="display:none;width:auto;max-width:100%;margin-top:3px;padding:3px 20px 3px 8px!important;font-size:11px!important;border-radius:99px!important;"></select>
       </div></div></div>
       <div id="topbar-page-name" style="display:none;min-width:0;overflow:hidden;">
         <div class="topbar-page-title" id="topbarPageTitle"></div>
@@ -2083,6 +2083,7 @@ try{
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()"><span class="dh-ik">🚩</span><span class="dh-tx">Devamsız Öğrenciler</span></button>
       <button class="drawer-btn" id="drawerBtnYoklamaLog" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();yoklamaLogAc()"><span class="dh-ik">📝</span><span class="dh-tx">Yoklama Günlüğü</span></button>
       <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()"><span class="dh-ik">💬</span><span class="dh-tx" data-i18n="acc_wa">WhatsApp Şablonları</span></button>
+      <button class="drawer-btn" id="drawerBtnSube" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();subeModalAc()"><span class="dh-ik">🏢</span><span class="dh-tx">Şubeler</span></button>
       <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()"><span class="dh-ik">🏆</span><span class="dh-tx">Yarışma (Jack & Jill)</span></button>
     </div>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
@@ -2898,6 +2899,75 @@ window._firebaseReady=true;
 
 // State
 let S={ogrenciler:[],siniflar:[],odemeler:[],ozelOgrenciler:[],ozelPaketler:[],yoklamalar:[],egitmenler:[],tatiller:[],videoSiniflar:[],ozelSeanslar:[],ogrenciGecmisi:[],sinifGecmisi:[]};
+
+/* ── ŞUBE KATMANI ── ayarlar/subeler belgesinde 2+ şube varsa devreye girer; yoksa uygulama eskisi gibi çalışır.
+   subeId'si olmayan eski kayıtlar listedeki İLK şubeye (Kadıköy) aittir. Öğrenci ve eğitmen kartları ortak havuzdadır. */
+const SUBE_KOLEKSIYON=['siniflar','odemeler','ozelPaketler','ozelSeanslar','yoklamalar'];
+let SUBE={liste:[],aktif:null}; const S_RAW={};
+function subeAktifMi(){return SUBE.liste.length>=2&&!!SUBE.aktif;}
+function subeVarsayilanId(){return SUBE.liste[0]?SUBE.liste[0].id:null;}
+function subeKayitUygun(r){return (r.subeId||subeVarsayilanId())===SUBE.aktif;}
+function subeSuz(key,arr){
+  if(!subeAktifMi()||!Array.isArray(arr))return arr;
+  if(SUBE_KOLEKSIYON.includes(key))return arr.filter(subeKayitUygun);
+  if(key==='ogrenciler'){
+    const kayitli=new Set();(S_RAW.siniflar||[]).filter(subeKayitUygun).forEach(si=>(si.kayitlar||[]).forEach(k=>kayitli.add(k.ogrenciId)));
+    const ilk=SUBE.aktif===subeVarsayilanId();
+    return arr.filter(o=>Array.isArray(o.subeIds)?o.subeIds.includes(SUBE.aktif)||kayitli.has(o.id):(kayitli.has(o.id)||ilk));
+  }
+  return arr;
+}
+function subeYenidenUygula(){[...SUBE_KOLEKSIYON,'ogrenciler'].forEach(k=>{if(S_RAW[k])S[k]=subeSuz(k,S_RAW[k]);});}
+function subeEtiketle(col,data,yeni){
+  if(!subeAktifMi()||!data||typeof data!=='object')return data;
+  if(SUBE_KOLEKSIYON.includes(col)&&data.subeId===undefined)return {...data,subeId:SUBE.aktif};
+  if(yeni&&col==='ogrenciler'&&data.subeIds===undefined)return {...data,subeIds:[SUBE.aktif]};
+  return data;
+}
+(function(){const c0=db.collection;db.collection=function(col){const o=c0(col),a=o.add,d=o.doc;
+  o.add=x=>a(subeEtiketle(col,x,true));
+  o.doc=id=>{const r=d(id),st=r.set;r.set=x=>st(subeEtiketle(col,x,false));return r;};return o;};})();
+function subeSecimCiz(){
+  const sel=document.getElementById('sube-sel');if(!sel)return;
+  const goster=SUBE.liste.length>=2;sel.style.display=goster?'':'none';if(!goster)return;
+  sel.innerHTML=SUBE.liste.map(b=>'<option value="'+b.id+'">'+String(b.ad).replace(/</g,'&lt;')+'</option>').join('');
+  sel.value=SUBE.aktif;
+}
+function subeDegistir(id){
+  if(!SUBE.liste.some(b=>b.id===id))return;
+  SUBE.aktif=id;try{localStorage.setItem('subeAktif',id);}catch(e){}const se=document.getElementById('sube-sel');if(se)se.value=id;
+  subeYenidenUygula();try{renderAll();}catch(e){}
+}
+async function subeYukle(){
+  try{
+    const d=await db.collection('ayarlar').doc('subeler').get();
+    const l=d.exists&&Array.isArray(d.data().liste)?d.data().liste.filter(b=>b&&b.id&&b.ad):[];
+    SUBE.liste=l;
+    let a=null;try{a=localStorage.getItem('subeAktif');}catch(e){}
+    SUBE.aktif=l.some(b=>b.id===a)?a:(l[0]?l[0].id:null);
+    subeSecimCiz();subeYenidenUygula();try{renderAll();}catch(e){}
+  }catch(e){console.warn('Şubeler yüklenemedi',e);}
+}
+let SUBE_TASLAK=[];
+function subeModalAc(){
+  if(typeof YETKI_SAHIP_MI!=='undefined'&&!YETKI_SAHIP_MI){showToast('Şubeleri yalnızca işletme sahibi yönetebilir.','error');return;}
+  SUBE_TASLAK=SUBE.liste.length?SUBE.liste.map(b=>({...b})):[{id:'ana',ad:'Kadıköy'}];
+  subeModalCiz();document.getElementById('m-sube').classList.add('open');
+}
+function subeModalCiz(){
+  document.getElementById('sube-liste').innerHTML=SUBE_TASLAK.map((b,i)=>'<input class="input" style="width:100%;box-sizing:border-box;margin-bottom:8px;" value="'+String(b.ad).replace(/"/g,'&quot;')+'" placeholder="Şube adı" oninput="SUBE_TASLAK['+i+'].ad=this.value">').join('');
+}
+function subeEkleSatir(){SUBE_TASLAK.push({id:'s'+Date.now().toString(36),ad:''});subeModalCiz();}
+async function subeKaydet(){
+  const liste=SUBE_TASLAK.map(b=>({id:b.id,ad:(b.ad||'').trim()})).filter(b=>b.ad);
+  if(!liste.length){showToast('En az bir şube adı gerekli.','error');return;}
+  try{await db.collection('ayarlar').doc('subeler').set({liste});}catch(e){showToast('Kaydedilemedi: '+(e.message||e),'error');return;}
+  SUBE.liste=liste;if(!liste.some(b=>b.id===SUBE.aktif))SUBE.aktif=liste[0].id;
+  try{localStorage.setItem('subeAktif',SUBE.aktif);}catch(e){}
+  subeSecimCiz();subeYenidenUygula();try{renderAll();}catch(e){}
+  document.getElementById('m-sube').classList.remove('open');
+  showToast(liste.length>1?'Şubeler kaydedildi ✓':'Kaydedildi ✓ (ikinci şube eklenince şube seçici görünür)');
+}
 let SEG_CINSIYET='k', SEG_TIP='paket';
 let CUR_SINIF=null, CUR_KAYIT=null, EDIT_OG=null, EDIT_ODEME=null, EDIT_EGITMEN=null;
 let CUR_OZEL_OG=null, CUR_OZEL_PAKET=null;
@@ -3954,6 +4024,7 @@ function startListeners(){
   document.getElementById('loading').style.display='flex';
   document.getElementById('app').style.display='none';
   yetkiYukle();
+  subeYukle();
   applyLang();
   const done={og:false,si:false,od:false,oog:false,op:false,yk:false,eg:false,tt:false,vs:false,oz2:false,ogh:false,sgh:false};
 
@@ -3976,8 +4047,8 @@ function startListeners(){
     db.collection(col).onSnapshot(
       snap=>{
         const yeni=snap.docs.map(d=>{const obj=d.data?d.data():{...d};return{...obj,id:d.id};});
-        if(done[doneKey]&&JSON.stringify(S[key])===JSON.stringify(yeni)){return;} // yoklamada veri aynıysa ekranı yeniden çizme (titreme/kaydırma sıfırlanması olmasın)
-        S[key]=yeni;done[doneKey]=true;check();renderAll();},
+        if(done[doneKey]&&JSON.stringify(S_RAW[key]!==undefined?S_RAW[key]:S[key])===JSON.stringify(yeni)){return;} // yoklamada veri aynıysa ekranı yeniden çizme (titreme/kaydırma sıfırlanması olmasın)
+        S_RAW[key]=yeni;S[key]=subeSuz(key,yeni);if(key==='siniflar')subeYenidenUygula();done[doneKey]=true;check();renderAll();},
       err=>{console.warn(col,err);done[doneKey]=true;check();}
     );
   }
@@ -13677,6 +13748,17 @@ function sonOdemelerFiltre(tip){
   }).join('');
 }
 </script>
+<div class="overlay" id="m-sube" onclick="if(event.target===this)this.classList.remove('open')"><div class="confirm-sheet">
+  <div class="sheet-handle"></div>
+  <div style="font-size:17px;font-weight:600;margin-bottom:6px;">🏢 Şubeler</div>
+  <div style="font-size:12.5px;color:var(--text3);margin-bottom:12px;line-height:1.4;">İkinci şubeyi eklediğinde üst çubukta şube seçici belirir. Mevcut tüm kayıtlar listedeki ilk şubeye ait kalır. Eğitmenler ve öğrenci kartları ortaktır.</div>
+  <div id="sube-liste"></div>
+  <button class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:12px;" onclick="subeEkleSatir()">＋ Şube ekle</button>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="document.getElementById('m-sube').classList.remove('open')">Kapat</button>
+    <button class="btn btn-accent" style="flex:1;padding:13px;" onclick="subeKaydet()">Kaydet</button>
+  </div>
+</div></div>
 <div class="overlay" id="m-uyari" style="z-index:100000;"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:8px;" id="uyari-baslik">Uyarı</div>
