@@ -2036,11 +2036,16 @@ try{
   </div>
 
 <div class="page" id="pg-studyolar">
-  <div style="font-size:12.5px;color:var(--text3);margin:4px 0 14px;line-height:1.5;">Özel ders planlarken seçilen stüdyolar. Her şubenin kendi stüdyoları vardır. Dersi olan bir stüdyo silinemez, adı değiştirilebilir.</div>
+  <div style="font-size:12.5px;color:var(--text3);margin:4px 0 14px;line-height:1.5;"><b>Şube stüdyoları</b> — her şubenin kendi stüdyoları. Dersi olan bir stüdyo silinemez, adı değiştirilebilir.</div>
   <select id="std-sube-sel" class="tema-sel" aria-label="Şube" onchange="studyoSubeSec(this.value)" style="display:none;width:100%;margin-bottom:12px;"></select>
   <div id="std-liste"></div>
   <button class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:14px;" onclick="studyoEkleSatir()">＋ Stüdyo ekle</button>
   <button class="btn btn-accent" style="width:100%;padding:13px;" onclick="studyoKaydet()">Kaydet</button>
+  <div style="height:1px;background:var(--border2);margin:22px 0 16px;"></div>
+  <div style="font-size:12.5px;color:var(--text3);margin:0 0 12px;line-height:1.5;"><b>Özel ders stüdyoları</b> — özel dersleri verdiğiniz, kiraladığınız dış stüdyolar. Hiçbir şubeye bağlı değildir; özel ders planlarken buradan seçilir. Dersi olan stüdyo silinemez, adı değiştirilebilir.</div>
+  <div id="oz-std-liste"></div>
+  <button class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:14px;" onclick="ozStdEkle()">＋ Özel ders stüdyosu ekle</button>
+  <button class="btn btn-accent" style="width:100%;padding:13px;" onclick="ozStdKaydet()">Özel ders stüdyolarını kaydet</button>
 </div>
 
 <div class="page" id="pg-subeler">
@@ -2182,7 +2187,7 @@ try{
         <button class="btn" style="width:100%;margin-bottom:10px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2445;" onclick="yonetimSayfaAc(openEgitmenGiderler)">⚙️ <span data-i18n="parametreler">Parametreler</span></button>
         <button class="btn" id="drawerBtnWaSablon" style="width:100%;margin-bottom:10px;background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39945;" onclick="yonetimSayfaAc(openWaSablonModal)">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee45;" onclick="yonetimSayfaAc(subeSayfaAc)">🏢 <span data-i18n="sube_yonetimi">Şubeler</span></button>
-        <button class="btn" style="width:100%;margin-bottom:10px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2445;" onclick="yonetimSayfaAc(studyoSayfaAc)">🎛 <span data-i18n="studyo_yonetimi">Özel Ders Stüdyoları</span></button>
+        <button class="btn" style="width:100%;margin-bottom:10px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2445;" onclick="yonetimSayfaAc(studyoSayfaAc)">🎛 <span data-i18n="studyo_yonetimi">Stüdyolar</span></button>
       </div>
     </div>
 
@@ -3040,12 +3045,48 @@ async function subeYukle(){
     let a=null;try{a=localStorage.getItem('subeAktif');}catch(e){}
     SUBE.aktif=l.some(b=>b.id===a)?a:(l[0]?l[0].id:null);
     subeSecimCiz();subeYenidenUygula();try{renderAll();}catch(e){}if(giderDocId()!=='giderAyarlari')giderSubeYenile();
+    ozelStudyoYukle();
   }catch(e){console.warn('Şubeler yüklenemedi',e);}
 }
 /* ── STÜDYOLAR ── her şubenin kendi stüdyo listesi (ayarlar/subeler içinde). Kayıt yoksa eski düzen: Stüdyo 1-2-3. */
 const STUDYO_VARSAYILAN=[{id:1,ad:'Stüdyo 1'},{id:2,ad:'Stüdyo 2'},{id:3,ad:'Stüdyo 3'}];
 function studyoSube(){return SUBE.liste.find(b=>b.id===SUBE.aktif)||SUBE.liste[0]||null;}
-function studyoListe(){const b=studyoSube();return (b&&Array.isArray(b.studyolar)&&b.studyolar.length)?b.studyolar:STUDYO_VARSAYILAN;}
+/* Özel ders stüdyoları: şubeden bağımsız, ortak liste (ayarlar/ozelStudyolar). Kayıt yoksa eski Stüdyo 1-2-3 (eski seans kayıtları bozulmasın). */
+let OZEL_STUDYO=null;
+function studyoListe(){return (OZEL_STUDYO&&OZEL_STUDYO.length)?OZEL_STUDYO:STUDYO_VARSAYILAN;}
+async function ozelStudyoYukle(){
+  try{
+    const d=await db.collection('ayarlar').doc('ozelStudyolar').get();
+    OZEL_STUDYO=d.exists&&Array.isArray(d.data().liste)?d.data().liste.filter(x=>x&&x.ad):null;
+    try{renderAll();}catch(e){}
+  }catch(e){console.warn('Özel ders stüdyoları yüklenemedi',e);}
+}
+let OZ_STD_TASLAK=[];
+function ozStdYukleTaslak(){OZ_STD_TASLAK=studyoListe().map(x=>({id:x.id,ad:x.ad}));}
+function ozStdCiz(){
+  const el=document.getElementById('oz-std-liste');if(!el)return;
+  el.innerHTML=OZ_STD_TASLAK.map((x,i)=>'<div style="display:flex;gap:8px;margin-bottom:8px;"><input class="sube-girdi" style="margin-bottom:0;flex:1;min-width:0;" value="'+String(x.ad).replace(/"/g,'&quot;')+'" placeholder="Stüdyo adı" oninput="OZ_STD_TASLAK['+i+'].ad=this.value"><button type="button" class="btn btn-ghost btn-sm" style="flex-shrink:0;" onclick="ozStdSil('+i+')" aria-label="Sil">✕</button></div>').join('');
+}
+function ozStdEkle(){
+  const yeni=OZ_STD_TASLAK.reduce((m,x)=>Math.max(m,Number(x.id)||0),0)+1;
+  OZ_STD_TASLAK.push({id:yeni,ad:'Stüdyo '+yeni});ozStdCiz();
+}
+function ozStdSil(i){
+  const x=OZ_STD_TASLAK[i];if(!x)return;
+  if(OZ_STD_TASLAK.length<=1){showToast('En az bir özel ders stüdyosu olmalı.','error');return;}
+  const hamS=(typeof S_RAW!=='undefined'&&S_RAW.ozelSeanslar)?S_RAW.ozelSeanslar:S.ozelSeanslar;
+  const kullanan=hamS.filter(se=>String(se.studyo||1)===String(x.id)).length;
+  if(kullanan){showToast('Bu stüdyoda '+kullanan+' özel ders kaydı var, silinemez. Ad değiştirebilirsin.','error');return;}
+  OZ_STD_TASLAK.splice(i,1);ozStdCiz();
+}
+async function ozStdKaydet(){
+  const liste=OZ_STD_TASLAK.map(x=>({id:Number(x.id),ad:(x.ad||'').trim()})).filter(x=>x.ad);
+  if(!liste.length){showToast('En az bir stüdyo adı gerekli.','error');return;}
+  if(new Set(liste.map(x=>x.ad.toLocaleLowerCase('tr-TR'))).size!==liste.length){showToast('Aynı isimde iki stüdyo olamaz.','error');return;}
+  try{await db.collection('ayarlar').doc('ozelStudyolar').set({liste});}catch(e){showToast('Kaydedilemedi: '+(e.message||e),'error');return;}
+  OZEL_STUDYO=liste;try{renderAll();}catch(e){}
+  showToast('Özel ders stüdyoları kaydedildi ✓');
+}
 function studyoAd(id){const x=studyoListe().find(y=>String(y.id)===String(id));return x?x.ad:'Stüdyo '+id;}
 function studyoKisa(id){const ad=studyoAd(id);const m=/^Stüdyo\s*(\d+)$/i.exec(ad);return m?'S'+m[1]:ad.replace(/\s+/g,'').slice(0,3);}
 function studyoSecenekleri(ilkHepsi){
@@ -3055,14 +3096,16 @@ let STD_TASLAK=[],STD_SUBE=null;
 function studyoSayfaAc(){
   if(typeof YETKI_SAHIP_MI!=='undefined'&&!YETKI_SAHIP_MI){showToast('Stüdyoları yalnızca işletme sahibi yönetebilir.','error');return;}
   STD_SUBE=(studyoSube()||{}).id||'ana';studyoTaslakYukle();
+  ozStdYukleTaslak();
   openRaporSayfa('studyolar','studyo_yonetimi',studyoSayfaCiz);
 }
 function studyoSubeSec(id){STD_SUBE=id;studyoTaslakYukle();studyoSayfaCiz();}
 function studyoTaslakYukle(){
   const b=SUBE.liste.find(x=>x.id===STD_SUBE);
-  STD_TASLAK=((b&&Array.isArray(b.studyolar)&&b.studyolar.length)?b.studyolar:STUDYO_VARSAYILAN).map(x=>({id:x.id,ad:x.ad}));
+  STD_TASLAK=((b&&Array.isArray(b.studyolar)&&b.studyolar.length)?b.studyolar:[{id:1,ad:'Stüdyo 1'}]).map(x=>({id:x.id,ad:x.ad}));
 }
 function studyoSayfaCiz(){
+  ozStdCiz();
   const sel=document.getElementById('std-sube-sel');
   const cok=SUBE.liste.length>=2;
   sel.style.display=cok?'':'none';
@@ -3076,10 +3119,6 @@ function studyoEkleSatir(){
 function studyoSil(i){
   const x=STD_TASLAK[i];if(!x)return;
   if(STD_TASLAK.length<=1){showToast('En az bir stüdyo olmalı.','error');return;}
-  const hamS=(typeof S_RAW!=='undefined'&&S_RAW.ozelSeanslar)?S_RAW.ozelSeanslar:S.ozelSeanslar;
-  const def=subeVarsayilanId();
-  const kullanan=hamS.filter(se=>String(se.studyo||1)===String(x.id)&&(!subeAktifMi()||(se.subeId||def)===STD_SUBE)).length;
-  if(kullanan){showToast('Bu stüdyoda '+kullanan+' özel ders kaydı var, silinemez. Ad değiştirebilirsin.','error');return;}
   STD_TASLAK.splice(i,1);studyoSayfaCiz();
 }
 async function studyoKaydet(){
@@ -3190,7 +3229,7 @@ const TRANSLATIONS={
     aylik_gelir_trendi:'Aylık Gelir Trendi', egitmenler_giderler:'Eğitmenler & Giderler', parametreler:'Parametreler',
     odeme_bilgileri:'Ödeme Bilgileri', ogrenci_tutma_orani:'Öğrenci Tutma Oranı',
     acc_tema:'Tema', acc_guvenlik:'Güvenlik', acc_wa:'WhatsApp Şablonları', acc_yedek:'Yedekleme',
-    acc_excel:'Excel\'e Aktar', acc_pwa:'Uygulamayı Yükle', acc_veri:'Veri Yönetimi', acc_yonetim:'Yönetim', sube_yonetimi:'Şubeler', studyo_yonetimi:'Özel Ders Stüdyoları',
+    acc_excel:'Excel\'e Aktar', acc_pwa:'Uygulamayı Yükle', acc_veri:'Veri Yönetimi', acc_yonetim:'Yönetim', sube_yonetimi:'Şubeler', studyo_yonetimi:'Stüdyolar',
     cikis_yap:'→ Çıkış Yap',
     uygulamadan_cik:'Uygulamadan Çık', uygulamadan_cik_soru:'Uygulamayı kapatmak istiyor musunuz?',
     ios_install_banner_metin:'Bu uygulamayı ana ekranına ekleyebilirsin: Paylaş ↑ simgesine dokun, sonra "Ana Ekrana Ekle" seç.',
@@ -3379,7 +3418,7 @@ const TRANSLATIONS={
     aylik_gelir_trendi:'Monthly Income Trend', egitmenler_giderler:'Instructors & Expenses', parametreler:'Parameters',
     odeme_bilgileri:'Payment Details', ogrenci_tutma_orani:'Student Retention Rate',
     acc_tema:'Theme', acc_guvenlik:'Security', acc_wa:'WhatsApp Templates', acc_yedek:'Backup',
-    acc_excel:'Export to Excel', acc_pwa:'Install App', acc_veri:'Data Management', acc_yonetim:'Management', sube_yonetimi:'Branches', studyo_yonetimi:'Private Lesson Studios',
+    acc_excel:'Export to Excel', acc_pwa:'Install App', acc_veri:'Data Management', acc_yonetim:'Management', sube_yonetimi:'Branches', studyo_yonetimi:'Studios',
     cikis_yap:'→ Log Out',
     uygulamadan_cik:'Exit App', uygulamadan_cik_soru:'Do you want to close the app?',
     ios_install_banner_metin:'You can add this app to your Home Screen: tap Share ↑, then choose "Add to Home Screen".',
@@ -3568,7 +3607,7 @@ const TRANSLATIONS={
     aylik_gelir_trendi:'Динамика дохода по месяцам', egitmenler_giderler:'Преподаватели и расходы', parametreler:'Параметры',
     odeme_bilgileri:'Платёжные реквизиты', ogrenci_tutma_orani:'Удержание учеников',
     acc_tema:'Тема', acc_guvenlik:'Безопасность', acc_wa:'Шаблоны WhatsApp', acc_yedek:'Резервная копия',
-    acc_excel:'Экспорт в Excel', acc_pwa:'Установить приложение', acc_veri:'Управление данными', acc_yonetim:'Управление', sube_yonetimi:'Филиалы', studyo_yonetimi:'Студии частных уроков',
+    acc_excel:'Экспорт в Excel', acc_pwa:'Установить приложение', acc_veri:'Управление данными', acc_yonetim:'Управление', sube_yonetimi:'Филиалы', studyo_yonetimi:'Студии',
     cikis_yap:'→ Выйти',
     uygulamadan_cik:'Выйти из приложения', uygulamadan_cik_soru:'Вы хотите закрыть приложение?',
     ios_install_banner_metin:'Вы можете добавить это приложение на главный экран: нажмите Поделиться ↑, затем «На экран «Домой»».',
