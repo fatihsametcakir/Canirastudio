@@ -1895,7 +1895,19 @@ try{
 
   <!-- YOKLAMA -->
   <div class="page" id="pg-yoklama">
+    <div class="tab-row" id="yk-ust-tab" style="margin-top:4px;">
+      <button class="tab-btn active" id="yk-tab-yoklama" onclick="yoklamaSekme('yoklama')">✓ Yoklama</button>
+      <button class="tab-btn" id="yk-tab-gunluk" onclick="yoklamaSekme('gunluk')">📝 Günlük</button>
+    </div>
     <div id="yoklama-content"></div>
+    <div id="yk-gunluk" style="display:none;">
+      <div class="tab-row">
+        <button class="tab-btn active" id="ylog-f-hepsi" onclick="yoklamaLogFiltre('hepsi')">Hepsi</button>
+        <button class="tab-btn" id="ylog-f-egitmen" onclick="yoklamaLogFiltre('egitmen')">Eğitmen</button>
+        <button class="tab-btn" id="ylog-f-yonetici" onclick="yoklamaLogFiltre('yonetici')">Yönetici</button>
+      </div>
+      <div id="ylog-content"></div>
+    </div>
   </div>
 
   <!-- ÖZEL DERSLER -->
@@ -2014,14 +2026,6 @@ try{
   </div>
 
   <!-- MENÜ SAYFALARI (hamburger menüden açılır) -->
-  <div class="page" id="pg-yoklama-log"><div>
-  <div class="tab-row">
-    <button class="tab-btn active" id="ylog-f-hepsi" onclick="yoklamaLogFiltre('hepsi')">Hepsi</button>
-    <button class="tab-btn" id="ylog-f-egitmen" onclick="yoklamaLogFiltre('egitmen')">Eğitmen</button>
-    <button class="tab-btn" id="ylog-f-yonetici" onclick="yoklamaLogFiltre('yonetici')">Yönetici</button>
-  </div>
-  <div id="ylog-content"></div>
-</div></div>
   <div class="page" id="pg-hata-log"><div style="max-width:640px;margin:0 auto;padding-bottom:90px;">
   <div style="display:flex;gap:8px;margin-bottom:12px;">
     <button class="btn btn-cyan" style="flex:1;" onclick="hataLogKopyala()">📋 Kopyala</button>
@@ -2091,12 +2095,10 @@ try{
     <!-- Hızlı Erişim -->
     <div class="drawer-hizli" style="padding:8px 12px 4px;">
       <button class="drawer-btn" id="drawerBtnTakvim" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('takvim',this)"><span class="dh-ik">📅</span><span class="dh-tx" data-i18n="nav_takvim">Takvim</span></button>
-      <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('yoklama',this)"><span class="dh-ik">✓</span><span class="dh-tx">Yoklama</span></button>
+      <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('yoklama',this);yoklamaSekme('yoklama')"><span class="dh-ik">✓</span><span class="dh-tx">Yoklama</span></button>
       <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('videolar',this)"><span class="dh-ik">🎬</span><span class="dh-tx">Ders Videoları</span></button>
       <button class="drawer-btn" id="drawerBtnKayitTaslak" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('kayit-taslak',this)"><span class="dh-ik">📝</span><span class="dh-tx">Kayıt Formu</span></button>
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()"><span class="dh-ik">🚩</span><span class="dh-tx">Devamsız Öğrenciler</span></button>
-      <button class="drawer-btn" id="drawerBtnYoklamaLog" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();yoklamaLogAc()"><span class="dh-ik">📝</span><span class="dh-tx">Yoklama Günlüğü</span></button>
-      <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()"><span class="dh-ik">💬</span><span class="dh-tx" data-i18n="acc_wa">WhatsApp Şablonları</span></button>
       <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()"><span class="dh-ik">🏆</span><span class="dh-tx">Yarışma (Jack & Jill)</span></button>
     </div>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
@@ -2111,6 +2113,7 @@ try{
       <div class="acc-body" id="acc-yonetim">
         <button class="btn" style="width:100%;margin-bottom:10px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa45;" onclick="yonetimSayfaAc(openEgitmenlerSayfa)">👨‍🏫 <span data-i18n="egitmenler">Eğitmenler</span></button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2445;" onclick="yonetimSayfaAc(openEgitmenGiderler)">⚙️ <span data-i18n="parametreler">Parametreler</span></button>
+        <button class="btn" id="drawerBtnWaSablon" style="width:100%;margin-bottom:10px;background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39945;" onclick="yonetimSayfaAc(openWaSablonModal)">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee45;" onclick="yonetimSayfaAc(subeSayfaAc)">🏢 <span data-i18n="sube_yonetimi">Şubeler</span></button>
       </div>
     </div>
@@ -2959,7 +2962,7 @@ function subeDegistir(id){
   if(!SUBE.liste.some(b=>b.id===id))return;
   SUBE.aktif=id;try{localStorage.setItem('subeAktif',id);}catch(e){}const se=document.getElementById('sube-sel');if(se)se.value=id;
   subeYenidenUygula();try{renderAll();}catch(e){}giderSubeYenile();
-  try{if(PAGE==='devamsiz'){DEVAMSIZ_SECIM=new Set();DEVAMSIZ_ACIK=new Set();devamsizTabSec(DEVAMSIZ_TAB);}else if(PAGE==='yoklama-log'&&typeof yoklamaLogAc==='function')yoklamaLogAc();}catch(e){}
+  try{if(PAGE==='devamsiz'){DEVAMSIZ_SECIM=new Set();DEVAMSIZ_ACIK=new Set();devamsizTabSec(DEVAMSIZ_TAB);}else if(PAGE==='yoklama'&&document.getElementById('yk-gunluk').style.display!=='none')yoklamaLogAc();}catch(e){}
 }
 async function subeYukle(){
   try{
@@ -3901,7 +3904,6 @@ function setSyncing(v){const d=document.getElementById('syncDot'),tx=document.ge
 // Hamburger menüden açılan bu üç ekran artık açılır pencere değil, tam sayfa
 const MENU_SAYFALAR={
   'm-devamsiz':{pg:'devamsiz',baslik:()=>'🚩 '+t('devamsiz_ogrenciler').replace(/^🚩\s*/,'')},
-  'm-yoklama-log':{pg:'yoklama-log',baslik:()=>'📝 Yoklama Günlüğü'},
   'm-wa-sablon':{pg:'wa-sablon',baslik:()=>'💬 '+t('acc_wa')},
   'm-hata-log':{pg:'hata-log',baslik:()=>'🐞 Hata Günlüğü'}
 };
@@ -10269,11 +10271,18 @@ function hataLogKopyala(){
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(metin).then(ok,()=>toastGoster('Kopyalanamadı'));
   else toastGoster('Kopyalanamadı');
 }
+function yoklamaSekme(k){
+  const g=k==='gunluk';
+  document.getElementById('yk-tab-yoklama').classList.toggle('active',!g);
+  document.getElementById('yk-tab-gunluk').classList.toggle('active',g);
+  document.getElementById('yoklama-content').style.display=g?'none':'';
+  document.getElementById('yk-gunluk').style.display=g?'':'none';
+  if(g)yoklamaLogAc();
+}
 async function yoklamaLogAc(){
   YLOG_FILTRE='hepsi';
   ['hepsi','egitmen','yonetici'].forEach(k=>document.getElementById('ylog-f-'+k).classList.toggle('active',k==='hepsi'));
   document.getElementById('ylog-content').innerHTML='<div style="padding:30px 0;text-align:center;color:var(--text3);">…</div>';
-  openModal('m-yoklama-log');
   try{
     const snap=await db.collection('yoklama_log').get();
     YLOG=snap.docs.map(d=>({...(d.data?d.data():{}),id:d.id})).sort((a,b)=>(b.zaman||0)-(a.zaman||0)).slice(0,300);
@@ -10287,7 +10296,8 @@ function yoklamaLogFiltre(k){
 }
 function yoklamaLogCiz(){
   const el=document.getElementById('ylog-content');
-  const liste=YLOG.filter(l=>YLOG_FILTRE==='hepsi'||l.kaydeden===YLOG_FILTRE);
+  let liste=YLOG.filter(l=>YLOG_FILTRE==='hepsi'||l.kaydeden===YLOG_FILTRE);
+  if(typeof subeAktifMi==='function'&&subeAktifMi()){const sm={};(S_RAW.siniflar||[]).forEach(si=>{sm[si.id]=si.subeId||subeVarsayilanId();});liste=liste.filter(l=>(sm[l.sinifId]||subeVarsayilanId())===SUBE.aktif);}
   if(!liste.length){el.innerHTML='<div class="empty" style="padding:30px 0;"><div class="empty-text">Henüz günlük kaydı yok. Bu özellikten sonra kaydedilen yoklamalar burada görünür.</div></div>';return;}
   const esc=x=>String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   el.innerHTML=liste.map(l=>{
