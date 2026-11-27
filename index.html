@@ -6140,6 +6140,9 @@ async function paketOdemeleriniIsaretle(ogId,siId){
 // ve hakediş raporları bozulmasın); bunlar pasife alınır.
 let _VERI_SIL={tur:null,id:null};
 function veriSilAc(tur){
+  confirm_('🔒 Şifre gerekecek',(tur==='ogrenci'?'Öğrenci':'Sınıf')+' silme işlemi için giriş şifrenizi girmeniz istenecek. Devam etmek istiyor musunuz?',()=>veriSilAcGercek(tur));
+}
+function veriSilAcGercek(tur){
   if(typeof drawerKapat==='function')drawerKapat();
   _VERI_SIL={tur,id:null,sube:(typeof subeAktifMi==='function'&&subeAktifMi())?SUBE.aktif:'hepsi',sinif:'hepsi'};
   document.getElementById('veri-sil-baslik').textContent=tur==='ogrenci'?'👤 Öğrenci Sil':'🏫 Sınıf Sil';
