@@ -1322,6 +1322,14 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 
 .cins-k{margin-left:12px;}
 
+input.sube-girdi{display:block;width:100%;box-sizing:border-box;margin-bottom:10px;padding:12px 14px;border:1.5px solid #d9ac52a6;border-radius:12px;background:var(--surface2);color:var(--text);font:inherit;font-size:15px;font-weight:600;outline:none;box-shadow:0 3px 10px -4px #d9ac5255;-webkit-appearance:none;appearance:none;}
+input.sube-girdi:focus{border-color:#d9ac52;box-shadow:0 0 0 3px #d9ac5233;}
+input.sube-girdi::placeholder{color:var(--text3);font-weight:500;}
+:root[data-acik="1"] input.sube-girdi{border-color:#9a6f1ca0;box-shadow:0 3px 10px -4px #9a6f1c55;}
+html.sube-var #topbar-brand{left:calc(50% + 34px);max-width:calc(100% - 205px);}
+html.sube-var #topbar-brand .tb-mark{display:none}
+html.sube-var .topbar-title{flex-direction:column;align-items:center;gap:0;line-height:1.05}
+html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:15px}
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -1796,10 +1804,11 @@ try{
       <button class="hamburger" id="hamburgerBtn" onclick="drawerAc()" aria-label="Menü" style="position:relative;">
         <span></span><span></span><span></span><b class="notif-badge" id="hata-badge" style="display:none;"></b>
       </button>
+      <select id="sube-sel" class="tema-sel" aria-label="Şube" onchange="subeDegistir(this.value)" style="display:none;flex:0 1 auto;width:auto;min-width:0;max-width:25vw;padding:5px 17px 5px 7px!important;font-size:11px!important;border-radius:99px!important;background-position:right 5px center!important;"></select>
       <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 5l-7 7 7 7"/></svg></button>
       <div id="topbar-brand" style="min-width:0;"><div style="display:flex;align-items:center;gap:7px;min-width:0;"><svg class="tb-mark" viewBox="20 30 150 140" width="30" height="28" aria-hidden="true"><defs><linearGradient id="tbg" gradientUnits="userSpaceOnUse" x1="30" y1="20" x2="170" y2="180"><stop offset="0" stop-color="#f8e7ae"/><stop offset=".38" stop-color="#d9ac52"/><stop offset=".62" stop-color="#f4dc92"/><stop offset="1" stop-color="#b0842f"/></linearGradient></defs><g fill="none" stroke="url(#tbg)" stroke-linecap="round"><path d="M146 60 A56 56 0 1 0 146 140" stroke-width="8"/><path d="M138 70 A44 44 0 1 0 138 130" stroke-width="4"/><line x1="112" y1="52" x2="112" y2="148" stroke-width="8"/><line x1="121" y1="62" x2="121" y2="138" stroke-width="4"/></g><circle cx="150" cy="100" r="7" fill="url(#tbg)"/></svg><div style="min-width:0;">
         <div class="topbar-title"><b class="tb-gold">Can &amp; Irina</b><span>Dance Studio</span></div>
-        <div class="topbar-sub" id="topbarSub"></div><select id="sube-sel" class="tema-sel" aria-label="Şube" onchange="subeDegistir(this.value)" style="display:none;width:auto;max-width:100%;margin-top:3px;padding:3px 20px 3px 8px!important;font-size:11px!important;border-radius:99px!important;"></select>
+        <div class="topbar-sub" id="topbarSub"></div>
       </div></div></div>
       <div id="topbar-page-name" style="display:none;min-width:0;overflow:hidden;">
         <div class="topbar-page-title" id="topbarPageTitle"></div>
@@ -2929,14 +2938,14 @@ function subeEtiketle(col,data,yeni){
   o.doc=id=>{const r=d(id),st=r.set;r.set=x=>st(subeEtiketle(col,x,false));return r;};return o;};})();
 function subeSecimCiz(){
   const sel=document.getElementById('sube-sel');if(!sel)return;
-  const goster=SUBE.liste.length>=2;sel.style.display=goster?'':'none';if(!goster)return;
+  const goster=SUBE.liste.length>=2;sel.style.display=goster?'':'none';document.documentElement.classList.toggle('sube-var',goster);if(!goster)return;
   sel.innerHTML=SUBE.liste.map(b=>'<option value="'+b.id+'">'+String(b.ad).replace(/</g,'&lt;')+'</option>').join('');
   sel.value=SUBE.aktif;
 }
 function subeDegistir(id){
   if(!SUBE.liste.some(b=>b.id===id))return;
   SUBE.aktif=id;try{localStorage.setItem('subeAktif',id);}catch(e){}const se=document.getElementById('sube-sel');if(se)se.value=id;
-  subeYenidenUygula();try{renderAll();}catch(e){}
+  subeYenidenUygula();try{renderAll();}catch(e){}giderSubeYenile();
 }
 async function subeYukle(){
   try{
@@ -2945,7 +2954,7 @@ async function subeYukle(){
     SUBE.liste=l;
     let a=null;try{a=localStorage.getItem('subeAktif');}catch(e){}
     SUBE.aktif=l.some(b=>b.id===a)?a:(l[0]?l[0].id:null);
-    subeSecimCiz();subeYenidenUygula();try{renderAll();}catch(e){}
+    subeSecimCiz();subeYenidenUygula();try{renderAll();}catch(e){}if(giderDocId()!=='giderAyarlari')giderSubeYenile();
   }catch(e){console.warn('Şubeler yüklenemedi',e);}
 }
 let SUBE_TASLAK=[];
@@ -2955,7 +2964,7 @@ function subeModalAc(){
   subeModalCiz();document.getElementById('m-sube').classList.add('open');
 }
 function subeModalCiz(){
-  document.getElementById('sube-liste').innerHTML=SUBE_TASLAK.map((b,i)=>'<input class="input" style="width:100%;box-sizing:border-box;margin-bottom:8px;" value="'+String(b.ad).replace(/"/g,'&quot;')+'" placeholder="Şube adı" oninput="SUBE_TASLAK['+i+'].ad=this.value">').join('');
+  document.getElementById('sube-liste').innerHTML=SUBE_TASLAK.map((b,i)=>'<input class="sube-girdi" value="'+String(b.ad).replace(/"/g,'&quot;')+'" placeholder="Şube adı" oninput="SUBE_TASLAK['+i+'].ad=this.value">').join('');
 }
 function subeEkleSatir(){SUBE_TASLAK.push({id:'s'+Date.now().toString(36),ad:''});subeModalCiz();}
 async function subeKaydet(){
@@ -2964,7 +2973,7 @@ async function subeKaydet(){
   try{await db.collection('ayarlar').doc('subeler').set({liste});}catch(e){showToast('Kaydedilemedi: '+(e.message||e),'error');return;}
   SUBE.liste=liste;if(!liste.some(b=>b.id===SUBE.aktif))SUBE.aktif=liste[0].id;
   try{localStorage.setItem('subeAktif',SUBE.aktif);}catch(e){}
-  subeSecimCiz();subeYenidenUygula();try{renderAll();}catch(e){}
+  subeSecimCiz();subeYenidenUygula();try{renderAll();}catch(e){}giderSubeYenile();
   document.getElementById('m-sube').classList.remove('open');
   showToast(liste.length>1?'Şubeler kaydedildi ✓':'Kaydedildi ✓ (ikinci şube eklenince şube seçici görünür)');
 }
@@ -11385,10 +11394,14 @@ function renderPortalTakvim(el,og){
 // Gider ayarları artık tek çatı altında: ayarlar/giderAyarlari
 // (Eskiden ayrı bir "gider_ayarlari" koleksiyonundaydı — geriye dönük uyumluluk için oradan da okunur)
 
+function giderDocId(){return (subeAktifMi()&&SUBE.aktif!==subeVarsayilanId())?'giderAyarlari_'+SUBE.aktif:'giderAyarlari';}
+function giderSubeYenile(){GIDER_AYARLARI_YUKLENDI=false;GIDER_AYARLARI={kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[],ozelKiraGecmisi:[]};
+  giderAyarlariniOnbellekleYukle().then(()=>{try{renderAll();}catch(e){}});}
 async function giderAyarlariniYukle(){
   try{
-    const yeniSnap=await db.collection('ayarlar').doc('giderAyarlari').get();
+    const yeniSnap=await db.collection('ayarlar').doc(giderDocId()).get();
     if(yeniSnap.exists)return yeniSnap.data();
+    if(giderDocId()!=='giderAyarlari')return {kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[],ozelKiraGecmisi:[]}; // yeni şube: kendi boş ayarları
     // Yeni yerde yok — eski koleksiyonda var mı bak, varsa yeni yere taşı
     const eskiSnap=await db.collection('gider_ayarlari').doc('ayarlar').get();
     if(eskiSnap.exists){
@@ -11418,7 +11431,7 @@ async function giderAyarlariniKaydet(kira,pct,grupKiraGecmisi,pratikKiraGecmisi,
   else if(GIDER_AYARLARI.ozelKiraGecmisi)veri.ozelKiraGecmisi=GIDER_AYARLARI.ozelKiraGecmisi;
   if(pratikIptalAciklamalari!==undefined)veri.pratikIptalAciklamalari=pratikIptalAciklamalari;
   else if(GIDER_AYARLARI.pratikIptalAciklamalari)veri.pratikIptalAciklamalari=GIDER_AYARLARI.pratikIptalAciklamalari;
-  await db.collection('ayarlar').doc('giderAyarlari').set(veri);
+  await db.collection('ayarlar').doc(giderDocId()).set(veri);
 }
 
 // Senkron erişim için önbellek — özel ders stüdyo kirası, grup dersleri kira geçmişi

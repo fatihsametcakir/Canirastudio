@@ -120,7 +120,7 @@ service cloud.firestore {
     }
     match /ayarlar/{id} {
       // Kira/gider ayarları (Gelir-Gider menüsü) o menüyü göremeyen kullanıcıya kapalı
-      allow read: if id == 'giderAyarlari' ? giderGorebilir() : oku();
+      allow read: if id.matches('giderAyarlari.*') ? giderGorebilir() : oku();
       allow write: if yaz('ayar');
     }
     match /gider_ayarlari/{id} {
