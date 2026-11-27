@@ -1320,6 +1320,11 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 
 .cins-k{margin-left:12px;}
 
+#acc-guvenlik input[type=text],#acc-guvenlik input[type=email],#acc-guvenlik input[type=password]{box-sizing:border-box;padding:11px 14px;border:1.5px solid #d9ac52a6;border-radius:12px;background:var(--surface2);color:var(--text);font:inherit;font-size:14.5px;font-weight:600;outline:none;box-shadow:0 3px 10px -4px #d9ac5255;-webkit-appearance:none;appearance:none;}
+#acc-guvenlik .field input{width:100%;}
+#acc-guvenlik input:focus{border-color:#d9ac52;box-shadow:0 0 0 3px #d9ac5233;}
+#acc-guvenlik input::placeholder{color:var(--text3);font-weight:500;}
+:root[data-acik="1"] #acc-guvenlik input[type=text],:root[data-acik="1"] #acc-guvenlik input[type=email],:root[data-acik="1"] #acc-guvenlik input[type=password]{border-color:#9a6f1ca0;box-shadow:0 3px 10px -4px #9a6f1c55;}
 input.sube-girdi{display:block;width:100%;box-sizing:border-box;margin-bottom:10px;padding:12px 14px;border:1.5px solid #d9ac52a6;border-radius:12px;background:var(--surface2);color:var(--text);font:inherit;font-size:15px;font-weight:600;outline:none;box-shadow:0 3px 10px -4px #d9ac5255;-webkit-appearance:none;appearance:none;}
 input.sube-girdi:focus{border-color:#d9ac52;box-shadow:0 0 0 3px #d9ac5233;}
 input.sube-girdi::placeholder{color:var(--text3);font-weight:500;}
