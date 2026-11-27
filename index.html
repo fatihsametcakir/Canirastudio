@@ -11423,7 +11423,13 @@ function renderPortalTakvim(el,og){
 
 function giderDocId(){return (subeAktifMi()&&SUBE.aktif!==subeVarsayilanId())?'giderAyarlari_'+SUBE.aktif:'giderAyarlari';}
 function giderSubeYenile(){GIDER_AYARLARI_YUKLENDI=false;GIDER_AYARLARI={kira:0,basEgitmenPayPct:30,grupKiraGecmisi:[],pratikKiraGecmisi:[],pratikIptalTarihleri:[],ozelKiraGecmisi:[]};
-  giderAyarlariniOnbellekleYukle().then(()=>{try{renderAll();}catch(e){}});}
+  try{raporSayfaYenile();}catch(e){}
+  giderAyarlariniOnbellekleYukle().then(()=>{try{renderAll();}catch(e){}try{raporSayfaYenile();}catch(e){}});}
+// Açık rapor/yönetim sayfasını (Parametreler, Gider Raporu, Tutma Oranı vb.) şube değişince yeniden çizer
+function raporSayfaYenile(){
+  const f={'egitmen-panel':'renderEgitmenPanel','gider-rapor':'renderGiderRapor','aylik-gelir':'renderGelir','gelir-trend':'renderGelirTrend','egitmenler':'renderEgitmenlerSayfa','tutma-orani':'renderRetention'}[PAGE];
+  if(f&&typeof window[f]==='function')window[f]();
+}
 async function giderAyarlariniYukle(){
   try{
     const yeniSnap=await db.collection('ayarlar').doc(giderDocId()).get();
