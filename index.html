@@ -1390,6 +1390,10 @@ html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:14.5px}
 .eg-bekleyen-satir.odendi .eg-bekleyen-tutar{text-decoration:line-through;opacity:.8;}
 .eg-tik{flex-shrink:0;width:34px;height:34px;border-radius:10px;border:2px solid color-mix(in srgb,var(--amber,#fbbf24) 70%,transparent);background:transparent;color:transparent;font-size:18px;font-weight:800;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .eg-tik.on{background:var(--green);border-color:var(--green);color:#fff;}
+.gider-satir.eg-satir-yan>span:first-child,.gider-satir.eg-satir-yan>span:last-child>span{animation:egYan 1.1s ease-in-out infinite;}
+.gider-satir.eg-satir-yan{background:color-mix(in srgb,var(--amber,#fbbf24) 10%,transparent);border-radius:8px;}
+.gider-satir.eg-satir-ok>span:first-child{color:var(--green)!important;}
+.eg-tik-kucuk{width:28px;height:28px;border-radius:8px;font-size:15px;}
 
 </style>
 <script>
@@ -12227,6 +12231,17 @@ async function egOdemeIsaretle(siId,idx,egId,yapildi){
     showToast('Kaydedilemedi, tekrar deneyin');
   }
 }
+// Dönem satırındaki (eğitmen payı) yanıp sönme + tik: yalnızca ödemesi bekleyen dönem için
+function egSatirDurum(siId,idx,egId){
+  const b=EG_BEKLEYEN.find(x=>x.siId===siId&&x.idx===idx&&x.kisiler.some(k=>k.egId===egId));
+  if(b)return egOdemeYapildiMi(siId,idx,egId)?'odendi':'bekliyor';
+  return egOdemeYapildiMi(siId,idx,egId)?'odendi':'';
+}
+function egSatirSinif(siId,idx,egId){const d=egSatirDurum(siId,idx,egId);return d==='bekliyor'?' eg-satir-yan':d==='odendi'?' eg-satir-ok':'';}
+function egSatirTik(siId,idx,egId){
+  const d=egSatirDurum(siId,idx,egId);if(!d)return '';
+  return `<button class="eg-tik eg-tik-kucuk${d==='odendi'?' on':''}" onclick="event.stopPropagation();egOdemeIsaretle('${siId}',${idx},'${egId}',${d!=='odendi'})" aria-label="Ödendi">✓</button>`;
+}
 function egBekleyenBlokHtml(siId){
   const liste=EG_BEKLEYEN.filter(b=>b.siId===siId);
   if(!liste.length)return '';
@@ -12422,16 +12437,16 @@ async function renderGiderRapor(){
         <div style="text-align:center;font-size:10.5px;color:var(--text3);margin-bottom:10px;">${donemAyEtiketi(d.donemAralik.bas,d.donemAralik.bitis)} <span style="opacity:.7;">(${donemFmt(d.donemAralik.bas)} – ${donemFmt(d.donemAralik.bitis)})</span></div>
 
         ${isAsistan?`
-        <div class="gider-satir" style="font-size:12px;">
+        <div class="gider-satir${egSatirSinif(d.si.id,d.donemIdx,d.egitmen.id)}" style="font-size:12px;">
           <span style="color:var(--text2);">👤 ${d.asistanAd} ${t('payi')} (%${d.asistanPct})</span>
-          <span style="color:${d.asistanOdeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistanOdeme>0?'−'+d.asistanOdeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>
+          <span style="display:flex;align-items:center;gap:8px;"><span style="color:${d.asistanOdeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistanOdeme>0?'−'+d.asistanOdeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>${egSatirTik(d.si.id,d.donemIdx,d.egitmen.id)}</span>
         </div>
         ${d.asistanOdeme===0&&d.asistanPct<100?`<div style="font-size:10.5px;color:var(--amber);margin:-4px 0 4px;">${t('kira_yetmedi_uyari')}</div>`:''}`:''}
 
         ${d.asistan2Ad?`
-        <div class="gider-satir" style="font-size:12px;">
+        <div class="gider-satir${d.egitmen2?egSatirSinif(d.si.id,d.donemIdx,d.egitmen2.id):''}" style="font-size:12px;">
           <span style="color:var(--text2);">👤 ${d.asistan2Ad} payı (%${d.asistan2Pct})</span>
-          <span style="color:${d.asistan2Odeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistan2Odeme>0?'−'+d.asistan2Odeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>
+          <span style="display:flex;align-items:center;gap:8px;"><span style="color:${d.asistan2Odeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistan2Odeme>0?'−'+d.asistan2Odeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>${d.egitmen2?egSatirTik(d.si.id,d.donemIdx,d.egitmen2.id):''}</span>
         </div>
         ${d.asistan2Odeme===0&&d.asistan2Pct<100?`<div style="font-size:10.5px;color:var(--amber);margin:-4px 0 4px;">Kalan tutar bu payı karşılamadı</div>`:''}`:''}
 
