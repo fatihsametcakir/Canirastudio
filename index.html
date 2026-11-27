@@ -1310,6 +1310,13 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 /* Sınıflar: kartlardaki hap (badge) bilgilerinin çerçeveleri belirgin */
 #sinif-list .badge{border:1.5px solid color-mix(in srgb,currentColor 70%,transparent)!important;font-weight:600;}
 
+/* Sınıf kartı: cinsiyet simgeleri büyük; kız sayısı pembe, erkek sayısı mavi */
+.cins-ikon{font-size:17px;line-height:1;font-weight:800;vertical-align:-2px;margin-right:1px;}
+.cins-k{color:#e11d74;font-weight:800;}
+.cins-e{color:#2563eb;font-weight:800;}
+:root:not([data-acik="1"]) .cins-k{color:#f472b6;}
+:root:not([data-acik="1"]) .cins-e{color:#60a5fa;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -8226,7 +8233,7 @@ function renderSiniflar(){
     const kadinSayi=aktifOgList.filter(o=>(o.cinsiyet||'k')==='k').length;
     const erkekSayi=aktifOgList.filter(o=>o.cinsiyet==='e').length;
     const cinsBilgi=aktifSayi>0?` · ♀${kadinSayi} ♂${erkekSayi}`:'';
-    const cinsBadge=aktifSayi>0?' · ♀'+kadinSayi+' ♂'+erkekSayi:'';
+    const cinsBadge=aktifSayi>0?' · <span class="cins-k"><b class="cins-ikon">♀</b>'+kadinSayi+'</span> <span class="cins-e"><b class="cins-ikon">♂</b>'+erkekSayi+'</span>':'';
     const kayitBadge=toplamSayi>aktifSayi?' ('+toplamSayi+' '+t('kayitli')+')':'';
     const kartRenk=pasif?'var(--border2)':RENK_BAR[origIdx%RENK_BAR.length];
     return `<div class="sinif-karti" onclick="openSinifDetay('${si.id}')" style="${pasif?'opacity:.55;':''}--card-color:${kartRenk};">
