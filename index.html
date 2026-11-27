@@ -4290,11 +4290,20 @@ function goBack(){
   renderAll();
   if(donDrawer)drawerAc();
 }
+// Sayfa başlığı üst çubuğa sığmıyorsa yazı puntosunu küçültür
+function topbarBaslikSigdir(){
+  const e=document.getElementById('topbarPageTitle');if(!e)return;
+  e.style.fontSize='';
+  let px=parseFloat(getComputedStyle(e).fontSize)||17;
+  let n=0;while(e.scrollWidth>e.clientWidth+0.5&&px>9&&n++<40){px-=0.5;e.style.fontSize=px+'px';}
+}
+window.addEventListener('resize',()=>{try{const p=document.getElementById('topbar-page-name');if(p&&p.style.display!=='none')topbarBaslikSigdir();}catch(x){}});
 function setTopbar(d,t=''){
   document.getElementById('backBtn').style.display=d?'flex':'none';
   document.getElementById('topbar-brand').style.display=d?'none':'block';
   document.getElementById('topbar-page-name').style.display=d?'block':'none';
   if(d)document.getElementById('topbarPageTitle').textContent=t;
+  if(d)topbarBaslikSigdir();
   // Sağ taraf (Canlı + Ayarlar) sadece ana sayfalarda görünsün
   const sagTaraf=document.getElementById('topbar-sag');
   if(sagTaraf)sagTaraf.style.display=d?'none':'flex';
