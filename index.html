@@ -1247,6 +1247,7 @@ html.ios-notch #splash .sp-cer .k4{right:20px;bottom:calc(var(--fb) + 11px);}
 
 /* Temaya uygun açılır kutular (eğitmen / gün / sınıf) */
 select.tema-sel{-webkit-appearance:none!important;appearance:none!important;background-color:var(--surface2)!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23d9ac52' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 8px center!important;background-size:11px 7px!important;border:1.5px solid #d9ac52a6!important;border-radius:var(--radius-sm)!important;color:var(--text)!important;font-weight:600!important;padding:10px 24px 10px 9px!important;font-size:clamp(11px,3.3vw,13px)!important;letter-spacing:-.01em;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;cursor:pointer;box-shadow:0 3px 10px -4px #d9ac5255;outline:none;}
+select.tema-sel.og-durum-act{background-color:var(--greenbg)!important;color:var(--green)!important;border-color:#34d399aa!important;box-shadow:0 3px 10px -3px #34d39970!important;}
 select.tema-sel:focus{border-color:#e8c06a!important;box-shadow:0 0 0 3px #d9ac5233;}
 select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:500;}
 :root[data-acik="1"] select.tema-sel{border-color:#9a6f1ca0!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%239a6f1c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;box-shadow:0 3px 10px -4px #9a6f1c55;}
@@ -1836,10 +1837,9 @@ try{
     </div>
     <div class="og-filtre-kutu">
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <select id="og-durum-sel" class="tema-sel" aria-label="Durum" onchange="setOgrenciFilter(this.value)" style="flex:1 1 0;min-width:0;"></select>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <select id="og-cins-sel" class="tema-sel" aria-label="Cinsiyet" onchange="setOgCinsiyet(this.value)" style="flex:1 1 0;min-width:0;"></select>
+      <select id="og-sel-aktif" class="tema-sel og-durum-sel" aria-label="Aktif" onchange="setOgDurumSel('aktif',this.value)" style="flex:1 1 0;min-width:0;"></select>
+      <select id="og-sel-pasif" class="tema-sel og-durum-sel" aria-label="Pasif" onchange="setOgDurumSel('pasif',this.value)" style="flex:1 1 0;min-width:0;"></select>
+      <select id="og-sel-hepsi" class="tema-sel og-durum-sel" aria-label="Tümü" onchange="setOgDurumSel('hepsi',this.value)" style="flex:1 1 0;min-width:0;"></select>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <select id="og-egitmen-sel" class="tema-sel" aria-label="Eğitmen" onchange="setOgEgitmen(this.value)" style="flex:1.2 1 0;min-width:0;"></select>
@@ -3653,8 +3653,8 @@ function cycleLang(){
   localStorage.setItem('appLang',LANG);
   applyLang();
 }
-let OG_EGITMEN='hepsi', OG_SINIF='hepsi', OG_CINSIYET='hepsi';
-let OG_FILTER='hepsi', OG_GRUPLU=true, OG_SIRALAMA='ad', OG_AD_TERS=false, ODEME_TAB='odemeler';
+let OG_EGITMEN='hepsi', OG_SINIF='hepsi';
+let OG_CINSIYET='hepsi', OG_FILTER='hepsi', OG_GRUPLU=true, OG_SIRALAMA='ad', OG_AD_TERS=false, ODEME_TAB='odemeler';
 let OD_AYLAR=[], OD_ONCEKI=new Set(), OD_ESKI_AYLAR=[];
 let ODEME_ACIK=new Set(), GELIR_ACIK=new Set();
 let GIDER_RAPOR_ACIK=new Set();
@@ -4242,8 +4242,8 @@ function toggleOgGrup(ad){
   else window._ogGrupAcik.add(ad);
   renderOgrenciler();
 }
-function setOgrenciFilter(f){OG_FILTER=f;renderOgrenciler();}
-function setOgCinsiyet(v){OG_CINSIYET=v;renderOgrenciler();}
+function setOgrenciFilter(f){OG_FILTER=f;OG_CINSIYET='hepsi';renderOgrenciler();}
+function setOgDurumSel(d,c){OG_FILTER=d;OG_CINSIYET=c;renderOgrenciler();}
 function toggleOdemeSinif(id){if(ODEME_ACIK.has(id))ODEME_ACIK.delete(id);else ODEME_ACIK.add(id);const body=document.getElementById('odeme-body-'+id),chev=document.getElementById('odeme-chev-'+id);if(!body||!chev)return;const a=ODEME_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
 function toggleGiderKart(id){if(GIDER_RAPOR_ACIK.has(id))GIDER_RAPOR_ACIK.delete(id);else GIDER_RAPOR_ACIK.add(id);const body=document.getElementById('gr-body-'+id),chev=document.getElementById('gr-chev-'+id);if(!body||!chev)return;const a=GIDER_RAPOR_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
 function toggleGelirSinif(id){
@@ -8029,14 +8029,18 @@ function ogSinifUygun(si){return (OG_SINIF==='hepsi'||si.ad===OG_SINIF)&&(OG_EGI
 function renderOgrenciler(){
   const el=document.getElementById('ogrenci-list');
   ogFiltreKutulari();
-  // Durum ve cinsiyet kutuları (adetler: asistanlar listede görünmediği için sayılmaz)
+  // Filtre düğmelerindeki adetler (asistanlar listede görünmediği için sayılmaz)
   {const sayilan=S.ogrenciler.filter(o=>!o.asistan);
    const adet={aktif:sayilan.filter(o=>(o.durum||'aktif')==='aktif').length,pasif:sayilan.filter(o=>o.durum==='pasif').length,hepsi:sayilan.length};
-   const ds=document.getElementById('og-durum-sel');
-   if(ds){ds.innerHTML='<option value="hepsi">'+(LANG==='en'?'All':LANG==='ru'?'Все':'Tümü')+' ('+adet.hepsi+')</option><option value="aktif">'+t('filter_aktif')+' ('+adet.aktif+')</option><option value="pasif">'+t('filter_pasif')+' ('+adet.pasif+')</option>';ds.value=OG_FILTER;}
-   const cs=document.getElementById('og-cins-sel');
-   if(cs){const k=sayilan.filter(o=>o.cinsiyet==='k').length,e=sayilan.filter(o=>o.cinsiyet==='e').length;
-     cs.innerHTML='<option value="hepsi">'+(LANG==='en'?'All genders':LANG==='ru'?'Все':'Tümü (kadın + erkek)')+'</option><option value="k">'+t('ot_kadin')+' ('+k+')</option><option value="e">'+t('ot_erkek')+' ('+e+')</option>';cs.value=OG_CINSIYET;}}
+   const durumOk=(o,k)=>k==='hepsi'||(k==='aktif'?(o.durum||'aktif')==='aktif':o.durum==='pasif');
+   const adLbl={aktif:t('filter_aktif'),pasif:t('filter_pasif'),hepsi:t('tumu')||'Tümü'};
+   ['aktif','pasif','hepsi'].forEach(k=>{const sel=document.getElementById('og-sel-'+k);if(!sel)return;
+     const g=sayilan.filter(o=>durumOk(o,k));
+     const n={hepsi:g.length,k:g.filter(o=>o.cinsiyet==='k').length,e:g.filter(o=>o.cinsiyet==='e').length};
+     const tx={hepsi:adLbl[k]+' ('+n.hepsi+')',k:adLbl[k]+' · '+t('ot_kadin')+' ('+n.k+')',e:adLbl[k]+' · '+t('ot_erkek')+' ('+n.e+')'};
+     sel.innerHTML=['hepsi','k','e'].map(v=>'<option value="'+v+'">'+tx[v]+'</option>').join('');
+     sel.value=(OG_FILTER===k)?OG_CINSIYET:'hepsi';
+     sel.classList.toggle('og-durum-act',OG_FILTER===k);});}
   const aramaEl=document.getElementById('og-arama');
   const arama=(aramaEl?aramaEl.value:'').toLowerCase().trim();
   let liste=S.ogrenciler;
