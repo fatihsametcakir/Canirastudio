@@ -255,6 +255,14 @@
 
   .cfg-warn{background:var(--accentbg);color:var(--accent);border-radius:var(--radius);padding:14px 16px;font-size:12.5px;line-height:1.6;margin-bottom:16px;border:1px solid #ff6b6b50;}
   .cfg-warn code{background:var(--surface2);padding:1px 5px;border-radius:5px;}
+.tema-dd{position:fixed;z-index:100000;background:var(--surface);border:1.5px solid #d9ac52a6;border-radius:var(--radius-sm);box-shadow:0 14px 34px -8px #000000aa,0 0 0 1px #d9ac5224 inset;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:5px;animation:temaDdIn .14s ease-out;}
+@keyframes temaDdIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.tema-dd-item{padding:11px 12px;border-radius:7px;font-size:14px;font-weight:500;color:var(--text);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tema-dd-item+.tema-dd-item{margin-top:2px;}
+.tema-dd-item:hover,.tema-dd-item:active{background:var(--surface2);}
+.tema-dd-item.sec{background:var(--accentbg);color:var(--accent);font-weight:700;}
+.tema-dd-item.sec::after{content:" \2713";}
+:root[data-acik="1"] .tema-dd{border-color:#9a6f1ca0;box-shadow:0 14px 30px -10px #3a2c0f66;}
 </style>
 </head>
 <body>
@@ -1781,6 +1789,53 @@ async function finishJuryRanking(){
 /* ================= INIT ================= */
 jjDilUygula();
 screenHome();
+</script>
+<script>
+(function(){
+  var dd=null,aktif=null;
+  function kapat(){if(dd){dd.remove();dd=null;}aktif=null;}
+  function ac(sel){
+    if(sel.disabled)return;
+    if(aktif===sel){kapat();return;}
+    kapat();aktif=sel;
+    dd=document.createElement('div');dd.className='tema-dd';dd.setAttribute('role','listbox');
+    Array.prototype.forEach.call(sel.options,function(o){
+      var b=document.createElement('div');b.className='tema-dd-item'+(o.value===sel.value?' sec':'');b.setAttribute('role','option');
+      b.textContent=o.textContent;b.dataset.v=o.value;
+      b.addEventListener('click',function(ev){ev.stopPropagation();sel.value=o.value;kapat();sel.dispatchEvent(new Event('change',{bubbles:true}));});
+      dd.appendChild(b);
+    });
+    document.body.appendChild(dd);
+    var r=sel.getBoundingClientRect(),vh=window.innerHeight,vw=window.innerWidth;
+    dd.style.minWidth=Math.min(r.width,vw-16)+'px';dd.style.maxWidth=(vw-16)+'px';
+    var dw=dd.offsetWidth;dd.style.left=Math.max(8,Math.min(r.left,vw-dw-8))+'px';
+    var altBos=vh-r.bottom-12,ustBos=r.top-12,yukari=altBos<180&&ustBos>altBos;
+    dd.style.maxHeight=Math.max(120,Math.min(yukari?ustBos:altBos,Math.round(vh*.5)))+'px';
+    if(yukari){dd.style.bottom=(vh-r.top+6)+'px';}else{dd.style.top=(r.bottom+6)+'px';}
+    var se=dd.querySelector('.sec');if(se&&se.scrollIntoView)se.scrollIntoView({block:'nearest'});
+  }
+  function hedef(e){var t=e.target;return t&&t.closest?t.closest('select'):null;}
+  var sonDokunma=0,ty=0,tx=0,kaydi=false;
+  document.addEventListener('mousedown',function(e){if(hedef(e))e.preventDefault();},true);
+  document.addEventListener('touchstart',function(e){var t0=e.touches&&e.touches[0];if(t0){ty=t0.clientY;tx=t0.clientX;kaydi=false;}},{capture:true,passive:true});
+  document.addEventListener('touchmove',function(e){var t0=e.touches&&e.touches[0];if(t0&&(Math.abs(t0.clientY-ty)>10||Math.abs(t0.clientX-tx)>10))kaydi=true;},{capture:true,passive:true});
+  document.addEventListener('touchend',function(e){
+    var s=hedef(e);
+    if(s){e.preventDefault();sonDokunma=Date.now();if(!kaydi)ac(s);return;}
+    if(dd&&!(e.target.closest&&e.target.closest('.tema-dd')))kapat();
+  },{capture:true,passive:false});
+  document.addEventListener('click',function(e){
+    var s=hedef(e);
+    if(s){e.preventDefault();e.stopPropagation();if(Date.now()-sonDokunma>600)ac(s);return;}
+    if(dd&&!(e.target.closest&&e.target.closest('.tema-dd')))kapat();
+  },true);
+  document.addEventListener('keydown',function(e){
+    var s=hedef(e)||(document.activeElement&&document.activeElement.matches&&document.activeElement.matches('select')?document.activeElement:null);
+    if(e.key==='Escape'){kapat();return;}
+    if(s&&(e.key==='Enter'||e.key===' '||e.key==='ArrowDown')){e.preventDefault();ac(s);}
+  },true);
+  window.addEventListener('resize',kapat);window.addEventListener('scroll',function(e){if(dd&&!(e.target&&e.target.closest&&e.target.closest('.tema-dd')))kapat();},true);
+})();
 </script>
 </body>
 </html>
