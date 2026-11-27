@@ -1327,6 +1327,11 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 :root[data-acik="1"] #acc-guvenlik input[type=text],:root[data-acik="1"] #acc-guvenlik input[type=email],:root[data-acik="1"] #acc-guvenlik input[type=password]{border-color:#9a6f1ca0;box-shadow:0 3px 10px -4px #9a6f1c55;}
 .input,#kayit-admin-content .input,.eg-in{border:1.5px solid #d9ac5280!important;box-shadow:inset 0 0 0 1px #d9ac5214;border-radius:var(--radius-sm);}
 .input:focus,#kayit-admin-content .input:focus,.eg-in:focus{border-color:#e8c36a!important;box-shadow:0 0 0 3px #d9ac5230;outline:none;}
+input[type=checkbox]{-webkit-appearance:none;appearance:none;width:18px;height:18px;flex-shrink:0;border:1.5px solid #d9ac52a6;border-radius:6px;background:var(--surface2);display:inline-grid;place-content:center;cursor:pointer;vertical-align:middle;box-shadow:0 2px 6px -2px #d9ac5255;transition:background .15s,border-color .15s;}
+input[type=checkbox]:checked{background:linear-gradient(135deg,#f4dc92,#d9ac52 55%,#b0842f);border-color:#d9ac52;}
+input[type=checkbox]:checked::after{content:"";width:9px;height:5px;border-left:2.5px solid #2a1d05;border-bottom:2.5px solid #2a1d05;transform:rotate(-45deg) translate(1px,-1px);}
+input[type=checkbox]:disabled{opacity:.45;cursor:not-allowed;}
+:root[data-acik="1"] input[type=checkbox]{border-color:#9a6f1ca0;box-shadow:0 2px 6px -2px #9a6f1c55;}
 input.sube-girdi{display:block;width:100%;box-sizing:border-box;margin-bottom:10px;padding:12px 14px;border:1.5px solid #d9ac52a6;border-radius:12px;background:var(--surface2);color:var(--text);font:inherit;font-size:15px;font-weight:600;outline:none;box-shadow:0 3px 10px -4px #d9ac5255;-webkit-appearance:none;appearance:none;}
 input.sube-girdi:focus{border-color:#d9ac52;box-shadow:0 0 0 3px #d9ac5233;}
 input.sube-girdi::placeholder{color:var(--text3);font-weight:500;}
