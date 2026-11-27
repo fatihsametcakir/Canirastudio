@@ -69,6 +69,12 @@
   .topbar-title .tb-gold{display:block;background:linear-gradient(100deg,#f8e7ae,#d9ac52 40%,#f4dc92 65%,#b0842f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;}
   :root[data-acik="1"] .topbar-title .tb-gold{background:linear-gradient(100deg,#8a6112,#b8872a 40%,#9a6f1c 65%,#6e4c0c);-webkit-background-clip:text;background-clip:text;}
   .topbar-title span{display:block;color:var(--accent);font-style:italic;font-weight:600;font-size:16px;letter-spacing:.05em;}
+  /* Ana ekrandaki başlıkla aynı görünüm */
+  .topbar-title span{background:linear-gradient(100deg,#fbeab4,#e0b457 38%,#f6e19a 62%,#c8963a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  :root[data-acik="1"] .topbar-title span{background:linear-gradient(100deg,#9a6f1c,#c8963a 40%,#a87a22 62%,#7a540f);-webkit-background-clip:text;background-clip:text;}
+  .topbar-title,.topbar-title span,.topbar-title .tb-gold{font-family:'Cormorant Garamond','Fraunces',serif;font-style:normal;font-weight:700;letter-spacing:.03em}
+  .topbar-title{display:flex;align-items:baseline;gap:5px;font-size:14.5px;line-height:1.1;white-space:nowrap}
+  .topbar-title .tb-gold,.topbar-title span{display:inline!important;font-size:clamp(11px,3.5vw,14.5px)!important}
   .topbar-tag{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--purple);background:var(--purplebg);border:1px solid #a78bfa35;border-radius:99px;padding:5px 11px;white-space:nowrap;}
 
   @keyframes cardIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
