@@ -4496,11 +4496,28 @@ function waPopupGonder(){
 // Yarışma uygulamasına aktif öğrenci listesini "köprü" olarak aktarır (aynı adreste çalıştıkları için localStorage paylaşılabiliyor)
 function yarismayaAc(){
   try{
-    const liste=S.ogrenciler
+    // Öğrenciler hangi şube(ler)de? (sınıf kaydı olduğu şubeler + öğrenciye atanmış şubeler). Tüm şubelerin öğrencileri alınır; süzme yarışma ekranında yapılır.
+    const cok=typeof subeAktifMi==='function'&&subeAktifMi();
+    const varsayilan=cok?subeVarsayilanId():null;
+    const hamSiniflar=(typeof S_RAW!=='undefined'&&S_RAW.siniflar)?S_RAW.siniflar:S.siniflar;
+    const hamOgr=(typeof S_RAW!=='undefined'&&S_RAW.ogrenciler)?S_RAW.ogrenciler:S.ogrenciler;
+    const subeMap={};
+    if(cok){
+      hamSiniflar.filter(si=>(si.durum||'aktif')!=='pasif').forEach(si=>{const sid=si.subeId||varsayilan;(si.kayitlar||[]).forEach(k=>{(subeMap[k.ogrenciId]=subeMap[k.ogrenciId]||new Set()).add(sid);});});
+    }
+    const gor=new Set();
+    const liste=hamOgr
       .filter(ogSayilanAktifMi)
-      .map(o=>({isim:(o.ad+' '+(o.soyad||'')).trim(),cinsiyet:o.cinsiyet==='e'?'E':'K'}))
+      .filter(o=>{if(gor.has(o.id))return false;gor.add(o.id);return true;})
+      .map(o=>{
+        const set=new Set(subeMap[o.id]||[]);
+        if(cok){(Array.isArray(o.subeIds)?o.subeIds:[]).forEach(x=>set.add(x));if(!set.size)set.add(varsayilan);}
+        return {isim:(o.ad+' '+(o.soyad||'')).trim(),cinsiyet:o.cinsiyet==='e'?'E':'K',subeler:[...set]};
+      })
       .sort((a,b)=>a.isim.localeCompare(b.isim,'tr'));
     localStorage.setItem('canira_ogrenci_listesi',JSON.stringify(liste));
+    localStorage.setItem('canira_subeler',JSON.stringify(cok?SUBE.liste:[]));
+    localStorage.setItem('canira_sube_aktif',cok?SUBE.aktif:'');
   }catch(e){/* köprü veri yazılamazsa sessizce geç, yarışma uygulaması yine de manuel girişle çalışır */}
   drawerKapat();
   window.open('./yarisma.html','_blank');

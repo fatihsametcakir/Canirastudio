@@ -720,7 +720,7 @@ async function screenAdminHome(){
       ${aktif.map(c=>`
         <div class="hist-item" >
           <div onclick="screenAdminCompetition('${c.id}')" style="flex:1;cursor:pointer;">
-            <div class="h-name">${esc(c.isim)}</div><div class="h-date" >${fmtDate(c.tarih)} · ${(c.ogrenciler||[]).length} öğrenci · ${(c.juriler||[]).length} jüri</div>
+            <div class="h-name">${esc(c.isim)}</div><div class="h-date" >${fmtDate(c.tarih)} · ${(c.ogrenciler||[]).length} öğrenci · ${(c.juriler||[]).length} jüri${subeAdlari(c)}</div>
           </div>
           <span class="chip wait">Aktif</span>
           <button class="iconbtn" style="margin-left:8px;" onclick="event.stopPropagation();deleteCompetition('${c.id}','${esc(c.isim).replace(/'/g,"\\'")}')">🗑</button>
@@ -733,7 +733,7 @@ async function screenAdminHome(){
       ${gecmis.length ? gecmis.map(c=>`
         <div class="hist-item">
           <div onclick="screenResults('${c.id}')" style="flex:1;cursor:pointer;">
-            <div class="h-name">${esc(c.isim)}</div><div class="h-date">${fmtDate(c.tarih)}</div>
+            <div class="h-name">${esc(c.isim)}</div><div class="h-date">${fmtDate(c.tarih)}${subeAdlari(c)}</div>
           </div>
           <span class="chip on">Tamamlandı</span>
           <button class="iconbtn" style="margin-left:8px;" onclick="event.stopPropagation();deleteCompetition('${c.id}','${esc(c.isim).replace(/'/g,"\\'")}')">🗑</button>
@@ -751,6 +751,32 @@ async function deleteCompetition(compId, isim){
 }
 
 let formEditId = null;
+// ── Şube köprüsü (ana uygulamadan localStorage ile gelir) ──
+let formSubeSecili = new Set();
+function subeBilgisi(){
+  let liste=[], aktif="";
+  try{ liste = JSON.parse(localStorage.getItem("canira_subeler")||"[]"); }catch(e){}
+  try{ aktif = localStorage.getItem("canira_sube_aktif")||""; }catch(e){}
+  return { liste: Array.isArray(liste)?liste:[], aktif };
+}
+function subeAdlari(c){
+  const { liste }=subeBilgisi();
+  if(liste.length<2||!Array.isArray(c.subeIds)||!c.subeIds.length) return "";
+  const ad=c.subeIds.map(id=>(liste.find(b=>b.id===id)||{}).ad).filter(Boolean);
+  return ad.length?" · "+esc(ad.join(" + ")):"";
+}
+function subeChipCiz(){
+  const el=document.getElementById("f-subeler"); if(!el) return;
+  const { liste } = subeBilgisi();
+  el.innerHTML = liste.map(b=>`<button type="button" class="btn ${formSubeSecili.has(b.id)?"btn-gold":"btn-ghost"}" style="flex:0 0 auto;width:auto;padding:9px 16px;" onclick="toggleFormSube('${esc(b.id)}')">${esc(b.ad)}</button>`).join("");
+}
+function toggleFormSube(id){
+  if(formSubeSecili.has(id)){ if(formSubeSecili.size<=1){ toast("En az bir şube seçili olmalı"); return; } formSubeSecili.delete(id); }
+  else formSubeSecili.add(id);
+  subeChipCiz();
+  const panel=document.getElementById("stu-pick-panel");
+  if(panel && panel.classList.contains("open")) stuPickRender();
+}
 
 function screenNewCompetition(){
   formEditId = null;
@@ -792,6 +818,10 @@ function renderCompetitionForm(comp){
         <option value="siralama">Sıralama (1.'den sonuncuya)</option>
       </select>
 
+      ${subeBilgisi().liste.length>=2 ? `
+      <label>Şubeler</label>
+      <div id="f-subeler" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+      <p class="desc" style="margin-top:6px;">Yarışmaya katılacak öğrencilerin şubelerini seç. Birden fazla seçersen listede öğrenciler tek tek, bir kez görünür.</p>` : ""}
       <label>Öğrenciler</label>
       <button type="button" class="stu-pick-toggle" onclick="toggleStuPickPanel()">
         <span>📋 Öğrenci Listesinden Ekle</span><span id="stu-pick-toggle-arrow">▾</span>
@@ -846,6 +876,15 @@ function renderCompetitionForm(comp){
     [1,2].forEach(()=>addJuryField());
     DEFAULT_CRITERIA.forEach(c=>addCriterionField(c, DEFAULT_CRITERIA_EN[c]));
   }
+  {
+    const sb=subeBilgisi();
+    if(sb.liste.length>=2){
+      const gecerli=new Set(sb.liste.map(b=>b.id));
+      const kayitli=(comp&&Array.isArray(comp.subeIds))?comp.subeIds.filter(x=>gecerli.has(x)):[];
+      formSubeSecili=new Set(kayitli.length?kayitli:(gecerli.has(sb.aktif)?[sb.aktif]:[sb.liste[0].id]));
+      subeChipCiz();
+    } else formSubeSecili=new Set();
+  }
   refreshAllStudentJuryChips();
 }
 
@@ -877,7 +916,13 @@ function stuPickRender(){
   const list = document.getElementById("stu-pick-list");
   const q = (document.getElementById("stu-pick-search").value || "").trim().toLocaleLowerCase("tr-TR");
   const mevcut = stuPickMevcutIsimler();
-  const uygun = stuPickListesi.filter(o=>!mevcut.includes(o.isim.trim().toLocaleLowerCase("tr-TR")));
+  const subeFiltreli = formSubeSecili.size ? stuPickListesi.filter(o=>!Array.isArray(o.subeler) || o.subeler.some(x=>formSubeSecili.has(x))) : stuPickListesi;
+  const gorulen = new Set();
+  const uygun = subeFiltreli.filter(o=>{
+    const k=o.isim.trim().toLocaleLowerCase("tr-TR");
+    if(mevcut.includes(k)||gorulen.has(k)) return false; // zaten eklenmiş ya da birden çok şubede kayıtlı: bir kez göster
+    gorulen.add(k); return true;
+  });
   const filtreli = q ? uygun.filter(o=>o.isim.toLocaleLowerCase("tr-TR").includes(q)) : uygun;
   if(!stuPickListesi.length){
     list.innerHTML = `<div class="stu-pick-empty">Ana uygulamadan öğrenci listesi bulunamadı. Ana uygulamada "Yarışma" butonuna tekrar basıp buraya geri dön.</div>`;
@@ -1073,14 +1118,15 @@ async function saveCompetitionForm(){
 
   try{
     if(formEditId){
-      await fsPatch(`yarismalar/${formEditId}`, { isim, tarih, kriterler, kriterlerEN, ogrenciler, juriler, maxPuan, yarismaTuru, oylamaTuru });
+      await fsPatch(`yarismalar/${formEditId}`, { isim, tarih, kriterler, kriterlerEN, ogrenciler, juriler, maxPuan, yarismaTuru, oylamaTuru, ...(formSubeSecili.size?{subeIds:[...formSubeSecili]}:{}) });
       toast("Değişiklikler kaydedildi");
       screenAdminCompetition(formEditId);
     } else {
       const compId = uid();
       await fsCreate("yarismalar", {
         isim, tarih, durum:"aktif", olusturma: new Date().toISOString(),
-        kriterler, kriterlerEN, ogrenciler, juriler, maxPuan, yarismaTuru, oylamaTuru
+        kriterler, kriterlerEN, ogrenciler, juriler, maxPuan, yarismaTuru, oylamaTuru,
+        ...(formSubeSecili.size?{subeIds:[...formSubeSecili]}:{})
       }, compId);
       toast("Yarışma oluşturuldu");
       screenAdminCompetition(compId);
