@@ -2959,6 +2959,7 @@ function subeDegistir(id){
   if(!SUBE.liste.some(b=>b.id===id))return;
   SUBE.aktif=id;try{localStorage.setItem('subeAktif',id);}catch(e){}const se=document.getElementById('sube-sel');if(se)se.value=id;
   subeYenidenUygula();try{renderAll();}catch(e){}giderSubeYenile();
+  try{if(PAGE==='devamsiz'){DEVAMSIZ_SECIM=new Set();DEVAMSIZ_ACIK=new Set();devamsizTabSec(DEVAMSIZ_TAB);}else if(PAGE==='yoklama-log'&&typeof yoklamaLogAc==='function')yoklamaLogAc();}catch(e){}
 }
 async function subeYukle(){
   try{
