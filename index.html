@@ -1950,6 +1950,13 @@ try{
     </div>
   </div>
 
+<div class="page" id="pg-subeler">
+  <div style="font-size:12.5px;color:var(--text3);margin:4px 0 14px;line-height:1.5;">İkinci şubeyi eklediğinde üst çubukta şube seçici belirir. Mevcut tüm kayıtlar listedeki ilk şubeye ait kalır. Eğitmenler ve öğrenci kartları ortaktır.</div>
+  <div id="sube-liste"></div>
+  <button class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:14px;" onclick="subeEkleSatir()">＋ Şube ekle</button>
+  <button class="btn btn-accent" style="width:100%;padding:13px;" onclick="subeKaydet()">Kaydet</button>
+</div>
+
 <!-- TUTMA ORANI MODAL -->
 <!-- ÖĞRENCİ TUTMA ORANI SAYFASI -->
 <div class="page" id="pg-tutma-orani">
@@ -2097,9 +2104,9 @@ try{
         <span class="acc-arrow" id="arr-acc-yonetim">›</span>
       </div>
       <div class="acc-body" id="acc-yonetim">
-        <button class="btn" style="width:100%;margin-bottom:10px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa45;" onclick="drawerKapat();openEgitmenlerSayfa()">👨‍🏫 <span data-i18n="egitmenler">Eğitmenler</span></button>
-        <button class="btn" style="width:100%;margin-bottom:10px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2445;" onclick="drawerKapat();openEgitmenGiderler()">⚙️ <span data-i18n="parametreler">Parametreler</span></button>
-        <button class="btn" style="width:100%;margin-bottom:10px;background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee45;" onclick="drawerKapat();subeModalAc()">🏢 <span data-i18n="sube_yonetimi">Şubeler</span></button>
+        <button class="btn" style="width:100%;margin-bottom:10px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa45;" onclick="yonetimSayfaAc(openEgitmenlerSayfa)">👨‍🏫 <span data-i18n="egitmenler">Eğitmenler</span></button>
+        <button class="btn" style="width:100%;margin-bottom:10px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2445;" onclick="yonetimSayfaAc(openEgitmenGiderler)">⚙️ <span data-i18n="parametreler">Parametreler</span></button>
+        <button class="btn" style="width:100%;margin-bottom:10px;background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee45;" onclick="yonetimSayfaAc(subeSayfaAc)">🏢 <span data-i18n="sube_yonetimi">Şubeler</span></button>
       </div>
     </div>
 
@@ -2959,10 +2966,10 @@ async function subeYukle(){
   }catch(e){console.warn('Şubeler yüklenemedi',e);}
 }
 let SUBE_TASLAK=[];
-function subeModalAc(){
+function subeSayfaAc(){
   if(typeof YETKI_SAHIP_MI!=='undefined'&&!YETKI_SAHIP_MI){showToast('Şubeleri yalnızca işletme sahibi yönetebilir.','error');return;}
   SUBE_TASLAK=SUBE.liste.length?SUBE.liste.map(b=>({...b})):[{id:'ana',ad:'Kadıköy'}];
-  subeModalCiz();document.getElementById('m-sube').classList.add('open');
+  openRaporSayfa('subeler','sube_yonetimi',subeModalCiz);
 }
 function subeModalCiz(){
   document.getElementById('sube-liste').innerHTML=SUBE_TASLAK.map((b,i)=>'<input class="sube-girdi" value="'+String(b.ad).replace(/"/g,'&quot;')+'" placeholder="Şube adı" oninput="SUBE_TASLAK['+i+'].ad=this.value">').join('');
@@ -2975,8 +2982,8 @@ async function subeKaydet(){
   SUBE.liste=liste;if(!liste.some(b=>b.id===SUBE.aktif))SUBE.aktif=liste[0].id;
   try{localStorage.setItem('subeAktif',SUBE.aktif);}catch(e){}
   subeSecimCiz();subeYenidenUygula();try{renderAll();}catch(e){}giderSubeYenile();
-  document.getElementById('m-sube').classList.remove('open');
   showToast(liste.length>1?'Şubeler kaydedildi ✓':'Kaydedildi ✓ (ikinci şube eklenince şube seçici görünür)');
+  if(PAGE==='subeler')goBack();
 }
 let SEG_CINSIYET='k', SEG_TIP='paket';
 let CUR_SINIF=null, CUR_KAYIT=null, EDIT_OG=null, EDIT_ODEME=null, EDIT_EGITMEN=null;
@@ -4223,6 +4230,12 @@ function openRaporSayfa(id,i18nKey,renderFn){
 function openAylikGelir(){openRaporSayfa('aylik-gelir','aylik_gelir',renderGelir);}
 function openGiderRaporu(){openRaporSayfa('gider-rapor','gider_raporu',renderGiderRapor);}
 function openAylikGelirTrend(){openRaporSayfa('gelir-trend','aylik_gelir_trendi',renderGelirTrend);}
+// Hamburger menüdeki Yönetim ekranları: geri dönünce hamburger menü açılır
+function yonetimSayfaAc(fn){
+  drawerKapat();
+  const onceki=PAGE;fn();
+  if(PAGE!==onceki&&typeof RAPOR_SAYFA_ID_LISTESI!=='undefined'&&RAPOR_SAYFA_ID_LISTESI.includes(PAGE)){_SAYFA_DRAWER=true;_DRAWER_FLAG=0;}
+}
 function openEgitmenGiderler(){openRaporSayfa('egitmen-panel','parametreler',renderEgitmenPanel);}
 function openEgitmenlerSayfa(){openRaporSayfa('egitmenler','egitmenler',renderEgitmenlerSayfa);}
 // Kartları kapalı/açılır (akordeon) yap — render sonrası çağrılır, açık kalan kartlar yeniden çizimde korunur
@@ -4257,7 +4270,7 @@ function renderEgitmenlerSayfa(){
   if(typeof yetkiPasifTara==='function')try{yetkiPasifTara();}catch(e){}
 }
 function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
-const RAPOR_SAYFA_ID_LISTESI=['aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
+const RAPOR_SAYFA_ID_LISTESI=['subeler','aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
 function goBack(){
   const donDrawer=_SAYFA_DRAWER;_SAYFA_DRAWER=false;
   let bt=(PAGE==='sinif-detay'||PREV_PAGE==='sinif-detay')?'siniflar':PREV_PAGE; // sınıf detayından geri → her zaman Sınıflar
@@ -13776,17 +13789,6 @@ function sonOdemelerFiltre(tip){
   }).join('');
 }
 </script>
-<div class="overlay" id="m-sube" onclick="if(event.target===this)this.classList.remove('open')"><div class="confirm-sheet">
-  <div class="sheet-handle"></div>
-  <div style="font-size:17px;font-weight:600;margin-bottom:6px;">🏢 Şubeler</div>
-  <div style="font-size:12.5px;color:var(--text3);margin-bottom:12px;line-height:1.4;">İkinci şubeyi eklediğinde üst çubukta şube seçici belirir. Mevcut tüm kayıtlar listedeki ilk şubeye ait kalır. Eğitmenler ve öğrenci kartları ortaktır.</div>
-  <div id="sube-liste"></div>
-  <button class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:12px;" onclick="subeEkleSatir()">＋ Şube ekle</button>
-  <div style="display:flex;gap:10px;">
-    <button class="btn btn-ghost" style="flex:1;padding:13px;" onclick="document.getElementById('m-sube').classList.remove('open')">Kapat</button>
-    <button class="btn btn-accent" style="flex:1;padding:13px;" onclick="subeKaydet()">Kaydet</button>
-  </div>
-</div></div>
 <div class="overlay" id="m-uyari" style="z-index:100000;"><div class="confirm-sheet">
   <div class="sheet-handle"></div>
   <div style="font-size:17px;font-weight:600;margin-bottom:8px;" id="uyari-baslik">Uyarı</div>
