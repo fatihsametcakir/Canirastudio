@@ -1289,9 +1289,7 @@ select.tema-sel option{background:var(--surface2);color:var(--text);font-weight:
 :root[data-acik="1"] #pg-gelirgider .gg-grid>.gg-card:nth-child(1){--gg-c:#16a34a!important;}
 :root[data-acik="1"] #pg-gelirgider .gg-grid>.gg-card:nth-child(2){--gg-c:#dc2626!important;}
 :root[data-acik="1"] #pg-gelirgider .gg-grid>.gg-card:nth-child(3){--gg-c:#0891b2!important;}
-:root[data-acik="1"] #pg-gelirgider .gg-grid>.gg-card:nth-child(4){--gg-c:#7c3aed!important;}
-:root[data-acik="1"] #pg-gelirgider .gg-grid>.gg-card:nth-child(5){--gg-c:#d97706!important;}
-:root[data-acik="1"] #pg-gelirgider .gg-grid>.gg-card:nth-child(6){--gg-c:#2563eb!important;}
+:root[data-acik="1"] #pg-gelirgider .gg-grid>.gg-card:nth-child(4){--gg-c:#2563eb!important;}
 :root[data-acik="1"] .gg-card{background:linear-gradient(145deg,color-mix(in srgb,var(--gg-c) 30%,#ffffff),color-mix(in srgb,var(--gg-c) 12%,#ffffff) 90%)!important;border-color:var(--gg-c)!important;}
 :root[data-acik="1"] .gg-card-ikon{background:color-mix(in srgb,var(--gg-c) 38%,transparent)!important;}
 
@@ -1945,14 +1943,6 @@ try{
         <div class="gg-card-ikon">📈</div>
         <div class="gg-card-baslik" data-i18n="aylik_gelir_trendi">Aylık Gelir Trendi</div>
       </button>
-      <button class="gg-card" style="--gg-c:var(--purple);" onclick="openEgitmenlerSayfa()">
-        <div class="gg-card-ikon">👨‍🏫</div>
-        <div class="gg-card-baslik" data-i18n="egitmenler">Eğitmenler</div>
-      </button>
-      <button class="gg-card" style="--gg-c:var(--amber);" onclick="openEgitmenGiderler()">
-        <div class="gg-card-ikon">⚙️</div>
-        <div class="gg-card-baslik" data-i18n="parametreler">Parametreler</div>
-      </button>
       <button class="gg-card" style="--gg-c:#3b82f6;" onclick="openTutmaOrani()">
         <div class="gg-card-ikon">📉</div>
         <div class="gg-card-baslik" data-i18n="ogrenci_tutma_orani">Öğrenci Tutma Oranı</div>
@@ -2095,12 +2085,24 @@ try{
       <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()"><span class="dh-ik">🚩</span><span class="dh-tx">Devamsız Öğrenciler</span></button>
       <button class="drawer-btn" id="drawerBtnYoklamaLog" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();yoklamaLogAc()"><span class="dh-ik">📝</span><span class="dh-tx">Yoklama Günlüğü</span></button>
       <button class="drawer-btn" id="drawerBtnWaSablon" style="background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39925;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openWaSablonModal()"><span class="dh-ik">💬</span><span class="dh-tx" data-i18n="acc_wa">WhatsApp Şablonları</span></button>
-      <button class="drawer-btn" id="drawerBtnSube" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();subeModalAc()"><span class="dh-ik">🏢</span><span class="dh-tx">Şubeler</span></button>
       <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()"><span class="dh-ik">🏆</span><span class="dh-tx">Yarışma (Jack & Jill)</span></button>
     </div>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
 
     <!-- Tema -->
+    <!-- Yönetim -->
+    <div class="acc-item" id="acc-yonetim-item" style="--item-color:var(--amber);">
+      <div class="acc-head" onclick="accToggle('acc-yonetim')">
+        <div class="acc-title"><span class="acc-icon">🛠</span> <span data-i18n="acc_yonetim">Yönetim</span></div>
+        <span class="acc-arrow" id="arr-acc-yonetim">›</span>
+      </div>
+      <div class="acc-body" id="acc-yonetim">
+        <button class="btn" style="width:100%;margin-bottom:10px;background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa45;" onclick="drawerKapat();openEgitmenlerSayfa()">👨‍🏫 <span data-i18n="egitmenler">Eğitmenler</span></button>
+        <button class="btn" style="width:100%;margin-bottom:10px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2445;" onclick="drawerKapat();openEgitmenGiderler()">⚙️ <span data-i18n="parametreler">Parametreler</span></button>
+        <button class="btn" style="width:100%;margin-bottom:10px;background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee45;" onclick="drawerKapat();subeModalAc()">🏢 <span data-i18n="sube_yonetimi">Şubeler</span></button>
+      </div>
+    </div>
+
     <div class="acc-item" style="--item-color:var(--purple);">
       <div class="acc-head" onclick="accToggle('acc-tema')">
         <div class="acc-title"><span class="acc-icon">🎨</span> <span data-i18n="acc_tema">Tema</span></div>
@@ -3051,7 +3053,7 @@ const TRANSLATIONS={
     aylik_gelir_trendi:'Aylık Gelir Trendi', egitmenler_giderler:'Eğitmenler & Giderler', parametreler:'Parametreler',
     odeme_bilgileri:'Ödeme Bilgileri', ogrenci_tutma_orani:'Öğrenci Tutma Oranı',
     acc_tema:'Tema', acc_guvenlik:'Güvenlik', acc_wa:'WhatsApp Şablonları', acc_yedek:'Yedekleme',
-    acc_excel:'Excel\'e Aktar', acc_pwa:'Uygulamayı Yükle', acc_veri:'Veri Yönetimi',
+    acc_excel:'Excel\'e Aktar', acc_pwa:'Uygulamayı Yükle', acc_veri:'Veri Yönetimi', acc_yonetim:'Yönetim', sube_yonetimi:'Şubeler',
     cikis_yap:'→ Çıkış Yap',
     uygulamadan_cik:'Uygulamadan Çık', uygulamadan_cik_soru:'Uygulamayı kapatmak istiyor musunuz?',
     ios_install_banner_metin:'Bu uygulamayı ana ekranına ekleyebilirsin: Paylaş ↑ simgesine dokun, sonra "Ana Ekrana Ekle" seç.',
@@ -3240,7 +3242,7 @@ const TRANSLATIONS={
     aylik_gelir_trendi:'Monthly Income Trend', egitmenler_giderler:'Instructors & Expenses', parametreler:'Parameters',
     odeme_bilgileri:'Payment Details', ogrenci_tutma_orani:'Student Retention Rate',
     acc_tema:'Theme', acc_guvenlik:'Security', acc_wa:'WhatsApp Templates', acc_yedek:'Backup',
-    acc_excel:'Export to Excel', acc_pwa:'Install App', acc_veri:'Data Management',
+    acc_excel:'Export to Excel', acc_pwa:'Install App', acc_veri:'Data Management', acc_yonetim:'Management', sube_yonetimi:'Branches',
     cikis_yap:'→ Log Out',
     uygulamadan_cik:'Exit App', uygulamadan_cik_soru:'Do you want to close the app?',
     ios_install_banner_metin:'You can add this app to your Home Screen: tap Share ↑, then choose "Add to Home Screen".',
@@ -3429,7 +3431,7 @@ const TRANSLATIONS={
     aylik_gelir_trendi:'Динамика дохода по месяцам', egitmenler_giderler:'Преподаватели и расходы', parametreler:'Параметры',
     odeme_bilgileri:'Платёжные реквизиты', ogrenci_tutma_orani:'Удержание учеников',
     acc_tema:'Тема', acc_guvenlik:'Безопасность', acc_wa:'Шаблоны WhatsApp', acc_yedek:'Резервная копия',
-    acc_excel:'Экспорт в Excel', acc_pwa:'Установить приложение', acc_veri:'Управление данными',
+    acc_excel:'Экспорт в Excel', acc_pwa:'Установить приложение', acc_veri:'Управление данными', acc_yonetim:'Управление', sube_yonetimi:'Филиалы',
     cikis_yap:'→ Выйти',
     uygulamadan_cik:'Выйти из приложения', uygulamadan_cik_soru:'Вы хотите закрыть приложение?',
     ios_install_banner_metin:'Вы можете добавить это приложение на главный экран: нажмите Поделиться ↑, затем «На экран «Домой»».',
@@ -9276,6 +9278,7 @@ function yetkiUygula(){
   const acc={tema:'acc-tema',guvenlik:'acc-guvenlik',yedek:'acc-yedek',excel:'acc-excel',pwa:'acc-pwa',birlestir:'acc-birlestir',veri:'acc-veri'};
   Object.entries(acc).forEach(([k,id])=>{const h=document.querySelector(`.acc-head[onclick*="'${id}'"]`);const e=h&&h.closest('.acc-item');if(e)e.classList.toggle('yetki-gizli',gizli.has(k));});
   const gg=gizli.has('gelirgider');
+  {const ye=document.getElementById('acc-yonetim-item');if(ye)ye.classList.toggle('yetki-gizli',gg);}
   document.querySelectorAll('.nav-item.c-gg').forEach(e=>e.classList.toggle('yetki-gizli',gg));
   const hs=document.getElementById('st-odeme');const hk=hs&&hs.closest('.stat-card');if(hk)hk.classList.toggle('yetki-gizli',gg);
   // Salt okunur hesap: ekle düğmesi gizlenir, menüde rozet gösterilir
