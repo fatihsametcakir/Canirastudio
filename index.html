@@ -1898,8 +1898,17 @@ try{
     <div class="tab-row" id="yk-ust-tab" style="margin-top:4px;">
       <button class="tab-btn active" id="yk-tab-yoklama" onclick="yoklamaSekme('yoklama')">✓ Yoklama</button>
       <button class="tab-btn" id="yk-tab-gunluk" onclick="yoklamaSekme('gunluk')">📝 Günlük</button>
+      <button class="tab-btn" id="yk-tab-devamsiz" onclick="yoklamaSekme('devamsiz')">🚩 Devamsız</button>
     </div>
     <div id="yoklama-content"></div>
+    <div id="yk-devamsiz" style="display:none;">
+      <div class="tab-row">
+        <button class="tab-btn active" id="devamsiz-tab-pasif" onclick="devamsizTabSec('pasif')" data-i18n="devamsiz_tab_pasif">Pasif Öğrenciler</button>
+        <button class="tab-btn" id="devamsiz-tab-2" onclick="devamsizTabSec('2')" data-i18n="iki_hafta_ustuste">2 Hafta Üst Üste</button>
+        <button class="tab-btn" id="devamsiz-tab-3" onclick="devamsizTabSec('3')" data-i18n="uc_hafta_ustuste">3+ Hafta</button>
+      </div>
+      <div id="devamsiz-content"></div>
+    </div>
     <div id="yk-gunluk" style="display:none;">
       <div class="tab-row">
         <button class="tab-btn active" id="ylog-f-hepsi" onclick="yoklamaLogFiltre('hepsi')">Hepsi</button>
@@ -2034,14 +2043,6 @@ try{
   <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">Hatalar sadece bu cihazda tutulur (en son 100 kayıt). Aynı hata arka arkaya olursa tek satırda sayılır.</div>
   <div id="hata-log-content"></div>
 </div></div>
-  <div class="page" id="pg-devamsiz"><div>
-  <div class="tab-row">
-    <button class="tab-btn active" id="devamsiz-tab-pasif" onclick="devamsizTabSec('pasif')" data-i18n="devamsiz_tab_pasif">Pasif Öğrenciler</button>
-    <button class="tab-btn" id="devamsiz-tab-2" onclick="devamsizTabSec('2')" data-i18n="iki_hafta_ustuste">2 Hafta Üst Üste</button>
-    <button class="tab-btn" id="devamsiz-tab-3" onclick="devamsizTabSec('3')" data-i18n="uc_hafta_ustuste">3+ Hafta</button>
-  </div>
-  <div id="devamsiz-content"></div>
-</div></div>
   <div class="page" id="pg-wa-sablon"><div style="max-width:560px;margin:0 auto;padding-top:8px;padding-bottom:90px;">
   <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.5;"><span data-i18n="degiskenler">Değişkenler</span>: <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{ad}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{sinif}</code> <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">{gun}</code></div>
   <div class="field"><label data-i18n="suresi_dolmus">Süresi Dolmuş</label><textarea id="wa-tpl-doldu" style="height:96px;font-size:14px;"></textarea></div>
@@ -2098,7 +2099,6 @@ try{
       <button class="drawer-btn" id="drawerBtnYoklama" style="background:var(--purplebg);color:var(--purple);border:1px solid #a78bfa25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('yoklama',this);yoklamaSekme('yoklama')"><span class="dh-ik">✓</span><span class="dh-tx">Yoklama</span></button>
       <button class="drawer-btn" id="drawerBtnVideolar" style="background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('videolar',this)"><span class="dh-ik">🎬</span><span class="dh-tx">Ders Videoları</span></button>
       <button class="drawer-btn" id="drawerBtnKayitTaslak" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();drawerSayfaAc('kayit-taslak',this)"><span class="dh-ik">📝</span><span class="dh-tx">Kayıt Formu</span></button>
-      <button class="drawer-btn" id="drawerBtnDevamsiz" style="background:var(--accentbg);color:var(--accent);border:1px solid #ff6b6b25;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="drawerKapat();openDevamsizModal()"><span class="dh-ik">🚩</span><span class="dh-tx">Devamsız Öğrenciler</span></button>
       <button class="drawer-btn" id="drawerBtnYarisma" style="background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2425;border-radius:var(--radius-sm);width:100%;margin-bottom:8px;" onclick="yarismayaAc()"><span class="dh-ik">🏆</span><span class="dh-tx">Yarışma (Jack & Jill)</span></button>
     </div>
     <div style="height:1px;background:var(--border);margin:6px 0;"></div>
@@ -2962,7 +2962,7 @@ function subeDegistir(id){
   if(!SUBE.liste.some(b=>b.id===id))return;
   SUBE.aktif=id;try{localStorage.setItem('subeAktif',id);}catch(e){}const se=document.getElementById('sube-sel');if(se)se.value=id;
   subeYenidenUygula();try{renderAll();}catch(e){}giderSubeYenile();
-  try{if(PAGE==='devamsiz'){DEVAMSIZ_SECIM=new Set();DEVAMSIZ_ACIK=new Set();devamsizTabSec(DEVAMSIZ_TAB);}else if(PAGE==='yoklama'&&document.getElementById('yk-gunluk').style.display!=='none')yoklamaLogAc();}catch(e){}
+  try{if(PAGE==='yoklama'){if(document.getElementById('yk-devamsiz').style.display!=='none'){DEVAMSIZ_SECIM=new Set();DEVAMSIZ_ACIK=new Set();devamsizTabSec(DEVAMSIZ_TAB);}else if(document.getElementById('yk-gunluk').style.display!=='none')yoklamaLogAc();}}catch(e){}
 }
 async function subeYukle(){
   try{
@@ -3903,7 +3903,6 @@ async function ozelOgrencileriBirlestir(){
 function setSyncing(v){const d=document.getElementById('syncDot'),tx=document.getElementById('syncText');if(v){d.classList.add('syncing');tx.textContent=t('sync_saving');}else{d.classList.remove('syncing');tx.textContent=t('sync_live');}}
 // Hamburger menüden açılan bu üç ekran artık açılır pencere değil, tam sayfa
 const MENU_SAYFALAR={
-  'm-devamsiz':{pg:'devamsiz',baslik:()=>'🚩 '+t('devamsiz_ogrenciler').replace(/^🚩\s*/,'')},
   'm-wa-sablon':{pg:'wa-sablon',baslik:()=>'💬 '+t('acc_wa')},
   'm-hata-log':{pg:'hata-log',baslik:()=>'🐞 Hata Günlüğü'}
 };
@@ -9296,7 +9295,7 @@ document.addEventListener('click',function(e){
 })();
 function yetkiUygula(){
   const gizli=YETKI_GIZLI;
-  const map={takvim:'#drawerBtnTakvim',yoklama:'#drawerBtnYoklama',videolar:'#drawerBtnVideolar',devamsiz:'#drawerBtnDevamsiz',wasablon:'#drawerBtnWaSablon',yarisma:'#drawerBtnYarisma'};
+  const map={takvim:'#drawerBtnTakvim',yoklama:'#drawerBtnYoklama',videolar:'#drawerBtnVideolar',devamsiz:'#yk-tab-devamsiz',wasablon:'#drawerBtnWaSablon',yarisma:'#drawerBtnYarisma'};
   Object.entries(map).forEach(([k,sel])=>{const e=document.querySelector(sel);if(e)e.classList.toggle('yetki-gizli',gizli.has(k));});
   {const yl=document.getElementById('drawerBtnYoklamaLog');if(yl)yl.classList.toggle('yetki-gizli',gizli.has('yoklama'));}
   const acc={tema:'acc-tema',guvenlik:'acc-guvenlik',yedek:'acc-yedek',excel:'acc-excel',pwa:'acc-pwa',birlestir:'acc-birlestir',veri:'acc-veri'};
@@ -10272,12 +10271,12 @@ function hataLogKopyala(){
   else toastGoster('Kopyalanamadı');
 }
 function yoklamaSekme(k){
-  const g=k==='gunluk';
-  document.getElementById('yk-tab-yoklama').classList.toggle('active',!g);
-  document.getElementById('yk-tab-gunluk').classList.toggle('active',g);
-  document.getElementById('yoklama-content').style.display=g?'none':'';
-  document.getElementById('yk-gunluk').style.display=g?'':'none';
-  if(g)yoklamaLogAc();
+  ['yoklama','gunluk','devamsiz'].forEach(x=>{const b=document.getElementById('yk-tab-'+x);if(b)b.classList.toggle('active',x===k);});
+  document.getElementById('yoklama-content').style.display=k==='yoklama'?'':'none';
+  document.getElementById('yk-gunluk').style.display=k==='gunluk'?'':'none';
+  document.getElementById('yk-devamsiz').style.display=k==='devamsiz'?'':'none';
+  if(k==='gunluk')yoklamaLogAc();
+  if(k==='devamsiz'){DEVAMSIZ_ACIK=new Set();DEVAMSIZ_SECIM=new Set();devamsizTabSec('pasif');}
 }
 async function yoklamaLogAc(){
   YLOG_FILTRE='hepsi';
@@ -10744,12 +10743,6 @@ function devamsizOgrencileriHesapla(){
 }
 let DEVAMSIZ_TAB='2';
 let DEVAMSIZ_ACIK=new Set();
-function openDevamsizModal(){
-  DEVAMSIZ_ACIK=new Set();
-  DEVAMSIZ_SECIM=new Set();
-  devamsizTabSec('pasif'); // her açılışta ilk sekme: Pasif Öğrenciler
-  openModal('m-devamsiz');
-}
 function devamsizTabSec(tab){
   DEVAMSIZ_TAB=tab;
   document.getElementById('devamsiz-tab-2').classList.toggle('active',tab==='2');
