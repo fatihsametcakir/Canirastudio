@@ -1836,9 +1836,10 @@ try{
     </div>
     <div class="og-filtre-kutu">
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <button class="btn btn-sm" id="filter-aktif" onclick="setOgrenciFilter('aktif')" style="flex:1;background:var(--greenbg);color:var(--green);border:1px solid #34d39966;box-shadow:0 3px 10px -3px #34d39970;"><span id="lbl-filter-aktif">Aktif</span> <span id="cnt-filter-aktif" style="opacity:.75;font-weight:500;"></span></button>
-      <button class="btn btn-sm" id="filter-pasif" onclick="setOgrenciFilter('pasif')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-pasif">Pasif</span> <span id="cnt-filter-pasif" style="opacity:.75;font-weight:500;"></span></button>
-      <button class="btn btn-sm" id="filter-hepsi" onclick="setOgrenciFilter('hepsi')" style="flex:1;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);"><span id="lbl-filter-hepsi">Hepsi</span> <span id="cnt-filter-hepsi" style="opacity:.75;font-weight:500;"></span></button>
+      <select id="og-durum-sel" class="tema-sel" aria-label="Durum" onchange="setOgrenciFilter(this.value)" style="flex:1 1 0;min-width:0;"></select>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <select id="og-cins-sel" class="tema-sel" aria-label="Cinsiyet" onchange="setOgCinsiyet(this.value)" style="flex:1 1 0;min-width:0;"></select>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <select id="og-egitmen-sel" class="tema-sel" aria-label="Eğitmen" onchange="setOgEgitmen(this.value)" style="flex:1.2 1 0;min-width:0;"></select>
@@ -3652,8 +3653,8 @@ function cycleLang(){
   localStorage.setItem('appLang',LANG);
   applyLang();
 }
-let OG_EGITMEN='hepsi', OG_SINIF='hepsi';
-let OG_FILTER='aktif', OG_GRUPLU=true, OG_SIRALAMA='ad', OG_AD_TERS=false, ODEME_TAB='odemeler';
+let OG_EGITMEN='hepsi', OG_SINIF='hepsi', OG_CINSIYET='hepsi';
+let OG_FILTER='hepsi', OG_GRUPLU=true, OG_SIRALAMA='ad', OG_AD_TERS=false, ODEME_TAB='odemeler';
 let OD_AYLAR=[], OD_ONCEKI=new Set(), OD_ESKI_AYLAR=[];
 let ODEME_ACIK=new Set(), GELIR_ACIK=new Set();
 let GIDER_RAPOR_ACIK=new Set();
@@ -4241,7 +4242,8 @@ function toggleOgGrup(ad){
   else window._ogGrupAcik.add(ad);
   renderOgrenciler();
 }
-function setOgrenciFilter(f){OG_FILTER=f;['aktif','pasif','hepsi'].forEach(k=>{const b=document.getElementById('filter-'+k);if(k===f){b.style.background='var(--greenbg)';b.style.color='var(--green)';b.style.border='1px solid #34d39966';b.style.boxShadow='0 3px 10px -3px #34d39970';}else{b.style.background='var(--surface2)';b.style.color='var(--text2)';b.style.border='1px solid var(--border2)';b.style.boxShadow='none';}});renderOgrenciler();}
+function setOgrenciFilter(f){OG_FILTER=f;renderOgrenciler();}
+function setOgCinsiyet(v){OG_CINSIYET=v;renderOgrenciler();}
 function toggleOdemeSinif(id){if(ODEME_ACIK.has(id))ODEME_ACIK.delete(id);else ODEME_ACIK.add(id);const body=document.getElementById('odeme-body-'+id),chev=document.getElementById('odeme-chev-'+id);if(!body||!chev)return;const a=ODEME_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
 function toggleGiderKart(id){if(GIDER_RAPOR_ACIK.has(id))GIDER_RAPOR_ACIK.delete(id);else GIDER_RAPOR_ACIK.add(id);const body=document.getElementById('gr-body-'+id),chev=document.getElementById('gr-chev-'+id);if(!body||!chev)return;const a=GIDER_RAPOR_ACIK.has(id);body.classList.toggle('open',a);chev.classList.toggle('open',a);}
 function toggleGelirSinif(id){
@@ -8027,15 +8029,20 @@ function ogSinifUygun(si){return (OG_SINIF==='hepsi'||si.ad===OG_SINIF)&&(OG_EGI
 function renderOgrenciler(){
   const el=document.getElementById('ogrenci-list');
   ogFiltreKutulari();
-  // Filtre düğmelerindeki adetler (asistanlar listede görünmediği için sayılmaz)
+  // Durum ve cinsiyet kutuları (adetler: asistanlar listede görünmediği için sayılmaz)
   {const sayilan=S.ogrenciler.filter(o=>!o.asistan);
    const adet={aktif:sayilan.filter(o=>(o.durum||'aktif')==='aktif').length,pasif:sayilan.filter(o=>o.durum==='pasif').length,hepsi:sayilan.length};
-   Object.keys(adet).forEach(k=>{const c=document.getElementById('cnt-filter-'+k);if(c)c.textContent='('+adet[k]+')';});}
+   const ds=document.getElementById('og-durum-sel');
+   if(ds){ds.innerHTML='<option value="hepsi">'+(LANG==='en'?'All':LANG==='ru'?'Все':'Tümü')+' ('+adet.hepsi+')</option><option value="aktif">'+t('filter_aktif')+' ('+adet.aktif+')</option><option value="pasif">'+t('filter_pasif')+' ('+adet.pasif+')</option>';ds.value=OG_FILTER;}
+   const cs=document.getElementById('og-cins-sel');
+   if(cs){const k=sayilan.filter(o=>o.cinsiyet==='k').length,e=sayilan.filter(o=>o.cinsiyet==='e').length;
+     cs.innerHTML='<option value="hepsi">'+(LANG==='en'?'All genders':LANG==='ru'?'Все':'Tümü (kadın + erkek)')+'</option><option value="k">'+t('ot_kadin')+' ('+k+')</option><option value="e">'+t('ot_erkek')+' ('+e+')</option>';cs.value=OG_CINSIYET;}}
   const aramaEl=document.getElementById('og-arama');
   const arama=(aramaEl?aramaEl.value:'').toLowerCase().trim();
   let liste=S.ogrenciler;
   if(OG_FILTER==='aktif')liste=liste.filter(o=>(o.durum||'aktif')==='aktif');
   else if(OG_FILTER==='pasif')liste=liste.filter(o=>o.durum==='pasif');
+  if(OG_CINSIYET!=='hepsi')liste=liste.filter(o=>o.cinsiyet===OG_CINSIYET);
   if(!arama)liste=liste.filter(o=>!o.asistan); // asistanlar yalnız aramada görünür (aktif/pasif/tümü listelerinde yok)
   if(arama)liste=liste.filter(o=>(o.ad+' '+(o.soyad||'')+' '+(o.tel||'')).toLowerCase().includes(arama));
   if(OG_EGITMEN!=='hepsi'||OG_SINIF!=='hepsi'){ // eğitmen / sınıf seçimi: yalnız o sınıflardaki (eğitmen seçiliyse özel dersi de olan) öğrenciler
