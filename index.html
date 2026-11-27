@@ -1326,10 +1326,13 @@ input.sube-girdi{display:block;width:100%;box-sizing:border-box;margin-bottom:10
 input.sube-girdi:focus{border-color:#d9ac52;box-shadow:0 0 0 3px #d9ac5233;}
 input.sube-girdi::placeholder{color:var(--text3);font-weight:500;}
 :root[data-acik="1"] input.sube-girdi{border-color:#9a6f1ca0;box-shadow:0 3px 10px -4px #9a6f1c55;}
-html.sube-var #topbar-brand{left:calc(50% + 34px);max-width:calc(100% - 205px);}
+html.sube-var #topbar-brand{position:static;transform:none;flex:1 1 0;min-width:0;max-width:none;text-align:center;overflow:hidden;}
+html.sube-var #topbar-brand>div{justify-content:center;}
+@media(max-width:345px){html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:10.5px}html.sube-var .topbar-left{gap:5px}html.sube-var #sube-sel{max-width:19vw}html.sube-var #topbar-sag{gap:4px!important}}
+html.sube-var #topbarSub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
 html.sube-var #topbar-brand .tb-mark{display:none}
 html.sube-var .topbar-title{flex-direction:column;align-items:center;gap:0;line-height:1.05}
-html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:15px}
+html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:14.5px}
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
