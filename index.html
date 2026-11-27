@@ -1394,6 +1394,9 @@ html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:14.5px}
 .gider-satir.eg-satir-yan{background:color-mix(in srgb,var(--amber,#fbbf24) 10%,transparent);border-radius:8px;}
 .gider-satir.eg-satir-ok>span:first-child{color:var(--green)!important;}
 .eg-tik-kucuk{width:28px;height:28px;border-radius:8px;font-size:15px;}
+@keyframes egKart{0%,100%{box-shadow:0 0 0 0 transparent;border-color:var(--gg-c);background-color:transparent;}50%{box-shadow:0 0 18px 4px color-mix(in srgb,var(--accent,#ff6b6b) 85%,transparent);border-color:var(--accent,#ff6b6b);background-color:color-mix(in srgb,var(--accent,#ff6b6b) 22%,transparent);}}
+.gg-card.eg-uyari{animation:egKart .9s ease-in-out infinite!important;}
+.gg-card.eg-uyari .eg-rozet{min-width:28px;height:28px;line-height:28px;font-size:17px;border-radius:14px;top:8px;right:10px;box-shadow:0 0 10px var(--accent,#ff6b6b);}
 
 </style>
 <script>
@@ -12271,14 +12274,17 @@ async function egOdemeIsaretle(siId,idx,egId,yapildi){
   }
 }
 // Dönem satırındaki (eğitmen payı) yanıp sönme + tik: yalnızca ödemesi bekleyen dönem için
-function egSatirDurum(siId,idx,egId){
-  const b=EG_BEKLEYEN.find(x=>x.siId===siId&&x.idx===idx&&x.kisiler.some(k=>k.egId===egId));
-  if(b)return egOdemeYapildiMi(siId,idx,egId)?'odendi':'bekliyor';
-  return egOdemeYapildiMi(siId,idx,egId)?'odendi':'';
+function egSatirDurum(siId,idx,egId,bitis){
+  if(egOdemeYapildiMi(siId,idx,egId))return 'odendi';
+  const bugun=new Date(bugunTarih()+'T00:00:00');
+  if(!bitis||bitis>=bugun)return ''; // dönem henüz bitmedi
+  const bek=EG_BEKLEYEN.some(x=>x.siId===siId&&x.idx===idx&&x.kisiler.some(k=>k.egId===egId));
+  return bek?'bekliyor':'gecmis';
 }
-function egSatirSinif(siId,idx,egId){const d=egSatirDurum(siId,idx,egId);return d==='bekliyor'?' eg-satir-yan':d==='odendi'?' eg-satir-ok':'';}
-function egSatirTik(siId,idx,egId){
-  const d=egSatirDurum(siId,idx,egId);if(!d)return '';
+function egSatirSinif(siId,idx,egId,bitis,tutar){if(!(tutar>0))return '';const d=egSatirDurum(siId,idx,egId,bitis);return d==='bekliyor'?' eg-satir-yan':d==='odendi'?' eg-satir-ok':'';}
+function egSatirTik(siId,idx,egId,bitis,tutar){
+  if(!(tutar>0))return '';
+  const d=egSatirDurum(siId,idx,egId,bitis);if(!d)return '';
   return `<button class="eg-tik eg-tik-kucuk${d==='odendi'?' on':''}" onclick="event.stopPropagation();egOdemeIsaretle('${siId}',${idx},'${egId}',${d!=='odendi'})" aria-label="Ödendi">✓</button>`;
 }
 function egBekleyenBlokHtml(siId){
@@ -12437,7 +12443,7 @@ async function renderGiderRapor(){
   {const gorunen=new Set(sinifDetaylar.map(d=>d.si.id));
    [...new Set(EG_BEKLEYEN.map(b=>b.siId))].filter(id=>!gorunen.has(id)).forEach(id=>{
      const si=S.siniflar.find(x=>x.id===id);if(!si)return;
-     html+=`<div class="egitmen-pay-kart eg-kart-uyari" style="margin-bottom:8px;"><div style="font-size:14px;font-weight:600;">${si.ad}</div>${egBekleyenBlokHtml(id)}</div>`;
+     html+=`<div class="egitmen-pay-kart eg-kart-uyari" style="margin-bottom:8px;"><div style="font-size:14px;font-weight:600;">${si.ad}</div><div style="font-size:11px;color:var(--amber);margin-top:4px;">❗ Eğitmen ödemesi bekliyor — sınıf kartında dönemi seçip tikleyin</div></div>`;
    });}
   if(sinifDetaylar.length){
     html+=`<div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>
@@ -12454,7 +12460,7 @@ async function renderGiderRapor(){
       };
 
       const kartAcik=GIDER_RAPOR_ACIK.has(d.si.id);
-      const egBek=egBekleyenBlokHtml(d.si.id);
+      const egBek=EG_BEKLEYEN.some(b=>b.siId===d.si.id);
       html+=`<div class="egitmen-pay-kart${egBek?' eg-kart-uyari':''}" style="border-left:3px solid ${renk};margin-bottom:8px;">
         <div class="gr-kart-baslik" onclick="toggleGiderKart('${d.si.id}')" style="display:flex;justify-content:space-between;align-items:center;">
           <div style="display:flex;align-items:center;gap:8px;min-width:0;">
@@ -12466,7 +12472,6 @@ async function renderGiderRapor(){
           </div>
           <span style="font-size:14px;font-weight:700;color:var(--green);flex-shrink:0;">${d.sinifGelir.toLocaleString(LC())} ₺</span>
         </div>
-        ${egBek}
         <div class="gr-kart-body${kartAcik?' open':''}" id="gr-body-${d.si.id}">
         <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;margin-top:10px;">
           <button onclick="sinifDonemDegistir('${d.si.id}',-1)" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;padding:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">‹</button>
@@ -12476,16 +12481,16 @@ async function renderGiderRapor(){
         <div style="text-align:center;font-size:10.5px;color:var(--text3);margin-bottom:10px;">${donemAyEtiketi(d.donemAralik.bas,d.donemAralik.bitis)} <span style="opacity:.7;">(${donemFmt(d.donemAralik.bas)} – ${donemFmt(d.donemAralik.bitis)})</span></div>
 
         ${isAsistan?`
-        <div class="gider-satir${egSatirSinif(d.si.id,d.donemIdx,d.egitmen.id)}" style="font-size:12px;">
+        <div class="gider-satir${egSatirSinif(d.si.id,d.donemIdx,d.egitmen.id,d.donemAralik.bitis,d.asistanOdeme)}" style="font-size:12px;">
           <span style="color:var(--text2);">👤 ${d.asistanAd} ${t('payi')} (%${d.asistanPct})</span>
-          <span style="display:flex;align-items:center;gap:8px;"><span style="color:${d.asistanOdeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistanOdeme>0?'−'+d.asistanOdeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>${egSatirTik(d.si.id,d.donemIdx,d.egitmen.id)}</span>
+          <span style="display:flex;align-items:center;gap:8px;"><span style="color:${d.asistanOdeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistanOdeme>0?'−'+d.asistanOdeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>${egSatirTik(d.si.id,d.donemIdx,d.egitmen.id,d.donemAralik.bitis,d.asistanOdeme)}</span>
         </div>
         ${d.asistanOdeme===0&&d.asistanPct<100?`<div style="font-size:10.5px;color:var(--amber);margin:-4px 0 4px;">${t('kira_yetmedi_uyari')}</div>`:''}`:''}
 
         ${d.asistan2Ad?`
-        <div class="gider-satir${d.egitmen2?egSatirSinif(d.si.id,d.donemIdx,d.egitmen2.id):''}" style="font-size:12px;">
+        <div class="gider-satir${d.egitmen2?egSatirSinif(d.si.id,d.donemIdx,d.egitmen2.id,d.donemAralik.bitis,d.asistan2Odeme):''}" style="font-size:12px;">
           <span style="color:var(--text2);">👤 ${d.asistan2Ad} payı (%${d.asistan2Pct})</span>
-          <span style="display:flex;align-items:center;gap:8px;"><span style="color:${d.asistan2Odeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistan2Odeme>0?'−'+d.asistan2Odeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>${d.egitmen2?egSatirTik(d.si.id,d.donemIdx,d.egitmen2.id):''}</span>
+          <span style="display:flex;align-items:center;gap:8px;"><span style="color:${d.asistan2Odeme>0?'var(--accent)':'var(--text3)'};font-weight:600;">${d.asistan2Odeme>0?'−'+d.asistan2Odeme.toLocaleString(LC())+' ₺':'0 ₺'}</span>${d.egitmen2?egSatirTik(d.si.id,d.donemIdx,d.egitmen2.id,d.donemAralik.bitis,d.asistan2Odeme):''}</span>
         </div>
         ${d.asistan2Odeme===0&&d.asistan2Pct<100?`<div style="font-size:10.5px;color:var(--amber);margin:-4px 0 4px;">Kalan tutar bu payı karşılamadı</div>`:''}`:''}
 
