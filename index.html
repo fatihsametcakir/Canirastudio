@@ -2008,6 +2008,14 @@ try{
     </div>
   </div>
 
+<div class="page" id="pg-studyolar">
+  <div style="font-size:12.5px;color:var(--text3);margin:4px 0 14px;line-height:1.5;">Özel ders planlarken seçilen stüdyolar. Her şubenin kendi stüdyoları vardır. Dersi olan bir stüdyo silinemez, adı değiştirilebilir.</div>
+  <select id="std-sube-sel" class="tema-sel" aria-label="Şube" onchange="studyoSubeSec(this.value)" style="display:none;width:100%;margin-bottom:12px;"></select>
+  <div id="std-liste"></div>
+  <button class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:14px;" onclick="studyoEkleSatir()">＋ Stüdyo ekle</button>
+  <button class="btn btn-accent" style="width:100%;padding:13px;" onclick="studyoKaydet()">Kaydet</button>
+</div>
+
 <div class="page" id="pg-subeler">
   <div style="font-size:12.5px;color:var(--text3);margin:4px 0 14px;line-height:1.5;">İkinci şubeyi eklediğinde üst çubukta şube seçici belirir. Mevcut tüm kayıtlar listedeki ilk şubeye ait kalır. Eğitmenler ve öğrenci kartları ortaktır.</div>
   <div id="sube-liste"></div>
@@ -2147,6 +2155,7 @@ try{
         <button class="btn" style="width:100%;margin-bottom:10px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2445;" onclick="yonetimSayfaAc(openEgitmenGiderler)">⚙️ <span data-i18n="parametreler">Parametreler</span></button>
         <button class="btn" id="drawerBtnWaSablon" style="width:100%;margin-bottom:10px;background:var(--greenbg,rgba(52,211,153,.12));color:var(--green,#34d399);border:1px solid #34d39945;" onclick="yonetimSayfaAc(openWaSablonModal)">💬 <span data-i18n="acc_wa">WhatsApp Şablonları</span></button>
         <button class="btn" style="width:100%;margin-bottom:10px;background:var(--cyanbg,rgba(34,211,238,.12));color:var(--cyan,#22d3ee);border:1px solid #22d3ee45;" onclick="yonetimSayfaAc(subeSayfaAc)">🏢 <span data-i18n="sube_yonetimi">Şubeler</span></button>
+        <button class="btn" style="width:100%;margin-bottom:10px;background:var(--amberbg);color:var(--amber);border:1px solid #fbbf2445;" onclick="yonetimSayfaAc(studyoSayfaAc)">🎛 <span data-i18n="studyo_yonetimi">Stüdyolar</span></button>
       </div>
     </div>
 
@@ -3006,6 +3015,59 @@ async function subeYukle(){
     subeSecimCiz();subeYenidenUygula();try{renderAll();}catch(e){}if(giderDocId()!=='giderAyarlari')giderSubeYenile();
   }catch(e){console.warn('Şubeler yüklenemedi',e);}
 }
+/* ── STÜDYOLAR ── her şubenin kendi stüdyo listesi (ayarlar/subeler içinde). Kayıt yoksa eski düzen: Stüdyo 1-2-3. */
+const STUDYO_VARSAYILAN=[{id:1,ad:'Stüdyo 1'},{id:2,ad:'Stüdyo 2'},{id:3,ad:'Stüdyo 3'}];
+function studyoSube(){return SUBE.liste.find(b=>b.id===SUBE.aktif)||SUBE.liste[0]||null;}
+function studyoListe(){const b=studyoSube();return (b&&Array.isArray(b.studyolar)&&b.studyolar.length)?b.studyolar:STUDYO_VARSAYILAN;}
+function studyoAd(id){const x=studyoListe().find(y=>String(y.id)===String(id));return x?x.ad:'Stüdyo '+id;}
+function studyoKisa(id){const ad=studyoAd(id);const m=/^Stüdyo\s*(\d+)$/i.exec(ad);return m?'S'+m[1]:ad.replace(/\s+/g,'').slice(0,3);}
+function studyoSecenekleri(ilkHepsi){
+  return (ilkHepsi||'')+studyoListe().map(x=>'<option value="'+x.id+'">'+String(x.ad).replace(/</g,'&lt;')+'</option>').join('');
+}
+let STD_TASLAK=[],STD_SUBE=null;
+function studyoSayfaAc(){
+  if(typeof YETKI_SAHIP_MI!=='undefined'&&!YETKI_SAHIP_MI){showToast('Stüdyoları yalnızca işletme sahibi yönetebilir.','error');return;}
+  STD_SUBE=(studyoSube()||{}).id||'ana';studyoTaslakYukle();
+  openRaporSayfa('studyolar','studyo_yonetimi',studyoSayfaCiz);
+}
+function studyoSubeSec(id){STD_SUBE=id;studyoTaslakYukle();studyoSayfaCiz();}
+function studyoTaslakYukle(){
+  const b=SUBE.liste.find(x=>x.id===STD_SUBE);
+  STD_TASLAK=((b&&Array.isArray(b.studyolar)&&b.studyolar.length)?b.studyolar:STUDYO_VARSAYILAN).map(x=>({id:x.id,ad:x.ad}));
+}
+function studyoSayfaCiz(){
+  const sel=document.getElementById('std-sube-sel');
+  const cok=SUBE.liste.length>=2;
+  sel.style.display=cok?'':'none';
+  if(cok){sel.innerHTML=SUBE.liste.map(b=>'<option value="'+b.id+'">'+String(b.ad).replace(/</g,'&lt;')+'</option>').join('');sel.value=STD_SUBE;}
+  document.getElementById('std-liste').innerHTML=STD_TASLAK.map((x,i)=>'<div style="display:flex;gap:8px;margin-bottom:8px;"><input class="sube-girdi" style="margin-bottom:0;flex:1;min-width:0;" value="'+String(x.ad).replace(/"/g,'&quot;')+'" placeholder="Stüdyo adı" oninput="STD_TASLAK['+i+'].ad=this.value"><button type="button" class="btn btn-ghost" style="flex:0 0 46px;width:46px;padding:0;" onclick="studyoSil('+i+')" aria-label="Sil">✕</button></div>').join('');
+}
+function studyoEkleSatir(){
+  const yeni=STD_TASLAK.reduce((m,x)=>Math.max(m,Number(x.id)||0),0)+1;
+  STD_TASLAK.push({id:yeni,ad:'Stüdyo '+yeni});studyoSayfaCiz();
+}
+function studyoSil(i){
+  const x=STD_TASLAK[i];if(!x)return;
+  if(STD_TASLAK.length<=1){showToast('En az bir stüdyo olmalı.','error');return;}
+  const hamS=(typeof S_RAW!=='undefined'&&S_RAW.ozelSeanslar)?S_RAW.ozelSeanslar:S.ozelSeanslar;
+  const def=subeVarsayilanId();
+  const kullanan=hamS.filter(se=>String(se.studyo||1)===String(x.id)&&(!subeAktifMi()||(se.subeId||def)===STD_SUBE)).length;
+  if(kullanan){showToast('Bu stüdyoda '+kullanan+' özel ders kaydı var, silinemez. Ad değiştirebilirsin.','error');return;}
+  STD_TASLAK.splice(i,1);studyoSayfaCiz();
+}
+async function studyoKaydet(){
+  const liste=STD_TASLAK.map(x=>({id:Number(x.id),ad:(x.ad||'').trim()})).filter(x=>x.ad);
+  if(!liste.length){showToast('En az bir stüdyo adı gerekli.','error');return;}
+  if(new Set(liste.map(x=>x.ad.toLocaleLowerCase('tr-TR'))).size!==liste.length){showToast('Aynı isimde iki stüdyo olamaz.','error');return;}
+  let yeni=SUBE.liste.length?SUBE.liste.map(b=>({...b})):[{id:'ana',ad:'Kadıköy'}];
+  const b=yeni.find(x=>x.id===STD_SUBE)||yeni[0];b.studyolar=liste;
+  try{await db.collection('ayarlar').doc('subeler').set({liste:yeni});}catch(e){showToast('Kaydedilemedi: '+(e.message||e),'error');return;}
+  SUBE.liste=yeni;if(!SUBE.aktif||!yeni.some(x=>x.id===SUBE.aktif))SUBE.aktif=yeni[0].id;
+  try{localStorage.setItem('subeAktif',SUBE.aktif);}catch(e){}
+  subeSecimCiz();try{renderAll();}catch(e){}
+  showToast('Stüdyolar kaydedildi ✓');
+  if(PAGE==='studyolar')goBack();
+}
 let SUBE_TASLAK=[];
 function subeSayfaAc(){
   if(typeof YETKI_SAHIP_MI!=='undefined'&&!YETKI_SAHIP_MI){showToast('Şubeleri yalnızca işletme sahibi yönetebilir.','error');return;}
@@ -3017,7 +3079,7 @@ function subeModalCiz(){
 }
 function subeEkleSatir(){SUBE_TASLAK.push({id:'s'+Date.now().toString(36),ad:''});subeModalCiz();}
 async function subeKaydet(){
-  const liste=SUBE_TASLAK.map(b=>({id:b.id,ad:(b.ad||'').trim()})).filter(b=>b.ad);
+  const liste=SUBE_TASLAK.map(b=>({...b,ad:(b.ad||'').trim()})).filter(b=>b.ad);
   if(!liste.length){showToast('En az bir şube adı gerekli.','error');return;}
   try{await db.collection('ayarlar').doc('subeler').set({liste});}catch(e){showToast('Kaydedilemedi: '+(e.message||e),'error');return;}
   SUBE.liste=liste;if(!liste.some(b=>b.id===SUBE.aktif))SUBE.aktif=liste[0].id;
@@ -3101,7 +3163,7 @@ const TRANSLATIONS={
     aylik_gelir_trendi:'Aylık Gelir Trendi', egitmenler_giderler:'Eğitmenler & Giderler', parametreler:'Parametreler',
     odeme_bilgileri:'Ödeme Bilgileri', ogrenci_tutma_orani:'Öğrenci Tutma Oranı',
     acc_tema:'Tema', acc_guvenlik:'Güvenlik', acc_wa:'WhatsApp Şablonları', acc_yedek:'Yedekleme',
-    acc_excel:'Excel\'e Aktar', acc_pwa:'Uygulamayı Yükle', acc_veri:'Veri Yönetimi', acc_yonetim:'Yönetim', sube_yonetimi:'Şubeler',
+    acc_excel:'Excel\'e Aktar', acc_pwa:'Uygulamayı Yükle', acc_veri:'Veri Yönetimi', acc_yonetim:'Yönetim', sube_yonetimi:'Şubeler', studyo_yonetimi:'Stüdyolar',
     cikis_yap:'→ Çıkış Yap',
     uygulamadan_cik:'Uygulamadan Çık', uygulamadan_cik_soru:'Uygulamayı kapatmak istiyor musunuz?',
     ios_install_banner_metin:'Bu uygulamayı ana ekranına ekleyebilirsin: Paylaş ↑ simgesine dokun, sonra "Ana Ekrana Ekle" seç.',
@@ -3290,7 +3352,7 @@ const TRANSLATIONS={
     aylik_gelir_trendi:'Monthly Income Trend', egitmenler_giderler:'Instructors & Expenses', parametreler:'Parameters',
     odeme_bilgileri:'Payment Details', ogrenci_tutma_orani:'Student Retention Rate',
     acc_tema:'Theme', acc_guvenlik:'Security', acc_wa:'WhatsApp Templates', acc_yedek:'Backup',
-    acc_excel:'Export to Excel', acc_pwa:'Install App', acc_veri:'Data Management', acc_yonetim:'Management', sube_yonetimi:'Branches',
+    acc_excel:'Export to Excel', acc_pwa:'Install App', acc_veri:'Data Management', acc_yonetim:'Management', sube_yonetimi:'Branches', studyo_yonetimi:'Studios',
     cikis_yap:'→ Log Out',
     uygulamadan_cik:'Exit App', uygulamadan_cik_soru:'Do you want to close the app?',
     ios_install_banner_metin:'You can add this app to your Home Screen: tap Share ↑, then choose "Add to Home Screen".',
@@ -3479,7 +3541,7 @@ const TRANSLATIONS={
     aylik_gelir_trendi:'Динамика дохода по месяцам', egitmenler_giderler:'Преподаватели и расходы', parametreler:'Параметры',
     odeme_bilgileri:'Платёжные реквизиты', ogrenci_tutma_orani:'Удержание учеников',
     acc_tema:'Тема', acc_guvenlik:'Безопасность', acc_wa:'Шаблоны WhatsApp', acc_yedek:'Резервная копия',
-    acc_excel:'Экспорт в Excel', acc_pwa:'Установить приложение', acc_veri:'Управление данными', acc_yonetim:'Управление', sube_yonetimi:'Филиалы',
+    acc_excel:'Экспорт в Excel', acc_pwa:'Установить приложение', acc_veri:'Управление данными', acc_yonetim:'Управление', sube_yonetimi:'Филиалы', studyo_yonetimi:'Студии',
     cikis_yap:'→ Выйти',
     uygulamadan_cik:'Выйти из приложения', uygulamadan_cik_soru:'Вы хотите закрыть приложение?',
     ios_install_banner_metin:'Вы можете добавить это приложение на главный экран: нажмите Поделиться ↑, затем «На экран «Домой»».',
@@ -4309,7 +4371,7 @@ function renderEgitmenlerSayfa(){
   if(typeof yetkiPasifTara==='function')try{yetkiPasifTara();}catch(e){}
 }
 function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
-const RAPOR_SAYFA_ID_LISTESI=['subeler','aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
+const RAPOR_SAYFA_ID_LISTESI=['studyolar','subeler','aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
 function goBack(){
   const donDrawer=_SAYFA_DRAWER;_SAYFA_DRAWER=false;
   let bt=(PAGE==='sinif-detay'||PREV_PAGE==='sinif-detay')?'siniflar':PREV_PAGE; // sınıf detayından geri → her zaman Sınıflar
@@ -7560,7 +7622,7 @@ function renderOzelTakvim(){
   {const es=document.getElementById('ot-egitmen-sel');
    if(es){es.innerHTML='<option value="hepsi">'+(LANG==='en'?'All instructors':LANG==='ru'?'Все преподаватели':'Tüm eğitmenler')+'</option>'+[...S.egitmenler].sort((a,b)=>(a.ad||'').localeCompare(b.ad||'','tr')).map(e=>`<option value="${e.id}">${e.ad}</option>`).join('');es.value=OT_EGITMEN;}}
   {const ss=document.getElementById('ot-studyo-sel');
-   if(ss){ss.innerHTML='<option value="hepsi">'+(LANG==='en'?(innerWidth<420?'Studios':'All studios'):LANG==='ru'?(innerWidth<420?'Студии':'Все студии'):(innerWidth<420?'Stüdyolar':'Tüm stüdyolar'))+'</option>'+[1,2,3].map(n=>'<option value="'+n+'">Stüdyo '+n+'</option>').join('');ss.value=String(OT_STUDYO);}}
+   if(ss){if(OT_STUDYO!=='hepsi'&&!studyoListe().some(x=>String(x.id)===String(OT_STUDYO)))OT_STUDYO='hepsi';ss.innerHTML=studyoSecenekleri('<option value="hepsi">'+(LANG==='en'?(innerWidth<420?'Studios':'All studios'):LANG==='ru'?(innerWidth<420?'Студии':'Все студии'):(innerWidth<420?'Stüdyolar':'Tüm stüdyolar'))+'</option>');ss.value=String(OT_STUDYO);}}
   // Renk boncukları: blok rengi cinsiyeti/asistanı gösterir
   legendEl.innerHTML=[['#f472b6',t('ot_kadin')],['#60a5fa',t('ot_erkek')],['#fb923c',t('ot_asistan')]].map(x=>'<span class="ot-legend-item"><span class="ot-legend-dot" style="background:'+x[0]+';color:'+x[0]+';"></span>'+x[1]+'</span>').join('');
 
@@ -7610,14 +7672,14 @@ function renderOzelTakvim(){
       const genislikYuzde=(100-REZERV_YUZDE)/toplamKolon;
       const solYuzde=genislikYuzde*s._kol;
       const span=Math.min(s._span,OT_TOPLAM_SLOT-s._start);
-      const etiket=(og?og.ad+' '+(og.soyad||''):'')+' · '+s.saat+' · '+fmtSaat(s.sure||1)+' saat · Stüdyo '+(s.studyo||1)+(s.dusuldu?' · düşüldü':'');
+      const etiket=(og?og.ad+' '+(og.soyad||''):'')+' · '+s.saat+' · '+fmtSaat(s.sure||1)+' saat · '+studyoAd(s.studyo||1)+(s.dusuldu?' · düşüldü':'');
       const adSoyad=og?(og.ad+' '+(og.soyad||'')).trim():'';
       html+=`<div class="ot-block" style="grid-column:${dayIdx+2};grid-row:${s._start+2} / span ${span};left:${solYuzde}%;width:${genislikYuzde}%;background:${otCinsiyetRenk(og)};box-shadow:inset 5px 0 0 ${egitmenRenk(s.egitmenId)};${s.dusuldu?'opacity:.55;':''}"
         onmousedown="otLpBaslat('${tarih}','${s.saat}')" onmouseup="otLpBitir()" onmouseleave="otLpBitir()"
         ontouchstart="otLpBaslat('${tarih}','${s.saat}')" ontouchend="otLpBitir()" ontouchmove="otLpBitir()"
         onclick="event.stopPropagation();if(!OT_LP_TETIKLENDI)otSeansDetay('${s.id}')"
         title="${etiket} — uzun basarak bu saate yeni ders ekleyebilirsiniz">
-        <span class="ot-block-studyo">S${s.studyo||1}</span><span class="ot-block-adsoyad">${adSoyad}</span>
+        <span class="ot-block-studyo">${studyoKisa(s.studyo||1)}</span><span class="ot-block-adsoyad">${adSoyad}</span>
       </div>`;
     });
     // Dolu saatlere de yeni ders ekleyebilmek için, boş bırakılan kenar şeride
@@ -7648,7 +7710,7 @@ function otHucreTikla(tarih,saat){
   document.getElementById('dp-paket-uyari').style.display='none';
   document.getElementById('dp-saat').value=saat;
   document.getElementById('dp-sure').value='1';
-  document.getElementById('dp-studyo').value='1';
+  document.getElementById('dp-studyo').innerHTML=studyoSecenekleri();document.getElementById('dp-studyo').value=String(studyoListe()[0].id);
   const dObj=new Date(tarih+'T00:00:00');
   document.getElementById('m-ders-planla-title').textContent=`Ders Planla — ${OT_GUN_ADLARI_F()[dObj.getDay()]} ${dObj.getDate()} ${dObj.toLocaleDateString(LC(),{month:'short'})}`;
   openModal('m-ders-planla');
@@ -7729,7 +7791,7 @@ function otSeansDuzenle(id){
       .map(o=>`<option value="${o.id}" ${o.id===s.ogrenciId?'selected':''}>${o.ad} ${o.soyad||''}</option>`).join('');
   document.getElementById('dp-saat').value=s.saat;
   document.getElementById('dp-sure').value=String(s.sure||1);
-  document.getElementById('dp-studyo').value=String(s.studyo||1); // eski dersler Stüdyo 1 sayılır
+  document.getElementById('dp-studyo').innerHTML=studyoSecenekleri();document.getElementById('dp-studyo').value=String(s.studyo||1); // eski dersler Stüdyo 1 sayılır
   dpOgrenciChange();
   const multiSel=document.getElementById('dp-egitmen-select');
   if(multiSel&&s.egitmenId&&[...multiSel.options].some(o=>o.value===s.egitmenId))multiSel.value=s.egitmenId;
@@ -7747,7 +7809,7 @@ function otSeansDetay(id){
   document.getElementById('m-seans-detay-content').innerHTML=`
     <div class="grad-card gc-cyan" style="margin-bottom:16px;">
       <div style="font-size:14px;color:var(--text2);margin-bottom:4px;">${formatDate(s.tarih)} · ${s.saat}</div>
-      <div style="font-size:18px;font-weight:600;font-family:Fraunces,serif;">${fmtSaat(s.sure||1)} saat${eg?' · '+eg.ad:''} · Stüdyo ${s.studyo||1}</div>
+      <div style="font-size:18px;font-weight:600;font-family:Fraunces,serif;">${fmtSaat(s.sure||1)} saat${eg?' · '+eg.ad:''} · ${studyoAd(s.studyo||1)}</div>
       <div style="font-size:12px;color:var(--text3);margin-top:6px;">${durum}</div>
     </div>
     <div style="display:flex;gap:8px;">
