@@ -1453,8 +1453,9 @@ button[onclick^="iosInstallBanneriKapat"]{border:1.5px solid rgba(13,13,20,.55)!
 @media (prefers-reduced-motion:reduce){:root[data-acik="1"] .og-bilgi-pil{animation:none;background:#ffe3e5;}}
 
 /* Liste satırlarındaki açılır ok: belirgin çerçeveli yuvarlak düğme */
-.chev-btn{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:28px;height:28px;box-sizing:border-box;border:1.5px solid var(--accent);border-radius:50%;background:var(--surface2);color:var(--accent);font-size:18px;font-weight:700;line-height:1;transition:transform .2s;padding-bottom:2px;}
-:root[data-acik="1"] .chev-btn{border-color:#c1121f;color:#c1121f;background:#fff;}
+.chev-btn{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:28px;height:28px;box-sizing:border-box;border:1.5px solid #d9ac52;border-radius:50%;background:var(--surface2);color:#d9ac52;font-size:18px;font-weight:700;line-height:1;transition:transform .2s;padding-bottom:2px;}
+:root[data-acik="1"] .chev-btn{border-color:#b8872a;color:#9a6f1c;background:#fff;}
+.chev-btn.chev-kucuk{width:20px;height:20px;font-size:14px;padding-bottom:1px;border-width:1.2px;}
 
 </style>
 <script>
@@ -5318,7 +5319,7 @@ function toggleGelirSinif(id){
   else GELIR_ACIK.add(id);
   renderGelir();
 }
-function toggleGelirAy(key){if(GELIR_ACIK.has(key))GELIR_ACIK.delete(key);else GELIR_ACIK.add(key);const el=document.getElementById('gelir-detay-'+key);if(el){el.classList.toggle('open',GELIR_ACIK.has(key));}}
+function toggleGelirAy(key){if(GELIR_ACIK.has(key))GELIR_ACIK.delete(key);else GELIR_ACIK.add(key);const el=document.getElementById('gelir-detay-'+key);if(el){el.classList.toggle('open',GELIR_ACIK.has(key));const hd=el.previousElementSibling,cv=hd&&hd.querySelector('.chev-btn');if(cv)cv.style.transform=GELIR_ACIK.has(key)?'rotate(90deg)':'rotate(0deg)';}}
 
 // ── WhatsApp şablon sistemi ────────────────────────────
 const WA_VARSAYILAN={
@@ -9757,7 +9758,7 @@ function renderGelir(){
               '<span>'+siAd+'</span>'+
               '<div style="display:flex;align-items:center;gap:6px;">'+
                 '<span style="color:var(--green);font-weight:600;">'+siToplam.toLocaleString(LC())+' ₺</span>'+
-                '<span style="font-size:12px;color:var(--text3);">'+(siAcik?'▾':'▸')+'</span>'+
+                '<span class="chev-btn chev-kucuk" style="transform:rotate('+(siAcik?90:0)+'deg);">›</span>'+
               '</div>'+
             '</div>'+
             (siAcik?
@@ -9804,7 +9805,7 @@ function renderGelir(){
                 '<span>✦ '+grp.baslik+'</span>'+
                 '<div style="display:flex;align-items:center;gap:6px;">'+
                   '<span style="color:var(--green);font-weight:600;">'+grpToplam.toLocaleString(LC())+' ₺</span>'+
-                  '<span style="font-size:12px;color:var(--text3);">'+(grpAcik?'▾':'▸')+'</span>'+
+                  '<span class="chev-btn chev-kucuk" style="transform:rotate('+(grpAcik?90:0)+'deg);">›</span>'+
                 '</div>'+
               '</div>'+
               (grpAcik?
