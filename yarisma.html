@@ -418,6 +418,18 @@ const JJ_SOZLUK = {
   "‹ Yarışma":["‹ Competition","‹ Конкурс"],
   "‹ Yarışmalar":["‹ Competitions","‹ Конкурсы"],
   "Hoş geldin":["Welcome","Добро пожаловать"],
+  "Bağlantı":["Connection","Соединение"],
+  "Müzikalite":["Musicality","Музыкальность"],
+  "Sahne Duruşu":["Stage Presence","Сценическое присутствие"],
+  "En az bir şube seçili olmalı":["At least one branch must be selected","Должен быть выбран хотя бы один филиал"],
+  "5 üzerinden":["out of 5","из 5"],
+  "6 üzerinden":["out of 6","из 6"],
+  "7 üzerinden":["out of 7","из 7"],
+  "8 üzerinden":["out of 8","из 8"],
+  "9 üzerinden":["out of 9","из 9"],
+  "10 üzerinden":["out of 10","из 10"],
+  "Ana uygulamadan öğrenci listesi bulunamadı. Ana uygulamada \"Yarışma\" butonuna tekrar basıp buraya geri dön.":["The student list from the main app was not found. Press the \"Competition\" button again in the main app and come back here.","Список учеников из основного приложения не найден. Нажмите кнопку «Соревнование» в основном приложении ещё раз и вернитесь сюда."],
+  "Bugün":["Today","Сегодня"],
   "Kimsin?":["Who are you?","Кто вы?"],
   "Yarışma oluşturmak ve sonuçları görmek için Yönetici; puanlama yapmak için Jüri panelini seç.":["Choose Admin to create competitions and view results, or Jury to score.","Выберите «Администратор», чтобы создавать конкурсы и смотреть результаты, или «Жюри» — чтобы оценивать."],
   "Yönetici":["Admin","Администратор"],
@@ -565,7 +577,14 @@ const JJ_KALIPLAR = [
   [/^Seçilenlerle Yeni Yarışma Oluştur \((\d+)\)$/, "Create New Competition with Selected ($1)", "Создать новый конкурс из выбранных ($1)"],
   [/^Genel ortalama: (.*)$/, "Overall average: $1", "Общий средний балл: $1"],
   [/^Jüri: (.*)$/, "Jury: $1", "Жюри: $1"],
-  [/^Devam Et \((\d+)\/(\d+)\)$/, "Continue ($1/$2)", "Продолжить ($1/$2)"]
+  [/^Devam Et \((\d+)\/(\d+)\)$/, "Continue ($1/$2)", "Продолжить ($1/$2)"],
+  [/^Kayıt hatası \(HTTP (.*)\)$/, "Save error (HTTP $1)", "Ошибка сохранения (HTTP $1)"],
+  [/^Okuma hatası \(HTTP (.*)\)$/, "Read error (HTTP $1)", "Ошибка чтения (HTTP $1)"],
+  [/^Liste alınamadı \(HTTP (.*)\)$/, "Could not get the list (HTTP $1)", "Не удалось получить список (HTTP $1)"],
+  [/^Güncelleme hatası \(HTTP (.*)\)$/, "Update error (HTTP $1)", "Ошибка обновления (HTTP $1)"],
+  [/^(.*) · (\d+) öğrenci · (\d+) jüri(.*)$/, "$1 · $2 students · $3 jury$4", "$1 · учеников: $2 · жюри: $3$4"],
+  [/^"(.*)" yarışmasını kalıcı olarak silmek istediğine emin misin\? Bu işlem geri alınamaz\.$/, "Are you sure you want to permanently delete the \"$1\" competition? This cannot be undone.", "Вы уверены, что хотите навсегда удалить соревнование «$1»? Это действие нельзя отменить."],
+  [/^(\d+) öğrenci eklendi$/, "$1 students added", "Добавлено учеников: $1"]
 ];
 function jjCevir(s, L){
   L = L || LANG;

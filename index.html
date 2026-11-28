@@ -4534,6 +4534,9 @@ const TX_EKSTRA=[
 [`Bu dönem zaten ödendi — yine de seçebilirsiniz`,`This period is already paid — you can still select it`,`Этот период уже оплачен — вы всё равно можете его выбрать`],
 [`{} saat`,`{} h`,`{} ч`],
 [`{} saatlik`,`{}-hour`,`{}-часовой`],
+[`sınıfsız`,`no class`,`без класса`],
+[`pasif`,`inactive`,`неактивен`],
+[`Pasif`,`Inactive`,`Неактивные`],
 /*TX_END*/
 ];
 const TX={built:false,en:new Map(),ru:new Map(),pat:{en:[],ru:[]},frag:{en:null,ru:null},fragList:[]};
@@ -10642,11 +10645,19 @@ async function githubYedekTetikle(){
   }
 }
 // ── EXCEL EXPORT ───────────────────────────────────────
+const TX_EXCEL={
+en:{Ad:'First Name',Soyad:'Last Name',Telefon:'Phone',Durum:'Status',Cinsiyet:'Gender',Aktif:'Active',Pasif:'Inactive',Kadın:'Female',Erkek:'Male',Gün:'Day',Ay:'Month',Tarih:'Date',Not:'Note',Saat:'Hours',Sınıf:'Class',Öğrenci:'Student',Detay:'Details',Yöntem:'Method','Kapsanan Aylar':'Covered Months','Kayıtlı Sınıflar':'Enrolled Classes','Paket (₺)':'Package (₺)','Tutar (₺)':'Amount (₺)','Ödenen (₺)':'Paid (₺)',Öğrenciler:'Students',Sınıflar:'Classes',Ödemeler:'Payments','Özel Dersler':'Private Lessons','Gelir Özeti':'Income Summary'},
+ru:{Ad:'Имя',Soyad:'Фамилия',Telefon:'Телефон',Durum:'Статус',Cinsiyet:'Пол',Aktif:'Активен',Pasif:'Неактивен',Kadın:'Женский',Erkek:'Мужской',Gün:'День',Ay:'Месяц',Tarih:'Дата',Not:'Заметка',Saat:'Часы',Sınıf:'Класс',Öğrenci:'Ученик',Detay:'Детали',Yöntem:'Способ','Kapsanan Aylar':'Охваченные месяцы','Kayıtlı Sınıflar':'Классы','Paket (₺)':'Пакет (₺)','Tutar (₺)':'Сумма (₺)','Ödenen (₺)':'Оплачено (₺)',Öğrenciler:'Ученики',Sınıflar:'Классы',Ödemeler:'Платежи','Özel Dersler':'Частные уроки','Gelir Özeti':'Сводка доходов'}};
 function excelIndir(){
   const btn=document.getElementById('excel-indir-btn');
   if(btn){btn.textContent='⏳ Hazırlanıyor...';btn.disabled=true;}
 
   try{
+    // Excel başlıkları ve sayfa adları seçili dilde yazılsın
+    var _xj=XLSX.utils.json_to_sheet,_xb=XLSX.utils.book_append_sheet;
+    const xc=v=>{if(typeof v!=='string'||LANG==='tr')return v;const m=TX_EXCEL[LANG]&&TX_EXCEL[LANG][v];return m!==undefined?m:txCevir(v);};
+    XLSX.utils.json_to_sheet=function(rows,o){return _xj.call(this,rows.map(r=>{const n={};Object.keys(r).forEach(k=>{n[xc(k)]=xc(r[k]);});return n;}),o);};
+    XLSX.utils.book_append_sheet=function(wb,ws,name){return _xb.call(this,wb,ws,String(xc(name)).slice(0,31));};
     const wb=XLSX.utils.book_new();
     const tarihStr=simdikiZaman().toLocaleDateString(LC()).replace(/\./g,'-');
 
@@ -10778,6 +10789,7 @@ function excelIndir(){
   } catch(e){
     alert('Excel oluşturulurken hata: '+e.message);
   } finally {
+    try{if(typeof _xj==='function')XLSX.utils.json_to_sheet=_xj;if(typeof _xb==='function')XLSX.utils.book_append_sheet=_xb;}catch(e){}
     if(btn){btn.innerHTML='<span>📥</span> Excel İndir (.xlsx)';btn.disabled=false;}
   }
 }
