@@ -332,6 +332,9 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 .odeme-sinif-body.open{display:block;}
 
 /* Aylık Gelir accordion */
+.gelir-row.odeme-sinif-grup{border-bottom:1px solid color-mix(in srgb,var(--grup-renk) 45%,var(--border2))!important;border-left:3px solid var(--grup-renk);}
+.gelir-row.odeme-sinif-grup .gelir-row-header{padding:12px 14px;}
+.gelir-row.odeme-sinif-grup .gelir-detay{padding:0 14px 10px;}
 .gelir-row{border-bottom:1px solid var(--border);}
 .gelir-row:last-child{border-bottom:none;}
 .gelir-row-header{display:flex;align-items:center;justify-content:space-between;padding:10px 0;cursor:pointer;user-select:none;}
@@ -9972,9 +9975,10 @@ function renderGelir(){
   const toplamToplam=sirali.reduce((s,[,v])=>s+v.toplam,0);
   // Net gelir hesapla: her ay kendi tarihinde GEÇERLİ OLAN kira + asistan eğitmen payı ile
   const aktifSiniflar=S.siniflar.filter(s=>s.durum!=='pasif');
-  let html='<div class="card">';
+  let html='<div>';
   sirali.forEach(([key,v])=>{
     const acik=GELIR_ACIK.has(key);
+    const ayRenk=RENK_BAR[(parseInt(key.split('-')[1],10)-1)%RENK_BAR.length];
     // Bu ay net: brüt - bu ayda geçerli olan kira - bu ayın asistan gideri
     const ayBasStr=key+'-01';
     const buAyKira=aktifSiniflar.reduce((s,si)=>s+sinifKiraTarihte(si,ayBasStr),0);
@@ -9989,7 +9993,7 @@ function renderGelir(){
     const buAyOzelStudyoKira=ozelStudyoKiraTarihte(ayBasStr);
     const ayNet=v.toplam-buAyKira-buAyPratikKira-buAyAsistan-buAyOzelStudyoKira-ozelKomisyonPayToplam(key);
     const gruplar=v.gruplar||{};
-    html+=`<div class="gelir-row">
+    html+=`<div class="gelir-row odeme-sinif-grup" style="--grup-renk:${ayRenk};">
       <div class="gelir-row-header" onclick="toggleGelirAy('${key}')">
         <div>
           <div class="gelir-ay">${ayLabel(key)}</div>
