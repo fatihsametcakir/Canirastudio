@@ -1456,6 +1456,7 @@ button[onclick^="iosInstallBanneriKapat"]{border:1.5px solid rgba(13,13,20,.55)!
 .chev-btn{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:28px;height:28px;box-sizing:border-box;border:1.5px solid #d9ac52;border-radius:50%;background:var(--surface2);color:#d9ac52;font-size:18px;font-weight:700;line-height:1;transition:transform .2s;padding-bottom:2px;}
 :root[data-acik="1"] .chev-btn{border-color:#b8872a;color:#9a6f1c;background:#fff;}
 .chev-btn.chev-kucuk{width:20px;height:20px;font-size:14px;padding-bottom:1px;border-width:1.2px;}
+.chev-btn.chev-kucuk.chev-duzenle{font-size:11px;padding-bottom:0;}
 
 </style>
 <script>
@@ -9776,7 +9777,7 @@ function renderGelir(){
                     '</div>'+
                     '<div style="display:flex;align-items:center;gap:6px;">'+
                       '<span style="color:var(--green);font-size:13px;font-weight:600;">'+((od.tutar||0).toLocaleString(LC()))+' ₺</span>'+
-                      '<span style="font-size:11px;color:var(--text3);">✎</span>'+
+                      '<span class="chev-btn chev-kucuk chev-duzenle">✎</span>'+
                     '</div>';
                   return odEl.outerHTML;
                 }).join('')+
@@ -9819,7 +9820,7 @@ function renderGelir(){
                       '<div><div style="font-size:13px;font-weight:500;">'+o.ad+'</div></div>'+
                       '<div style="display:flex;align-items:center;gap:6px;">'+
                         '<span style="color:var(--green);font-size:13px;font-weight:600;">'+((o.tutar||0).toLocaleString(LC()))+' ₺</span>'+
-                        '<span style="font-size:11px;color:var(--text3);">✎</span>'+
+                        '<span class="chev-btn chev-kucuk chev-duzenle">✎</span>'+
                       '</div>';
                     return odEl.outerHTML;
                   }).join('')+
@@ -9890,7 +9891,7 @@ function renderOgDetay(){
             <div style="display:flex;gap:5px;align-items:center;">
               ${si?`<span class="badge badge-purple" style="font-size:10px;">${si.ad}</span>`:''}
               <span class="badge badge-amber">${od.yontem||'—'}</span>
-              <span style="font-size:11px;color:var(--text3);">✎</span>
+              <span class="chev-btn chev-kucuk chev-duzenle">✎</span>
             </div>
           </div>
           <div style="font-size:12px;color:var(--text3);">${formatDate(od.tarih)}${od.aylar&&od.aylar.length?' · '+od.aylar.map(a=>ayLabel(a)).join(', '):''}</div>
