@@ -3153,7 +3153,7 @@ function subeEtiketle(col,data,yeni){
   o.doc=id=>{const r=d(id),st=r.set;r.set=x=>st(subeEtiketle(col,x,false));return r;};return o;};})();
 function subeSecimCiz(){
   const sel=document.getElementById('sube-sel');if(!sel)return;
-  const goster=SUBE.liste.length>=2;sel.style.display=goster?'':'none';document.documentElement.classList.toggle('sube-var',goster);if(!goster)return;
+  const goster=SUBE.liste.length>=2;sel.style.display=(goster&&PAGE==='anasayfa')?'':'none';document.documentElement.classList.toggle('sube-var',goster);if(!goster)return;
   sel.innerHTML=SUBE.liste.map(b=>'<option value="'+b.id+'">'+String(b.ad).replace(/</g,'&lt;')+'</option>').join('');
   sel.value=SUBE.aktif;
 }
@@ -5124,7 +5124,7 @@ function startListeners(){
 }
 
 // Nav
-function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('pg-'+p).classList.add('active');if(p==='ozel'&&typeof ozelSekme==='function')ozelSekme('takvim',true);}
+function showPage(p){try{const _ss=document.getElementById('sube-sel');if(_ss&&SUBE.liste.length>=2)_ss.style.display=p==='anasayfa'?'':'none';}catch(e){}document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('pg-'+p).classList.add('active');if(p==='ozel'&&typeof ozelSekme==='function')ozelSekme('takvim',true);}
 
 // ── SEKMELER ARASI KAYDIRMA (izole özellik — sorun çıkarsa sadece bu bloğu geri al) ──
 // Sağa/sola kaydırınca bitişik alt sekmeye (döngüsel) geçer. Hiçbir yerde preventDefault yok,
