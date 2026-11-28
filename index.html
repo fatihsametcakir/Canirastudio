@@ -12990,7 +12990,7 @@ function egitmenEkleModal(id){
     </div>`;
   openModal('m-kayit-islem');
   egOzelPctGuncelle();
-  setTimeout(()=>document.getElementById('eg-ad')?.focus(),300);
+  if(!id)setTimeout(()=>document.getElementById('eg-ad')?.focus(),300); // düzenlemede klavye kendiliğinden açılmasın; yeni eğitmende ad alanına odaklan
 }
 
 function egOzelPctGuncelle(){
