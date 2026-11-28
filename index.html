@@ -1494,6 +1494,11 @@ button[onclick^="iosInstallBanneriKapat"]{border:1.5px solid rgba(13,13,20,.55)!
 .sinif-karti>.sinif-karti-ust{padding-right:54px!important;}
 .sinif-karti .chev-btn{position:absolute;right:12px;top:50%;translate:0 -50%;margin:0;}
 
+/* Özel Dersler haftalık takvim: ince çerçeve + temadan ayrışan gri zemin */
+#ozel-takvim-blok .yatay-kaydirma-alani{--ot-zemin:#2b2b36;background:var(--ot-zemin);border:1px solid #ffffff2e;border-radius:var(--radius-sm);overflow-y:hidden;}
+:root[data-acik="1"] #ozel-takvim-blok .yatay-kaydirma-alani{--ot-zemin:#d4d4db;border-color:#3d3a4f40;}
+#ozel-takvim-blok .ot-kose,#ozel-takvim-blok .ot-saat-label{background:var(--ot-zemin);}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
