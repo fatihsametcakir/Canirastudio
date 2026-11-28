@@ -12298,7 +12298,6 @@ async function egOdemeIsaretle(siId,idx,egId,yapildi){
   egBildirimGuncelle();try{renderGiderRapor();}catch(e){}
   try{
     await db.collection('ayarlar').doc(giderDocId()).update({egOdemeler:yeni});
-    if(yapildi&&typeof geriAlBildirimi==='function')geriAlBildirimi('Eğitmen ödemesi işaretlendi',()=>egOdemeIsaretle(siId,idx,egId,false));
   }catch(e){
     GIDER_AYARLARI.egOdemeler=eski;egBildirimGuncelle();try{renderGiderRapor();}catch(e2){}
     showToast('Kaydedilemedi, tekrar deneyin');
