@@ -1398,6 +1398,17 @@ html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:14.5px}
 .gg-card.eg-uyari{animation:egKart .9s ease-in-out infinite!important;}
 .gg-card.eg-uyari .eg-rozet{min-width:28px;height:28px;line-height:28px;font-size:17px;border-radius:14px;top:8px;right:10px;box-shadow:0 0 10px var(--accent,#ff6b6b);}
 
+#pg-sinif-detaylari .gider-satir{border-bottom:1px solid #d9ac5280!important;}
+#pg-sinif-detaylari .gider-satir:last-child{border-bottom:none!important;}
+#pg-sinif-detaylari .gider-satir[style*="border-top"]{border-top:1px solid #d9ac52a6!important;}
+#pg-sinif-detaylari .egitmen-pay-kart{border-top:1.5px solid #d9ac52a6!important;border-right:1.5px solid #d9ac52a6!important;border-bottom:1.5px solid #d9ac52a6!important;}
+:root[data-acik="1"] #pg-sinif-detaylari .gider-satir{border-bottom-color:#9a6f1c80!important;}
+:root[data-acik="1"] #pg-sinif-detaylari .gider-satir:last-child{border-bottom:none!important;}
+:root[data-acik="1"] #pg-sinif-detaylari .gider-satir[style*="border-top"]{border-top-color:#9a6f1ca0!important;}
+:root[data-acik="1"] #pg-sinif-detaylari .egitmen-pay-kart{border-top-color:#9a6f1ca0!important;border-right-color:#9a6f1ca0!important;border-bottom-color:#9a6f1ca0!important;}
+@keyframes egSinifKart{0%,100%{box-shadow:0 0 0 0 transparent;background-color:transparent;}50%{box-shadow:0 0 16px 3px color-mix(in srgb,var(--accent,#ff6b6b) 80%,transparent);background-color:color-mix(in srgb,var(--accent,#ff6b6b) 20%,transparent);}}
+.egitmen-pay-kart.eg-kart-uyari{animation:egSinifKart .9s ease-in-out infinite!important;border-color:var(--accent,#ff6b6b)!important;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -2023,9 +2034,13 @@ try{
         <div class="gg-card-ikon">📊</div>
         <div class="gg-card-baslik" data-i18n="aylik_gelir">Aylık Gelir</div>
       </button>
-      <button class="gg-card gg-gider" style="--gg-c:var(--accent);position:relative;" onclick="openGiderRaporu()"><span class="eg-rozet"></span>
+      <button class="gg-card" style="--gg-c:var(--accent);" onclick="openGiderRaporu()">
         <div class="gg-card-ikon">💰</div>
         <div class="gg-card-baslik" data-i18n="gider_raporu">Gider Raporu</div>
+      </button>
+      <button class="gg-card gg-sinif" style="--gg-c:var(--purple);position:relative;" onclick="openSinifDetaylari()"><span class="eg-rozet"></span>
+        <div class="gg-card-ikon">🎓</div>
+        <div class="gg-card-baslik" data-i18n="sinif_detaylari">Sınıf Detayları</div>
       </button>
       <button class="gg-card" style="--gg-c:var(--cyan);" onclick="openAylikGelirTrend()">
         <div class="gg-card-ikon">📈</div>
@@ -2072,6 +2087,9 @@ try{
 <!-- GİDER RAPORU SAYFASI -->
 <div class="page" id="pg-gider-rapor">
   <div id="gider-rapor-content"></div>
+</div>
+<div class="page" id="pg-sinif-detaylari">
+  <div id="sinif-detaylari-content"></div>
 </div>
 
 <!-- AYLIK GELİR TRENDİ SAYFASI -->
@@ -3228,7 +3246,7 @@ const TRANSLATIONS={
     qr_kod_ozel_1:'Bu QR kod', qr_kod_ozel_2:'\'e özel.', qr_kod_ozel_3:'Öğrenci okutunca kendi yoklamasını işaretleyebilir.',
     portal_sifresi:'Portal Şifresi', sifre_sifirla_aciklama:'Öğrenci şifresini sıfırladığınızda telefon numarasının son 4 hanesi tekrar şifre olur. Öğrenci bir sonraki girişte yeni şifre belirlemek zorunda kalır.',
     sifreyi_sifirla:'Şifreyi Sıfırla (Telefon No\'ya Döndür)', qr_olusturulamadi:'QR oluşturulamadı',
-    gelir_gider:'Gelir & Gider', aylik_gelir:'Aylık Gelir', gider_raporu:'Gider Raporu',
+    gelir_gider:'Gelir & Gider', aylik_gelir:'Aylık Gelir', gider_raporu:'Gider Raporu', sinif_detaylari:'Sınıf Detayları',
     aylik_gelir_trendi:'Aylık Gelir Trendi', egitmenler_giderler:'Eğitmenler & Giderler', parametreler:'Parametreler',
     odeme_bilgileri:'Ödeme Bilgileri', ogrenci_tutma_orani:'Öğrenci Tutma Oranı',
     acc_tema:'Tema', acc_guvenlik:'Güvenlik', acc_wa:'WhatsApp Şablonları', acc_yedek:'Yedekleme',
@@ -3417,7 +3435,7 @@ const TRANSLATIONS={
     qr_kod_ozel_1:'This QR code is specific to', qr_kod_ozel_2:'.', qr_kod_ozel_3:'The student can scan it to mark their own attendance.',
     portal_sifresi:'Portal Password', sifre_sifirla_aciklama:'When you reset the student\'s password, the last 4 digits of their phone number become the password again. They must set a new password on next login.',
     sifreyi_sifirla:'Reset Password (Revert to Phone Number)', qr_olusturulamadi:'Could not generate QR',
-    gelir_gider:'Income & Expense', aylik_gelir:'Monthly Income', gider_raporu:'Expense Report',
+    gelir_gider:'Income & Expense', aylik_gelir:'Monthly Income', gider_raporu:'Expense Report', sinif_detaylari:'Class Details',
     aylik_gelir_trendi:'Monthly Income Trend', egitmenler_giderler:'Instructors & Expenses', parametreler:'Parameters',
     odeme_bilgileri:'Payment Details', ogrenci_tutma_orani:'Student Retention Rate',
     acc_tema:'Theme', acc_guvenlik:'Security', acc_wa:'WhatsApp Templates', acc_yedek:'Backup',
@@ -3606,7 +3624,7 @@ const TRANSLATIONS={
     qr_kod_ozel_1:'Этот QR-код предназначен для', qr_kod_ozel_2:'.', qr_kod_ozel_3:'Ученик может отсканировать его, чтобы отметить свою посещаемость.',
     portal_sifresi:'Пароль портала', sifre_sifirla_aciklama:'При сбросе пароля последние 4 цифры номера телефона снова станут паролем. Ученику нужно будет задать новый пароль при следующем входе.',
     sifreyi_sifirla:'Сбросить пароль (вернуть к номеру телефона)', qr_olusturulamadi:'Не удалось создать QR',
-    gelir_gider:'Доходы и расходы', aylik_gelir:'Доход за месяц', gider_raporu:'Отчёт о расходах',
+    gelir_gider:'Доходы и расходы', aylik_gelir:'Доход за месяц', gider_raporu:'Отчёт о расходах', sinif_detaylari:'Детали классов',
     aylik_gelir_trendi:'Динамика дохода по месяцам', egitmenler_giderler:'Преподаватели и расходы', parametreler:'Параметры',
     odeme_bilgileri:'Платёжные реквизиты', ogrenci_tutma_orani:'Удержание учеников',
     acc_tema:'Тема', acc_guvenlik:'Безопасность', acc_wa:'Шаблоны WhatsApp', acc_yedek:'Резервная копия',
@@ -4373,7 +4391,7 @@ function sinifInlineToggle(id){
 const _renderSiniflarOrj=renderSiniflar;
 renderSiniflar=function(){inlineKaldir('sinif-detay');_renderSiniflarOrj.apply(this,arguments);if(INLINE_SINIF)sinifInlineGoster();};
 let GG_INLINE=null;
-const GG_BTN={'aylik-gelir':'openAylikGelir','gider-rapor':'openGiderRaporu','gelir-trend':'openAylikGelirTrend','egitmen-panel':'openEgitmenGiderler','egitmenler':'openEgitmenlerSayfa','tutma-orani':'openTutmaOrani'};
+const GG_BTN={'aylik-gelir':'openAylikGelir','gider-rapor':'openGiderRaporu','sinif-detaylari':'openSinifDetaylari','gelir-trend':'openAylikGelirTrend','egitmen-panel':'openEgitmenGiderler','egitmenler':'openEgitmenlerSayfa','tutma-orani':'openTutmaOrani'};
 function ggInline(id,renderFn){
   const fn=GG_BTN[id];if(!fn)return false;
   const btn=document.querySelector('#pg-gelirgider .gg-card[onclick^="'+fn+'("]');if(!btn)return false;
@@ -4399,6 +4417,7 @@ function openRaporSayfa(id,i18nKey,renderFn){
 }
 function openAylikGelir(){openRaporSayfa('aylik-gelir','aylik_gelir',renderGelir);}
 function openGiderRaporu(){openRaporSayfa('gider-rapor','gider_raporu',renderGiderRapor);}
+function openSinifDetaylari(){openRaporSayfa('sinif-detaylari','sinif_detaylari',renderGiderRapor);}
 function openAylikGelirTrend(){openRaporSayfa('gelir-trend','aylik_gelir_trendi',renderGelirTrend);}
 // Hamburger menüdeki Yönetim ekranları: geri dönünce hamburger menü açılır
 function yonetimSayfaAc(fn){
@@ -4440,7 +4459,7 @@ function renderEgitmenlerSayfa(){
   if(typeof yetkiPasifTara==='function')try{yetkiPasifTara();}catch(e){}
 }
 function openTutmaOrani(){openRaporSayfa('tutma-orani','ogrenci_tutma_orani',renderRetention);}
-const RAPOR_SAYFA_ID_LISTESI=['studyolar','subeler','aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
+const RAPOR_SAYFA_ID_LISTESI=['studyolar','subeler','aylik-gelir','gider-rapor','sinif-detaylari','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani','devamsiz','yoklama-log','wa-sablon','hata-log'];
 function goBack(){
   const donDrawer=_SAYFA_DRAWER;_SAYFA_DRAWER=false;
   let bt=(PAGE==='sinif-detay'||PREV_PAGE==='sinif-detay')?'siniflar':PREV_PAGE; // sınıf detayından geri → her zaman Sınıflar
@@ -9503,7 +9522,7 @@ function yetkiUygula(){
     r.textContent=salt?'👁 Salt okunur hesap':(!YETKI_SAHIP_MI&&YETKI_YAZMA!==null?'✎ Kısıtlı yazma yetkisi':'');
     r.style.color=salt?'var(--amber)':'var(--text3)';}
   // Gizli bir sayfadaysa ana sayfaya dön
-  if(gg&&['gelirgider','aylik-gelir','gider-rapor','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani'].includes(PAGE)){goTo('anasayfa',document.querySelector('.nav-item'));}
+  if(gg&&['gelirgider','aylik-gelir','gider-rapor','sinif-detaylari','gelir-trend','egitmen-panel','egitmenler','odeme-bilgi-ayar','tutma-orani'].includes(PAGE)){goTo('anasayfa',document.querySelector('.nav-item'));}
 }
 async function yetkiYukle(){
   try{
@@ -11620,7 +11639,7 @@ function giderSubeYenile(){GIDER_AYARLARI_YUKLENDI=false;GIDER_AYARLARI={kira:0,
   giderAyarlariniOnbellekleYukle().then(()=>{try{renderAll();}catch(e){}try{raporSayfaYenile();}catch(e){}});}
 // Açık rapor/yönetim sayfasını (Parametreler, Gider Raporu, Tutma Oranı vb.) şube değişince yeniden çizer
 function raporSayfaYenile(){
-  const f={'egitmen-panel':'renderEgitmenPanel','gider-rapor':'renderGiderRapor','aylik-gelir':'renderGelir','gelir-trend':'renderGelirTrend','egitmenler':'renderEgitmenlerSayfa','tutma-orani':'renderRetention'}[PAGE];
+  const f={'egitmen-panel':'renderEgitmenPanel','gider-rapor':'renderGiderRapor','sinif-detaylari':'renderGiderRapor','aylik-gelir':'renderGelir','gelir-trend':'renderGelirTrend','egitmenler':'renderEgitmenlerSayfa','tutma-orani':'renderRetention'}[PAGE];
   if(f&&typeof window[f]==='function')window[f]();
 }
 async function giderAyarlariniYukle(){
@@ -12256,7 +12275,7 @@ function egBildirimGuncelle(){
   }catch(e){EG_BEKLEYEN=[];}
   const n=EG_BEKLEYEN.length;
   document.querySelectorAll('.nav-item.c-gg').forEach(b=>b.classList.toggle('eg-uyari',n>0));
-  document.querySelectorAll('.gg-card.gg-gider').forEach(b=>{b.classList.toggle('eg-uyari',n>0);const r=b.querySelector('.eg-rozet');if(r)r.textContent=n>0?'!':'';});
+  document.querySelectorAll('.gg-card.gg-sinif').forEach(b=>{b.classList.toggle('eg-uyari',n>0);const r=b.querySelector('.eg-rozet');if(r)r.textContent=n>0?'!':'';});
 }
 async function egOdemeIsaretle(siId,idx,egId,yapildi){
   const eski=GIDER_AYARLARI.egOdemeler||{};
@@ -12439,6 +12458,7 @@ async function renderGiderRapor(){
       ${netKar===0?`<div style="font-size:10.5px;color:var(--amber);margin-top:6px;line-height:1.4;">ℹ️ ${toplamGelir>0?'Bu ayki gelir giderleri tam karşıladığı için net kâr 0 ₺.':'Bu ay henüz gelir kaydı olmadığı için net kâr 0 ₺.'}</div>`:''}
     </div>`;
 
+  const _sinifBas=html.length;
   // Bu dönemde geliri olmayan ama ödemesi bekleyen sınıflar için ayrı uyarı kartı
   {const gorunen=new Set(sinifDetaylar.map(d=>d.si.id));
    [...new Set(EG_BEKLEYEN.map(b=>b.siId))].filter(id=>!gorunen.has(id)).forEach(id=>{
@@ -12531,6 +12551,7 @@ async function renderGiderRapor(){
     });
   }
 
+  const sinifHtml=html.slice(_sinifBas);html=html.slice(0,_sinifBas);
   if(!sinifDetaylar.length&&!ozelGelir){
     html+=`<div style="font-size:13px;color:var(--text2);text-align:center;padding:16px 0;">${t('bu_ay_kayit_yok')}</div>`;
   }
@@ -12539,6 +12560,7 @@ async function renderGiderRapor(){
   }
 
   el.innerHTML=html;
+  {const el2=document.getElementById('sinif-detaylari-content');if(el2)el2.innerHTML=sinifHtml||`<div style="font-size:13px;color:var(--text2);text-align:center;padding:16px 0;">${t('bu_ay_kayit_yok')}</div>`;}
 }
 
 function giderAyDegis(ay){
