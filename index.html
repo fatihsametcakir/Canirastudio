@@ -3402,7 +3402,7 @@ const TRANSLATIONS={
     ad_soyad_hesap:'Ad Soyad (Hesap Sahibi)', banka_adi:'Banka Adı', qr_kod_gorseli:'QR Kod Görseli',
     qr_gorsel_sec:'📷 QR Görsel Seç', qr_gorseli_kaldir:'✕ QR Görseli Kaldır',
     grup:'Grup', odeme:'ödeme', brut:'Brüt',
-    genel_tutma_orani:'Genel Tutma Oranı', birakmis:'bırakmış', sinif_bazinda:'Sınıf Bazında', kapali_siniflar:'Kapalı Sınıflar', kapali_sinif_yok:'Kapalı sınıf yok',
+    genel_tutma_orani:'Genel Tutma Oranı', birakmis:'bırakmış', sinif_bazinda:'Sınıf Bazında', egf_ozel_pct:'Özel ders payı (%)', eg_ozel_payim:'Özel ders payım', eg_paket_tutari:'Paket tutarı', egf_ozel_pct_not:'Eğitmenin özel ders paket tutarından aldığı yüzde; kalanı stüdyo kârıdır. Baş eğitmen her zaman %100. Boş bırakılırsa pay hesaplanmaz.', ozel_egitmen_paylari:'Özel ders eğitmen payları', paket_tutari:'Paket tutarı', studyo_kari:'Stüdyo kârı', kapali_siniflar:'Kapalı Sınıflar', kapali_sinif_yok:'Kapalı sınıf yok',
     devam:'devam', donduruldu_kucuk:'dondurulmuş', ayrilmis:'ayrılmış',
     bu_ay_brut:'Bu ay brüt', bu_ay_net:'Bu ay net', aylik_ort:'Aylık ort.', ay_12_top:'12 ay top.',
     brut_gelir:'Brüt Gelir', net_gelir:'Net Gelir',
@@ -3591,7 +3591,7 @@ const TRANSLATIONS={
     ad_soyad_hesap:'Full Name (Account Holder)', banka_adi:'Bank Name', qr_kod_gorseli:'QR Code Image',
     qr_gorsel_sec:'📷 Choose QR Image', qr_gorseli_kaldir:'✕ Remove QR Image',
     grup:'Group', odeme:'payment(s)', brut:'Gross',
-    genel_tutma_orani:'Overall Retention Rate', birakmis:'left', sinif_bazinda:'By Class', kapali_siniflar:'Closed Classes', kapali_sinif_yok:'No closed classes',
+    genel_tutma_orani:'Overall Retention Rate', birakmis:'left', sinif_bazinda:'By Class', egf_ozel_pct:'Private lesson share (%)', eg_ozel_payim:'My private lesson share', eg_paket_tutari:'Package amount', egf_ozel_pct_not:'The percentage of the private lesson package amount the instructor receives; the rest is studio profit. Head instructors are always 100%. If left empty, no share is calculated.', ozel_egitmen_paylari:'Private lesson instructor shares', paket_tutari:'Package amount', studyo_kari:'Studio profit', kapali_siniflar:'Closed Classes', kapali_sinif_yok:'No closed classes',
     devam:'continuing', donduruldu_kucuk:'frozen', ayrilmis:'left',
     bu_ay_brut:'This month gross', bu_ay_net:'This month net', aylik_ort:'Monthly avg.', ay_12_top:'12-month total',
     brut_gelir:'Gross Income', net_gelir:'Net Income',
@@ -3780,7 +3780,7 @@ const TRANSLATIONS={
     ad_soyad_hesap:'ФИО (владелец счёта)', banka_adi:'Название банка', qr_kod_gorseli:'Изображение QR-кода',
     qr_gorsel_sec:'📷 Выбрать QR-изображение', qr_gorseli_kaldir:'✕ Удалить QR-изображение',
     grup:'Группа', odeme:'платеж(ей)', brut:'Валовый',
-    genel_tutma_orani:'Общий уровень удержания', birakmis:'ушли', sinif_bazinda:'По группам', kapali_siniflar:'Закрытые группы', kapali_sinif_yok:'Нет закрытых групп',
+    genel_tutma_orani:'Общий уровень удержания', birakmis:'ушли', sinif_bazinda:'По группам', egf_ozel_pct:'Доля за индивидуальные уроки (%)', eg_ozel_payim:'Моя доля за индивидуальные уроки', eg_paket_tutari:'Сумма пакета', egf_ozel_pct_not:'Процент от суммы пакета индивидуальных уроков, который получает преподаватель; остальное — прибыль студии. У главного преподавателя всегда 100%. Если оставить пустым, доля не рассчитывается.', ozel_egitmen_paylari:'Доли преподавателей за индивидуальные уроки', paket_tutari:'Сумма пакета', studyo_kari:'Прибыль студии', kapali_siniflar:'Закрытые группы', kapali_sinif_yok:'Нет закрытых групп',
     devam:'продолжают', donduruldu_kucuk:'заморожено', ayrilmis:'ушли',
     bu_ay_brut:'Валовый за месяц', bu_ay_net:'Чистый за месяц', aylik_ort:'Средн. в месяц', ay_12_top:'Итого за 12 мес.',
     brut_gelir:'Валовый доход', net_gelir:'Чистый доход',
@@ -8250,6 +8250,41 @@ function ozelGelirKalemleri(){
   }));
   return r;
 }
+// ── Özel ders paketinde eğitmen payı (komisyon) ──
+// Eğitmen kaydındaki ozelPayPct: eğitmenin özel ders paket tutarından aldığı % (stüdyo kalanı alır).
+// Baş eğitmen her zaman %100. Yüzde girilmemiş (boş) eğitmen için pay hesaplanmaz (eski davranış).
+function egOzelPayPct(e){
+  if(!e)return null;
+  if(e.basEgitmen)return 100;
+  if(e.ozelPayPct===undefined||e.ozelPayPct===null||e.ozelPayPct==='')return null;
+  const v=Number(e.ozelPayPct);
+  return isFinite(v)?Math.max(0,Math.min(100,v)):null;
+}
+// Bir özel ders gelir kaleminin (ödeme) dağılımı: baş eğitmen varsa ona (%100), yoksa yüzdesi tanımlı ilk eğitmene
+function ozelKalemKomisyon(p){
+  const tutar=Number(p.tutar)||0;
+  const egs=(p.egitmenIds||[]).map(id=>S.egitmenler.find(e=>e.id===id)).filter(Boolean);
+  if(egs.find(e=>e.basEgitmen))return null; // baş eğitmen: mevcut mantık (kâr ona yazılır)
+  const eg=egs.find(e=>egOzelPayPct(e)!==null);
+  if(!eg)return null;
+  const pct=egOzelPayPct(eg);
+  const pay=Math.round(tutar*pct/100);
+  return {egitmen:eg,pct,tutar,pay,studyo:tutar-pay};
+}
+// Bir ay için eğitmen bazlı komisyon toplamları: {egId:{egitmen,pct,tutar,pay,studyo}}
+function ozelKomisyonAy(key){
+  const m={};
+  ozelGelirKalemleri().forEach(p=>{
+    if(!p.tarih)return;
+    const d=new Date(p.tarih+'T00:00:00');
+    if(ayKey(d.getFullYear(),d.getMonth()+1)!==key)return;
+    const k=ozelKalemKomisyon(p);if(!k)return;
+    const g=m[k.egitmen.id]||(m[k.egitmen.id]={egitmen:k.egitmen,pct:k.pct,tutar:0,pay:0,studyo:0});
+    g.tutar+=k.tutar;g.pay+=k.pay;g.studyo+=k.studyo;
+  });
+  return m;
+}
+function ozelKomisyonPayToplam(key){return Object.values(ozelKomisyonAy(key)).reduce((s,g)=>s+g.pay,0);}
 function ooYeniId(){return 'od'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 let OO_PAKET=null,OO_EDIT=null;
 function openOzelOdemeModal(paketId){OO_PAKET=paketId;OO_EDIT=null;ooCiz();openModal('m-ozel-odeme');}
@@ -8936,7 +8971,7 @@ function renderAnasayfa(){
     return s+sinifAsistanGideriHesapla(si,siGelir,bugunStr);
   },0);
   const ozelStudyoKiraBu=ozelStudyoKiraTarihte(bugunStr);
-  const netTotal=total-toplamKira-pratikKira-asistanGider-ozelStudyoKiraBu;
+  const netTotal=total-toplamKira-pratikKira-asistanGider-ozelStudyoKiraBu-ozelKomisyonPayToplam(bk);
   const fmt=v=>v>=1000?Math.round(v/1000)+'K':(Math.round(v)||'0');
   document.getElementById('st-odeme').textContent=fmt(total);
   document.getElementById('st-net').textContent=fmt(netTotal);
@@ -9799,7 +9834,7 @@ function renderGelir(){
       return s+sinifAsistanGideriHesapla(si,siGelir,ayBasStr);
     },0);
     const buAyOzelStudyoKira=ozelStudyoKiraTarihte(ayBasStr);
-    const ayNet=v.toplam-buAyKira-buAyPratikKira-buAyAsistan-buAyOzelStudyoKira;
+    const ayNet=v.toplam-buAyKira-buAyPratikKira-buAyAsistan-buAyOzelStudyoKira-ozelKomisyonPayToplam(key);
     const gruplar=v.gruplar||{};
     html+=`<div class="gelir-row">
       <div class="gelir-row-header" onclick="toggleGelirAy('${key}')">
@@ -12565,7 +12600,7 @@ function egitmenKartHtml(){
           <div style="font-size:22px;">${e.basEgitmen?'⭐':'👤'}</div>
           <div style="flex:1;min-width:0;">
             <div style="font-size:14px;font-weight:600;">${e.ad}</div>
-            <div style="font-size:11px;color:var(--text2);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}</div>
+            <div style="font-size:11px;color:var(--text2);">${e.basEgitmen?t('bas_egitmen'):t('asistan_egitmen')}${egOzelPayPct(e)!==null?' · '+t('ozel_dersler')+' %'+egOzelPayPct(e):''}</div>
           </div>
           <div style="display:flex;gap:6px;">
             <button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="egitmenDuzenle('${e.id}')">${t('btn_duzenle_kisa')}</button>
@@ -12913,17 +12948,28 @@ function egitmenEkleModal(id){
       ${e&&e.tel?`<button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="egitmenSifreSifirla('${e.id}')">${t('egf_sifirla')}</button>`:''}
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-      <input type="checkbox" id="eg-bas" ${e?.basEgitmen?'checked':''} style="width:18px;height:18px;accent-color:var(--purple);cursor:pointer;"/>
+      <input type="checkbox" id="eg-bas" ${e?.basEgitmen?'checked':''} onchange="egOzelPctGuncelle()" style="width:18px;height:18px;accent-color:var(--purple);cursor:pointer;"/>
       <label for="eg-bas" style="font-size:14px;cursor:pointer;">${t('bas_egitmen')} ⭐</label>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:6px;">${t('egf_ozel_pct')}</label>
+      <input id="eg-ozel-pct" type="number" inputmode="decimal" min="0" max="100" step="1" value="${e&&e.basEgitmen?100:(e&&e.ozelPayPct!==undefined&&e.ozelPayPct!==null&&e.ozelPayPct!==''?e.ozelPayPct:'')}" placeholder="%" style="background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:DM Sans,sans-serif;font-size:14px;outline:none;width:100%;box-sizing:border-box;"/>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;">${t('egf_ozel_pct_not')}</div>
     </div>
     <div style="display:flex;gap:8px;">
       <button class="btn btn-ghost" style="flex:1;" onclick="closeModal('m-kayit-islem')" data-i18n="btn_iptal">İptal</button>
       <button class="btn btn-accent" style="flex:1;" onclick="egitmenKaydet()" data-i18n="btn_kaydet">Kaydet</button>
     </div>`;
   openModal('m-kayit-islem');
+  egOzelPctGuncelle();
   setTimeout(()=>document.getElementById('eg-ad')?.focus(),300);
 }
 
+function egOzelPctGuncelle(){
+  const bas=document.getElementById('eg-bas')?.checked,i=document.getElementById('eg-ozel-pct');
+  if(!i)return;
+  if(bas){i.value=100;i.disabled=true;}else{i.disabled=false;if(i.value==='100')i.value='';}
+}
 function egitmenDuzenle(id){egitmenEkleModal(id);}
 function egitmenSifreSifirla(id){
   const e=S.egitmenler.find(x=>x.id===id);if(!e)return;
@@ -12947,15 +12993,18 @@ async function egitmenKaydet(){
   const ad=document.getElementById('eg-ad')?.value.trim();
   const basEgitmen=document.getElementById('eg-bas')?.checked||false;
   const tel=(document.getElementById('eg-tel')?.value||'').replace(/[^\d+]/g,'').slice(0,20);
+  const pctHam=(document.getElementById('eg-ozel-pct')?.value||'').trim();
+  let ozelPayPct=basEgitmen?100:(pctHam===''?null:Math.max(0,Math.min(100,parseFloat(pctHam))));
+  if(ozelPayPct!==null&&!isFinite(ozelPayPct))ozelPayPct=null;
   if(!ad){alert(t('ad_zorunlu'));return;}
   if(tel&&tel.replace(/\D/g,'').length<10){alert(t('egf_tel_min'));return;}
   {const t10=tel.replace(/\D/g,'').slice(-10);if(t10&&S.egitmenler.some(x=>x.id!==EDIT_EGITMEN&&String(x.tel||'').replace(/\D/g,'').slice(-10)===t10)){alert(t('egf_tel_cakisma'));return;}}
   setSyncing(true);
   try{
     if(EDIT_EGITMEN){
-      await db.collection('egitmenler').doc(EDIT_EGITMEN).update({ad,basEgitmen,tel});
+      await db.collection('egitmenler').doc(EDIT_EGITMEN).update({ad,basEgitmen,tel,ozelPayPct});
     } else {
-      await db.collection('egitmenler').add({ad,basEgitmen,tel,olusturma:Date.now()});
+      await db.collection('egitmenler').add({ad,basEgitmen,tel,ozelPayPct,olusturma:Date.now()});
     }
     closeModal('m-kayit-islem');_poll('egitmenler');
     toastGoster('✓ '+t('egitmen_kaydedildi'));
@@ -13266,12 +13315,17 @@ async function renderGiderRapor(){
     const d=new Date(p.tarih+'T00:00:00');
     if(ayKey(d.getFullYear(),d.getMonth()+1)!==buAyKey)return;
     const atananBas=(p.egitmenIds||[]).map(id=>basEgitmenler.find(e=>e.id===id)).find(Boolean);
+    const kom=ozelKalemKomisyon(p);
     if(atananBas&&basEgitmenKarMap.hasOwnProperty(atananBas.id)){
       basEgitmenKarMap[atananBas.id]+=p.tutar||0;
+    }else if(kom){
+      ozelAtanamamisKar+=kom.studyo; // eğitmenin payı gider; kalan stüdyo kârı
     }else{
       ozelAtanamamisKar+=p.tutar||0;
     }
   });
+  const ozelKomGruplari=Object.values(ozelKomisyonAy(buAyKey)).sort((a,b)=>(a.egitmen.ad||'').localeCompare(b.egitmen.ad||'',LC()));
+  const toplamOzelKomisyon=ozelKomGruplari.reduce((s,g)=>s+g.pay,0);
   if(basEgitmenler.length>0&&ozelAtanamamisKar>0){
     const payBasina2=Math.round(ozelAtanamamisKar/basEgitmenler.length);
     basEgitmenler.forEach(be=>{basEgitmenKarMap[be.id]+=payBasina2;});
@@ -13302,12 +13356,21 @@ async function renderGiderRapor(){
       <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🏠 ${t('toplam_kira')}</span><span style="font-weight:600;color:var(--accent);">−${toplamKira.toLocaleString(LC())} ₺</span></div>
       ${toplamPratikKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🏋️ ${t('x_pratik_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${toplamPratikKira.toLocaleString(LC())} ₺</span></div>`:''}
       ${toplamAsistanOdeme>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🧑‍🏫 ${t('asistan_odemeleri')}</span><span style="font-weight:600;color:var(--accent);">−${toplamAsistanOdeme.toLocaleString(LC())} ₺</span></div>`:''}
+      ${toplamOzelKomisyon>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🎓 ${t('ozel_egitmen_paylari')}</span><span style="font-weight:600;color:var(--accent);">−${toplamOzelKomisyon.toLocaleString(LC())} ₺</span></div>`:''}
       ${ozelStudyoKira>0?`<div class="gider-satir"><span style="font-size:13px;color:var(--text2);">🎓 ${t('ozel_ders_studyo_kirasi')}</span><span style="font-weight:600;color:var(--accent);">−${ozelStudyoKira.toLocaleString(LC())} ₺</span></div>`:''}
       <div class="gider-satir" style="border-top:1px solid #ff6b6b40;margin-top:4px;padding-top:8px;">
         <span style="font-weight:700;">${t('toplam_gider')}</span>
-        <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamPratikKira+toplamAsistanOdeme+ozelStudyoKira>0?(toplamKira+toplamPratikKira+toplamAsistanOdeme+ozelStudyoKira).toLocaleString(LC())+' ₺':'0 ₺'}</span>
+        <span style="font-size:16px;font-weight:700;color:var(--accent);">−${toplamKira+toplamPratikKira+toplamAsistanOdeme+toplamOzelKomisyon+ozelStudyoKira>0?(toplamKira+toplamPratikKira+toplamAsistanOdeme+toplamOzelKomisyon+ozelStudyoKira).toLocaleString(LC())+' ₺':'0 ₺'}</span>
       </div>
     </div>
+
+    ${ozelKomGruplari.map(g=>`
+    <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--cyanbg),transparent);border:1px solid #22d3ee30;margin-bottom:10px;">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">🎓 ${t('ozel_dersler')} · ${g.egitmen.ad}</div>
+      <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">${t('paket_tutari')}</span><span style="font-weight:600;color:var(--green);">${g.tutar.toLocaleString(LC())} ₺</span></div>
+      <div class="gider-satir"><span style="font-size:13px;color:var(--text2);">👤 ${g.egitmen.ad} (%${g.pct})</span><span style="font-weight:600;color:var(--accent);">−${g.pay.toLocaleString(LC())} ₺</span></div>
+      <div class="gider-satir" style="border-top:1px solid #22d3ee40;margin-top:4px;padding-top:8px;"><span style="font-weight:700;">${t('studyo_kari')} (%${Math.round((100-g.pct)*100)/100})</span><span style="font-size:15px;font-weight:700;color:var(--cyan);">${g.studyo.toLocaleString(LC())} ₺</span></div>
+    </div>`).join('')}
 
     ${basEgitmenler.length>0?basEgitmenler.map(be=>{const beKar=basEgitmenKarMap[be.id]||0;return `
     <div class="gider-ozet-kart" style="background:linear-gradient(135deg,var(--purplebg),transparent);border:1px solid #a78bfa30;margin-bottom:10px;">
@@ -13666,7 +13729,7 @@ function renderGelirTrend(){
       return s+sinifAsistanGideriHesapla(si,siGelir,ayBasStr);
     },0);
     const ozelStudyoKira=ozelStudyoKiraTarihte(ayBasStr);
-    const net=(grup+ozel)-kiraToplam-pratikKira-asistanGider-ozelStudyoKira;
+    const net=(grup+ozel)-kiraToplam-pratikKira-asistanGider-ozelStudyoKira-ozelKomisyonPayToplam(key);
     // İade satırları (aynı öğrenci + sınıf + gün birleştirilir)
     const iadeSatirMap={};
     iadelerBuAy.forEach(o=>{
@@ -13904,7 +13967,7 @@ async function egitmenBaslat(ilkGiris,ad){
   egTab(EG_TAB);
 }
 function egVeriYerlestir(d){
-  EG={gelir:d.gelir||null,egitmen:d.egitmen,siniflar:(d.siniflar||[]).map(x=>guvenliDeger(x)),ogrenciler:(d.ogrenciler||[]).map(x=>guvenliDeger(x)),paketler:d.paketler||[],seanslar:(d.seanslar||[]).map(x=>guvenliDeger(x)),ozelOgrenciler:(d.ozelOgrenciler||[]).map(x=>guvenliDeger(x))};
+  EG={gelir:d.gelir||null,egitmen:d.egitmen,siniflar:(d.siniflar||[]).map(x=>guvenliDeger(x)),ogrenciler:(d.ogrenciler||[]).map(x=>guvenliDeger(x)),paketler:d.paketler||[],seanslar:(d.seanslar||[]).map(x=>guvenliDeger(x)),ozelOgrenciler:(d.ozelOgrenciler||[]).map(x=>guvenliDeger(x)),ozelGelir:d.ozelGelir?guvenliDeger(d.ozelGelir):null};
 }
 async function egVeriTazele(){const d=await egApi('e_veri');if(d.ilkGiris)return d;egVeriYerlestir(d);return d;}
 function egitmenCikis(){
@@ -14014,9 +14077,38 @@ function egRenderSiniflar(el){
 }
 
 // ── Gelir: yalnızca kendi payı, dönem dönem (geçmiş ve gelecek) ──
+// Eğitmenin özel ders payı: ay bazlı, paket tutarı + kendi yüzdesi + payı (yalnız kendi paketleri)
+let EG_OZEL_AY=null;
+function egOzelAyDegis(d){
+  const og=EG.ozelGelir;if(!og)return;
+  const dt=new Date((EG_OZEL_AY||egBugun().slice(0,7))+'-01T00:00:00');dt.setMonth(dt.getMonth()+d);
+  EG_OZEL_AY=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');egRender();
+}
+function egOzelGelirHtml(){
+  const og=EG.ozelGelir;if(!og)return '';
+  const para=n=>(n||0).toLocaleString(LC())+' ₺';
+  const buAy=egBugun().slice(0,7);
+  const ay=EG_OZEL_AY||buAy;
+  const enEski=og.aylar.length?og.aylar[og.aylar.length-1].ay:buAy;
+  const g=og.aylar.find(x=>x.ay===ay)||{tutar:0,pay:0,satirlar:[]};
+  const ayAd=new Date(ay+'-01T00:00:00').toLocaleDateString(LC(),{month:'long',year:'numeric'});
+  const fmtT=ts=>{try{return new Date(ts+'T00:00:00').toLocaleDateString(LC(),{day:'numeric',month:'short'});}catch(e){return ts;}};
+  return `<div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 8px;">🎓 ${t('eg_ozel_payim')}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <button class="btn btn-ghost btn-sm" ${ay<=enEski?'disabled':''} onclick="egOzelAyDegis(-1)">‹</button>
+      <div style="font-size:14px;font-weight:600;">${ayAd}</div>
+      <button class="btn btn-ghost btn-sm" ${ay>=buAy?'disabled':''} onclick="egOzelAyDegis(1)">›</button>
+    </div>
+    <div class="portal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:var(--text2);">${t('eg_paket_tutari')}</span><span style="font-weight:600;">${para(g.tutar)}</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;border-top:1px solid var(--border2);padding-top:8px;"><span style="font-weight:700;">${egEsc(EG.egitmen.ad||'')} (%${og.pct})</span><span style="font-size:18px;font-weight:700;color:var(--green);">${para(g.pay)}</span></div>
+    </div>
+    ${g.satirlar.map(x=>`<div class="portal-card" style="padding:10px 14px;"><div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13.5px;">${egEsc(x.ogrenci)}</div><div style="font-size:11.5px;color:var(--text3);">${fmtT(x.tarih)} · ${para(x.tutar)}</div></div><div style="font-weight:700;color:var(--green);">${para(x.pay)}</div></div></div>`).join('')}`;
+}
 function egRenderGelir(el){
   const g=EG.gelir;
-  if(!g||!(g.siniflar||[]).length){el.innerHTML='<div class="portal-card" style="text-align:center;color:var(--text3);">'+t('eg_gelir_yok')+'</div>';return;}
+  const ozelH=egOzelGelirHtml();
+  if(!g||!(g.siniflar||[]).length){el.innerHTML=ozelH||('<div class="portal-card" style="text-align:center;color:var(--text3);">'+t('eg_gelir_yok')+'</div>');return;}
   const tumIdx=g.siniflar.flatMap(k=>k.donemler.map(d=>d.i-k.guncelIdx));
   const min=Math.min(...tumIdx),max=Math.max(...tumIdx);
   EG_GELIR_OFS=Math.max(min,Math.min(max,EG_GELIR_OFS));
@@ -14041,6 +14133,7 @@ function egRenderGelir(el){
       <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:14px;">${egEsc(k.ad)}</div>
       <div style="font-size:11.5px;color:var(--text3);margin-top:2px;">${d.i+1}. ${t('eg_donem')} · ${fmtTarih(d.bas)} – ${fmtTarih(d.bitis)}</div></div>
       <div style="font-weight:700;color:${d.pay>0?'var(--green)':'var(--text3)'};">${para(d.pay)}</div></div></div>`).join('')}
+    ${ozelH}
     <div style="font-size:11px;color:var(--text3);line-height:1.5;margin-top:4px;">${t('eg_gelir_not')}${g.guncelleme?' '+t('eg_son_guncelleme')+': '+new Date(g.guncelleme).toLocaleDateString(LC(),{day:'numeric',month:'short'}):''}</div>`;
 }
 

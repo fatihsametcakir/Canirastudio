@@ -336,7 +336,35 @@ async function egitmenVeri(req, res, ot) {
     .map((x) => ({ id: x.id, ogrenciId: x.ogrenciId, paketId: x.paketId || null, tarih: x.tarih, saat: x.saat, sure: x.sure || 1, dusuldu: !!x.dusuldu }));
   const ozelOgIdler = new Set([...paketler.map((p) => p.ogrenciId), ...seanslar.map((x) => x.ogrenciId)]);
   const ozelOgrenciler = [...ozelOgIdler].map((id) => ogGoster(ogMap[id]));
-    res.json({ egitmen: { id: E, ad: (egDoc.data() || {}).ad || '' }, siniflar, ogrenciler, paketler, seanslar, ozelOgrenciler, gelir });
+    // Özel ders payı (komisyon): yalnızca bu eğitmenin KENDİ paketleri, ödeme tarihine göre aylık. Başka eğitmenin verisi yok.
+  const egBilgi = egDoc.data() || {};
+  const egBasMap = {}; egSnap.docs.forEach((d) => { egBasMap[d.id] = !!d.data().basEgitmen; });
+  const ozelPct = egBilgi.basEgitmen ? 100
+    : (egBilgi.ozelPayPct === undefined || egBilgi.ozelPayPct === null || egBilgi.ozelPayPct === '' ? null
+      : Math.max(0, Math.min(100, Number(egBilgi.ozelPayPct))));
+  let ozelGelir = null;
+  if (ozelPct !== null && Number.isFinite(ozelPct)) {
+    const ayHarita = {};
+    paketSnap.docs.map((d) => ({ id: d.id, ...d.data() }))
+      .filter((p) => (p.egitmenIds || []).includes(E) && ogMap[p.ogrenciId])
+      .filter((p) => egBilgi.basEgitmen || !(p.egitmenIds || []).some((i) => egBasMap[i])) // baş eğitmen de atanmışsa kazanç onundur
+      .forEach((p) => {
+        const odemeler = Array.isArray(p.odemeler) ? p.odemeler
+          : ((Number(p.tutar) || 0) > 0 ? [{ tarih: p.tarih, tutar: Number(p.tutar) || 0 }] : []);
+        const og = ogMap[p.ogrenciId];
+        odemeler.forEach((o) => {
+          const tutar = Number(o.tutar) || 0;
+          if (!o.tarih || !tutar) return;
+          const ay = String(o.tarih).slice(0, 7);
+          const pay = Math.round(tutar * ozelPct / 100);
+          const g = ayHarita[ay] || (ayHarita[ay] = { ay, tutar: 0, pay: 0, satirlar: [] });
+          g.tutar += tutar; g.pay += pay;
+          g.satirlar.push({ ogrenci: ((og.ad || '') + ' ' + (og.soyad || '')).trim(), tarih: o.tarih, tutar, pay });
+        });
+      });
+    ozelGelir = { pct: ozelPct, aylar: Object.values(ayHarita).sort((a, b) => b.ay.localeCompare(a.ay)) };
+  }
+  res.json({ egitmen: { id: E, ad: egBilgi.ad || '' }, siniflar, ogrenciler, paketler, seanslar, ozelOgrenciler, gelir, ozelGelir });
 }
 
 async function egitmenSifre(req, res, ot) {
