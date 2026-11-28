@@ -13675,7 +13675,7 @@ function renderGelirTrend(){
     }
     const netR=isThis?5:3.5;
     netDots+=`<circle cx="${xCenter(i).toFixed(1)}" cy="${yPos(a.net).toFixed(1)}" r="${netR}" fill="var(--cyan)" stroke="var(--bg)" stroke-width="2"/>`;
-    if(i%2===0||i===aylar.length-1||isThis){
+    {
       xlabels+=`<text x="${xCenter(i).toFixed(1)}" y="${H-PAD.bottom+14}" text-anchor="middle" font-size="9" fill="${isThis?'var(--cyan)':'var(--text2)'}" font-weight="${isThis?'600':'400'}">${a.label}</text>`;
     }
   });
