@@ -1460,9 +1460,10 @@ button[onclick^="iosInstallBanneriKapat"]{border:1.5px solid rgba(13,13,20,.55)!
 
 /* Gelir detay listesi: satırlar arasında ince ayırıcı çizgi (yükseklik artmasın diye boşluk 1px çizgiyle takas) */
 .gelir-detay-item{margin-bottom:0!important;padding-top:3px;padding-bottom:3px;}
-.gelir-detay-item+.gelir-detay-item{border-top:1px solid var(--border2);}
+.gelir-detay-item+.gelir-detay-item{border-top:1px solid rgba(217,172,82,.55);}
 .gelir-detay-item .gelir-od-satir{padding:4px 0!important;}
-.gelir-detay-item .gelir-od-satir+.gelir-od-satir{border-top:1px solid var(--border2);}
+.gelir-detay-item .gelir-od-satir+.gelir-od-satir{border-top:1px solid rgba(217,172,82,.55);}
+:root[data-acik="1"] .gelir-detay-item .gelir-od-satir+.gelir-od-satir,:root[data-acik="1"] .gelir-detay-item+.gelir-detay-item{border-top-color:rgba(138,97,18,.45);}
 
 </style>
 <script>
