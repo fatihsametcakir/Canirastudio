@@ -1421,6 +1421,19 @@ button.eg-geri-yan::after{content:"!";position:absolute;top:-9px;right:-9px;min-
 .eg-donem-unlem2{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-width:16px;height:16px;border-radius:8px;background:#e11d2e;color:#fff;font-size:11px;font-weight:900;animation:egYan .9s ease-in-out infinite;}
 :root[data-acik="1"] .eg-odenmemis{color:#b3141f;}
 
+/* Rozet ve yumuşak düğme çerçeveleri belirgin */
+.badge{border-width:1.5px!important;border-style:solid!important;}
+.badge-red{border-color:color-mix(in srgb,var(--accent) 70%,transparent)!important;}
+.badge-cyan{border-color:color-mix(in srgb,var(--cyan) 70%,transparent)!important;}
+.badge-green{border-color:color-mix(in srgb,var(--green) 70%,transparent)!important;}
+.badge-amber{border-color:color-mix(in srgb,var(--amber) 70%,transparent)!important;}
+.badge-pink{border-color:color-mix(in srgb,var(--pink) 70%,transparent)!important;}
+.badge-purple{border-color:color-mix(in srgb,var(--purple) 70%,transparent)!important;}
+.badge-gray{border-color:color-mix(in srgb,var(--text3) 60%,transparent)!important;}
+.btn-green{border:1.5px solid color-mix(in srgb,var(--green) 75%,transparent)!important;}
+.btn-cyan{border:1.5px solid color-mix(in srgb,var(--cyan) 75%,transparent)!important;}
+.btn-purple{border:1.5px solid color-mix(in srgb,var(--purple) 75%,transparent)!important;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -3904,6 +3917,108 @@ Object.assign(TRANSLATIONS.ru,{
 });
 function t(key){return (TRANSLATIONS[LANG]&&TRANSLATIONS[LANG][key])||TRANSLATIONS.tr[key]||key;}
 function LC(){return LANG==='en'?'en-US':LANG==='ru'?'ru-RU':'tr-TR';}
+/* ── OTOMATİK ÇEVİRİ KATMANI ──────────────────────────────────────────────
+   Kodda/HTML'de sabit yazılmış Türkçe metinleri EN/RU dilinde ekranda çevirir.
+   1) TRANSLATIONS sözlüğündeki değerler otomatik eşlenir.  2) TX_EKSTRA: [tr,en,ru] — {} boşlukları değişkenleri (sayı/ad) temsil eder,
+   çeviride sıra değişirse {1},{2} yazılır.  3) Tam eşleşme yoksa metin parçaları (kısa ifadeler) tek tek çevrilir. */
+const TX_EKSTRA=[
+/*TX_BEGIN*/
+/*TX_END*/
+];
+const TX={built:false,en:new Map(),ru:new Map(),pat:{en:[],ru:[]},frag:{en:null,ru:null},fragList:[]};
+function txNorm(s){return String(s).replace(/\s+/g,' ').trim();}
+function txKur(){
+  if(TX.built)return;TX.built=true;
+  const esc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const ekle=(tr,en,ru)=>{
+    const k=txNorm(tr);if(!k||!/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(k))return;
+    [['en',en],['ru',ru]].forEach(([l,v])=>{
+      if(v===undefined||v===null)return;
+      if(k.includes('{}')){
+        const re=new RegExp('^'+k.split('{}').map(esc).join('([\\s\\S]*?)')+'$');
+        TX.pat[l].push([re,m=>{let i=0;return v.replace(/\{(\d*)\}/g,(_,n)=>{const g=n?m[+n]:m[++i];return g===undefined?'':g;});}]);
+      }else{if(!TX[l].has(k))TX[l].set(k,v);}
+    });
+    if(!k.includes('{}')&&k.length>=3)TX.fragList.push([k,en,ru]);
+  };
+  const D=TRANSLATIONS;
+  Object.keys(D.tr).forEach(key=>{const v=D.tr[key];if(typeof v==='string')ekle(v,D.en[key],D.ru[key]);});
+  TX_EKSTRA.forEach(a=>ekle(a[0],a[1],a[2]));
+  ['en','ru'].forEach((l,ix)=>{
+    const liste=TX.fragList.map(f=>[f[0],f[ix+1]]).filter(f=>f[1]!==undefined&&f[0]!==f[1]).sort((a,b)=>b[0].length-a[0].length);
+    const mp=new Map(liste);
+    if(liste.length)TX.frag[l]={re:new RegExp(liste.filter(f=>f[0].length>=4).map(f=>esc(f[0])).join('|'),'g'),mp};
+  });
+}
+function txCevir(s,lang){
+  lang=lang||LANG;if(lang==='tr'||!s||typeof s!=='string')return s;
+  if(!TX.built)txKur();
+  const m=/^(\s*)([\s\S]*?)(\s*)$/.exec(s);const core=txNorm(m[2]);
+  if(!core||!/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(core))return s;
+  let r=TX[lang].get(core);
+  if(r===undefined){for(const p of TX.pat[lang]){const mm=p[0].exec(core);if(mm){r=p[1](mm);break;}}}
+  if(r===undefined&&TX.frag[lang]&&/[ğĞşŞıİöÖüÜçÇ]|\b(ve|ile|için|bir|bu|yok|ders|saat)\b/.test(core)){
+    const f=TX.frag[lang];const x=core.replace(f.re,q=>f.mp.get(q)||q);if(x!==core)r=x;
+  }
+  return r===undefined?s:m[1]+r+m[3];
+}
+const TX_ORJ=new WeakMap(),TX_ATTR=['placeholder','title','aria-label'];
+let TX_MESGUL=false;
+function txMetin(n){
+  const v=n.nodeValue,o=TX_ORJ.get(n);
+  if(o&&v===o.out)return;
+  const r=LANG==='tr'?v:txCevir(v);
+  if(r!==v){TX_ORJ.set(n,{tr:v,out:r});n.nodeValue=r;}else if(o)TX_ORJ.delete(n);
+}
+function txOznitelik(e,a){
+  const v=e.getAttribute(a);if(v==null)return;
+  const k='_txa_'+a,o=e[k];
+  if(o&&v===o.out)return;
+  const r=LANG==='tr'?v:txCevir(v);
+  if(r!==v){e[k]={tr:v,out:r};e.setAttribute(a,r);}else if(o)e[k]=null;
+}
+function txGez(kok){
+  if(!kok)return;
+  if(kok.nodeType===3){const p=kok.parentElement;if(p&&!/^(SCRIPT|STYLE|TEXTAREA)$/.test(p.tagName)&&!p.closest('[translate="no"]'))txMetin(kok);return;}
+  if(kok.nodeType!==1||/^(SCRIPT|STYLE)$/.test(kok.tagName))return;
+  const w=document.createTreeWalker(kok,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT);
+  let n=w.currentNode;
+  const isle=x=>{
+    if(x.nodeType===3){const p=x.parentElement;if(p&&!/^(SCRIPT|STYLE|TEXTAREA)$/.test(p.tagName)&&!p.closest('[translate="no"]'))txMetin(x);}
+    else if(x.nodeType===1&&x.attributes.length)TX_ATTR.forEach(a=>{if(x.hasAttribute(a))txOznitelik(x,a);});
+  };
+  isle(n);while((n=w.nextNode()))isle(n);
+}
+// Dil değişince: önce Türkçe asıllarına dön, sonra yeni dile çevir
+function txYenidenUygula(){
+  TX_MESGUL=true;
+  try{
+    const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT);let n=w.currentNode;
+    const geri=x=>{
+      if(x.nodeType===3){const o=TX_ORJ.get(x);if(o&&x.nodeValue===o.out)x.nodeValue=o.tr;TX_ORJ.delete(x);}
+      else if(x.nodeType===1)TX_ATTR.forEach(a=>{const o=x['_txa_'+a];if(o&&x.getAttribute(a)===o.out)x.setAttribute(a,o.tr);x['_txa_'+a]=null;});
+    };
+    geri(n);while((n=w.nextNode()))geri(n);
+    if(LANG!=='tr')txGez(document.body);
+  }finally{TX_MESGUL=false;}
+  try{TX_GOZ.takeRecords();}catch(e){}
+}
+const TX_GOZ=new MutationObserver(ml=>{
+  if(TX_MESGUL||LANG==='tr')return;
+  TX_MESGUL=true;
+  try{
+    ml.forEach(m=>{
+      if(m.type==='childList')m.addedNodes.forEach(txGez);
+      else if(m.type==='characterData')txGez(m.target);
+      else if(m.type==='attributes')txOznitelik(m.target,m.attributeName);
+    });
+  }finally{TX_MESGUL=false;}
+  try{TX_GOZ.takeRecords();}catch(e){}
+});
+TX_GOZ.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TX_ATTR});
+// Yerel pencereler (alert/confirm/prompt) de çevrilsin
+['alert','confirm','prompt'].forEach(fn=>{const o=window[fn].bind(window);window[fn]=function(m,...r){return o(txCevir(String(m==null?'':m)),...r);};});
+
 function applyLang(){
   const map={
     'navlbl-anasayfa':'nav_anasayfa','navlbl-ogrenciler':'nav_ogrenciler',
@@ -3936,6 +4051,7 @@ function applyLang(){
   if(PORTAL_OG_ID&&typeof renderPortalIcerik==='function'){
     try{renderPortalIcerik();}catch(e){}
   }
+  try{txYenidenUygula();}catch(e){console.warn('çeviri katmanı',e);}
 }
 function cycleLang(){
   LANG=LANG==='tr'?'en':LANG==='en'?'ru':'tr';
