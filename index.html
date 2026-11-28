@@ -1417,6 +1417,10 @@ button.eg-geri-yan::after{content:"!";position:absolute;top:-9px;right:-9px;min-
 
 .gg-card.eg-uyari .eg-rozet{display:inline-block!important;position:static!important;margin-left:8px;vertical-align:middle;min-width:22px!important;height:22px!important;line-height:22px!important;font-size:14px!important;border-radius:11px!important;}
 
+.eg-odenmemis{margin-top:4px;font-size:11.5px;font-weight:700;color:#ff6b6b;display:flex;align-items:center;gap:6px;line-height:1.3;}
+.eg-donem-unlem2{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-width:16px;height:16px;border-radius:8px;background:#e11d2e;color:#fff;font-size:11px;font-weight:900;animation:egYan .9s ease-in-out infinite;}
+:root[data-acik="1"] .eg-odenmemis{color:#b3141f;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -12301,6 +12305,13 @@ async function egOdemeIsaretle(siId,idx,egId,yapildi){
   }
 }
 // Dönem satırındaki (eğitmen payı) yanıp sönme + tik: yalnızca ödemesi bekleyen dönem için
+function egOdenmemisToplam(siId){
+  return EG_BEKLEYEN.filter(b=>b.siId===siId).reduce((t,b)=>t+b.kisiler.filter(k=>!k.odendi).reduce((x,k)=>x+k.tutar,0),0);
+}
+function egOdenmemisEtiket(siId){
+  const n=egOdenmemisToplam(siId);if(!(n>0))return '';
+  return `<div class="eg-odenmemis"><span class="eg-donem-unlem2">!</span> (Ödenmemiş eğitmen tutarı: ${n.toLocaleString(LC())} ₺)</div>`;
+}
 function egSatirDurum(siId,idx,egId,bitis){
   if(egOdemeYapildiMi(siId,idx,egId))return 'odendi';
   const bugun=new Date(bugunTarih()+'T00:00:00');
@@ -12471,7 +12482,7 @@ async function renderGiderRapor(){
   {const gorunen=new Set(sinifDetaylar.map(d=>d.si.id));
    [...new Set(EG_BEKLEYEN.map(b=>b.siId))].filter(id=>!gorunen.has(id)).forEach(id=>{
      const si=S.siniflar.find(x=>x.id===id);if(!si)return;
-     html+=`<div class="egitmen-pay-kart eg-kart-uyari" style="margin-bottom:8px;"><div style="font-size:14px;font-weight:600;">${si.ad}</div><div style="font-size:11px;color:var(--amber);margin-top:4px;">❗ Eğitmen ödemesi bekliyor — sınıf kartında dönemi seçip tikleyin</div></div>`;
+     html+=`<div class="egitmen-pay-kart eg-kart-uyari" style="margin-bottom:8px;"><div style="font-size:14px;font-weight:600;">${si.ad}</div>${egOdenmemisEtiket(id)}</div>`;
    });}
   if(sinifDetaylar.length){
     html+=`<div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${t('siniftagore')}</div>
@@ -12496,6 +12507,7 @@ async function renderGiderRapor(){
             <div style="min-width:0;">
               <div style="font-size:14px;font-weight:600;">${d.si.ad}</div>
               ${d.egitmen?`<div style="font-size:11px;color:var(--text2);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}${d.egitmen2?` · ${d.egitmen2.basEgitmen?'⭐':'👤'} ${d.egitmen2.ad}`:''}</div>`:''}
+              ${egOdenmemisEtiket(d.si.id)}
             </div>
           </div>
           <span style="font-size:14px;font-weight:700;color:var(--green);flex-shrink:0;">${d.sinifGelir.toLocaleString(LC())} ₺</span>
