@@ -1412,6 +1412,9 @@ html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:14.5px}
 @keyframes egGeri{0%,100%{background:var(--surface2);border-color:var(--border2);color:var(--text);box-shadow:0 0 0 0 transparent;transform:scale(1);}50%{background:#e11d2e;border-color:#ff4d5e;color:#fff;box-shadow:0 0 0 6px rgba(225,29,46,.35),0 0 18px 4px rgba(225,29,46,.8);transform:scale(1.18);}}
 button.eg-geri-yan{animation:egGeri .7s ease-in-out infinite!important;}
 
+button.eg-geri-yan{position:relative;overflow:visible!important;}
+button.eg-geri-yan::after{content:"!";position:absolute;top:-9px;right:-9px;min-width:17px;height:17px;border-radius:9px;background:#fff;color:#e11d2e;font-size:12px;font-weight:900;line-height:17px;text-align:center;border:2px solid #e11d2e;box-sizing:content-box;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
