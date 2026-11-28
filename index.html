@@ -12903,10 +12903,22 @@ async function egitmenSil(id){
 }
 
 // ── GİDER RAPORU ───────────────────────────────────────
+// Gider Raporu'nda sınıf bazlı (kira/asistan) hesap için gösterilecek dönem:
+// seçili ay güncel aysa sınıfın güncel dönemi, başka bir aysa o ayın son gününü içeren dönem.
+function giderSinifDonemIdx(si){
+  if(GIDER_DONEM_IDX[si.id]!=null)return GIDER_DONEM_IDX[si.id];
+  const simdi=simdikiZaman();
+  const guncelAy=simdi.getFullYear()+'-'+String(simdi.getMonth()+1).padStart(2,'0');
+  if(!GIDER_AY||GIDER_AY===guncelAy)return sinifGuncelDonemIndex(si);
+  const [y,m]=GIDER_AY.split('-').map(Number);
+  const son=new Date(y,m,0);
+  const str=son.getFullYear()+'-'+String(son.getMonth()+1).padStart(2,'0')+'-'+String(son.getDate()).padStart(2,'0');
+  return Math.max(0,sinifDonemIndex(si,str));
+}
 function sinifDonemDegistir(siId,delta){
   const si=S.siniflar.find(s=>s.id===siId);
   if(!si)return;
-  const guncel=GIDER_DONEM_IDX[siId]??sinifGuncelDonemIndex(si);
+  const guncel=giderSinifDonemIdx(si);
   GIDER_DONEM_IDX[siId]=Math.max(0,guncel+delta);
   renderGiderRapor();
 }
@@ -13144,7 +13156,7 @@ async function renderGiderRapor(){
   const aktifSinifSayisi=S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').length;
 
   S.siniflar.filter(si=>(si.durum||'aktif')!=='pasif').forEach((si,idx)=>{
-    const d=sinifDonemPayHesapla(si,GIDER_DONEM_IDX[si.id]??sinifGuncelDonemIndex(si),aktifSinifSayisi);
+    const d=sinifDonemPayHesapla(si,giderSinifDonemIdx(si),aktifSinifSayisi);
     if(d){d.idx=idx;sinifDetaylar.push(d);}
   });
 
@@ -13353,6 +13365,7 @@ async function renderGiderRapor(){
 
 function giderAyDegis(ay){
   GIDER_AY=ay;
+  GIDER_DONEM_IDX={}; // ay değişince sınıf bazlı dönem seçimleri sıfırlanır, seçilen aya göre belirlenir
   renderGiderRapor();
 }
 
