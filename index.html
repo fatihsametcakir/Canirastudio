@@ -3214,15 +3214,26 @@ async function ozelStudyoYukle(){
     try{renderAll();}catch(e){}
   }catch(e){console.warn('Özel ders stüdyoları yüklenemedi',e);}
 }
+// Ad satırı: salt okunur çubuk + ✎ (düzenle) + ✕ (sil). ✎'ye basınca çubuk düzenlenebilir olur, odak kaybolunca tekrar kilitlenir.
+function adSatirHtml(ad,dizi,i,silFn,ph){
+  const e=String(ad).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  return '<div style="display:flex;gap:8px;margin-bottom:8px;"><input class="sube-girdi" readonly style="margin-bottom:0;flex:1;min-width:0;" value="'+e+'" placeholder="'+ph+'" oninput="'+dizi+'['+i+'].ad=this.value"><button type="button" class="btn btn-ghost" style="flex:0 0 46px;width:46px;padding:0;" onclick="adSatirDuzenle(this)" aria-label="Düzenle">✎</button><button type="button" class="btn btn-ghost" style="flex:0 0 46px;width:46px;padding:0;" onclick="'+silFn+'('+i+')" aria-label="Sil">✕</button></div>';
+}
+function adSatirDuzenle(btn){
+  const inp=btn.parentNode.querySelector('input');if(!inp)return;
+  inp.readOnly=false;inp.focus();try{inp.setSelectionRange(inp.value.length,inp.value.length);}catch(e){}
+  inp.addEventListener('blur',()=>{inp.readOnly=true;},{once:true});
+}
+function adSatirSonuDuzenle(kapId){const b=document.querySelectorAll('#'+kapId+' > div > button[aria-label="Düzenle"]');if(b.length)adSatirDuzenle(b[b.length-1]);}
 let OZ_STD_TASLAK=[];
 function ozStdYukleTaslak(){OZ_STD_TASLAK=studyoListe().map(x=>({id:x.id,ad:x.ad}));}
 function ozStdCiz(){
   const el=document.getElementById('oz-std-liste');if(!el)return;
-  el.innerHTML=OZ_STD_TASLAK.map((x,i)=>'<div style="display:flex;gap:8px;margin-bottom:8px;"><input class="sube-girdi" style="margin-bottom:0;flex:1;min-width:0;" value="'+String(x.ad).replace(/"/g,'&quot;')+'" placeholder="Stüdyo adı" oninput="OZ_STD_TASLAK['+i+'].ad=this.value"><button type="button" class="btn btn-ghost btn-sm" style="flex-shrink:0;" onclick="ozStdSil('+i+')" aria-label="Sil">✕</button></div>').join('');
+  el.innerHTML=OZ_STD_TASLAK.map((x,i)=>adSatirHtml(x.ad,'OZ_STD_TASLAK',i,'ozStdSil','Stüdyo adı')).join('');
 }
 function ozStdEkle(){
   const yeni=OZ_STD_TASLAK.reduce((m,x)=>Math.max(m,Number(x.id)||0),0)+1;
-  OZ_STD_TASLAK.push({id:yeni,ad:'Stüdyo '+yeni});ozStdCiz();
+  OZ_STD_TASLAK.push({id:yeni,ad:'Stüdyo '+yeni});ozStdCiz();adSatirSonuDuzenle('oz-std-liste');
 }
 function ozStdSil(i){
   const x=OZ_STD_TASLAK[i];if(!x)return;
@@ -3263,11 +3274,11 @@ function studyoSayfaCiz(){
   const cok=SUBE.liste.length>=2;
   sel.style.display=cok?'':'none';
   if(cok){sel.innerHTML=SUBE.liste.map(b=>'<option value="'+b.id+'">'+String(b.ad).replace(/</g,'&lt;')+'</option>').join('');sel.value=STD_SUBE;}
-  document.getElementById('std-liste').innerHTML=STD_TASLAK.map((x,i)=>'<div style="display:flex;gap:8px;margin-bottom:8px;"><input class="sube-girdi" style="margin-bottom:0;flex:1;min-width:0;" value="'+String(x.ad).replace(/"/g,'&quot;')+'" placeholder="Stüdyo adı" oninput="STD_TASLAK['+i+'].ad=this.value"><button type="button" class="btn btn-ghost" style="flex:0 0 46px;width:46px;padding:0;" onclick="studyoSil('+i+')" aria-label="Sil">✕</button></div>').join('');
+  document.getElementById('std-liste').innerHTML=STD_TASLAK.map((x,i)=>adSatirHtml(x.ad,'STD_TASLAK',i,'studyoSil','Stüdyo adı')).join('');
 }
 function studyoEkleSatir(){
   const yeni=STD_TASLAK.reduce((m,x)=>Math.max(m,Number(x.id)||0),0)+1;
-  STD_TASLAK.push({id:yeni,ad:'Stüdyo '+yeni});studyoSayfaCiz();
+  STD_TASLAK.push({id:yeni,ad:'Stüdyo '+yeni});studyoSayfaCiz();adSatirSonuDuzenle('std-liste');
 }
 function studyoSil(i){
   const x=STD_TASLAK[i];if(!x)return;
@@ -3292,9 +3303,13 @@ function subeSayfaAc(){
   openRaporSayfa('subeler','sube_yonetimi',subeModalCiz);
 }
 function subeModalCiz(){
-  document.getElementById('sube-liste').innerHTML=SUBE_TASLAK.map((b,i)=>'<input class="sube-girdi" value="'+String(b.ad).replace(/"/g,'&quot;')+'" placeholder="Şube adı" oninput="SUBE_TASLAK['+i+'].ad=this.value">').join('');
+  document.getElementById('sube-liste').innerHTML=SUBE_TASLAK.map((b,i)=>adSatirHtml(b.ad,'SUBE_TASLAK',i,'subeSil','Şube adı')).join('');
 }
-function subeEkleSatir(){SUBE_TASLAK.push({id:'s'+Date.now().toString(36),ad:''});subeModalCiz();}
+function subeEkleSatir(){SUBE_TASLAK.push({id:'s'+Date.now().toString(36),ad:''});subeModalCiz();adSatirSonuDuzenle('sube-liste');}
+function subeSil(i){
+  if(SUBE_TASLAK.length<=1){showToast('En az bir şube olmalı.','error');return;}
+  SUBE_TASLAK.splice(i,1);subeModalCiz();
+}
 async function subeKaydet(){
   const liste=SUBE_TASLAK.map(b=>({...b,ad:(b.ad||'').trim()})).filter(b=>b.ad);
   if(!liste.length){showToast('En az bir şube adı gerekli.','error');return;}
