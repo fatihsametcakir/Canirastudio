@@ -1452,6 +1452,10 @@ button[onclick^="iosInstallBanneriKapat"]{border:1.5px solid rgba(13,13,20,.55)!
 :root[data-acik="1"] .og-bilgi-pil .og-bilgi-i{background:#c1121f;color:#fff;}
 @media (prefers-reduced-motion:reduce){:root[data-acik="1"] .og-bilgi-pil{animation:none;background:#ffe3e5;}}
 
+/* Liste satırlarındaki açılır ok: belirgin çerçeveli yuvarlak düğme */
+.chev-btn{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:28px;height:28px;box-sizing:border-box;border:1.5px solid var(--accent);border-radius:50%;background:var(--surface2);color:var(--accent);font-size:18px;font-weight:700;line-height:1;transition:transform .2s;padding-bottom:2px;}
+:root[data-acik="1"] .chev-btn{border-color:#c1121f;color:#c1121f;background:#fff;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -9520,7 +9524,7 @@ function renderOzel(){
           ${!ogAcik?`<div style="font-size:11px;color:var(--text2);margin-top:2px;">${ozetMetin}</div>`:''}
           ${eksikSatir}
         </div>
-        <span style="font-size:16px;color:var(--text3);transition:transform .15s;display:inline-block;transform:rotate(${ogAcik?90:0}deg);flex-shrink:0;">›</span>
+        <span class="chev-btn" style="transform:rotate(${ogAcik?90:0}deg);">›</span>
       </div>
       ${eksikBar}
       ${ogAcik?`
@@ -9735,7 +9739,7 @@ function renderGelir(){
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
           <div style="font-size:13px;font-weight:600;color:var(--green);">${t('brut')}: ${v.toplam.toLocaleString(LC())} ₺</div>
           <div style="font-size:12px;color:var(--cyan);">${t('lbl_net')}: ${ayNet.toLocaleString(LC())} ₺</div>
-          <span style="font-size:16px;color:var(--text3);transition:transform .2s;${acik?'transform:rotate(90deg)':''}">›</span>
+          <span class="chev-btn" style="${acik?'transform:rotate(90deg)':''}">›</span>
         </div>
       </div>
       <div class="gelir-detay${acik?' open':''}" id="gelir-detay-${key}">
@@ -13483,7 +13487,7 @@ function renderRetention(){
         <span style="color:var(--green);">✓ ${aktifSay} ${t('devam')}</span>
         ${dondurulmus.length?`<span style="color:var(--amber);">❄ ${dondurulmus.length} ${t('donduruldu_kucuk')}</span>`:''}
         ${ayrilanlar.length?`<span style="color:var(--accent);">✗ ${ayrilanlar.length} ${t('ayrilmis')}</span>`:''}
-        <span style="margin-left:auto;color:var(--text3);transition:transform .2s;transform:rotate(${acikMi?90:0}deg);">›</span>
+        <span class="chev-btn" style="margin-left:auto;transform:rotate(${acikMi?90:0}deg);">›</span>
       </div>${detayHtml}
     </div>`;
     return html;
@@ -13494,7 +13498,7 @@ function renderRetention(){
     const kapAcik=!!window._retKapaliAcik;
     html+=`<div class="reten-kapali-baslik" onclick="retKapaliToggle()" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 8px;padding:10px 14px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);">
       <span style="font-size:13px;font-weight:600;">🔒 ${t('kapali_siniflar')} <span style="color:var(--text3);font-weight:500;">(${kapaliSiniflar.length})</span></span>
-      <span style="color:var(--text3);transition:transform .2s;transform:rotate(${kapAcik?90:0}deg);">›</span>
+      <span class="chev-btn" style="transform:rotate(${kapAcik?90:0}deg);">›</span>
     </div>`;
     if(kapAcik)kapaliSiniflar.forEach(x=>{html+=kartHtml(x);});
   }
