@@ -1447,10 +1447,10 @@ button[onclick^="iosInstallBanneriKapat"]{border:1.5px solid rgba(13,13,20,.55)!
 :root[data-acik="1"] button[style*="background:none"][style*="border:none"]{border-color:rgba(0,0,0,.35)!important;}
 
 /* Açık tema: 'Dağılımı gör' düğmesi net yanıp sönsün */
-@keyframes ogPilAcik{0%,35%{background:#fff;color:#c1121f;border-color:#c1121f;box-shadow:0 0 0 0 rgba(225,29,46,.55);}50%,85%{background:#e11d2e;color:#fff;border-color:#9b0d18;box-shadow:0 0 0 7px rgba(225,29,46,0);}100%{background:#fff;color:#c1121f;border-color:#c1121f;box-shadow:0 0 0 0 rgba(225,29,46,.55);}}
-:root[data-acik="1"] .og-bilgi-pil{border:2px solid #c1121f;background:#fff;color:#c1121f;font-weight:700;animation:ogPilAcik 1.3s ease-in-out infinite;}
+@keyframes ogPilAcik{0%,100%{background:#fff;border-color:#d8434f;box-shadow:0 0 0 0 rgba(225,29,46,.35);}50%{background:#ffe3e5;border-color:#c1121f;box-shadow:0 0 0 6px rgba(225,29,46,0);}}
+:root[data-acik="1"] .og-bilgi-pil{border:2px solid #c1121f;background:#fff;color:#c1121f;font-weight:700;animation:ogPilAcik 2.4s ease-in-out infinite;}
 :root[data-acik="1"] .og-bilgi-pil .og-bilgi-i{background:#c1121f;color:#fff;}
-@media (prefers-reduced-motion:reduce){:root[data-acik="1"] .og-bilgi-pil{animation:none;background:#e11d2e;color:#fff;}}
+@media (prefers-reduced-motion:reduce){:root[data-acik="1"] .og-bilgi-pil{animation:none;background:#ffe3e5;}}
 
 </style>
 <script>
