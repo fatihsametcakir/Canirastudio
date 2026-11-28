@@ -13723,7 +13723,11 @@ function renderGelirTrend(){
       +`<div style="font-size:11px;color:var(--text3);">${t('x_iade_not')}</div></div>`;
   }
 
+  const _oncekiKap=el.querySelector('.gelir-chart-wrap');const _oncekiSl=_oncekiKap?_oncekiKap.scrollLeft:0;
   el.innerHTML=html;
+  // Güncel ay (en sağdaki sütun) kaydırmadan görünsün; kullanıcı kaydırdıysa konumu korunur
+  const _kap=el.querySelector('.gelir-chart-wrap');
+  if(_kap){const _git=()=>{_kap.scrollLeft=_oncekiSl>0?_oncekiSl:_kap.scrollWidth;};_git();requestAnimationFrame(_git);setTimeout(_git,120);}
 }
 
 
