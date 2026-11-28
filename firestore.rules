@@ -157,10 +157,12 @@ service cloud.firestore {
     // Ödeme düzenleme/silme onay talepleri: talebi açan kendi talebini onaylayamaz (yalnızca geri çekebilir)
     match /onay_talepleri/{id} {
       allow read: if oku();
-      allow create: if yaz('odeme')
+      allow create: if yazHerhangi()
         && request.resource.data.talepEden == request.auth.token.email.lower()
-        && request.resource.data.durum == 'bekliyor';
-      allow update: if yaz('odeme')
+        && (request.resource.data.durum == 'bekliyor'
+            || (sahip() && request.resource.data.islem == 'kayit_silindi'));
+      // Karar: talebi açan dışındaki herhangi bir yönetici onaylar/reddeder; açan yalnızca iptal edebilir
+      allow update: if oku()
         && resource.data.durum == 'bekliyor'
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['durum', 'karar'])
         && (
