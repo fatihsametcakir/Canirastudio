@@ -5279,6 +5279,7 @@ function openEgitmenGiderler(){openRaporSayfa('egitmen-panel','parametreler',ren
 function openEgitmenlerSayfa(){openRaporSayfa('egitmenler','egitmenler',renderEgitmenlerSayfa);}
 // Kartları kapalı/açılır (akordeon) yap — render sonrası çağrılır, açık kalan kartlar yeniden çizimde korunur
 const KART_ACIK=new Set();
+const KART_ILK_ACIK=new Set();
 function kartAkordeon(sayfaId){
   const pg=document.getElementById('pg-'+sayfaId);if(!pg)return;
   const kartlar=[];
@@ -5297,6 +5298,8 @@ function kartAkordeon(sayfaId){
     bas.classList.add('kart-acc-baslik');
     try{bas.style.setProperty('--kart-renk',getComputedStyle(bas).color);}catch(e){} // ok rengi = kartın başlık rengi
     const ayarla=ac=>{bas.classList.toggle('acik',ac);govde.classList.toggle('acik',ac);};
+    // Eğitmenler sayfasındaki kart ilk gösterimde açık gelir (kullanıcı kapatırsa kapalı kalır)
+    if(sayfaId==='egitmenler'&&!KART_ILK_ACIK.has(anahtar)){KART_ILK_ACIK.add(anahtar);KART_ACIK.add(anahtar);}
     ayarla(KART_ACIK.has(anahtar));
     bas.addEventListener('click',()=>{const ac=!govde.classList.contains('acik');ac?KART_ACIK.add(anahtar):KART_ACIK.delete(anahtar);ayarla(ac);});
   });
