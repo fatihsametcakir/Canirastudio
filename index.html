@@ -1499,6 +1499,21 @@ button[onclick^="iosInstallBanneriKapat"]{border:1.5px solid rgba(13,13,20,.55)!
 :root[data-acik="1"] #ozel-takvim-blok .yatay-kaydirma-alani{--ot-zemin:#d4d4db;border-color:#3d3a4f40;}
 #ozel-takvim-blok .ot-kose,#ozel-takvim-blok .ot-saat-label{background:var(--ot-zemin);}
 
+/* Gelir/Gider (açık tema): 5. kart 4. kartla aynı maviydi → turuncu */
+:root[data-acik="1"] #pg-gelirgider .gg-grid>.gg-card:nth-child(5){--gg-c:#ea7a0c!important;}
+/* Aç/kapa okları: daha yüksek kontrast — ok ve çerçeve kart renginin koyu (açık temada) / açık (koyu temada) tonu */
+:root{--ok-mix:#ffffff;}
+:root[data-acik="1"]{--ok-mix:#000000;}
+.odeme-sinif-chevron,.eg-chev,.gg-card::after,.kart-acc-baslik::after,.chev-btn:not(.chev-kucuk),.video-kart .vk-chevron{
+  color:color-mix(in srgb,var(--ok-c) 58%,var(--ok-mix))!important;
+  border-color:color-mix(in srgb,var(--ok-c) 85%,var(--ok-mix))!important;
+  border-width:2px!important;
+  background:color-mix(in srgb,var(--ok-c) 26%,transparent)!important;
+  font-weight:800;
+}
+:root[data-acik="1"] .chev-btn:not(.chev-kucuk){background:color-mix(in srgb,var(--ok-c) 22%,#fff)!important;}
+.chev-btn.chev-kucuk{color:color-mix(in srgb,var(--kart-renk,#d9ac52) 58%,var(--ok-mix));border-color:color-mix(in srgb,var(--kart-renk,#d9ac52) 85%,var(--ok-mix));}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
