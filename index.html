@@ -1458,6 +1458,12 @@ button[onclick^="iosInstallBanneriKapat"]{border:1.5px solid rgba(13,13,20,.55)!
 .chev-btn.chev-kucuk{width:20px;height:20px;font-size:14px;padding-bottom:1px;border-width:1.2px;}
 .chev-btn.chev-kucuk.chev-duzenle{font-size:11px;padding-bottom:0;}
 
+/* Gelir detay listesi: satırlar arasında ince ayırıcı çizgi (yükseklik artmasın diye boşluk 1px çizgiyle takas) */
+.gelir-detay-item{margin-bottom:0!important;padding-top:3px;padding-bottom:3px;}
+.gelir-detay-item+.gelir-detay-item{border-top:1px solid var(--border2);}
+.gelir-detay-item .gelir-od-satir{padding:4px 0!important;}
+.gelir-detay-item .gelir-od-satir+.gelir-od-satir{border-top:1px solid var(--border2);}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -9767,7 +9773,7 @@ function renderGelir(){
                 siOd.map(od=>{
                   const og=S.ogrenciler.find(o=>o.id===od.ogrenciId);
                   const odEl=document.createElement('div');
-                  odEl.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:5px 0;cursor:pointer;';
+                  odEl.className='gelir-od-satir';odEl.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:5px 0;cursor:pointer;';
                   odEl.dataset.ogId=od.ogrenciId;odEl.dataset.siId=od.sinifId;odEl.dataset.odId=od.id;
                   odEl.onclick=function(e){e.stopPropagation();closeModal('m-aylik-gelir');openOdemeModal(this.dataset.ogId,this.dataset.siId,this.dataset.odId);};
                   odEl.innerHTML=
@@ -9813,7 +9819,7 @@ function renderGelir(){
                 '<div style="margin-top:6px;border-left:2px solid var(--border2);padding-left:10px;">'+
                   grp.items.map(o=>{
                     const odEl=document.createElement('div');
-                    odEl.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:5px 0;cursor:pointer;';
+                    odEl.className='gelir-od-satir';odEl.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:5px 0;cursor:pointer;';
                     odEl.dataset.ogId=o.ogrenciId||'';odEl.dataset.paketId=o.paketId||'';
                     odEl.onclick=function(e){e.stopPropagation();closeModal('m-aylik-gelir');if(this.dataset.ogId)openOzelPaketModal(this.dataset.ogId,this.dataset.paketId);};
                     odEl.innerHTML=
