@@ -3340,7 +3340,7 @@ const TRANSLATIONS={
     ad_soyad_hesap:'Ad Soyad (Hesap Sahibi)', banka_adi:'Banka Adı', qr_kod_gorseli:'QR Kod Görseli',
     qr_gorsel_sec:'📷 QR Görsel Seç', qr_gorseli_kaldir:'✕ QR Görseli Kaldır',
     grup:'Grup', odeme:'ödeme', brut:'Brüt',
-    genel_tutma_orani:'Genel Tutma Oranı', birakmis:'bırakmış', sinif_bazinda:'Sınıf Bazında',
+    genel_tutma_orani:'Genel Tutma Oranı', birakmis:'bırakmış', sinif_bazinda:'Sınıf Bazında', kapali_siniflar:'Kapalı Sınıflar', kapali_sinif_yok:'Kapalı sınıf yok',
     devam:'devam', donduruldu_kucuk:'dondurulmuş', ayrilmis:'ayrılmış',
     bu_ay_brut:'Bu ay brüt', bu_ay_net:'Bu ay net', aylik_ort:'Aylık ort.', ay_12_top:'12 ay top.',
     brut_gelir:'Brüt Gelir', net_gelir:'Net Gelir',
@@ -3529,7 +3529,7 @@ const TRANSLATIONS={
     ad_soyad_hesap:'Full Name (Account Holder)', banka_adi:'Bank Name', qr_kod_gorseli:'QR Code Image',
     qr_gorsel_sec:'📷 Choose QR Image', qr_gorseli_kaldir:'✕ Remove QR Image',
     grup:'Group', odeme:'payment(s)', brut:'Gross',
-    genel_tutma_orani:'Overall Retention Rate', birakmis:'left', sinif_bazinda:'By Class',
+    genel_tutma_orani:'Overall Retention Rate', birakmis:'left', sinif_bazinda:'By Class', kapali_siniflar:'Closed Classes', kapali_sinif_yok:'No closed classes',
     devam:'continuing', donduruldu_kucuk:'frozen', ayrilmis:'left',
     bu_ay_brut:'This month gross', bu_ay_net:'This month net', aylik_ort:'Monthly avg.', ay_12_top:'12-month total',
     brut_gelir:'Gross Income', net_gelir:'Net Income',
@@ -3718,7 +3718,7 @@ const TRANSLATIONS={
     ad_soyad_hesap:'ФИО (владелец счёта)', banka_adi:'Название банка', qr_kod_gorseli:'Изображение QR-кода',
     qr_gorsel_sec:'📷 Выбрать QR-изображение', qr_gorseli_kaldir:'✕ Удалить QR-изображение',
     grup:'Группа', odeme:'платеж(ей)', brut:'Валовый',
-    genel_tutma_orani:'Общий уровень удержания', birakmis:'ушли', sinif_bazinda:'По группам',
+    genel_tutma_orani:'Общий уровень удержания', birakmis:'ушли', sinif_bazinda:'По группам', kapali_siniflar:'Закрытые группы', kapali_sinif_yok:'Нет закрытых групп',
     devam:'продолжают', donduruldu_kucuk:'заморожено', ayrilmis:'ушли',
     bu_ay_brut:'Валовый за месяц', bu_ay_net:'Чистый за месяц', aylik_ort:'Средн. в месяц', ay_12_top:'Итого за 12 мес.',
     brut_gelir:'Валовый доход', net_gelir:'Чистый доход',
@@ -13370,6 +13370,7 @@ function giderAyDegis(ay){
 }
 
 // Bırakanların hangi haftada ayrıldığı: kayıt/giriş tarihinden pasife alınma tarihine kadar geçen hafta
+function retKapaliToggle(){window._retKapaliAcik=!window._retKapaliAcik;renderRetention();}
 function retDetayToggle(id){if(!window._retAcik)window._retAcik=new Set();if(window._retAcik.has(id))window._retAcik.delete(id);else window._retAcik.add(id);renderRetention();}
 function retHaftaDetayi(si,ayrilanlar){
   const gunMs=86400000;
@@ -13462,7 +13463,8 @@ function renderRetention(){
     return {si,renk,aktifler,dondurulmus,ayrilanlar,pct,kapali:si.durum==='pasif'};
   }).filter(Boolean).sort((a,b)=>(a.kapali-b.kapali)||(b.pct-a.pct)); // kapalı sınıflar en altta
 
-  sinifRetention.forEach(({si,renk,aktifler,dondurulmus,ayrilanlar,pct,kapali})=>{
+  const kartHtml=({si,renk,aktifler,dondurulmus,ayrilanlar,pct,kapali})=>{
+    let html='';
     const aktifSay=aktifler.length;
     const barRenk=kapali?'var(--text3)':pct>=75?'var(--green)':pct>=50?'var(--amber)':'var(--accent)';
 
@@ -13484,7 +13486,18 @@ function renderRetention(){
         <span style="margin-left:auto;color:var(--text3);transition:transform .2s;transform:rotate(${acikMi?90:0}deg);">›</span>
       </div>${detayHtml}
     </div>`;
-  });
+    return html;
+  };
+  const acikSiniflar=sinifRetention.filter(x=>!x.kapali),kapaliSiniflar=sinifRetention.filter(x=>x.kapali);
+  acikSiniflar.forEach(x=>{html+=kartHtml(x);});
+  if(kapaliSiniflar.length){
+    const kapAcik=!!window._retKapaliAcik;
+    html+=`<div class="reten-kapali-baslik" onclick="retKapaliToggle()" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 8px;padding:10px 14px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);">
+      <span style="font-size:13px;font-weight:600;">🔒 ${t('kapali_siniflar')} <span style="color:var(--text3);font-weight:500;">(${kapaliSiniflar.length})</span></span>
+      <span style="color:var(--text3);transition:transform .2s;transform:rotate(${kapAcik?90:0}deg);">›</span>
+    </div>`;
+    if(kapAcik)kapaliSiniflar.forEach(x=>{html+=kartHtml(x);});
+  }
 
   el.innerHTML=html;
 }
