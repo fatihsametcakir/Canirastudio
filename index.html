@@ -2611,12 +2611,12 @@ try{
 <div class="overlay" id="m-ozel-paket"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-ozel-paket')">✕</button>
   <div class="sheet-title" id="m-ozel-paket-title">Yeni Paket</div>
-  <div class="field"><label>Toplam Saat</label><input id="op-toplam" type="number" placeholder="10" min="1" step="0.5"/></div>
+  <div class="field"><label>Toplam Saat</label><input id="op-toplam" type="number" placeholder="10" min="1" step="0.5" oninput="opKaydetKontrol()"/></div>
   <div class="field" id="op-yapilan-wrap" style="display:none;"><label>Yapılan Saat (düzeltme)</label><input id="op-yapilan" type="number" min="0" step="0.5"/><div style="font-size:11px;color:var(--text3);margin-top:4px;">Sadece bir hatayı düzeltmek için değiştir. Paketten düşülmüş saat sayısıdır; kalan saat = toplam − yapılan.</div></div>
-  <div class="field"><label>Paket Tutarı — toplam (₺)</label><input id="op-tutar" type="number" placeholder="30000"/></div>
-  <div class="field" id="op-odenen-wrap"><label>Şimdi alınan ödeme (₺)</label><input id="op-odenen" type="number" placeholder="Boş bırakırsan tamamı alındı sayılır"/><div style="font-size:11px;color:var(--text3);margin-top:4px;">Parça parça ödeme için ilk alınan tutarı yaz. Kalanı sonra "💰 Ödemeler" düğmesinden eklersin.</div></div>
+  <div class="field"><label>Paket Tutarı — toplam (₺)</label><input id="op-tutar" type="number" placeholder="30000" oninput="opKaydetKontrol()"/></div>
+  <div class="field" id="op-odenen-wrap"><label>Şimdi alınan ödeme (₺)</label><input id="op-odenen" type="number" placeholder="Alınan tutar (zorunlu)" oninput="opKaydetKontrol()"/><div style="font-size:11px;color:var(--text3);margin-top:4px;">Parça parça ödeme için ilk alınan tutarı yaz. Kalanı sonra "💰 Ödemeler" düğmesinden eklersin.</div></div>
   <div id="op-odeme-notu" style="display:none;font-size:12px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:12px;line-height:1.5;">Ödeme tarihi ve tutarları paket kartındaki <b>💰 Ödemeler</b> düğmesinden yönetilir.</div>
-  <div class="field" id="op-tarih-wrap"><label>Ödeme Tarihi</label><input id="op-tarih" type="date"/></div>
+  <div class="field" id="op-tarih-wrap"><label>Ödeme Tarihi</label><input id="op-tarih" type="date" onchange="opKaydetKontrol()" oninput="opKaydetKontrol()"/></div>
   <div class="field" id="op-yontem-wrap"><label data-i18n="lbl_yontem">Yöntem</label><select id="op-yontem"><option value="nakit">Nakit</option><option value="kart">Kart</option><option value="havale">Havale/EFT</option></select></div>
   <div class="field"><label data-i18n="lbl_not">Not</label><textarea id="op-not" placeholder="Ek not..."></textarea></div>
   <div class="field">
@@ -4593,6 +4593,10 @@ const TX_EKSTRA=[
 [`Ad zorunludur.`,`Name is required.`,`Имя обязательно.`],
 [`Saat girin.`,`Enter the hours.`,`Укажите часы.`],
 [`Saat ve tutar giriniz.`,`Enter the hours and amount.`,`Укажите часы и сумму.`],
+[`Alınan ilk ödeme tutarını giriniz.`,`Enter the amount of the first payment received.`,`Укажите сумму первого полученного платежа.`],
+[`Ödeme tarihini seçiniz.`,`Select the payment date.`,`Выберите дату платежа.`],
+[`En az bir eğitmen seçiniz.`,`Select at least one instructor.`,`Выберите хотя бы одного преподавателя.`],
+[`Alınan tutar (zorunlu)`,`Amount received (required)`,`Полученная сумма (обязательно)`],
 [`Tutar giriniz.`,`Enter the amount.`,`Укажите сумму.`],
 [`Öğrenci seçin.`,`Select a student.`,`Выберите ученика.`],
 [`Ödeme tarihini seçin.`,`Select the payment date.`,`Выберите дату платежа.`],
@@ -8027,6 +8031,7 @@ function openOzelPaketModal(ogId,paketId){
     document.getElementById('m-ozel-paket-title').textContent=t('paketi_duzenle');
   }else{
     ['op-toplam','op-tutar','op-not','op-odenen'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('op-toplam').value='10'; // varsayılan 10 ders; istenirse değiştirilir
     document.getElementById('op-odenen-wrap').style.display='';
     document.getElementById('op-tarih-wrap').style.display='';
     document.getElementById('op-yontem-wrap').style.display='';
@@ -8038,12 +8043,31 @@ function openOzelPaketModal(ogId,paketId){
   }
   const egListEl=document.getElementById('op-egitmen-list');
   egListEl.innerHTML=S.egitmenler.length?S.egitmenler.map(e=>`<label class="eg-check-row"><input type="checkbox" class="op-egitmen-cb" value="${e.id}" ${secili.includes(e.id)?'checked':''}/> ${e.ad}${e.basEgitmen?' ⭐':''}</label>`).join(''):'<div style="font-size:12px;color:var(--text3);">Henüz eğitmen eklenmedi.</div>';
+  egListEl.querySelectorAll('.op-egitmen-cb').forEach(c=>c.addEventListener('change',opKaydetKontrol));
   openModal('m-ozel-paket');
+  opKaydetKontrol();
+}
+// Yeni paket: saat, tutar, ilk alınan ödeme, ödeme tarihi ve en az bir eğitmen girilmeden kaydedilemez.
+function opEksikAlan(){
+  const yeni=!EDIT_OZEL_PAKET;
+  const toplam=parseFloat(document.getElementById('op-toplam').value),tutar=parseFloat(document.getElementById('op-tutar').value);
+  if(!(toplam>0)||!(tutar>0))return 'Saat ve tutar giriniz.';
+  if(!yeni)return '';
+  const od=parseFloat(document.getElementById('op-odenen').value);
+  if(!(od>0))return 'Alınan ilk ödeme tutarını giriniz.';
+  if(od>tutar)return 'Alınan ödeme paket tutarından büyük olamaz.';
+  if(!document.getElementById('op-tarih').value)return 'Ödeme tarihini seçiniz.';
+  if(!document.querySelector('.op-egitmen-cb:checked'))return 'En az bir eğitmen seçiniz.';
+  return '';
+}
+function opKaydetKontrol(){
+  const b=document.getElementById('btn-save-op');if(!b)return;
+  const e=opEksikAlan();b.disabled=!!e;b.style.opacity=e?'.45':'';
 }
 async function saveOzelPaket(){
   const toplam=parseFloat(document.getElementById('op-toplam').value); // 10.5 gibi yarım saatler korunur
   const tutar=parseFloat(document.getElementById('op-tutar').value);
-  if(!toplam||toplam<=0||!tutar){alert('Saat ve tutar giriniz.');return;}
+  {const eksik=opEksikAlan();if(eksik){alert(eksik);return;}}
   const egitmenIds=[...document.querySelectorAll('.op-egitmen-cb:checked')].map(cb=>cb.value);
   const btn=document.getElementById('btn-save-op');btn.disabled=true;setSyncing(true);
   try{
@@ -8065,7 +8089,7 @@ async function saveOzelPaket(){
       await db.collection('ozelPaketler').doc(EDIT_OZEL_PAKET).update(alanlar);
     }else{
       const odenenHam=document.getElementById('op-odenen').value.trim();
-      const odenen=odenenHam===''?tutar:parseFloat(odenenHam);
+      const odenen=parseFloat(odenenHam);
       if(!(odenen>0)){alert('Alınan ödeme 0\'dan büyük olmalı. Ödeme alınmadıysa paket oluşturma.');btn.disabled=false;setSyncing(false);return;}
       if(odenen>tutar){alert('Alınan ödeme paket tutarından büyük olamaz.');btn.disabled=false;setSyncing(false);return;}
       const ilkTarih=document.getElementById('op-tarih').value,ilkYontem=document.getElementById('op-yontem').value;
@@ -8074,7 +8098,7 @@ async function saveOzelPaket(){
     closeModal('m-ozel-paket');_poll('ozelPaketler');
     if(EDIT_OZEL_PAKET)setTimeout(()=>openOzelSaatModal(EDIT_OZEL_PAKET),300);
   }catch(e){alert('Hata: '+e.message);}
-  btn.disabled=false;setSyncing(false);
+  btn.disabled=false;setSyncing(false);opKaydetKontrol();
 }
 
 function fmtSaat(s){return s%1===0?s.toString():(Math.floor(s)+'.5');}
