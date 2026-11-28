@@ -9106,7 +9106,7 @@ function renderAnasayfa(){
     const gunAd=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'][simdikiZaman().getDay()];
     const bugunDers=sAktif.filter(s=>s.gun===gunAd).length;
     const sd=document.getElementById('st-sinif-detay');
-    if(sd)sd.innerHTML='<div><span style="color:var(--green);">●</span> '+sAktif.length+' '+t('badge_aktif')+' &nbsp;<span style="opacity:.6;">○</span> '+sKapali+' '+t('kapali_kisa')+'</div>'
+    if(sd)sd.innerHTML='<div><span style="opacity:.6;">○</span> '+sKapali+' '+t('kapali_kisa')+'</div>'
       +'<div>📅 '+t('bugun')+': <b style="color:var(--text2);font-weight:600;">'+bugunDers+' '+t('sinif_kucuk_ders')+'</b></div>';
   }
   const yaklasanlar=getYaklasanlar();document.getElementById('st-yaklasan').textContent=yaklasanlar.length;
