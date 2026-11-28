@@ -5058,6 +5058,18 @@ function iosInstallBanneriKapat(){
   const b=document.getElementById('ios-install-banner');
   if(b)b.remove();
 }
+// Veri yenilemelerinden (polling) gelen yeniden çizimler: art arda gelenleri tek çizimde birleştirir ve
+// sayfa geçiş animasyonu sürerken çizmez (kartlar baştan animasyon oynatıp "pırpır" ediyordu).
+let _RA_T=null,_RA_N=0;
+function renderAllSonra(){
+  clearTimeout(_RA_T);_RA_N=0;
+  const dene=()=>{
+    const pg=document.querySelector('.page.active');
+    if(pg&&(pg.classList.contains('gec-ileri')||pg.classList.contains('gec-geri'))&&_RA_N++<10){_RA_T=setTimeout(dene,120);return;}
+    _RA_T=null;renderAll();
+  };
+  _RA_T=setTimeout(dene,150);
+}
 function startListeners(){
   document.getElementById('loading').style.display='flex';
   document.getElementById('app').style.display='none';
@@ -5086,7 +5098,8 @@ function startListeners(){
       snap=>{
         const yeni=snap.docs.map(d=>{const obj=d.data?d.data():{...d};return{...obj,id:d.id};});
         if(done[doneKey]&&JSON.stringify(S_RAW[key]!==undefined?S_RAW[key]:S[key])===JSON.stringify(yeni)){return;} // yoklamada veri aynıysa ekranı yeniden çizme (titreme/kaydırma sıfırlanması olmasın)
-        S_RAW[key]=yeni;S[key]=subeSuz(key,yeni);if(key==='siniflar')subeYenidenUygula();done[doneKey]=true;check();renderAll();},
+        const ilkGelis=!done[doneKey];
+        S_RAW[key]=yeni;S[key]=subeSuz(key,yeni);if(key==='siniflar')subeYenidenUygula();done[doneKey]=true;check();if(ilkGelis)renderAll();else renderAllSonra();},
       err=>{console.warn(col,err);done[doneKey]=true;check();}
     );
   }
