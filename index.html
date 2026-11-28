@@ -1454,7 +1454,7 @@ button[onclick^="iosInstallBanneriKapat"]{border:1.5px solid rgba(13,13,20,.55)!
 
 /* Liste satırlarındaki açılır ok: belirgin çerçeveli yuvarlak düğme */
 .chev-btn{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:28px;height:28px;box-sizing:border-box;border:1.5px solid #d9ac52;border-radius:50%;background:var(--surface2);color:#d9ac52;font-size:18px;font-weight:700;line-height:1;transition:transform .2s;padding-bottom:2px;}
-:root[data-acik="1"] .chev-btn{border-color:#b8872a;color:#9a6f1c;background:#fff;}
+:root[data-acik="1"] .chev-btn:not([style*="--kart-renk"]){--kart-renk:#9a6f1c;}
 .chev-btn.chev-kucuk{width:20px;height:20px;font-size:14px;padding-bottom:1px;border-width:1.2px;}
 .chev-btn.chev-kucuk.chev-duzenle{font-size:11px;padding-bottom:0;}
 
@@ -9403,7 +9403,7 @@ function renderSiniflar(){
             <div style="font-family:Fraunces,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${si.ad}${pasif?' <span style="font-size:11px;font-family:DM Sans,sans-serif;color:var(--text3);font-weight:400;">('+t('kapali_kisa')+')</span>':''}</div>
             <div style="font-size:11px;color:var(--text3);margin-top:1px;">${si.gun} · ${si.saat}</div>
           </div>
-          <span style="font-size:18px;color:var(--text3);flex-shrink:0;">›</span>
+          <span class="chev-btn" style="--kart-renk:${kartRenk};">›</span>
         </div>
         <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">
           <span class="badge ${pasif?'badge-gray':aktifSayi>0?'badge-green':'badge-gray'}" style="font-size:10px;">${aktifSayi} ${t('badge_aktif')}${cinsBadge}</span>
