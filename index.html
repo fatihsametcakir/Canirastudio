@@ -13639,14 +13639,13 @@ async function renderGiderRapor(){
       html+=`<div class="egitmen-pay-kart${egBek?' eg-kart-uyari':''}" style="border-left:3px solid ${renk};margin-bottom:8px;--grup-renk:${renk};">
         <div class="gr-kart-baslik" onclick="toggleGiderKart('${d.si.id}')" style="display:flex;justify-content:space-between;align-items:center;">
           <div style="display:flex;align-items:center;gap:8px;min-width:0;">
-            <span class="odeme-sinif-chevron${kartAcik?' open':''}" id="gr-chev-${d.si.id}" style="flex-shrink:0;">›</span>
             <div style="min-width:0;">
               <div style="font-size:14px;font-weight:600;">${d.si.ad}</div>
               ${d.egitmen?`<div style="font-size:11px;color:var(--text2);margin-top:1px;">${d.egitmen.basEgitmen?'⭐':'👤'} ${d.egitmen.ad}${d.egitmen2?` · ${d.egitmen2.basEgitmen?'⭐':'👤'} ${d.egitmen2.ad}`:''}</div>`:''}
               ${egOdenmemisEtiket(d.si.id)}
             </div>
           </div>
-          <span style="font-size:14px;font-weight:700;color:var(--green);flex-shrink:0;">${d.sinifGelir.toLocaleString(LC())} ₺</span>
+          <span style="display:flex;align-items:center;gap:10px;flex-shrink:0;"><span style="font-size:14px;font-weight:700;color:var(--green);">${d.sinifGelir.toLocaleString(LC())} ₺</span><span class="odeme-sinif-chevron${kartAcik?' open':''}" id="gr-chev-${d.si.id}" style="flex-shrink:0;">›</span></span>
         </div>
         <div class="gr-kart-body${kartAcik?' open':''}" id="gr-body-${d.si.id}">
         <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;margin-top:10px;">
