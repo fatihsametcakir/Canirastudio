@@ -154,6 +154,24 @@ service cloud.firestore {
       allow create: if false;
     }
 
+    // Ödeme düzenleme/silme onay talepleri: talebi açan kendi talebini onaylayamaz (yalnızca geri çekebilir)
+    match /onay_talepleri/{id} {
+      allow read: if oku();
+      allow create: if yaz('odeme')
+        && request.resource.data.talepEden == request.auth.token.email.lower()
+        && request.resource.data.durum == 'bekliyor';
+      allow update: if yaz('odeme')
+        && resource.data.durum == 'bekliyor'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['durum', 'karar'])
+        && (
+          (resource.data.talepEden != request.auth.token.email.lower()
+            && request.resource.data.durum in ['onaylandi', 'reddedildi', 'gecersiz'])
+          || (resource.data.talepEden == request.auth.token.email.lower()
+            && request.resource.data.durum == 'geri_cekildi')
+        );
+      allow delete: if sahip();
+    }
+
     // Yukarıda yazmayan her şey kapalı (varsayılan red)
   }
 }

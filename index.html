@@ -1972,7 +1972,7 @@ try{
 <!-- Admin Bildirimler Modal -->
 <div class="overlay" id="m-bildirimler"><div class="sheet">
   <div class="sheet-handle"></div><button class="sheet-close" onclick="closeModal('m-bildirimler')">✕</button>
-  <div class="sheet-title" data-i18n="ogrenci_notlari">Öğrenci Notları</div>
+  <div class="sheet-title" data-i18n="bildirimler_baslik">Bildirimler</div>
   <div id="m-bildirimler-content"></div>
 </div></div>
 
@@ -1999,7 +1999,7 @@ try{
       </div>
     </div>
     <div id="topbar-sag" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-      <button class="notif-btn" id="notif-btn" onclick="bildirimlerAc()" title="Öğrenci notları" style="display:none;">
+      <button class="notif-btn" id="notif-btn" onclick="bildirimlerAcBas()" title="Bildirimler" style="display:none;">
         🔔<span class="notif-badge" id="notif-badge" style="display:none;"></span>
       </button>
       <button id="langBtn" onclick="cycleLang()" title="Dil / Language / Язык" style="background:var(--cyanbg);border:1px solid #22d3ee35;border-radius:99px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--cyan);cursor:pointer;flex-shrink:0;transition:transform .2s cubic-bezier(.34,1.56,.64,1);">TR</button>
@@ -3458,7 +3458,7 @@ const TRANSLATIONS={
     ogrenci_gecmisi:'📜 Öğrenci Geçmişi', gecmis_kaydi_yok:'Henüz kayıtlı bir geçmiş yok.',
     olay_giris:'Sınıfa katıldı', olay_cikis:'Sınıftan çıkarıldı', olay_dondur:'Kayıt donduruldu', olay_coz:'Dondurma çözüldü',
     olay_genel_aktif:'Öğrenci aktif edildi', olay_genel_pasif:'Öğrenci pasife alındı',
-    olay_ad_degisti_og:'Ad değişti', olay_soyad_degisti_og:'Soyad değişti', olay_tel_degisti:'Telefon değişti', olay_cinsiyet_degisti:'Cinsiyet değişti',
+    olay_ad_degisti_og:'Ad değişti', olay_soyad_degisti_og:'Soyad değişti', olay_tel_degisti:'Telefon değişti', olay_cinsiyet_degisti:'Cinsiyet değişti', olay_odeme_eklendi:'Ödeme eklendi', olay_odeme_duzenlendi:'Ödeme düzenlendi', olay_odeme_silindi:'Ödeme silindi', olay_odeme_red:'Ödeme değişiklik talebi reddedildi', olay_odeme_iade:'Ödeme iadesi', bildirimler_baslik:'Bildirimler', onay_bildirimleri:'Onay Bildirimleri', onay_yok:'Onay bekleyen işlem yok', onay_duzenleme_talebi:'Ödeme düzenleme talebi', onay_silme_talebi:'Ödeme silme talebi', onay_isteyen:'İsteyen', onay_onaylayan:'Onaylayan', onay_onayla:'Onayla', onay_reddet:'Reddet', onay_geri_cek:'Talebi Geri Çek', onay_kendi:'Kendi talebin; başka bir yöneticinin onayı bekleniyor', onay_gonderildi:'Talebiniz onaya gönderildi ✓', onay_baslik:'Onaya Gönder', onay_duzenle_desc:'Değişiklik talebiniz onaya gönderilecektir.', onay_sil_desc:'Ödeme silme talebiniz onaya gönderilecektir.', onay_zaten:'Bu ödeme için onay bekleyen bir talep zaten var.', onay_degisiklik_yok:'Ödemede değişiklik yapılmadı.', onay_kendi_yasak:'Kendi talebinizi onaylayamazsınız.', onay_gecersiz:'Ödeme talepten sonra değişmiş veya silinmiş; talep geçersiz sayıldı.', onay_ok_uygulandi:'Talep onaylandı ve uygulandı ✓', onay_red_ok:'Talep reddedildi', onay_geri_ok:'Talep geri çekildi', onay_son:'Son sonuçlanan talepler', onay_d_onaylandi:'Onaylandı', onay_d_reddedildi:'Reddedildi', onay_d_geri_cekildi:'Geri çekildi', onay_d_gecersiz:'Geçersiz', onay_a_ogrenci:'Öğrenci', onay_a_sinif:'Sınıf', onay_a_tutar:'Tutar', onay_a_tarih:'Tarih', onay_a_yontem:'Yöntem', onay_a_aylar:'Dönemler', onay_a_not:'Not',
     sinif_gecmisi:'📜 Sınıf Geçmişi',
     olay_ad_degisti:'Sınıf adı değişti', olay_gun_degisti:'Ders günü değişti', olay_saat_degisti:'Ders saati değişti',
     olay_egitmen_degisti:'Eğitmen değişti', olay_kira_degisti:'Kira tutarı değişti',
@@ -3647,7 +3647,7 @@ const TRANSLATIONS={
     ogrenci_gecmisi:'📜 Student History', gecmis_kaydi_yok:'No history recorded yet.',
     olay_giris:'Joined class', olay_cikis:'Removed from class', olay_dondur:'Enrollment frozen', olay_coz:'Freeze lifted',
     olay_genel_aktif:'Student activated', olay_genel_pasif:'Student deactivated',
-    olay_ad_degisti_og:'Name changed', olay_soyad_degisti_og:'Surname changed', olay_tel_degisti:'Phone changed', olay_cinsiyet_degisti:'Gender changed',
+    olay_ad_degisti_og:'Name changed', olay_soyad_degisti_og:'Surname changed', olay_tel_degisti:'Phone changed', olay_cinsiyet_degisti:'Gender changed', olay_odeme_eklendi:'Payment added', olay_odeme_duzenlendi:'Payment edited', olay_odeme_silindi:'Payment deleted', olay_odeme_red:'Payment change request rejected', olay_odeme_iade:'Payment refund', bildirimler_baslik:'Notifications', onay_bildirimleri:'Approvals', onay_yok:'Nothing waiting for approval', onay_duzenleme_talebi:'Payment edit request', onay_silme_talebi:'Payment delete request', onay_isteyen:'Requested by', onay_onaylayan:'Approved by', onay_onayla:'Approve', onay_reddet:'Reject', onay_geri_cek:'Withdraw Request', onay_kendi:'Your own request; waiting for another manager to approve', onay_gonderildi:'Your request was sent for approval ✓', onay_baslik:'Send for Approval', onay_duzenle_desc:'Your change request will be sent for approval.', onay_sil_desc:'Your payment deletion request will be sent for approval.', onay_zaten:'There is already a pending request for this payment.', onay_degisiklik_yok:'Nothing was changed on the payment.', onay_kendi_yasak:'You cannot approve your own request.', onay_gecersiz:'The payment changed or was deleted after the request; the request is void.', onay_ok_uygulandi:'Request approved and applied ✓', onay_red_ok:'Request rejected', onay_geri_ok:'Request withdrawn', onay_son:'Recently resolved requests', onay_d_onaylandi:'Approved', onay_d_reddedildi:'Rejected', onay_d_geri_cekildi:'Withdrawn', onay_d_gecersiz:'Void', onay_a_ogrenci:'Student', onay_a_sinif:'Class', onay_a_tutar:'Amount', onay_a_tarih:'Date', onay_a_yontem:'Method', onay_a_aylar:'Periods', onay_a_not:'Note',
     sinif_gecmisi:'📜 Class History',
     olay_ad_degisti:'Class name changed', olay_gun_degisti:'Class day changed', olay_saat_degisti:'Class time changed',
     olay_egitmen_degisti:'Instructor changed', olay_kira_degisti:'Rent amount changed',
@@ -3839,7 +3839,7 @@ const TRANSLATIONS={
     ogrenci_gecmisi:'📜 История ученика', gecmis_kaydi_yok:'История пока не записана.',
     olay_giris:'Присоединился к группе', olay_cikis:'Удалён из группы', olay_dondur:'Запись заморожена', olay_coz:'Заморозка снята',
     olay_genel_aktif:'Ученик активирован', olay_genel_pasif:'Ученик деактивирован',
-    olay_ad_degisti_og:'Имя изменено', olay_soyad_degisti_og:'Фамилия изменена', olay_tel_degisti:'Телефон изменён', olay_cinsiyet_degisti:'Пол изменён',
+    olay_ad_degisti_og:'Имя изменено', olay_soyad_degisti_og:'Фамилия изменена', olay_tel_degisti:'Телефон изменён', olay_cinsiyet_degisti:'Пол изменён', olay_odeme_eklendi:'Платёж добавлен', olay_odeme_duzenlendi:'Платёж изменён', olay_odeme_silindi:'Платёж удалён', olay_odeme_red:'Запрос на изменение платежа отклонён', olay_odeme_iade:'Возврат платежа', bildirimler_baslik:'Уведомления', onay_bildirimleri:'Подтверждения', onay_yok:'Нет операций, ожидающих подтверждения', onay_duzenleme_talebi:'Запрос на изменение платежа', onay_silme_talebi:'Запрос на удаление платежа', onay_isteyen:'Запросил', onay_onaylayan:'Подтвердил', onay_onayla:'Подтвердить', onay_reddet:'Отклонить', onay_geri_cek:'Отозвать запрос', onay_kendi:'Ваш запрос; ожидает подтверждения другим менеджером', onay_gonderildi:'Запрос отправлен на подтверждение ✓', onay_baslik:'Отправить на подтверждение', onay_duzenle_desc:'Ваш запрос на изменение будет отправлен на подтверждение.', onay_sil_desc:'Ваш запрос на удаление платежа будет отправлен на подтверждение.', onay_zaten:'По этому платежу уже есть ожидающий запрос.', onay_degisiklik_yok:'В платеже ничего не изменено.', onay_kendi_yasak:'Нельзя подтвердить собственный запрос.', onay_gecersiz:'Платёж изменён или удалён после запроса; запрос недействителен.', onay_ok_uygulandi:'Запрос подтверждён и применён ✓', onay_red_ok:'Запрос отклонён', onay_geri_ok:'Запрос отозван', onay_son:'Недавно обработанные запросы', onay_d_onaylandi:'Подтверждён', onay_d_reddedildi:'Отклонён', onay_d_geri_cekildi:'Отозван', onay_d_gecersiz:'Недействителен', onay_a_ogrenci:'Ученик', onay_a_sinif:'Группа', onay_a_tutar:'Сумма', onay_a_tarih:'Дата', onay_a_yontem:'Способ', onay_a_aylar:'Периоды', onay_a_not:'Заметка',
     sinif_gecmisi:'📜 История группы',
     olay_ad_degisti:'Название группы изменено', olay_gun_degisti:'День занятия изменён', olay_saat_degisti:'Время занятия изменено',
     olay_egitmen_degisti:'Преподаватель изменён', olay_kira_degisti:'Сумма аренды изменена',
@@ -7128,9 +7128,9 @@ function openKayitIslem(siId,kayitId){
 // Kayıt geçmişi günlüğü — dondurma/çözme/çıkış olaylarını tarihiyle birlikte kaydeder.
 // Mevcut "kayitlar" yapısına dokunmaz, ayrı ve ek bir alan olarak tutulur.
 // Öğrenci geçmişi günlüğü — dondurma/çözme/çıkış/giriş/pasif/aktif gibi tüm olayları tek merkezi koleksiyonda tutar
-async function ogrenciOlayEkle(ogrenciId,sinifId,sinifAdi,olay,eskiDeger,yeniDeger){
+async function ogrenciOlayEkle(ogrenciId,sinifId,sinifAdi,olay,eskiDeger,yeniDeger,ek){
   try{
-    const yeniKayit={ogrenciId,sinifId:sinifId||null,sinifAdi:sinifAdi||null,olay,eskiDeger:eskiDeger??null,yeniDeger:yeniDeger??null,tarih:bugunTarih(),olusturma:Date.now(),kullanici:(typeof AUTH!=='undefined'&&AUTH&&AUTH.email)||null};
+    const yeniKayit={ogrenciId,sinifId:sinifId||null,sinifAdi:sinifAdi||null,olay,eskiDeger:eskiDeger??null,yeniDeger:yeniDeger??null,tarih:bugunTarih(),olusturma:Date.now(),kullanici:(typeof AUTH!=='undefined'&&AUTH&&AUTH.email)||null,...(ek||{})};
     const result=await db.collection('ogrenciGecmisi').add(yeniKayit);
     S.ogrenciGecmisi.push({...yeniKayit,id:result.id});
   }catch(e){/* günlük tutulamazsa sessizce geç, ana işlemi engellemez */}
@@ -7584,6 +7584,7 @@ async function ogrenciPasifeAlYap(id,plan){
           // Aynı ödemeye ikinci kez iade yapılırsa (aktife alınıp tekrar pasife alınırsa) birikir
           const yeni={tarih:bugunStr,tutar:(onceki.tutar||0)+x.tutar,ders:(onceki.ders||0)+x.kalanDers};
           await db.collection('odemeler').doc(x.odemeId).update({iade:yeni});
+          ogrenciOlayEkle(id,c.si.id,c.si.ad,'odeme_iade',null,null,{ozet:'−'+(x.tutar||0).toLocaleString('tr-TR')+' ₺ · '+x.kalanDers+' ders'});
           const i=S.odemeler.findIndex(z=>z.id===x.odemeId);
           if(i>=0)S.odemeler[i]={...S.odemeler[i],iade:yeni};
         }
@@ -7939,41 +7940,48 @@ async function saveOdeme(){
   // eski bir hata bir daha yaşanırsa) kaydetmeden önce açıkça sorulur.
   if(EDIT_ODEME){
     const orijinal=S.odemeler.find(o=>o.id===EDIT_ODEME);
-    if(orijinal&&orijinal.ogrenciId!==ogId){
+    if(!orijinal){showToast('Ödeme bulunamadı.','error');return;}
+    if(!onayFarklar(orijinal,odemeFormVeri(siId,ogId,tutar)).length){showToast(t('onay_degisiklik_yok'),'error');return;}
+    let uyari='';
+    if(orijinal.ogrenciId!==ogId){
       const eskiOg=S.ogrenciler.find(o=>o.id===orijinal.ogrenciId);
       const yeniOg=S.ogrenciler.find(o=>o.id===ogId);
-      confirm_(
-        'Öğrenci Değişti',
-        `Bu ödeme "${eskiOg?eskiOg.ad+' '+(eskiOg.soyad||''):'?'}" için kayıtlıydı, şimdi "${yeniOg?yeniOg.ad+' '+(yeniOg.soyad||''):'?'}" için kaydedilecek. Emin misiniz?`,
-        ()=>saveOdemeDevam(siId,ogId,tutar)
-      );
-      return;
+      uyari=`Bu ödeme "${eskiOg?eskiOg.ad+' '+(eskiOg.soyad||''):'?'}" için kayıtlıydı, şimdi "${yeniOg?yeniOg.ad+' '+(yeniOg.soyad||''):'?'}" için kaydedilecek.\n\n`;
     }
+    // Düzenleme doğrudan uygulanmaz: başka bir yöneticinin onayına gider
+    confirm_(t('onay_baslik'),uyari+t('onay_duzenle_desc'),()=>saveOdemeDevam(siId,ogId,tutar));
+    return;
   }
   saveOdemeDevam(siId,ogId,tutar);
+}
+function odemeFormVeri(siId,ogId,tutar){
+  const kaydedilecekAylar=OD_AYLAR.length?OD_AYLAR:OD_ESKI_AYLAR;
+  return {ogrenciId:ogId,sinifId:siId,tutar,tarih:document.getElementById('od-tarih').value,yontem:document.getElementById('od-yontem').value,odTip:OD_TIP,aylar:OD_TIP==='aylik'?kaydedilecekAylar:[],not:document.getElementById('od-not').value,olusturma:EDIT_ODEME?(S.odemeler.find(o=>o.id===EDIT_ODEME)?.olusturma||Date.now()):Date.now(),tip:'grup'};
 }
 async function saveOdemeDevam(siId,ogId,tutar){
   const btn=document.getElementById('btn-save-od');btn.disabled=true;setSyncing(true);
   // Yeni dönem seçildiyse eski (takvim-ayı formatındaki) kayıt tamamen bırakılır —
   // ikisi üst üste eklenip ders sayısını yanlışlıkla ikiye katlamasın diye.
   // Kullanıcı ızgaraya hiç dokunmadıysa eski kayıt aynen korunur.
-  const kaydedilecekAylar=OD_AYLAR.length?OD_AYLAR:OD_ESKI_AYLAR;
-  const data={ogrenciId:ogId,sinifId:siId,tutar,tarih:document.getElementById('od-tarih').value,yontem:document.getElementById('od-yontem').value,odTip:OD_TIP,aylar:OD_TIP==='aylik'?kaydedilecekAylar:[],not:document.getElementById('od-not').value,olusturma:EDIT_ODEME?(S.odemeler.find(o=>o.id===EDIT_ODEME)?.olusturma||Date.now()):Date.now(),tip:'grup'};
+  const data=odemeFormVeri(siId,ogId,tutar);
   try{
     let result;
     if(EDIT_ODEME){
-      result=await db.collection('odemeler').doc(EDIT_ODEME).update(data);
-      const idx=S.odemeler.findIndex(o=>o.id===EDIT_ODEME);
-      if(idx>=0)S.odemeler[idx]={...data,id:EDIT_ODEME};
+      const orijinal=S.odemeler.find(o=>o.id===EDIT_ODEME);
+      const gonderildi=orijinal&&await onayTalepGonder('odeme_duzenle',orijinal,data);
+      if(gonderildi){closeModal('m-odeme');showToast(t('onay_gonderildi'),'success');}
+      btn.disabled=false;setSyncing(false);return;
     } else {
       result=await db.collection('odemeler').add(data);
       S.odemeler.push({...data,id:result.id});
+      const _si=S.siniflar.find(x=>x.id===siId);
+      ogrenciOlayEkle(ogId,siId,_si?_si.ad:null,'odeme_eklendi',null,null,{ozet:onayOdemeOzet(data)});
     }
-    closeModal('m-odeme');renderAll();showToast(EDIT_ODEME?'Ödeme güncellendi ✓':'Ödeme kaydedildi ✓','success');_poll('odemeler');
+    closeModal('m-odeme');renderAll();showToast('Ödeme kaydedildi ✓','success');_poll('odemeler');
   }catch(e){showToast('Kayıt başarısız: '+e.message,'error');}
   btn.disabled=false;setSyncing(false);
 }
-async function silOdeme(){if(!EDIT_ODEME)return;const _od=S.odemeler.find(o=>o.id===EDIT_ODEME);confirm_('Ödemeyi Sil',_od&&_od.iade?'Bu ödeme kaydı kalıcı olarak silinecek. Üzerindeki iade kaydı ('+(_od.iade.tutar||0).toLocaleString('tr-TR')+' ₺) da silinir.':'Bu ödeme kaydı kalıcı olarak silinecek.',async()=>{setSyncing(true);const _kopya=_od?JSON.parse(JSON.stringify(_od)):null;await db.collection('odemeler').doc(EDIT_ODEME).delete();_poll('odemeler');setSyncing(false);closeModal('m-odeme');if(_kopya)geriAlBildirimi('Ödeme silindi',()=>odemeGeriYukle(_kopya));});}
+async function silOdeme(){if(!EDIT_ODEME)return;const _od=S.odemeler.find(o=>o.id===EDIT_ODEME);if(!_od)return;confirm_(t('onay_baslik'),t('onay_sil_desc'),async()=>{setSyncing(true);const ok=await onayTalepGonder('odeme_sil',_od,null);setSyncing(false);if(ok){closeModal('m-odeme');showToast(t('onay_gonderildi'),'success');}});}
 function openOdemeDetay(ogId,siId){const og=S.ogrenciler.find(o=>o.id===ogId);const si=S.siniflar.find(s=>s.id===siId);const list=ogSiOd(ogId,siId).sort((a,b)=>b.olusturma-a.olusturma);document.getElementById('m-odeme-detay-title').textContent=(og?og.ad+' '+og.soyad:'')+(si?' · '+si.ad:'');const el=document.getElementById('m-odeme-detay-content');if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">◎</div><div class="empty-text">Henüz ödeme kaydı yok</div></div>';openModal('m-odeme-detay');return;}el.innerHTML=list.map(od=>`<div class="odeme-gecmis-item"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--green);font-size:15px;font-weight:600;">${(od.tutar||0).toLocaleString(LC())} ₺</span><div style="display:flex;gap:6px;align-items:center;"><span class="badge badge-amber">${od.yontem||'—'}</span><button class="btn btn-sm" style="background:#22d3ee1c;color:var(--cyan);border:1px solid #22d3ee40;" onclick="closeModal('m-odeme-detay');openOdemeModal('${ogId}','${siId}','${od.id}')">Düzenle</button></div></div><div style="font-size:12px;color:var(--text2);">${formatDate(od.tarih)}${od.aylar&&od.aylar.length?' · '+od.aylar.map(a=>ayLabel(a)).join(', '):''}</div>${od.iade?`<div style="font-size:12px;color:var(--amber);margin-top:3px;">↩ İade: −${(od.iade.tutar||0).toLocaleString(LC())} ₺ · ${od.iade.ders} ders · ${formatDate(od.iade.tarih)}</div>`:''}${od.not?`<div style="font-size:12px;color:var(--text2);margin-top:3px;">${od.not}</div>`:''}</div>`).join('');openModal('m-odeme-detay');}
 
 // ── ÖZEL DERSE ÖĞRENCİ EKLE (birleşik model) ────────────
@@ -10334,7 +10342,7 @@ const YAZMA_KATEGORILER=[
 const YAZMA_HARITA={ogrenciler:'ogrenci',ogrenci_hesaplar:'ogrenci',egitmen_hesaplar:'ayar',portal_oturum:'ogrenci',portal_kilit:'ogrenci',
   ogrenciGecmisi:'*',sinifGecmisi:'*',siniflar:'sinif',tatiller:'sinif',odemeler:'odeme',yoklamalar:'yoklama',
   ozelPaketler:'ozel',ozelSeanslar:'ozel',ozelOgrenciler:'ozel',videoSiniflar:'video',
-  egitmenler:'ayar',ayarlar:'ayar',gider_ayarlari:'ayar',ogrenci_notlar:'serbest',kayit_linkleri:'ogrenci',kayit_basvurulari:'ogrenci'};
+  egitmenler:'ayar',ayarlar:'ayar',gider_ayarlari:'ayar',ogrenci_notlar:'serbest',kayit_linkleri:'ogrenci',kayit_basvurulari:'ogrenci',onay_talepleri:'odeme'};
 // Modal → gereken yazma kategorisi (yetkisiz kullanıcı formu hiç açamaz)
 const YAZMA_MODAL={'m-ogrenci':'ogrenci','m-og-ekle-sec':'ogrenci','m-sinif-ogrenci':'ogrenci','m-sinif':'sinif','m-birlestir':'sinif','m-ders-iptal':'sinif',
   'm-odeme':'odeme','m-pasif-iade':'odeme','m-ozel-ekle':'ozel','m-ozel-paket':'ozel','m-ozel-odeme':'ozel','m-ozel-saat':'ozel','m-ders-planla':'ozel',
@@ -10952,7 +10960,7 @@ function excelIndir(){
 }
 
 // Uygulamadaki TÜM Firestore koleksiyonları — yedekleme/geri yükleme bunları kapsar
-const TUM_KOLEKSIYONLAR=['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler','ozelSeanslar','egitmenler','tatiller','videoSiniflar','yoklamalar','gider_ayarlari','ayarlar','ogrenci_hesaplar','ogrenci_notlar','ogrenciGecmisi','sinifGecmisi'];
+const TUM_KOLEKSIYONLAR=['ogrenciler','siniflar','odemeler','ozelOgrenciler','ozelPaketler','ozelSeanslar','egitmenler','tatiller','videoSiniflar','yoklamalar','gider_ayarlari','ayarlar','ogrenci_hesaplar','ogrenci_notlar','ogrenciGecmisi','sinifGecmisi','onay_talepleri'];
 
 // Bir koleksiyondaki TÜM belgeleri (300 belge sınırını sayfalayarak aşar) çeker
 async function fsTumBelgeler(col){
@@ -12111,6 +12119,11 @@ function openOgrenciGecmisi(ogId){
     soyad_degisti:{ikon:'✎',renk:'var(--cyan)',metin:t('olay_soyad_degisti_og')},
     tel_degisti:{ikon:'📞',renk:'var(--cyan)',metin:t('olay_tel_degisti')},
     cinsiyet_degisti:{ikon:'✎',renk:'var(--purple)',metin:t('olay_cinsiyet_degisti')},
+    odeme_eklendi:{ikon:'💳',renk:'var(--green)',metin:t('olay_odeme_eklendi')},
+    odeme_duzenlendi:{ikon:'✎',renk:'var(--amber)',metin:t('olay_odeme_duzenlendi')},
+    odeme_silindi:{ikon:'🗑',renk:'var(--accent)',metin:t('olay_odeme_silindi')},
+    odeme_talep_red:{ikon:'⛔',renk:'var(--text2)',metin:t('olay_odeme_red')},
+    odeme_iade:{ikon:'↩',renk:'var(--amber)',metin:t('olay_odeme_iade')},
   };
   el.innerHTML=olaylar.map(g=>{
     const bilgi=olayBilgi[g.olay]||{ikon:'•',renk:'var(--text3)',metin:g.olay};
@@ -12121,6 +12134,9 @@ function openOgrenciGecmisi(ogId){
       <div style="flex:1;min-width:0;">
         <div style="font-size:14px;font-weight:500;color:${bilgi.renk};">${bilgi.metin}${g.sinifAdi?' · '+g.sinifAdi:''}</div>
         ${degisimVar?`<div style="font-size:12px;color:var(--text2);margin-top:2px;">${g.eskiDeger} → ${g.yeniDeger}</div>`:''}
+        ${g.ozet?`<div style="font-size:12px;color:var(--text2);margin-top:2px;">${waHtmlEsc(g.ozet)}</div>`:''}
+        ${Array.isArray(g.detay)?g.detay.map(d=>`<div style="font-size:12px;color:var(--text2);margin-top:2px;">${waHtmlEsc(d.ad)}: <s style="opacity:.75;">${waHtmlEsc(d.eski)}</s> → <b>${waHtmlEsc(d.yeni)}</b></div>`).join(''):''}
+        ${g.talepEden?`<div style="font-size:11px;color:var(--text3);margin-top:2px;">${t('onay_isteyen')}: ${waHtmlEsc(g.talepEden)}${g.onaylayan?' · '+t('onay_onaylayan')+': '+waHtmlEsc(g.onaylayan):''}</div>`:''}
         <div style="font-size:11px;color:var(--text3);margin-top:1px;">${dObj.toLocaleDateString(LC(),{day:'numeric',month:'long',year:'numeric'})}${g.olusturma?' · '+new Date(g.olusturma).toLocaleTimeString(LC(),{hour:'2-digit',minute:'2-digit'}):''}${g.kullanici?' · 👤 '+g.kullanici:''}</div>
       </div>
     </div>`;
@@ -14719,6 +14735,125 @@ async function portalSifreKaydet(ilkGiris){
 }
 
 // ── Admin — Öğrenci Notları Bildirimleri ───────────────
+
+// ── ÖDEME ONAY SİSTEMİ ──────────────────────────────────
+// Ödeme düzenleme/silme doğrudan uygulanmaz: onay_talepleri/{id} olarak kaydedilir; talebi açan dışındaki
+// bir yönetici (ödeme yetkisi olan) Bildirimler > Onay Bildirimleri'nden onaylar ya da reddeder.
+// NOT: Bu uygulama düzeyinde bir kontroldür; veritabanı kuralları yalnızca "kendi talebini onaylayamaz" kuralını da uygular.
+let ONAY_LISTE=[];
+function onayKendiEposta(){try{return (AUTH.idToken?yetkiJwtEposta(AUTH.idToken):'')||String(AUTH.email||'').toLowerCase();}catch(e){return String(AUTH.email||'').toLowerCase();}}
+const onayTL=v=>(Number(v)||0).toLocaleString(LC())+' ₺';
+const ONAY_ALANLAR=[
+  {k:'ogrenciId',a:'onay_a_ogrenci',f:v=>{const o=S.ogrenciler.find(x=>x.id===v);return o?o.ad+' '+(o.soyad||''):'?';}},
+  {k:'sinifId',a:'onay_a_sinif',f:v=>{const x=S.siniflar.find(y=>y.id===v);return x?x.ad:'?';}},
+  {k:'tutar',a:'onay_a_tutar',f:onayTL},
+  {k:'tarih',a:'onay_a_tarih',f:v=>v?formatDate(v):'—'},
+  {k:'yontem',a:'onay_a_yontem',f:v=>v||'—'},
+  {k:'aylar',a:'onay_a_aylar',f:v=>(Array.isArray(v)&&v.length)?v.map(m=>ayLabel(m)).join(', '):'—',eq:(x,y)=>JSON.stringify(x||[])===JSON.stringify(y||[])},
+  {k:'not',a:'onay_a_not',f:v=>v||'—',eq:(x,y)=>String(x||'')===String(y||'')},
+];
+function onayFarklar(eski,yeni){
+  const r=[];
+  for(const al of ONAY_ALANLAR){
+    const eq=al.eq||((x,y)=>String(x??'')===String(y??''));
+    if(!eq(eski[al.k],yeni[al.k]))r.push({ad:t(al.a),eski:al.f(eski[al.k]),yeni:al.f(yeni[al.k])});
+  }
+  return r;
+}
+function onayOdemeOzet(od){return [onayTL(od.tutar),od.tarih?formatDate(od.tarih):null,od.yontem||null,(od.aylar&&od.aylar.length)?od.aylar.map(m=>ayLabel(m)).join(', '):null,od.not||null].filter(Boolean).join(' · ');}
+async function onayTalepGonder(tip,od,yeni){
+  try{
+    const mevcut=(await fsTumBelgeler('onay_talepleri')).find(x=>x.durum==='bekliyor'&&x.odemeId===od.id);
+    if(mevcut){showToast(t('onay_zaten'),'error');return false;}
+    const og=S.ogrenciler.find(o=>o.id===od.ogrenciId),si=S.siniflar.find(x=>x.id===od.sinifId);
+    const kayit={tip,odemeId:od.id,ogrenciId:od.ogrenciId||null,sinifId:od.sinifId||null,
+      ogrenciAd:og?og.ad+' '+(og.soyad||''):'?',sinifAd:si?si.ad:'?',
+      eski:JSON.parse(JSON.stringify(od)),yeni:yeni?JSON.parse(JSON.stringify(yeni)):null,
+      farklar:tip==='odeme_duzenle'?onayFarklar(od,yeni):[],
+      talepEden:onayKendiEposta(),talepZaman:Date.now(),durum:'bekliyor'};
+    const r=await db.collection('onay_talepleri').add(kayit);
+    ONAY_LISTE.push({...kayit,id:r.id});
+    return true;
+  }catch(e){showToast('Talep gönderilemedi: '+e.message,'error');return false;}
+}
+function onayDurumEtiket(d){return t('onay_d_'+d);}
+function onayKartHtml(x,bekliyor){
+  const ben=onayKendiEposta(),benim=x.talepEden===ben;
+  const baslik=x.tip==='odeme_sil'?'🗑 '+t('onay_silme_talebi'):'✎ '+t('onay_duzenleme_talebi');
+  const renk=x.tip==='odeme_sil'?'var(--accent)':'var(--amber)';
+  let detay='';
+  if(x.tip==='odeme_sil'){
+    detay=ONAY_ALANLAR.filter(al=>al.k!=='ogrenciId'&&al.k!=='sinifId'&&al.f((x.eski||{})[al.k])!=='—').map(al=>`<div style="font-size:12.5px;color:var(--text2);margin-top:2px;">${t(al.a)}: <b style="color:var(--text);">${waHtmlEsc(al.f((x.eski||{})[al.k]))}</b></div>`).join('');
+    if(x.eski&&x.eski.iade)detay+=`<div style="font-size:12px;color:var(--amber);margin-top:3px;">↩ ${onayTL(x.eski.iade.tutar)}</div>`;
+  }else{
+    detay=(x.farklar||[]).map(d=>`<div style="font-size:12.5px;color:var(--text2);margin-top:3px;">${waHtmlEsc(d.ad)}: <s style="opacity:.7;">${waHtmlEsc(d.eski)}</s> → <b style="color:var(--text);">${waHtmlEsc(d.yeni)}</b></div>`).join('');
+  }
+  const alt=bekliyor
+    ?(benim
+      ?`<div style="font-size:12px;color:var(--text3);margin-top:8px;">${t('onay_kendi')}</div><button class="btn btn-sm btn-ghost" style="width:100%;margin-top:6px;" onclick="onayKarar('${x.id}','geri')">${t('onay_geri_cek')}</button>`
+      :`<div style="display:flex;gap:8px;margin-top:10px;"><button class="btn btn-sm" style="flex:1;background:#34d3991f;color:var(--green);border:1px solid #34d39950;" onclick="onayKarar('${x.id}','onayla')">✓ ${t('onay_onayla')}</button><button class="btn btn-sm btn-danger" style="flex:1;" onclick="onayKarar('${x.id}','reddet')">✕ ${t('onay_reddet')}</button></div>`)
+    :`<div style="font-size:11.5px;color:var(--text3);margin-top:6px;">${onayDurumEtiket(x.durum)}${x.karar&&x.karar.kisi?' · '+waHtmlEsc(x.karar.kisi):''}</div>`;
+  return `<div class="portal-not-item" style="border-left:3px solid ${renk};cursor:default;">
+    <div style="display:flex;align-items:center;gap:8px;"><div style="font-size:13px;font-weight:600;flex:1;color:${renk};">${baslik}</div><span style="font-size:11px;color:var(--text3);">${new Date(x.talepZaman||0).toLocaleDateString(LC(),{day:'numeric',month:'short'})}</span></div>
+    <div style="font-size:13.5px;font-weight:600;margin-top:4px;">${waHtmlEsc(x.ogrenciAd||'?')} · ${waHtmlEsc(x.sinifAd||'?')}</div>
+    ${detay}
+    <div style="font-size:11.5px;color:var(--text3);margin-top:6px;">${t('onay_isteyen')}: ${waHtmlEsc(x.talepEden||'?')}</div>
+    ${alt}
+  </div>`;
+}
+async function onayPanelHtml(){
+  let liste=[];
+  try{liste=await fsTumBelgeler('onay_talepleri');ONAY_LISTE=liste;}catch(e){liste=ONAY_LISTE;}
+  const bekleyen=liste.filter(x=>x.durum==='bekliyor').sort((a,b)=>(b.talepZaman||0)-(a.talepZaman||0));
+  const biten=liste.filter(x=>x.durum!=='bekliyor').sort((a,b)=>((b.karar&&b.karar.zaman)||b.talepZaman||0)-((a.karar&&a.karar.zaman)||a.talepZaman||0)).slice(0,10);
+  let h=bekleyen.length?bekleyen.map(x=>onayKartHtml(x,true)).join(''):`<div class="empty" style="padding:24px 0;"><div class="empty-text">${t('onay_yok')}</div></div>`;
+  if(biten.length)h+=`<div style="font-size:12px;color:var(--text3);margin:14px 0 6px;">${t('onay_son')}</div>`+biten.map(x=>onayKartHtml(x,false)).join('');
+  return h;
+}
+async function onayKarar(id,karar){
+  try{
+    const x=(await fsTumBelgeler('onay_talepleri')).find(z=>z.id===id);
+    if(!x||x.durum!=='bekliyor'){bildirimlerAc();return;}
+    const ben=onayKendiEposta(),benim=x.talepEden===ben,simdi=Date.now();
+    if(karar==='geri'){
+      if(!benim)return;
+      await db.collection('onay_talepleri').doc(id).update({durum:'geri_cekildi',karar:{kisi:ben,zaman:simdi}});
+      showToast(t('onay_geri_ok'),'success');bildirimlerAc();return;
+    }
+    if(benim){showToast(t('onay_kendi_yasak'),'error');return;}
+    if(!yazabilir('odeme')){showToast(YAZMA_RED_MESAJ,'error');return;}
+    setSyncing(true);
+    const ek={talepEden:x.talepEden,onaylayan:ben};
+    if(karar==='reddet'){
+      await db.collection('onay_talepleri').doc(id).update({durum:'reddedildi',karar:{kisi:ben,zaman:simdi}});
+      await ogrenciOlayEkle(x.ogrenciId,x.sinifId,x.sinifAd,'odeme_talep_red',null,null,{...ek,ozet:(x.tip==='odeme_sil'?t('onay_silme_talebi'):t('onay_duzenleme_talebi'))+' · '+onayOdemeOzet(x.eski||{})});
+      showToast(t('onay_red_ok'),'success');
+    }else{
+      // Talepten sonra ödeme değişmiş/silinmişse talep geçersizdir
+      const guncel=(await fsTumBelgeler('odemeler')).find(o=>o.id===x.odemeId);
+      if(!guncel||onayFarklar(x.eski,guncel).length){
+        await db.collection('onay_talepleri').doc(id).update({durum:'gecersiz',karar:{kisi:ben,zaman:simdi}});
+        showToast(t('onay_gecersiz'),'error');
+      }else{
+        if(x.tip==='odeme_sil'){
+          await db.collection('odemeler').doc(x.odemeId).delete();
+          S.odemeler=S.odemeler.filter(o=>o.id!==x.odemeId);
+          await ogrenciOlayEkle(x.ogrenciId,x.sinifId,x.sinifAd,'odeme_silindi',null,null,{...ek,ozet:onayOdemeOzet(x.eski)+(x.eski.iade?' · ↩ '+onayTL(x.eski.iade.tutar):'')});
+        }else{
+          await db.collection('odemeler').doc(x.odemeId).update(x.yeni);
+          const i=S.odemeler.findIndex(o=>o.id===x.odemeId);
+          if(i>=0)S.odemeler[i]={...S.odemeler[i],...x.yeni,id:x.odemeId};
+          await ogrenciOlayEkle(x.yeni.ogrenciId||x.ogrenciId,x.yeni.sinifId||x.sinifId,x.sinifAd,'odeme_duzenlendi',null,null,{...ek,detay:x.farklar||[]});
+        }
+        await db.collection('onay_talepleri').doc(id).update({durum:'onaylandi',karar:{kisi:ben,zaman:simdi}});
+        _poll('odemeler');renderAll();
+        showToast(t('onay_ok_uygulandi'),'success');
+      }
+    }
+  }catch(e){showToast('İşlem başarısız: '+e.message,'error');}
+  setSyncing(false);
+  bildirimlerAc();
+}
 function adminNotifBaslat(){
   const btn=document.getElementById('notif-btn');
   if(!btn)return;
@@ -14730,18 +14865,26 @@ function adminNotifBaslat(){
       notifBadgeGuncelle();
     },err=>console.warn('notif',err));
   // Yeni (bekleyen) kayıt başvuruları da çanda sayılır
+  try{db.collection('onay_talepleri').onSnapshot(snap=>{
+    const ben=onayKendiEposta();
+    ONAY_LISTE=snap.docs.map(d=>({...d.data(),id:d.id}));
+    _NOTIF_O=ONAY_LISTE.filter(x=>x.durum==='bekliyor'&&x.talepEden!==ben).length;
+    notifBadgeGuncelle();
+  },err=>console.warn('notif-onay',err));}catch(e){}
   try{db.collection('kayit_basvurulari').onSnapshot(snap=>{
     _NOTIF_B=snap.docs.filter(d=>(d.data().durum||'beklemede')==='beklemede').length;
     notifBadgeGuncelle();
   },err=>console.warn('notif-kayit',err));}catch(e){}
 }
-let _NOTIF_N=0,_NOTIF_B=0;
+let _NOTIF_N=0,_NOTIF_B=0,_NOTIF_O=0,BILDIRIM_TAB='notlar';
 function notifBadgeGuncelle(){
-  const sayi=_NOTIF_N+_NOTIF_B,badge=document.getElementById('notif-badge');
+  const sayi=_NOTIF_N+_NOTIF_B+_NOTIF_O,badge=document.getElementById('notif-badge');
   if(badge){badge.style.display=sayi>0?'flex':'none';badge.textContent=sayi>9?'9+':sayi;}
 }
 
-async function bildirimlerAc(){
+function bildirimlerAcBas(){bildirimlerAc(_NOTIF_O>0&&_NOTIF_N+_NOTIF_B===0?'onay':'notlar');}
+async function bildirimlerAc(tab){
+  if(typeof tab==='string')BILDIRIM_TAB=tab;
   const tumNotlar=await fsTumBelgeler('ogrenci_notlar');
   const notlar=tumNotlar
     .sort((a,b)=>b.olusturma-a.olusturma).slice(0,50);
@@ -14765,7 +14908,11 @@ async function bildirimlerAc(){
 
   const okunmamis=notlar.filter(n=>!n.okundu).length;
   const ust=okunmamis?`<button class="btn btn-accent" style="width:100%;margin-bottom:12px;" id="bildirim-okundu-btn" onclick="bildirimlerOkunduYap()">✓ ${t('okundu_yap')} (${okunmamis})</button>`:'';
-  document.getElementById('m-bildirimler-content').innerHTML=ust+html;
+  const sekme=(k,ad,n)=>`<button class="btn btn-sm" style="flex:1;${BILDIRIM_TAB===k?'background:var(--accent);color:#fff;':'background:var(--surface2);color:var(--text2);'}" onclick="bildirimlerAc('${k}')">${ad}${n>0?' ('+n+')':''}</button>`;
+  const sekmeler=`<div style="display:flex;gap:8px;margin-bottom:12px;">${sekme('notlar',t('ogrenci_notlari'),_NOTIF_N+_NOTIF_B)}${sekme('onay',t('onay_bildirimleri'),_NOTIF_O)}</div>`;
+  let icerik=ust+html;
+  if(BILDIRIM_TAB==='onay')icerik=await onayPanelHtml();
+  document.getElementById('m-bildirimler-content').innerHTML=sekmeler+icerik;
   openModal('m-bildirimler');
 }
 async function bildirimlerOkunduYap(){
@@ -15061,19 +15208,12 @@ function openCakisanOdemelerModal(){
   openModal('m-cakisan-odemeler');
 }
 async function cakisanOdemeSil(odemeId,idx){
-  confirm_('Ödemeyi Sil','Bu ödeme kaydı kalıcı olarak silinecek. Emin misiniz?',async()=>{
+  const od=S.odemeler.find(o=>o.id===odemeId);if(!od)return;
+  confirm_(t('onay_baslik'),t('onay_sil_desc'),async()=>{
     setSyncing(true);
-    try{
-      const _kopya2=S.odemeler.find(o=>o.id===odemeId);const _k2=_kopya2?JSON.parse(JSON.stringify(_kopya2)):null;
-      await db.collection('odemeler').doc(odemeId).delete();
-      S.odemeler=S.odemeler.filter(o=>o.id!==odemeId);
-      _poll('odemeler');
-      if(_k2)geriAlBildirimi('Ödeme silindi',()=>odemeGeriYukle(_k2));else showToast('Ödeme silindi ✓','success');
-      openCakisanOdemelerModal();
-    }catch(e){
-      showToast('Silinemedi: '+e.message,'error');
-    }
+    const ok=await onayTalepGonder('odeme_sil',od,null);
     setSyncing(false);
+    if(ok)showToast(t('onay_gonderildi'),'success');
   });
 }
 let SO_TIP='hafta', SO_ARAMA='';
