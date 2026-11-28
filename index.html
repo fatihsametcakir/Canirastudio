@@ -1409,6 +1409,9 @@ html.sube-var .topbar-title,html.sube-var .topbar-title span{font-size:14.5px}
 @keyframes egSinifKart{0%,100%{box-shadow:0 0 0 0 transparent;background-color:transparent;}50%{box-shadow:0 0 16px 3px color-mix(in srgb,var(--accent,#ff6b6b) 80%,transparent);background-color:color-mix(in srgb,var(--accent,#ff6b6b) 20%,transparent);}}
 .egitmen-pay-kart.eg-kart-uyari{animation:egSinifKart .9s ease-in-out infinite!important;border-color:var(--accent,#ff6b6b)!important;}
 
+@keyframes egGeri{0%,100%{background:var(--surface2);border-color:var(--border2);color:var(--text);box-shadow:0 0 0 0 transparent;transform:scale(1);}50%{background:#e11d2e;border-color:#ff4d5e;color:#fff;box-shadow:0 0 0 6px rgba(225,29,46,.35),0 0 18px 4px rgba(225,29,46,.8);transform:scale(1.18);}}
+button.eg-geri-yan{animation:egGeri .7s ease-in-out infinite!important;}
+
 </style>
 <script>
 /* iPhone çentik/Dynamic Island algılama: güvenli alan varsa html'ye ios-notch sınıfı eklenir */
@@ -12494,7 +12497,7 @@ async function renderGiderRapor(){
         </div>
         <div class="gr-kart-body${kartAcik?' open':''}" id="gr-body-${d.si.id}">
         <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;margin-top:10px;">
-          <button onclick="sinifDonemDegistir('${d.si.id}',-1)" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;padding:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">‹</button>
+          <button class="${EG_BEKLEYEN.some(b=>b.siId===d.si.id&&b.idx<d.donemIdx)?'eg-geri-yan':''}" onclick="sinifDonemDegistir('${d.si.id}',-1)" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;padding:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">‹</button>
           <span style="font-size:11px;color:var(--text2);font-weight:600;">${d.donemIdx+1}. Dönem</span>
           <button onclick="sinifDonemDegistir('${d.si.id}',1)" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;padding:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">›</button>
         </div>
