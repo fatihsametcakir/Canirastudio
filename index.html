@@ -333,6 +333,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-seri
 
 /* Aylık Gelir accordion */
 .gelir-row.odeme-sinif-grup{border-bottom:1px solid color-mix(in srgb,var(--grup-renk) 45%,var(--border2))!important;border-left:3px solid var(--grup-renk);}
+.gelir-row.odeme-sinif-grup{--kart-renk:var(--grup-renk);}
 .gelir-row.odeme-sinif-grup .gelir-row-header{padding:12px 14px;}
 .gelir-row.odeme-sinif-grup .gelir-detay{padding:0 14px 10px;}
 .gelir-row{border-bottom:1px solid var(--border);}
@@ -10002,7 +10003,7 @@ function renderGelir(){
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
           <div style="font-size:13px;font-weight:600;color:var(--green);">${t('brut')}: ${v.toplam.toLocaleString(LC())} ₺</div>
           <div style="font-size:12px;color:var(--cyan);">${t('lbl_net')}: ${ayNet.toLocaleString(LC())} ₺</div>
-          <span class="chev-btn" style="${acik?'transform:rotate(90deg)':''}">›</span>
+          <span class="chev-btn" style="--kart-renk:${ayRenk};${acik?'transform:rotate(90deg)':''}">›</span>
         </div>
       </div>
       <div class="gelir-detay${acik?' open':''}" id="gelir-detay-${key}">
